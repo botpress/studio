@@ -9,8 +9,7 @@ gulp.task('start:studio', gulp.parallel([studio.start]))
 gulp.task('watch:studio', gulp.parallel([studio.watchBackend, studio.watchUi]))
 gulp.task('package:studio', gulp.series([studio.package]))
 
-gulp.task(
-  'build:studio',
-  gulp.series([studio.buildBackend, studio.buildUi, studio.clean, studio.cleanAssets, studio.copy])
-)
-gulp.task('build', gulp.series(['build:shared', 'build:studio']))
+gulp.task('build:studio-be', gulp.series([studio.buildBackend, studio.writeMetadata]))
+gulp.task('build:studio-ui', gulp.series([studio.buildUi, studio.clean, studio.cleanAssets, studio.copy]))
+
+gulp.task('build', gulp.series(['build:studio-be', 'build:shared', 'build:studio-ui']))

@@ -9,7 +9,9 @@
   "license": "AGPL-3.0",
   "private": true,
   "pkg": {
-    "scripts": ["./packages/studio-be/out/**/*.js"],
+    "scripts": [
+      "./packages/studio-be/out/**/*.js"
+    ],
     "assets": [
       "./packages/native-extensions/bin/**/*.node",
       "./node_modules/vm2/lib/*.js",
@@ -35,12 +37,12 @@
     "eslint-plugin-jsdoc": "^31.6.1",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
+    "gulp-file": "^0.4.0",
     "gulp-rimraf": "^1.0.0",
-    "prettier": "^1.19.1",
     "pkg": "^4.3.7",
+    "prettier": "^1.19.1",
     "typescript": "^4.2.4"
   },
-  "dependencies": {},
   "workspaces": [
     "packages/*"
   ]

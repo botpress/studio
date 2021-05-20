@@ -84,6 +84,7 @@ try {
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED)
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO.ENABLED'])
+  process.BOTPRESS_VERSION = process.pkg ? require('./metadata.json').version : process.env.npm_package_version
 
   require('yargs')
     .command(

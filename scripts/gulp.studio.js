@@ -5,6 +5,7 @@ const { symlink } = require('gulp')
 const path = require('path')
 const promisify = require('util').promisify
 const execAsync = promisify(exec)
+const file = require('gulp-file')
 
 const verbose = process.argv.includes('--verbose')
 
@@ -69,11 +70,25 @@ const watchBackend = gulp.series([
 const package = async () => {
   try {
     await execAsync(
-      `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
+      `cross-env ./node_modules/.bin/pkg --compress GZip --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
     )
   } catch (err) {
     console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
   }
+}
+
+const writeMetadata = () => {
+  const version = require(path.join(__dirname, '../package.json')).version
+  const metadata = JSON.stringify(
+    {
+      version,
+      build_version: `${version}__${Date.now()}`
+    },
+    null,
+    2
+  )
+
+  return file('./packages/studio-be/out/metadata.json', metadata, { src: true }).pipe(gulp.dest('./'))
 }
 
 module.exports = {
@@ -85,5 +100,6 @@ module.exports = {
   buildUi,
   clean,
   cleanAssets,
-  copy
+  copy,
+  writeMetadata
 }
