@@ -1,8 +1,15 @@
 ## Development workflow
 
-When developing on the studio, simply type `yarn watch` and the watcher will be started on the backend and on the frontend. Any changes made on the frontend will be available after a simple page refresh. Changes on the backend will require a server restart.
+Currently, it is not recommended to run the studio on its own. Therefore, you must start the Botpress Server, which will provide a couple of required parameters so the studio can work smoothly with the server.
 
-On the main Botpress workspace, you can set the environment variable `DEV_STUDIO_PATH` to the `packages/studio-be/out` folder to start this instance of the studio instead of the included executable.
+- Type `yarn` and `yarn build` to build everything
+- Use `yarn watch` to start a watcher on both the backend and frontend
+- Type `yarn package` to generate a single executable file for every available OS
+
+Like before, any changes made on the frontend will be available after a simple page refresh. Changes on the backend will require a server restart.
+
+Since this package MUST be started from the Botpress Server, you need to set a special environment variable on the server so it can load the correct files.
+The variable is named `DEV_STUDIO_PATH` and must point to `packages/studio-be/out`
 
 ## As standalone (NOT RECOMMENDED)
 
