@@ -14,10 +14,8 @@ class EventBus extends EventEmitter2 {
       maxListeners: 100
     })
 
-    if (window.BP_SERVER_URL) {
-      this.onAny(this.dispatchClientEvent)
-      authEvents.on('new_token', this.setup)
-    }
+    this.onAny(this.dispatchClientEvent)
+    authEvents.on('new_token', this.setup)
   }
 
   dispatchSocketEvent = event => {
@@ -43,6 +41,11 @@ class EventBus extends EventEmitter2 {
   }
 
   setup = (userIdScope?: string) => {
+    if (!window.BP_SERVER_URL) {
+      console.warn('No server configured, socket is disabled')
+      return
+    }
+
     const query = {
       visitorId: auth.getUniqueVisitorId(userIdScope)
     }

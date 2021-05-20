@@ -22,7 +22,7 @@ import errorHandler from 'errorhandler'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { createServer, Server } from 'http'
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
@@ -150,6 +150,23 @@ export class HTTPServer {
     window.IS_STANDALONE = ${process.IS_STANDALONE}`
   }
 
+  async setupCoreProxy() {
+    // If none is set, this means there's no server available for some requests
+    if (!process.env.BP_SERVER_URL && !process.core_env.CORE_PORT) {
+      return
+    }
+
+    const target = process.env.BP_SERVER_URL || `http://localhost:${process.core_env.CORE_PORT}`
+    this.app.use(
+      createProxyMiddleware({
+        target,
+        changeOrigin: true,
+        logLevel: 'silent',
+        onProxyReq: fixRequestBody
+      })
+    )
+  }
+
   async start() {
     const botpressConfig = await this.configProvider.getBotpressConfig()
     const config = botpressConfig.httpServer
@@ -195,11 +212,6 @@ export class HTTPServer {
     if (process.USE_JWT_COOKIES) {
       this.app.use(cookieParser())
     }
-
-    const target = `http://localhost:${process.core_env.CORE_PORT}`
-    const proxyPaths = ['/api/v1/bots/*/nlu']
-
-    this.app.use(proxyPaths, createProxyMiddleware({ target, changeOrigin: true, logLevel: 'silent' }))
 
     this.app.use(bodyParser.json({ limit: config.bodyLimit }))
     this.app.use(bodyParser.urlencoded({ extended: true }))
@@ -258,10 +270,10 @@ export class HTTPServer {
       this.httpServer.listen(process.PORT, undefined, config.backlog, () => callback(undefined))
     })
 
+    await this.setupCoreProxy()
+
     this.app.use('/', (req, res) => {
-      //TODO TEMPORARY
       res.sendStatus(200)
-      console.log('Studio/NoMatch', req.url)
       // res.redirect(`${process.EXTERNAL_URL}`)
     })
 

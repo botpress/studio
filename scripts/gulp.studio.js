@@ -43,34 +43,25 @@ const copy = () => {
   return gulp.src('./packages/studio-ui/public/**/*').pipe(gulp.dest('./packages/studio-be/out/ui/public'))
 }
 
-const createStudioSymlink = () => {
-  const data = path.resolve(process.env.BP_DATA_FOLDER, 'assets/studio/ui/')
-  rimraf()
-  return gulp.src('./frontend/public').pipe(symlink(data, { type: 'dir' }))
-}
-
 const watchUi = gulp.series([
-  cleanAssets,
-  createStudioSymlink,
   cb => {
-    const studio = exec('yarn && yarn watch', { cwd: './frontend' }, err => cb(err))
-    studio.stdout.pipe(process.stdout)
-    studio.stderr.pipe(process.stderr)
+    // The timeout is necessary so the backend has time to build successfully (for common files)
+    setTimeout(() => {
+      pipeOutput(exec('yarn && yarn watch', { cwd: './packages/studio-ui' }, cb))
+    }, 6000)
   }
 ])
 
 const watchBackend = gulp.series([
   cb => {
-    const studio = exec('yarn && yarn watch', { cwd: './packages/studio-be' }, err => cb(err))
-    studio.stdout.pipe(process.stdout)
-    studio.stderr.pipe(process.stderr)
+    pipeOutput(exec('yarn && yarn watch', { cwd: './packages/studio-be' }, cb))
   }
 ])
 
 const package = async () => {
   try {
     await execAsync(
-      `cross-env ./node_modules/.bin/pkg --compress GZip --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
+      `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio --compress GZip ./package.json`
     )
   } catch (err) {
     console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
@@ -88,7 +79,7 @@ const writeMetadata = () => {
     2
   )
 
-  return file('./packages/studio-be/out/metadata.json', metadata, { src: true }).pipe(gulp.dest('./'))
+  return file('./packages/studio-be/src/metadata.json', metadata, { src: true }).pipe(gulp.dest('./'))
 }
 
 module.exports = {
