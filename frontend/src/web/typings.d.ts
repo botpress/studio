@@ -26,6 +26,8 @@ declare global {
     BOT_LOCKED: boolean
     WORKSPACE_ID: string
     SOCKET_TRANSPORTS: string[]
+    /** When the studio runs as a standalone, this is the URL of the runtime  */
+    BP_SERVER_URL: string
     ANALYTICS_ID: string
     UUID: string
     BP_STORAGE: BPStorage

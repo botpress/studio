@@ -66,4 +66,5 @@ if (!window.BOT_ID) {
   )
 }
 
-telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
+// TODO: what ?
+// telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()

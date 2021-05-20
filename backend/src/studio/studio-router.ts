@@ -1,7 +1,7 @@
 import { Logger } from 'botpress/sdk'
 import { gaId } from 'common/stats'
 import { HTTPServer } from 'core/app/server'
-import { resolveAsset, resolveIndexPaths } from 'core/app/server-utils'
+import { resolveStudioAsset, resolveIndexPaths } from 'core/app/server-utils'
 import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
@@ -126,6 +126,14 @@ export class StudioRouter extends CustomRouter {
 
     this.router.use(checkBotVisibility(this.configProvider, this.checkTokenHeader))
 
+    this.router.get(
+      '/workspaceBotsIds',
+      this.checkTokenHeader,
+      this.asyncMiddleware(async (req, res) => {
+        res.send([])
+      })
+    )
+
     this.router.use('/actions', this.checkTokenHeader, this.actionsRouter.router)
     this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
@@ -186,17 +194,11 @@ export class StudioRouter extends CustomRouter {
   }
 
   setupStaticRoutes(app) {
-    app.get('/studio', (req, res, next) => res.redirect('/admin'))
+    //  app.get('/studio', (req, res, next) => res.redirect('/admin'))
 
-    app.use('/:app(studio)/:botId', express.static(resolveAsset('ui-studio/public'), { index: false }))
-    app.use('/:app(studio)/:botId', resolveIndexPaths('ui-studio/public/index.html'))
+    app.use('/:app(studio)/:botId', express.static(resolveStudioAsset('public'), { index: false }))
+    app.use('/:app(studio)/:botId', resolveIndexPaths('public/index.html'))
 
-    app.use('/:app(lite)/:botId?', express.static(resolveAsset('ui-studio/public/lite'), { index: false }))
-    app.use('/:app(lite)/:botId?', resolveIndexPaths('ui-studio/public/lite/index.html'))
-
-    app.use('/:app(lite)/:botId', express.static(resolveAsset('ui-studio/public'), { index: false }))
-    app.use('/:app(lite)/:botId', resolveIndexPaths('ui-studio/public/index.html'))
-
-    app.get(['/:app(studio)/:botId/*'], resolveIndexPaths('ui-studio/public/index.html'))
+    app.get(['/:app(studio)/:botId/*'], resolveIndexPaths('public/index.html'))
   }
 }

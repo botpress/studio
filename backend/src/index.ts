@@ -7,7 +7,7 @@ import { getAppDataPath } from './core/misc/app_data'
 import { Debug } from './debug'
 import getos from './getos'
 
-const printPlainError = (err) => {
+const printPlainError = err => {
   /* eslint-disable no-console */
   console.log('Error starting botpress')
   console.log(err)
@@ -21,10 +21,10 @@ global.printErrorDefault = printPlainError
 
 const originalWrite = process.stdout.write
 
-const shouldDiscardError = (message) =>
+const shouldDiscardError = message =>
   !![
     '[DEP0005]' // Buffer() deprecation warning
-  ].find((e) => message.indexOf(e) >= 0)
+  ].find(e => message.indexOf(e) >= 0)
 
 function stripDeprecationWrite(buffer: string, encoding: string, cb?: Function | undefined): boolean
 function stripDeprecationWrite(buffer: string | Buffer, cb?: Function | undefined): boolean
@@ -33,7 +33,7 @@ function stripDeprecationWrite(this: Function): boolean {
     return (arguments[2] || arguments[1])()
   }
 
-  return originalWrite.apply(this, arguments as never as [string])
+  return originalWrite.apply(this, (arguments as never) as [string])
 }
 
 if (process.env.APP_DATA_PATH) {
@@ -45,12 +45,11 @@ if (process.env.APP_DATA_PATH) {
 process.IS_FAILSAFE = yn(process.env.BP_FAILSAFE)
 process.LOADED_MODULES = {}
 
-process.PROJECT_LOCATION =
-  process.env.PROJECT_LOCATION ||
-  (process.pkg
-    ? path.dirname(process.execPath) // We point at the binary path
-    : path.resolve(__dirname, '../bp')) // e.g. /dist/..
+process.STUDIO_LOCATION = process.pkg
+  ? path.dirname(process.execPath) // We point at the binary path
+  : path.resolve(__dirname) // e.g. /dist/..
 
+process.PROJECT_LOCATION = process.env.PROJECT_LOCATION || process.STUDIO_LOCATION
 process.DATA_LOCATION = path.resolve(process.PROJECT_LOCATION, './data')
 
 process.stderr.write = stripDeprecationWrite
@@ -64,7 +63,7 @@ process.on('unhandledRejection', (err: any) => {
   }
 })
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', err => {
   global.printErrorDefault(err)
   if (!process.IS_FAILSAFE) {
     process.exit(1)
@@ -97,15 +96,19 @@ try {
           type: 'string'
         }
       },
-      async (argv) => {
-        if (argv.dataFolder) {
+      async argv => {
+        const dataFolder = process.env.BP_DATA_FOLDER || argv.dataFolder
+        if (dataFolder) {
           process.IS_STANDALONE = true
           process.IS_PRO_ENABLED = false
           process.BPFS_STORAGE = 'disk'
           process.IS_PRODUCTION = false
           process.CLUSTER_ENABLED = false
 
-          process.DATA_LOCATION = path.resolve(argv.dataFolder)
+          process.DATA_LOCATION = path.resolve(dataFolder)
+        } else {
+          console.error('A data folder must be specified. Ex: studio.exe -d /path/to/data')
+          process.exit(1)
         }
 
         process.VERBOSITY_LEVEL = defaultVerbosity
@@ -115,16 +118,6 @@ try {
       }
     )
     .help().argv
-
-  // const start = async () => {
-  //   process.VERBOSITY_LEVEL = defaultVerbosity
-  //   process.distro = await getos()
-
-  //   require('./core/app/bootstrap')
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  // start()
 } catch (err) {
   global.printErrorDefault(err)
 }

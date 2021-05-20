@@ -32,7 +32,11 @@ declare namespace NodeJS {
     LOCAL_URL: string
     /** This is the subfolder where Botpress is located (ex: /botpress/). It is extracted from the external URL */
     ROOT_PATH: string
+    /** Path to the studio executable */
+    STUDIO_LOCATION: string
+    /** Either equal to studio location, or to the botpress source code file */
     PROJECT_LOCATION: string
+    /** Location of the bots/, global/ and storage/ folders à */
     DATA_LOCATION: string
     LOADED_MODULES: { [module: string]: string }
     pkg: any

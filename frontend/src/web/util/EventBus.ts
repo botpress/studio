@@ -14,9 +14,10 @@ class EventBus extends EventEmitter2 {
       maxListeners: 100
     })
 
-    this.onAny(this.dispatchClientEvent)
-
-    authEvents.on('new_token', this.setup)
+    if (window.BP_SERVER_URL) {
+      this.onAny(this.dispatchClientEvent)
+      authEvents.on('new_token', this.setup)
+    }
   }
 
   dispatchSocketEvent = event => {

@@ -93,17 +93,17 @@ export class Botpress {
 
   async deployAssets() {
     try {
-      const assets = path.resolve(process.PROJECT_LOCATION, 'data/assets')
+      const assets = path.resolve(process.DATA_LOCATION, 'assets/studio/ui')
 
       // Avoids overwriting the folder when developing locally on the studio
-      if (fse.pathExistsSync(`${assets}/ui-studio/public`)) {
-        const studioPath = fse.lstatSync(`${assets}/ui-studio/public`)
+      if (fse.pathExistsSync(`${assets}/public`)) {
+        const studioPath = fse.lstatSync(`${assets}/public`)
         if (studioPath.isSymbolicLink()) {
           return
         }
       }
 
-      await copyDir(path.join(__dirname, '../../ui-studio'), `${assets}/ui-studio`)
+      await copyDir(path.join(__dirname, '../../ui'), assets)
     } catch (err) {
       this.logger.attachError(err).error('Error deploying assets')
     }

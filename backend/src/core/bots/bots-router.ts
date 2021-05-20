@@ -30,6 +30,14 @@ export class BotsRouter extends CustomRouter {
     this.router.use(checkBotVisibility(this.configProvider, this.checkTokenHeader))
 
     this.router.get(
+      '/workspaceBotsIds',
+      this.checkTokenHeader,
+      this.asyncMiddleware(async (req, res) => {
+        res.send([])
+      })
+    )
+
+    this.router.get(
       '/',
       this.checkTokenHeader,
       this.needPermissions('read', 'bot.information'),

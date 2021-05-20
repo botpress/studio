@@ -16,7 +16,7 @@ const webConfig = {
   cache: false,
   mode: isProduction ? 'production' : 'development',
   bail: true,
-  devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
+  devtool: process.argv.find(x => x.toLowerCase() === '--nomap') ? false : 'source-map',
   entry: {
     web: './src/web/index.jsx'
   },
@@ -27,17 +27,16 @@ const webConfig = {
   },
   output: {
     path: path.resolve(__dirname, './public/js'),
-    publicPath: 'assets/ui-studio/public/js/',
+    publicPath: 'assets/studio/ui/public/js/',
     filename: '[name].[chunkhash].js'
   },
   resolve: {
     extensions: ['.js', '.jsx', '.tsx', '.ts', '.css'],
     alias: {
       '~': path.resolve(__dirname, './src/web'),
-      DOCS: path.resolve(__dirname, '../../../docs/guide/docs'),
       common: path.resolve(__dirname, '../backend/out/common'),
       'botpress/shared': 'ui-shared',
-      'botpress/sdk': path.resolve(__dirname, '../sdk/botpress.d.ts')
+      'botpress/sdk': path.resolve(__dirname, '../backend/src/sdk/botpress.d.ts')
     }
   },
   optimization: {
@@ -90,10 +89,6 @@ const webConfig = {
       {
         from: path.resolve(__dirname, './src/web/external'),
         to: path.resolve(__dirname, './public/external')
-      },
-      {
-        from: path.resolve(__dirname, '../../../docs/guide/docs/assets'),
-        to: path.resolve(__dirname, './public/external/docs')
       }
     ]),
     new CleanWebpackPlugin(['public'])
@@ -104,7 +99,10 @@ const webConfig = {
       {
         test: /\.tsx?$/,
         loader: 'ts-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        options: {
+          transpileOnly: true
+        }
       },
       {
         test: /\.md$/,
@@ -228,7 +226,7 @@ if (!isProduction) {
   )
 }
 
-if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
+if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
@@ -243,7 +241,7 @@ const showNodeEnvWarning = () => {
 
 const compiler = webpack(webConfig)
 
-compiler.hooks.done.tap('ExitCodePlugin', (stats) => {
+compiler.hooks.done.tap('ExitCodePlugin', stats => {
   const errors = stats.compilation.errors
   if (errors && errors.length && process.argv.indexOf('--watch') === -1) {
     for (const e of errors) {
@@ -259,8 +257,7 @@ compiler.hooks.done.tap('ExitCodePlugin', (stats) => {
 
 const postProcess = (err, stats) => {
   if (err) {
-    //  throw err
-    console.error(err.message)
+    throw err
   } else {
     console.log(`[${moment().format('HH:mm:ss')}] Studio ${chalk.grey(stats.toString('minimal'))}`)
   }

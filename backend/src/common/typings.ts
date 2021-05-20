@@ -108,6 +108,23 @@ export interface LibraryElement {
   path: string
 }
 
+export interface OutgoingEventCommonArgs {
+  event: IO.Event
+  // Any other additional property
+  [property: string]: any
+}
+
+export interface EventCommonArgs {
+  event: IO.IncomingEvent
+  user: { [attribute: string]: any }
+  temp: { [property: string]: any }
+  bot: { [property: string]: any }
+  session: IO.CurrentSession
+  workflow: IO.WorkflowHistory
+  // Any other additional property
+  [property: string]: any
+}
+
 export interface ActionServer {
   id: string
   baseUrl: string
@@ -140,4 +157,9 @@ export interface ActionParameterDefinition {
 
 export type ActionServerWithActions = ActionServer & {
   actions: ActionDefinition[] | undefined
+}
+
+export interface NodeProblem {
+  nodeName: string
+  missingPorts: any
 }

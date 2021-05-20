@@ -8,19 +8,30 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "cmd": "yarn run gulp"
+    "cmd": "yarn run gulp",
+    "build": "yarn cmd build:studio",
+    "package": "yarn cmd package:studio",
+    "watch": "yarn cmd watch:studio"
   },
   "devDependencies": {
     "@types/node": "^10.10.3",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
-    "eslint": "^7.26.0",
+    "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^31.6.1",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.3.0",
     "gulp-rimraf": "^1.0.0",
+    "prettier": "^1.19.1",
+    "pkg": "^4.3.7",
     "typescript": "^4.2.4"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "fs-extra": "^10.0.0",
+    "glob": "^7.1.7",
+    "mkdirp": "^1.0.4"
   }
 }

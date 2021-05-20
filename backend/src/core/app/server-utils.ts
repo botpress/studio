@@ -27,7 +27,7 @@ export const resolveIndexPaths = (page: string) => (req, res) => {
     return res.send(indexCache[page])
   }
 
-  fs.readFile(resolveAsset(page), (err, data) => {
+  fs.readFile(resolveStudioAsset(page), (err, data) => {
     if (data) {
       indexCache[page] = data
         .toString()
@@ -41,4 +41,10 @@ export const resolveIndexPaths = (page: string) => (req, res) => {
   })
 }
 
-export const resolveAsset = (file: string) => path.resolve(process.PROJECT_LOCATION, 'data/assets', file)
+export const resolveStudioAsset = (file: string) => {
+  if (!process.pkg) {
+    return path.resolve(process.STUDIO_LOCATION, '../../frontend/', file)
+  }
+
+  return path.resolve(process.DATA_LOCATION, 'assets', file)
+}
