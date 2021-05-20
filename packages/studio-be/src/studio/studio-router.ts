@@ -168,7 +168,6 @@ export class StudioRouter extends CustomRouter {
           (function(window) {
               ${commonEnv}
               window.APP_VERSION = "${process.BOTPRESS_VERSION}";
-              
               window.ANALYTICS_ID = "${gaId}";
               window.API_PATH = "${process.ROOT_PATH}/api/v1";
               window.BOT_API_PATH = "${process.ROOT_PATH}/api/v1/bots/${botId}";
