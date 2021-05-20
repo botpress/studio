@@ -3,33 +3,10 @@ const exec = require('child_process').exec
 const rimraf = require('gulp-rimraf')
 const { symlink } = require('gulp')
 const path = require('path')
-const fse = require('fs-extra')
 const promisify = require('util').promisify
 const execAsync = promisify(exec)
-const glob = require('glob')
-const mkdirp = require('mkdirp')
 
 const verbose = process.argv.includes('--verbose')
-
-const getTargetOSNodeVersion = () => {
-  if (process.argv.find(x => x.toLowerCase() === '--win32')) {
-    return 'node12-win32-x64'
-  } else if (process.argv.find(x => x.toLowerCase() === '--linux')) {
-    return 'node12-linux-x64'
-  } else {
-    return 'node12-macos-x64'
-  }
-}
-
-const getTargetOSName = () => {
-  if (process.argv.find(x => x.toLowerCase() === '--win32')) {
-    return 'windows'
-  } else if (process.argv.find(x => x.toLowerCase() === '--linux')) {
-    return 'linux'
-  } else {
-    return 'darwin'
-  }
-}
 
 const pipeOutput = proc => {
   proc.stdout.pipe(process.stdout)
@@ -66,10 +43,6 @@ const copyStudio = () => {
 }
 
 const createStudioSymlink = () => {
-  // if (!process.env.BP_DATA_FOLDER) {
-  //   console.error('please set data folder')
-  //   process.exit(1)
-  // }
   const data = path.resolve(process.env.BP_DATA_FOLDER, 'assets/studio/ui/')
   rimraf()
   return gulp.src('./frontend/public').pipe(symlink(data, { type: 'dir' }))
@@ -119,42 +92,12 @@ const sharedBuild = cb => {
 }
 
 const packageStudio = async () => {
-  // const packageJson = require(path.resolve(__dirname, './packages/studio-be/package.json'))
-  // const tempPkgPath = path.resolve(__dirname, './packages/studio-be/out/package.json')
-  // const cwd = path.resolve(__dirname, './packages/studio-be/out')
-
   try {
-    console.log('Fuck')
-    // await fse.writeFile(tempPkgPath, JSON.stringify(packageJson, null, 2), 'utf8')
-
     await execAsync(
-      `cross-env ./node_modules/.bin/pkg --targets ${getTargetOSNodeVersion()} --output ./binaries/studio ./package.json`
+      `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
     )
   } catch (err) {
     console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
-  } finally {
-    // await fse.unlink(tempPkgPath)
-  }
-}
-
-const packageStudio2 = async () => {
-  const packageJson = require(path.resolve(__dirname, './packages/studio-be/package.json'))
-  const tempPkgPath = path.resolve(__dirname, './packages/studio-be/out/package.json')
-  const cwd = path.resolve(__dirname, './packages/studio-be/out')
-
-  try {
-    await fse.writeFile(tempPkgPath, JSON.stringify(packageJson, null, 2), 'utf8')
-
-    await execAsync(
-      `cross-env ../../../node_modules/.bin/pkg --targets ${getTargetOSNodeVersion()} --output ../../../binaries/studio ./package.json`,
-      {
-        cwd
-      }
-    )
-  } catch (err) {
-    console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
-  } finally {
-    await fse.unlink(tempPkgPath)
   }
 }
 

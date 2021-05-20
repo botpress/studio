@@ -1,3 +1,7 @@
 out/
 node_modules/
 binaries/
+yarn-error.log
+dist/
+lib/
+public/
