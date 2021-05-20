@@ -1,9 +1,7 @@
 {
-  "name": "backend",
+  "name": "studio-b1",
   "version": "0.0.1",
-  "description": "Create and manage your assistants",
   "main": "index.js",
-  "bin": "index.js",
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "private": true,
@@ -13,15 +11,8 @@
     "clean": "node ./node_modules/rimraf/bin.js ./out/backend",
     "watch": "yarn clean && yarn tsc --watch"
   },
-  "pkg": {
-    "scripts": ["./core/**/*.js", "./common/**/*.js", "./studio/**/*.js", "./*.js"],
-    "assets": [
-      "../../../node_modules/vm2/lib/*.js",
-      "../../../node_modules/xml-encryption/lib/templates/*.tpl.xml",
-      "./ui/**"
-    ]
-  },
   "dependencies": {
+    "@botpress/native-extensions": "0.0.1",
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",

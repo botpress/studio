@@ -119,6 +119,25 @@ const sharedBuild = cb => {
 }
 
 const packageStudio = async () => {
+  // const packageJson = require(path.resolve(__dirname, './packages/studio-be/package.json'))
+  // const tempPkgPath = path.resolve(__dirname, './packages/studio-be/out/package.json')
+  // const cwd = path.resolve(__dirname, './packages/studio-be/out')
+
+  try {
+    console.log('Fuck')
+    // await fse.writeFile(tempPkgPath, JSON.stringify(packageJson, null, 2), 'utf8')
+
+    await execAsync(
+      `cross-env ./node_modules/.bin/pkg --targets ${getTargetOSNodeVersion()} --output ./binaries/studio ./package.json`
+    )
+  } catch (err) {
+    console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
+  } finally {
+    // await fse.unlink(tempPkgPath)
+  }
+}
+
+const packageStudio2 = async () => {
   const packageJson = require(path.resolve(__dirname, './packages/studio-be/package.json'))
   const tempPkgPath = path.resolve(__dirname, './packages/studio-be/out/package.json')
   const cwd = path.resolve(__dirname, './packages/studio-be/out')
@@ -139,30 +158,9 @@ const packageStudio = async () => {
   }
 }
 
-const copyNativeExtensions = async () => {
-  const files = [
-    ...glob.sync('./build/native-extensions/*.node'),
-    ...glob.sync('./node_modules/**/node-v64-*/*.node'),
-    ...glob.sync(`./build/native-extensions/${getTargetOSName()}/**/*.node`)
-  ]
-
-  mkdirp.sync('./binaries/bindings/')
-
-  for (const file of files) {
-    if (file.indexOf(path.join('native-extensions', getTargetOSName()).replace('\\', '/')) > 0) {
-      const dist = path.basename(path.dirname(file))
-      const targetDir = `./binaries/bindings/${getTargetOSName()}/${dist}`
-      mkdirp.sync(path.resolve(targetDir))
-      await fse.copyFile(path.resolve(file), path.resolve(targetDir, path.basename(file)))
-    } else {
-      fse.copyFile(path.resolve(file), path.resolve('./binaries/bindings/', path.basename(file)))
-    }
-  }
-}
-
 gulp.task('start:studio', gulp.parallel([startStudio]))
 gulp.task('watch:studio', gulp.parallel([watchStudioBackend, watchStudio]))
-gulp.task('package:studio', gulp.series([packageStudio, copyNativeExtensions]))
+gulp.task('package:studio', gulp.series([packageStudio]))
 gulp.task('build:shared', gulp.series([cleanShared, sharedLiteBuild, sharedBuild]))
 gulp.task('build:studio', gulp.series([buildStudioBackend, buildStudio, cleanStudio, cleanStudioAssets, copyStudio]))
 gulp.task('build', gulp.series(['build:shared', 'build:studio']))
