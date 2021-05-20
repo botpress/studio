@@ -5,7 +5,7 @@ import React, { FC, Fragment, useState } from 'react'
 import { AccessControl } from '~/components/Shared/Utils'
 import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
-import { isBpUrl } from '../../../../../../backend/out/common/url'
+import { isBpUrl } from '../../../../../../studio-be/out/common/url'
 
 import localStyle from './style.scss'
 import UrlUpload from './UrlUpload'
@@ -20,7 +20,7 @@ interface IUploadWidgetProps {
   }
 }
 
-const UploadWidget: FC<IUploadWidgetProps> = (props) => {
+const UploadWidget: FC<IUploadWidgetProps> = props => {
   const { value } = props
   const [error, setError] = useState<string | Error>(null)
   const [enterUrlManually, setEnterUrlManually] = useState(false)

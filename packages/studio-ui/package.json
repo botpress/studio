@@ -1,6 +1,6 @@
 {
-  "name": "studio-ui",
-  "version": "11.0.0",
+  "name": "frontend",
+  "version": "0.0.1",
   "author": "Botpress",
   "engines": {
     "node": ">=8.9"

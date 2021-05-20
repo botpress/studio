@@ -31,26 +31,18 @@ const getTargetOSName = () => {
   }
 }
 
-const initStudio = cb => {
-  const studio = exec('yarn', { cwd: 'src/bp/ui-studio' }, err => cb(err))
-  verbose && studio.stdout.pipe(process.stdout)
-  studio.stderr.pipe(process.stderr)
+const pipeOutput = proc => {
+  proc.stdout.pipe(process.stdout)
+  proc.stderr.pipe(process.stderr)
 }
 
-const buildSharedLite = () => {
-  gulp.task('build:sharedLite', gulp.series([sharedLiteBuild]))
-
-  return gulp.series(['build:sharedLite'])
-}
-
-const buildShared = () => {
-  gulp.task('build:shared', gulp.series([cleanShared, sharedBuild]))
-
-  return gulp.series(['build:shared'])
+const startStudio = cb => {
+  pipeOutput(exec('yarn watch', { cwd: 'frontend' }, cb))
+  pipeOutput(exec('yarn start', { cwd: 'backend' }, cb))
 }
 
 const buildStudioBackend = cb => {
-  const studio = exec('yarn && yarn build', { cwd: 'backend' }, err => cb(err))
+  const studio = exec('yarn && yarn build', { cwd: 'packages/studio-be' }, err => cb(err))
   verbose && studio.stdout.pipe(process.stdout)
   studio.stderr.pipe(process.stderr)
 }
@@ -58,13 +50,11 @@ const buildStudioBackend = cb => {
 const buildStudio = cb => {
   const cmd = process.argv.includes('--prod') ? 'yarn && yarn build:prod --nomap' : 'yarn && yarn build'
 
-  const studio = exec(cmd, { cwd: 'frontend' }, err => cb(err))
-  verbose && studio.stdout.pipe(process.stdout)
-  studio.stderr.pipe(process.stderr)
+  pipeOutput(exec(cmd, { cwd: 'packages/studio-ui' }, err => cb(err)))
 }
 
 const cleanStudio = () => {
-  return gulp.src('./out/bp/ui-studio/public', { allowEmpty: true }).pipe(rimraf())
+  return gulp.src('./packages/studio-be/out/ui/public', { allowEmpty: true }).pipe(rimraf())
 }
 
 const cleanStudioAssets = () => {
@@ -72,7 +62,7 @@ const cleanStudioAssets = () => {
 }
 
 const copyStudio = () => {
-  return gulp.src('./frontend/public/**/*').pipe(gulp.dest('./backend/out/ui/public'))
+  return gulp.src('./packages/studio-ui/public/**/*').pipe(gulp.dest('./packages/studio-be/out/ui/public'))
 }
 
 const createStudioSymlink = () => {
@@ -97,49 +87,47 @@ const watchStudio = gulp.series([
 
 const watchStudioBackend = gulp.series([
   cb => {
-    const studio = exec('yarn && yarn watch', { cwd: './backend' }, err => cb(err))
+    const studio = exec('yarn && yarn watch', { cwd: './packages/studio-be' }, err => cb(err))
     studio.stdout.pipe(process.stdout)
     studio.stderr.pipe(process.stderr)
   }
 ])
 
 const cleanShared = () => {
-  return gulp.src('./out/bp/ui-shared/dist', { allowEmpty: true }).pipe(rimraf())
+  return gulp.src('./packages/ui-shared/dist', { allowEmpty: true }).pipe(rimraf())
 }
 
 const watchShared = gulp.series([
   cleanShared,
   cb => {
-    const shared = exec('yarn && yarn watch', { cwd: 'src/bp/ui-shared' }, err => cb(err))
+    const shared = exec('yarn && yarn watch', { cwd: 'packages/ui-shared' }, err => cb(err))
     shared.stdout.pipe(process.stdout)
     shared.stderr.pipe(process.stderr)
   }
 ])
 
 const sharedLiteBuild = cb => {
-  const shared = exec('yarn', { cwd: 'src/bp/ui-shared-lite' }, err => cb(err))
+  const shared = exec('yarn', { cwd: 'packages/ui-shared-lite' }, err => cb(err))
   shared.stdout.pipe(process.stdout)
   shared.stderr.pipe(process.stderr)
 }
 
 const sharedBuild = cb => {
-  const shared = exec('yarn && yarn build', { cwd: 'src/bp/ui-shared' }, err => cb(err))
+  const shared = exec('yarn && yarn build', { cwd: 'packages/ui-shared' }, err => cb(err))
   shared.stdout.pipe(process.stdout)
   shared.stderr.pipe(process.stderr)
 }
 
 const packageStudio = async () => {
-  const additionalPackageJson = require(path.resolve(__dirname, './backend/studio.pkg.json'))
-  const realPackageJson = require(path.resolve(__dirname, './backend/package.json'))
-  const tempPkgPath = path.resolve(__dirname, './backend/out/package.json')
-  const cwd = path.resolve(__dirname, './backend/out')
+  const packageJson = require(path.resolve(__dirname, './packages/studio-be/package.json'))
+  const tempPkgPath = path.resolve(__dirname, './packages/studio-be/out/package.json')
+  const cwd = path.resolve(__dirname, './packages/studio-be/out')
 
   try {
-    const packageJson = Object.assign(realPackageJson, additionalPackageJson)
     await fse.writeFile(tempPkgPath, JSON.stringify(packageJson, null, 2), 'utf8')
 
     await execAsync(
-      `cross-env ../../node_modules/.bin/pkg --targets ${getTargetOSNodeVersion()} --output ../../binaries/studio ./package.json`,
+      `cross-env ../../../node_modules/.bin/pkg --targets ${getTargetOSNodeVersion()} --output ../../../binaries/studio ./package.json`,
       {
         cwd
       }
@@ -158,21 +146,23 @@ const copyNativeExtensions = async () => {
     ...glob.sync(`./build/native-extensions/${getTargetOSName()}/**/*.node`)
   ]
 
-  mkdirp.sync('./backend/binaries/bindings/')
+  mkdirp.sync('./binaries/bindings/')
 
   for (const file of files) {
     if (file.indexOf(path.join('native-extensions', getTargetOSName()).replace('\\', '/')) > 0) {
       const dist = path.basename(path.dirname(file))
-      const targetDir = `./backend/binaries/bindings/${getTargetOSName()}/${dist}`
+      const targetDir = `./binaries/bindings/${getTargetOSName()}/${dist}`
       mkdirp.sync(path.resolve(targetDir))
       await fse.copyFile(path.resolve(file), path.resolve(targetDir, path.basename(file)))
     } else {
-      fse.copyFile(path.resolve(file), path.resolve('./backend/binaries/bindings/', path.basename(file)))
+      fse.copyFile(path.resolve(file), path.resolve('./binaries/bindings/', path.basename(file)))
     }
   }
 }
 
+gulp.task('start:studio', gulp.parallel([startStudio]))
 gulp.task('watch:studio', gulp.parallel([watchStudioBackend, watchStudio]))
 gulp.task('package:studio', gulp.series([packageStudio, copyNativeExtensions]))
-gulp.task('build:shared', gulp.series([cleanShared, sharedBuild]))
+gulp.task('build:shared', gulp.series([cleanShared, sharedLiteBuild, sharedBuild]))
 gulp.task('build:studio', gulp.series([buildStudioBackend, buildStudio, cleanStudio, cleanStudioAssets, copyStudio]))
+gulp.task('build', gulp.series(['build:shared', 'build:studio']))

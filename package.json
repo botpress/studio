@@ -1,7 +1,7 @@
 {
-  "name": "botpress-studio",
+  "name": "@botpress/studio",
   "version": "0.0.1",
-  "description": "Create assistant",
+  "description": "Create your virtual assistants",
   "main": "index.js",
   "repository": "https://github.com/botpress/studio.git",
   "author": "Botpress, Inc.",
@@ -9,12 +9,13 @@
   "private": true,
   "scripts": {
     "cmd": "yarn run gulp",
-    "build": "yarn cmd build:studio",
+    "build": "yarn cmd build",
     "package": "yarn cmd package:studio",
-    "watch": "yarn cmd watch:studio"
+    "watch": "yarn cmd watch:studio",
+    "start": "yarn cmd start:studio"
   },
   "devDependencies": {
-    "@types/node": "^10.10.3",
+    "@types/node": "^12.13.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "eslint": "^7.19.0",
@@ -33,5 +34,8 @@
     "fs-extra": "^10.0.0",
     "glob": "^7.1.7",
     "mkdirp": "^1.0.4"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }

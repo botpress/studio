@@ -14,10 +14,9 @@
     "baseUrl": "./",
     "paths": {
       "~/*": ["src/web/*"],
-      "DOCS/*": ["B:/bp13/docs/guide/docs/*"],
-      "common/*": ["../backend/src/common/*"],
+      "common/*": ["../studio-be/src/common/*"],
       "botpress/shared": ["../ui-shared/src/typings.d.ts"],
-      "botpress/sdk": ["../backend/src/sdk/botpress.d.ts"]
+      "botpress/sdk": ["../studio-be/src/sdk/botpress.d.ts"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],

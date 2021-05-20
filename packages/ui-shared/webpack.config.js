@@ -11,7 +11,7 @@ const config = {
   cache: false,
   mode: isProduction ? 'production' : 'development',
   bail: true,
-  devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
+  devtool: process.argv.find(x => x.toLowerCase() === '--nomap') ? false : 'source-map',
   entry: ['./src/index.tsx'],
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -21,7 +21,7 @@ const config = {
     extensions: ['.tsx', '.ts', '.js', '.css'],
     alias: {
       '~': path.resolve(__dirname, './src'),
-      common: path.resolve(__dirname, '../backend/out/common')
+      common: path.resolve(__dirname, '../studio-be/out/common')
     }
   },
   externals: {
@@ -67,13 +67,13 @@ const config = {
   }
 }
 
-if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
+if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
   config.plugins.push(new BundleAnalyzerPlugin())
 }
 
 const compiler = webpack(config)
 
-compiler.hooks.done.tap('ExitCodePlugin', (stats) => {
+compiler.hooks.done.tap('ExitCodePlugin', stats => {
   const errors = stats.compilation.errors
   if (errors && errors.length && process.argv.indexOf('--watch') === -1) {
     for (const e of errors) {

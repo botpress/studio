@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "baseUrl": "./src",
     "outDir": "./out",
-    "typeRoots": ["./src/typings", "./node_modules/@types"],
+    "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
     "paths": {
       "botpress/sdk": ["./sdk/botpress.d.ts"]
     },

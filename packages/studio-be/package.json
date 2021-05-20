@@ -1,8 +1,9 @@
 {
-  "name": "botpres-studio",
+  "name": "backend",
   "version": "0.0.1",
   "description": "Create and manage your assistants",
   "main": "index.js",
+  "bin": "index.js",
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "private": true,
@@ -11,6 +12,14 @@
     "build": "yarn clean && yarn tsc",
     "clean": "node ./node_modules/rimraf/bin.js ./out/backend",
     "watch": "yarn clean && yarn tsc --watch"
+  },
+  "pkg": {
+    "scripts": ["./core/**/*.js", "./common/**/*.js", "./studio/**/*.js", "./*.js"],
+    "assets": [
+      "../../../node_modules/vm2/lib/*.js",
+      "../../../node_modules/xml-encryption/lib/templates/*.tpl.xml",
+      "./ui/**"
+    ]
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
@@ -78,7 +87,7 @@
     "@types/jest-environment-puppeteer": "^4.3.1",
     "@types/joi": "^13.4.5",
     "@types/lodash": "4.14.123",
-    "@types/node": "^12.12.1",
+    "@types/node": "^12.13.1",
     "@types/verror": "^1.10.3"
   }
 }

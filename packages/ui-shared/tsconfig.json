@@ -19,12 +19,12 @@
     "baseUrl": "./src",
     "paths": {
       "~/*": ["*"],
-      "botpress/sdk": ["../../backend/src/sdk/botpress.d.ts"],
-      "common/*": ["../../backend/src/common/*"],
-      "@blueprintjs/core": ["../../frontend/node_modules/@blueprintjs/core"],
-      "@blueprintjs/select": ["../../frontend/node_modules/@blueprintjs/select"],
-      "react": ["../../frontend/node_modules/@types/react"],
-      "react-dom": ["../../frontend/node_modules/@types/react-dom"]
+      "botpress/sdk": ["../../studio-be/src/sdk/botpress.d.ts"],
+      "common/*": ["../../studio-be/src/common/*"],
+      "@blueprintjs/core": ["../../studio-ui/node_modules/@blueprintjs/core"],
+      "@blueprintjs/select": ["../../studio-ui/node_modules/@blueprintjs/select"],
+      "react": ["../../studio-ui/node_modules/@types/react"],
+      "react-dom": ["../../studio-ui/node_modules/@types/react-dom"]
     }
   },
   "include": ["src"],
