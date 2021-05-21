@@ -1,13 +1,13 @@
 global['NativePromise'] = global.Promise
 
 import fs from 'fs'
-import metadata from 'metadata.json'
 import path from 'path'
 import yn from 'yn'
 
 import { getAppDataPath } from './core/misc/app_data'
 import { Debug } from './debug'
 import getos from './getos'
+import metadata from './metadata.json'
 
 const printPlainError = err => {
   /* eslint-disable no-console */

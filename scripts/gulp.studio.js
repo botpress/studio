@@ -6,6 +6,7 @@ const path = require('path')
 const promisify = require('util').promisify
 const execAsync = promisify(exec)
 const file = require('gulp-file')
+const fse = require('fs-extra')
 
 const verbose = process.argv.includes('--verbose')
 
@@ -63,6 +64,11 @@ const package = async () => {
     await execAsync(
       `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio --compress GZip ./package.json`
     )
+
+    const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
+    await fse.rename('./binaries/studio-win.exe', `./binaries/studio-v${version}-win-x64.exe`)
+    await fse.rename('./binaries/studio-linux', `./binaries/studio-v${version}-linux-x64`)
+    await fse.rename('./binaries/studio-macos', `./binaries/studio-v${version}-darwin-x64`)
   } catch (err) {
     console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
   }
