@@ -13,7 +13,7 @@
       "./packages/studio-be/out/**/*.js"
     ],
     "assets": [
-      "./packages/native-extensions/bin/**/*.node",
+      "./node_modules/@botpress/native-extensions/bin/**/*",
       "./node_modules/vm2/lib/*.js",
       "./node_modules/xml-encryption/lib/templates/*.tpl.xml",
       "./packages/studio-be/out/ui/**"
