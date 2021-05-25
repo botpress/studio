@@ -110,7 +110,9 @@ try {
 
           process.DATA_LOCATION = path.resolve(dataFolder)
         } else {
-          console.error('A data folder must be specified. Ex: studio.exe -d /path/to/data')
+          console.error(
+            "Data folder must be provided. Either set the environment variable 'BP_DATA_FOLDER' or start the binary with 'studio.exe -d /path/to/data' "
+          )
           process.exit(1)
         }
 
