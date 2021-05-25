@@ -16,8 +16,9 @@ const pipeOutput = proc => {
 }
 
 const start = cb => {
-  pipeOutput(exec('yarn watch', { cwd: 'frontend' }, cb))
-  pipeOutput(exec('yarn start', { cwd: 'backend' }, cb))
+  console.info(`
+  The studio is not meant to be run as a standalone just yet.
+  Please set DEV_STUDIO_PATH on the main server repository to the out/ folder of packages/studio-be`)
 }
 
 const buildBackend = cb => {
@@ -61,6 +62,7 @@ const watchBackend = gulp.series([
 
 const package = async () => {
   try {
+    await execAsync('yarn && yarn build', { cwd: './packages/native-extensions' })
     await execAsync(
       `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio --compress GZip ./package.json`
     )
