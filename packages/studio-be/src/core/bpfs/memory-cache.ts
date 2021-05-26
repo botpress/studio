@@ -48,7 +48,8 @@ export class MemoryObjectCache implements ObjectCache {
     this.cache.del(key)
     this.events.emit('invalidation', key)
 
-    if (!local && !process.CLUSTER_ENABLED) {
+    // Redis and cache invalidator are handled by both process, but database storage requires an update
+    if (!local && !process.CLUSTER_ENABLED && process.BPFS_STORAGE === 'database') {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       coreActions.invalidateFile(key)
     }

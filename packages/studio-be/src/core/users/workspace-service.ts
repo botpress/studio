@@ -52,6 +52,16 @@ export class WorkspaceService {
     return workspaces
   }
 
+  async getBotRefs(workspaceId?: string): Promise<string[]> {
+    if (!workspaceId) {
+      const workspace = await this.getWorkspaces()
+      return _.flatten(workspace.map(x => x.bots))
+    } else {
+      const workspace = await this.findWorkspace(workspaceId)
+      return (workspace && workspace.bots) || []
+    }
+  }
+
   async findWorkspace(workspaceId: string): Promise<Workspace> {
     const workspaces = await this.getWorkspaces()
 

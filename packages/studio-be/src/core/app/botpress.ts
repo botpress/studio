@@ -7,6 +7,7 @@ import { LoggerFilePersister, LoggerProvider } from 'core/logger'
 import { copyDir } from 'core/misc/pkg-fs'
 import { ModuleLoader } from 'core/modules'
 import { HintsService } from 'core/user-code'
+import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
 import { inject, injectable, tagged } from 'inversify'
@@ -45,7 +46,8 @@ export class Botpress {
     @inject(TYPES.CMSService) private cmsService: CMSService,
     @inject(TYPES.LoggerProvider) private loggerProvider: LoggerProvider,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
-    @inject(TYPES.BotService) private botService: BotService
+    @inject(TYPES.BotService) private botService: BotService,
+    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService
   ) {
     this.botpressPath = path.join(process.cwd(), 'dist')
     this.configLocation = path.join(this.botpressPath, '/config')
@@ -113,11 +115,14 @@ export class Botpress {
   async discoverBots(): Promise<void> {
     await AppLifecycle.waitFor(AppLifecycleEvents.MODULES_READY)
 
+    const botsRef = await this.workspaceService.getBotRefs()
+    const botsIds = await this.botService.getBotsIds()
+    const deleted = _.difference(botsRef, botsIds)
+
     const bots = await this.botService.getBots()
-    const botIds = [...bots.values()].map(b => b.id)
 
     const disabledBots = [...bots.values()].filter(b => b.disabled).map(b => b.id)
-    const botsToMount = _.without(botIds, ...disabledBots)
+    const botsToMount = _.without(botsRef, ...disabledBots, ...deleted)
 
     this.logger.info(
       `Discovered ${botsToMount.length} bot${botsToMount.length === 1 ? '' : 's'}${

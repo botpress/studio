@@ -337,6 +337,10 @@ export class ScopedFlowService {
       this.ghost.upsertFile(FLOW_DIR, flowPath!, JSON.stringify(flowContent, undefined, 2)),
       this.ghost.upsertFile(FLOW_DIR, uiPath, JSON.stringify(uiContent, undefined, 2))
     ])
+
+    if (!isNew) {
+      await coreActions.onModuleEvent('onFlowChanged', { botId: this.botId, flow })
+    }
   }
 
   async deleteFlow(flowName: string, userEmail: string) {
@@ -466,10 +470,6 @@ export class ScopedFlowService {
     const schemaError = validateFlowSchema(flow, await this._isOneFlow())
     if (schemaError) {
       throw new Error(schemaError)
-    }
-
-    if (!isNew) {
-      await coreActions.onModuleEvent('onFlowChanged', { botId: this.botId, flow })
     }
 
     const uiContent = {
