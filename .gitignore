@@ -6,4 +6,4 @@ dist/
 lib/
 public/
 metadata.json
-.node.bak
+*.node.bak
