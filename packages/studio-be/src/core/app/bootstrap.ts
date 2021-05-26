@@ -95,7 +95,7 @@ async function start() {
   const logger = await getLogger(app.logger, 'Launcher')
   const resolver = new ModuleResolver(logger)
 
-  const { loadedModules } = await resolveModules(enabledModules, resolver)
+  const { loadedModules, erroredModules } = await resolveModules(enabledModules, resolver)
 
   for (const loadedModule of loadedModules) {
     process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
@@ -120,6 +120,10 @@ This is a fatal error, process will exit.`
         process.exit(1)
       }
     }
+  }
+
+  for (const erroredModule of erroredModules) {
+    logger.attachError(erroredModule.err).error(`Error loading module ${erroredModule.entry.location}`)
   }
 
   await app.botpress.start({ modules: loadedModules.map(m => m.entryPoint) }).catch(err => {
