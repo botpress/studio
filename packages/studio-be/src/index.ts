@@ -100,15 +100,16 @@ try {
         }
       },
       async argv => {
-        const dataFolder = process.env.BP_DATA_FOLDER || argv.dataFolder
-        if (dataFolder) {
+        if (process.env.BP_DATA_FOLDER) {
+          process.DATA_LOCATION = process.env.BP_DATA_FOLDER
+        } else if (argv.dataFolder) {
           process.IS_STANDALONE = true
           process.IS_PRO_ENABLED = false
           process.BPFS_STORAGE = 'disk'
           process.IS_PRODUCTION = false
           process.CLUSTER_ENABLED = false
 
-          process.DATA_LOCATION = path.resolve(dataFolder)
+          process.DATA_LOCATION = path.resolve(argv.dataFolder)
         } else {
           console.error(
             "Data folder must be provided. Either set the environment variable 'BP_DATA_FOLDER' or start the binary with 'studio.exe -d /path/to/data' "

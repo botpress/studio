@@ -28,7 +28,10 @@ export class MemoryObjectCache implements ObjectCache {
       }
     })
 
-    this.cacheInvalidator.install(this)
+    // When the studio is executed as a child process, the core will send disk invalidations
+    if (!process.env.INTERNAL_PASSWORD) {
+      this.cacheInvalidator.install(this)
+    }
   }
 
   async get<T>(key: string): Promise<T> {
