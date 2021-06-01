@@ -35,6 +35,9 @@ export class GhostService {
   private _scopedGhosts: Map<string, ScopedGhostService> = new Map()
   public useDbDriver: boolean = false
 
+  // When using BPFS Storage database, the server adds the path /data in the database, while we provide the full data path when using the disk
+  private baseFolder = process.BPFS_STORAGE === 'database' ? './data/' : './'
+
   constructor(
     @inject(TYPES.DiskStorageDriver) private diskDriver: DiskStorageDriver,
     @inject(TYPES.DBStorageDriver) private dbDriver: DBStorageDriver,
@@ -53,7 +56,13 @@ export class GhostService {
 
   // Not caching this scope since it's rarely used
   root(useDbDriver?: boolean): ScopedGhostService {
-    return new ScopedGhostService('./', this.diskDriver, this.dbDriver, useDbDriver ?? this.useDbDriver, this.cache)
+    return new ScopedGhostService(
+      this.baseFolder,
+      this.diskDriver,
+      this.dbDriver,
+      useDbDriver ?? this.useDbDriver,
+      this.cache
+    )
   }
 
   global(): ScopedGhostService {
@@ -61,7 +70,13 @@ export class GhostService {
       return this._scopedGhosts.get(GLOBAL_GHOST_KEY)!
     }
 
-    const scopedGhost = new ScopedGhostService('./global', this.diskDriver, this.dbDriver, this.useDbDriver, this.cache)
+    const scopedGhost = new ScopedGhostService(
+      `${this.baseFolder}global`,
+      this.diskDriver,
+      this.dbDriver,
+      this.useDbDriver,
+      this.cache
+    )
 
     this._scopedGhosts.set(GLOBAL_GHOST_KEY, scopedGhost)
     return scopedGhost
@@ -76,7 +91,13 @@ export class GhostService {
       return this._scopedGhosts.get(BOTS_GHOST_KEY)!
     }
 
-    const scopedGhost = new ScopedGhostService('./bots', this.diskDriver, this.dbDriver, this.useDbDriver, this.cache)
+    const scopedGhost = new ScopedGhostService(
+      `${this.baseFolder}bots`,
+      this.diskDriver,
+      this.dbDriver,
+      this.useDbDriver,
+      this.cache
+    )
 
     this._scopedGhosts.set(BOTS_GHOST_KEY, scopedGhost)
     return scopedGhost
@@ -92,7 +113,7 @@ export class GhostService {
     }
 
     const scopedGhost = new ScopedGhostService(
-      `./bots/${botId}`,
+      `${this.baseFolder}bots/${botId}`,
       this.diskDriver,
       this.dbDriver,
       this.useDbDriver,
@@ -175,8 +196,8 @@ export class ScopedGhostService {
     return forceForwardSlashes(path.join(folder, sanitize(path.basename(fullPath))))
   }
 
-  objectCacheKey = (str) => `object::${str}`
-  bufferCacheKey = (str) => `buffer::${str}`
+  objectCacheKey = str => `object::${str}`
+  bufferCacheKey = str => `buffer::${str}`
 
   private async _invalidateFile(fileName: string) {
     await this.cache.invalidate(this.objectCacheKey(fileName))
@@ -190,7 +211,7 @@ export class ScopedGhostService {
 
   async ensureDirs(rootFolder: string, directories: string[]): Promise<void> {
     if (!this.useDbDriver) {
-      await Promise.mapSeries(directories, (d) => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
+      await Promise.mapSeries(directories, d => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
     }
   }
 
@@ -238,13 +259,13 @@ export class ScopedGhostService {
       await this._assertBotUnlocked(rootFolder)
     }
 
-    await Promise.all(content.map((c) => this.upsertFile(rootFolder, c.name, c.content)))
+    await Promise.all(content.map(c => this.upsertFile(rootFolder, c.name, c.content)))
   }
 
   public async exportToDirectory(directory: string, excludes?: string | string[]): Promise<string[]> {
     const allFiles = await this.directoryListing('./', '*.*', excludes, true)
 
-    for (const file of allFiles.filter((x) => x !== 'revisions.json')) {
+    for (const file of allFiles.filter(x => x !== 'revisions.json')) {
       const content = await this.primaryDriver.readFile(this._normalizeFileName('./', file))
       const outPath = path.join(directory, file)
       mkdirp.sync(path.dirname(outPath))
@@ -264,7 +285,7 @@ export class ScopedGhostService {
   public async importFromDirectory(directory: string) {
     const filenames = await this.diskDriver.absoluteDirectoryListing(directory)
 
-    const files = filenames.map((file) => {
+    const files = filenames.map(file => {
       return {
         name: file,
         content: fse.readFileSync(path.join(directory, file))
@@ -377,9 +398,9 @@ export class ScopedGhostService {
     }
 
     const remoteFiles = await this.dbDriver.directoryListing(this._normalizeFolderName(rootFolder))
-    const filePath = (filename) => this._normalizeFileName(rootFolder, filename)
+    const filePath = filename => this._normalizeFileName(rootFolder, filename)
 
-    await Promise.mapSeries(remoteFiles, async (file) =>
+    await Promise.mapSeries(remoteFiles, async file =>
       this.diskDriver.upsertFile(filePath(file), await this.dbDriver.readFile(filePath(file)))
     )
   }
@@ -450,7 +471,7 @@ export class ScopedGhostService {
   }
 
   onFileChanged(callback: (filePath: string) => void): ListenHandle {
-    const cb = (file) => callback && callback(file)
+    const cb = file => callback && callback(file)
     this.events.on('changed', cb)
     return { remove: () => this.events.off('changed', cb) }
   }

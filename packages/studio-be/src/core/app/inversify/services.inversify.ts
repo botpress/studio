@@ -3,7 +3,7 @@ import { GhostContainerModule } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { SkillService } from 'core/dialog'
 import { DialogContainerModule } from 'core/dialog/dialog.inversify'
-import { CEJobService, JobService } from 'core/distributed/job-service'
+import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
 import { KeyValueStore } from 'core/kvs'
 import { MediaServiceProvider } from 'core/media'
 import { AuthService } from 'core/security'
@@ -30,9 +30,14 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
     .inSingletonScope()
 
   bind<JobService>(TYPES.JobService)
-    .to(CEJobService)
+    .to(LocalJobService)
     .inSingletonScope()
     .when(() => !process.CLUSTER_ENABLED || !process.IS_PRO_ENABLED)
+
+  bind<JobService>(TYPES.JobService)
+    .to(RedisJobService)
+    .inSingletonScope()
+    .when(() => process.CLUSTER_ENABLED && process.IS_PRO_ENABLED)
 
   bind<HintsService>(TYPES.HintsService)
     .to(HintsService)

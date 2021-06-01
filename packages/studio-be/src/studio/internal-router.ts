@@ -35,7 +35,11 @@ export class InternalRouter extends CustomStudioRouter {
     router.post(
       '/invalidateFile',
       this.asyncMiddleware(async (req, res) => {
-        const { key } = req.body
+        let { key } = req.body
+
+        if (process.BPFS_STORAGE === 'disk') {
+          key = key.replace('::data/', '::')
+        }
 
         await this.objectCache.invalidate(key, true)
 
