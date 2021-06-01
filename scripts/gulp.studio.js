@@ -62,9 +62,12 @@ const watchBackend = gulp.series([
   }
 ])
 
+const buildNativeExtensions = async () => {
+  await execAsync('yarn && yarn build', { cwd: './packages/native-extensions' })
+}
+
 const package = async () => {
   try {
-    await execAsync('yarn && yarn build', { cwd: './packages/native-extensions' })
     await execAsync(
       `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio --compress GZip ./package.json`
     )
@@ -102,5 +105,6 @@ module.exports = {
   clean,
   cleanAssets,
   copy,
-  writeMetadata
+  writeMetadata,
+  buildNativeExtensions
 }
