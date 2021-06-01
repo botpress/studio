@@ -1,6 +1,6 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Create your virtual assistants",
   "main": "index.js",
   "bin": "./packages/studio-be/out/index.js",
@@ -24,12 +24,14 @@
     "build": "yarn cmd build",
     "package": "yarn cmd package:studio",
     "watch": "yarn cmd watch:studio",
-    "start": "yarn cmd start:studio"
+    "start": "yarn cmd start:studio",
+    "release": "node ./scripts/utils/release"
   },
   "devDependencies": {
     "@types/node": "^12.13.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
+    "conventional-changelog": "^3.1.24",
     "cross-env": "^7.0.3",
     "eslint": "^7.19.0",
     "eslint-config-prettier": "^7.2.0",
@@ -46,5 +48,10 @@
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "resolutions": {
+    "fstream": ">=1.0.12",
+    "lodash": ">=4.17.21"
+  },
+  "dependencies": {}
 }
