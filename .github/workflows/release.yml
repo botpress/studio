@@ -14,7 +14,7 @@ jobs:
         run: git fetch --prune --unshallow
       - name: Fetch Node Packages
         run: |
-          yarn --verbose
+          yarn
       - name: Get Previous Tag
         id: previous_tag
         uses: 'WyriHaximus/github-action-get-previous-tag@v1'
