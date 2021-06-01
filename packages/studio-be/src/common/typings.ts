@@ -28,6 +28,10 @@ export interface AuthRule {
   op: string
 }
 
+export interface IInitializeFromConfig {
+  initializeFromConfig(config: any): void
+}
+
 export interface AuthRole {
   id: string
   name: string

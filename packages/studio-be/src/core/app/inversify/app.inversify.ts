@@ -81,12 +81,6 @@ container.load(...DatabaseContainerModules)
 container.load(...RepositoriesContainerModules)
 container.load(...ServicesContainerModules)
 
-if (process.IS_PRO_ENABLED) {
-  // Otherwise this will fail on compile when the submodule is not available.
-  const ProContainerModule = require(path.resolve(process.PROJECT_LOCATION, 'pro/studio/pro.inversify'))
-  container.load(ProContainerModule)
-}
-
 applyDisposeOnExit(container)
 applyInitializeFromConfig(container)
 

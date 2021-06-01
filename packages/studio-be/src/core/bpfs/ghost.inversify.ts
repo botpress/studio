@@ -7,6 +7,7 @@ import { DBStorageDriver } from './drivers/db-driver'
 import { DiskStorageDriver } from './drivers/disk-driver'
 import { GhostService } from './ghost-service'
 import { MemoryObjectCache } from './memory-cache'
+import { RedisObjectCache } from './redis-object-cache'
 
 export const GhostContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<CacheInvalidators.FileChangedInvalidator>(TYPES.FileCacheInvalidator)
@@ -17,6 +18,11 @@ export const GhostContainerModule = new ContainerModule((bind: interfaces.Bind) 
     .to(MemoryObjectCache)
     .inSingletonScope()
     .when(() => !process.CLUSTER_ENABLED || !process.IS_PRO_ENABLED)
+
+  bind<ObjectCache>(TYPES.ObjectCache)
+    .to(RedisObjectCache)
+    .inSingletonScope()
+    .when(() => process.CLUSTER_ENABLED && process.IS_PRO_ENABLED)
 
   bind<DiskStorageDriver>(TYPES.DiskStorageDriver)
     .to(DiskStorageDriver)
