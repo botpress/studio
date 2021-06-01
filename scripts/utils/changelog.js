@@ -2,7 +2,7 @@ require('bluebird-global')
 const changelog = require('conventional-changelog')
 const fse = require('fs-extra')
 
-const build = async ({ writeToFile }) => {
+const build = async ({ writeToFile } = { writeToFile: false }) => {
   // see options here: https://github.com/conventional-changelog/conventional-changelog/tree/master/packages
   const changelogOts = {
     preset: 'angular',
