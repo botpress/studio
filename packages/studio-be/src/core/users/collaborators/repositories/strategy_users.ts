@@ -41,7 +41,7 @@ export class StrategyUsersRepository {
       .andWhere(this.database.knex.raw('LOWER(email) = ?', [email.toLowerCase()]))
       .limit(1)
       .first()
-      .then((res) => {
+      .then(res => {
         return res && { ...res, attributes: this.database.knex.json.get(res.attributes) }
       })
   }

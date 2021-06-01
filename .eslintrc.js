@@ -7,11 +7,20 @@ module.exports = {
   extends: ['prettier', 'prettier/@typescript-eslint'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./packages/*/tsconfig.json'],
+    project: ['./packages/studio-*/tsconfig.json', './packages/ui-shared/tsconfig.json'],
     tsconfigRootDir: __dirname,
     sourceType: 'module'
   },
-  ignorePatterns: ['**/index.d.ts', '**/global.d.ts', '**/*.scss.d.ts', '**/*.test.ts', '*.js'],
+  ignorePatterns: [
+    '**/index.d.ts',
+    '**/global.d.ts',
+    '**/*.scss.d.ts',
+    '**/*.test.ts',
+    '*.js',
+    '**/out/**',
+    'packages/ui-shared-lite/**',
+    'packages/native-extensions/**'
+  ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
   rules: {
     '@typescript-eslint/consistent-type-definitions': 'error',

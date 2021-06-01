@@ -27,6 +27,12 @@ jobs:
           valid_latest_tag=$(node ./node_modules/semver/bin/semver.js ${{ steps.previous_tag.outputs.tag }})
           valid_current_version=$(node ./node_modules/semver/bin/semver.js ${{ steps.extract_version.outputs.version }})
           change_log=$(node -e "require('./scripts/utils/changelog.js').build().then(cl => console.log(cl))")
+
+          # if not change log is truncated at first line
+          change_log="${change_log//'%'/'%25'}"
+          change_log="${change_log//$'\n'/'%0A'}"
+          change_log="${change_log//$'\r'/'%0D'}"
+
           echo $valid_latest_tag
           echo $valid_current_version
           echo "::set-output name=valid_latest_tag::$valid_latest_tag"
