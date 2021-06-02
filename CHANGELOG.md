@@ -1,3 +1,12 @@
+## [0.0.10](https://github.com/botpress/studio/compare/v0.0.9...v0.0.10) (2021-06-02)
+
+
+### Bug Fixes
+
+* **build:** missing native ext ([bf3129b](https://github.com/botpress/studio/commit/bf3129b9c6f55d2bed18f13defb9dcbf64039e30))
+
+
+
 ## [0.0.9](https://github.com/botpress/studio/compare/v0.0.8...v0.0.9) (2021-06-01)
 
 ### Bug Fixes
