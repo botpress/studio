@@ -1,7 +1,6 @@
 const gulp = require('gulp')
 const exec = require('child_process').exec
 const rimraf = require('gulp-rimraf')
-const { symlink } = require('gulp')
 const path = require('path')
 const promisify = require('util').promisify
 const execAsync = promisify(exec)
@@ -67,12 +66,15 @@ const buildNativeExtensions = async () => {
 }
 
 const package = async () => {
-  try {
-    await execAsync(
-      `cross-env ./node_modules/.bin/pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio --compress GZip ./package.json`
-    )
+  const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
 
-    const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
+  try {
+    const cmd = `cross-env pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
+
+    // Executing twice because for an unknown reason, the first time native extensions are not included
+    await execAsync(cmd)
+    await execAsync(cmd)
+
     await fse.rename('./binaries/studio-win.exe', `./binaries/studio-v${version}-win-x64.exe`)
     await fse.rename('./binaries/studio-linux', `./binaries/studio-v${version}-linux-x64`)
     await fse.rename('./binaries/studio-macos', `./binaries/studio-v${version}-darwin-x64`)
