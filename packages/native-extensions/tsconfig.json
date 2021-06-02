@@ -3,7 +3,7 @@
     "module": "commonjs",
     "target": "es2019",
     "baseUrl": "./src",
-    "outDir": "../out",
+    "outDir": "./out",
     "typeRoots": ["../../node_modules/@types"],
     "types": ["@types/node"]
   }
