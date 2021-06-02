@@ -10,6 +10,7 @@ import { centerText, LoggerProvider, LogLevel } from 'core/logger'
 import { ModuleLoader, ModuleResolver } from 'core/modules'
 import fs from 'fs'
 import _ from 'lodash'
+import { coreActions } from './core-client'
 
 async function setupEnv(app: BotpressApp) {
   await app.database.initialize()
@@ -134,7 +135,8 @@ This is a fatal error, process will exit.`
     }
   })
 
-  logger.info(`Botpress Studio is listening at: ${process.LOCAL_URL}`)
+  logger.info(chalk.gray(`Studio is listening at: ${process.LOCAL_URL}`))
+  await coreActions.setStudioReady()
 }
 
 start().catch(global.printErrorDefault)
