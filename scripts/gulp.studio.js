@@ -1,3 +1,4 @@
+require('bluebird-global')
 const gulp = require('gulp')
 const exec = require('child_process').exec
 const rimraf = require('gulp-rimraf')
@@ -69,10 +70,9 @@ const package = async () => {
   const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
 
   try {
+    await Promise.fromCallback(cb => exec('yarn', { cwd: './packages/studio-be' }, cb))
     const cmd = `cross-env pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
 
-    // Executing twice because for an unknown reason, the first time native extensions are not included
-    await execAsync(cmd)
     await execAsync(cmd)
 
     await fse.rename('./binaries/studio-win.exe', `./binaries/studio-v${version}-win-x64.exe`)
