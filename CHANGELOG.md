@@ -1,3 +1,9 @@
+## [0.0.13](https://github.com/botpress/studio/compare/v0.0.12...v0.0.13) (2021-06-03)
+
+### Bug Fixes
+
+- **core:** warn parent process of readiness ([1836d81](https://github.com/botpress/studio/commit/1836d811fcc73fe95d66650edb950bb49fd4d2af))
+
 ## [0.0.9](https://github.com/botpress/studio/compare/v0.0.8...v0.0.9) (2021-06-01)
 
 ### Bug Fixes

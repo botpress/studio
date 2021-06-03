@@ -23,5 +23,8 @@ export const coreActions = {
   },
   invalidateCmsForBot: async (botId: string) => {
     await coreClient?.post('/invalidateCmsForBot', { botId })
+  },
+  setStudioReady: async () => {
+    await coreClient?.post('/setStudioReady')
   }
 }
