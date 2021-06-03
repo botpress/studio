@@ -8,7 +8,7 @@ import Layout from '~/components/Layout'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
-const addLocationQuery = (history) => {
+const addLocationQuery = history => {
   history.location = Object.assign(history.location, {
     query: queryString.parse(history.location.search)
   })
