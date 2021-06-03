@@ -3,17 +3,10 @@ const gulp = require('gulp')
 const exec = require('child_process').exec
 const rimraf = require('gulp-rimraf')
 const path = require('path')
-const promisify = require('util').promisify
-const execAsync = promisify(exec)
+
 const file = require('gulp-file')
 const fse = require('fs-extra')
-
-const verbose = process.argv.includes('--verbose')
-
-const pipeOutput = proc => {
-  proc.stdout.pipe(process.stdout)
-  proc.stderr.pipe(process.stderr)
-}
+const { execute } = require('./utils/exec')
 
 const start = cb => {
   console.info(`
@@ -23,16 +16,13 @@ const start = cb => {
   If you absolutely want to run the studio as a standalone, please type 'yarn start' in 'packages/studio-be`)
 }
 
-const buildBackend = cb => {
-  const studio = exec('yarn && yarn build', { cwd: 'packages/studio-be' }, err => cb(err))
-  verbose && studio.stdout.pipe(process.stdout)
-  studio.stderr.pipe(process.stderr)
+const buildBackend = async () => {
+  await execute('yarn && yarn build', { cwd: 'packages/studio-be' })
 }
 
-const buildUi = cb => {
+const buildUi = async cb => {
   const cmd = process.argv.includes('--prod') ? 'yarn && yarn build:prod --nomap' : 'yarn && yarn build'
-
-  pipeOutput(exec(cmd, { cwd: 'packages/studio-ui' }, err => cb(err)))
+  await execute(cmd, { cwd: 'packages/studio-ui' })
 }
 
 const clean = () => {
@@ -47,33 +37,30 @@ const copy = () => {
   return gulp.src('./packages/studio-ui/public/**/*').pipe(gulp.dest('./packages/studio-be/out/ui/public'))
 }
 
-const watchUi = gulp.series([
-  cb => {
-    // The timeout is necessary so the backend has time to build successfully (for common files)
-    setTimeout(() => {
-      pipeOutput(exec('yarn && yarn watch', { cwd: './packages/studio-ui' }, cb))
-    }, 6000)
-  }
-])
+const watchUi = async cb => {
+  // The timeout is necessary so the backend has time to build successfully (for common files)
+  setTimeout(() => {
+    execute('yarn && yarn watch', { cwd: './packages/studio-ui' })
+    cb()
+  }, 6000)
+}
 
-const watchBackend = gulp.series([
-  cb => {
-    pipeOutput(exec('yarn && yarn watch', { cwd: './packages/studio-be' }, cb))
-  }
-])
+const watchBackend = async () => {
+  await execute('yarn && yarn watch', { cwd: './packages/studio-be' })
+}
 
 const buildNativeExtensions = async () => {
-  await execAsync('yarn && yarn build', { cwd: './packages/native-extensions' })
+  await execute('yarn && yarn build', { cwd: './packages/native-extensions' })
 }
 
 const package = async () => {
   const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
 
   try {
-    await Promise.fromCallback(cb => exec('yarn', { cwd: './packages/studio-be' }, cb))
-    const cmd = `cross-env pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
+    await execute('yarn', { cwd: './packages/studio-be' })
 
-    await execAsync(cmd)
+    const cmd = `cross-env pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
+    await execute(cmd, undefined, { silent: true })
 
     await fse.rename('./binaries/studio-win.exe', `./binaries/studio-v${version}-win-x64.exe`)
     await fse.rename('./binaries/studio-linux', `./binaries/studio-v${version}-linux-x64`)
