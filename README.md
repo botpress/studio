@@ -20,3 +20,8 @@ When started as a standalone, these environment variables must be set:
 - BP_MODULES_PATH: Path to the modules folder of a Botpress installation
 - BP_DATA_FOLDER: Path to the data folder (bots/, global/)
 - BP_SERVER_URL: to determine
+
+## Release workflow
+
+1. Type `yarn release <type>` where type can be major, minor or patch
+2. Open a PR with all the files, when it is merged on baster, binaries will be produced and released
