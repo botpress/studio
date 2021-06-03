@@ -608,8 +608,6 @@ export class CMSService implements IDisposeOnExit {
       .where({ botId })
       .whereIn('id', elementIds)
       .del()
-
-    await coreActions.invalidateCmsForBot(botId)
   }
 
   /**
@@ -624,7 +622,6 @@ export class CMSService implements IDisposeOnExit {
       .update({ ...body, modifiedOn: this.memDb.date.now() })
       .where({ id: contentElementId, botId })
 
-    await coreActions.invalidateCmsForBot(botId)
     return this.getContentElement(botId, contentElementId)
   }
 
@@ -645,8 +642,6 @@ export class CMSService implements IDisposeOnExit {
       id: elementId,
       contentType: contentTypeId
     })
-
-    await coreActions.invalidateCmsForBot(botId)
   }
 
   /**
