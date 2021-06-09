@@ -2,7 +2,7 @@ const debug = require('debug')
 
 const available = {}
 
-export const Debug = (mod: string, base = 'bp') => {
+export const Debug = (mod: string, base = 'bp:studio') => {
   const namespace = base + ':' + mod
   available[namespace] = true
   const instance = debug(base).extend(mod)

@@ -1,3 +1,7 @@
+## [0.0.17](https://github.com/botpress/studio/compare/v0.0.16...v0.0.17) (2021-06-09)
+
+
+
 ## [0.0.13](https://github.com/botpress/studio/compare/v0.0.12...v0.0.13) (2021-06-03)
 
 ### Bug Fixes
