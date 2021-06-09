@@ -3,6 +3,8 @@ import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
+import { getDebugScopes, setDebugScopes } from '../debug'
+
 export class InternalRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Internal', services)
@@ -21,6 +23,21 @@ export class InternalRouter extends CustomStudioRouter {
 
       next()
     })
+
+    router.get(
+      '/getDebugScopes',
+      this.asyncMiddleware(async (req, res) => {
+        res.send(getDebugScopes())
+      })
+    )
+
+    router.post(
+      '/setDebugScopes',
+      this.asyncMiddleware(async (req, res) => {
+        setDebugScopes(req.body.scopes)
+        res.sendStatus(200)
+      })
+    )
 
     router.post(
       '/updateTokenVersion',
