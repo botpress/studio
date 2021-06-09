@@ -3,7 +3,9 @@ import { BotService } from 'core/bots'
 import { GhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
+import Database from 'core/database'
 import { LoggerFilePersister, LoggerProvider } from 'core/logger'
+import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { copyDir } from 'core/misc/pkg-fs'
 import { ModuleLoader } from 'core/modules'
 import { HintsService } from 'core/user-code'
@@ -36,6 +38,7 @@ export class Botpress {
 
   constructor(
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
+    @inject(TYPES.Database) private database: Database,
     @inject(TYPES.Logger)
     @tagged('name', 'Server')
     private logger: sdk.Logger,
@@ -45,6 +48,7 @@ export class Botpress {
     @inject(TYPES.HintsService) private hintsService: HintsService,
     @inject(TYPES.CMSService) private cmsService: CMSService,
     @inject(TYPES.LoggerProvider) private loggerProvider: LoggerProvider,
+    @inject(TYPES.LoggerDbPersister) private loggerDbPersister: LoggerDbPersister,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService
@@ -135,6 +139,9 @@ export class Botpress {
   }
 
   private async initializeServices() {
+    await this.loggerDbPersister.initialize(this.database, await this.loggerProvider('LogDbPersister'))
+    this.loggerDbPersister.start()
+
     await this.loggerFilePersister.initialize(this.config!, await this.loggerProvider('LogFilePersister'))
     await this.cmsService.initialize()
 

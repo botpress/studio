@@ -9,6 +9,7 @@ import os from 'os'
 import stripAnsi from 'strip-ansi'
 import util from 'util'
 
+import { LoggerDbPersister } from './db-persister'
 import { LoggerFilePersister } from './file-persister'
 
 export type LoggerProvider = (module: string) => Promise<Logger>
@@ -41,6 +42,7 @@ export class PersistedConsoleLogger implements Logger {
 
   constructor(
     @inject(TYPES.Logger_Name) private name: string,
+    @inject(TYPES.LoggerDbPersister) private loggerDbPersister: LoggerDbPersister,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister
   ) {
     this.displayLevel = process.VERBOSITY_LEVEL
@@ -161,8 +163,12 @@ export class PersistedConsoleLogger implements Logger {
       timestamp: new Date()
     }
 
-    // We reset it right away to prevent race conditions (since the persister might log a new message asynchronously)
-    this.willPersistMessage = true
+    if (this.willPersistMessage && level !== LoggerLevel.Debug) {
+      this.loggerDbPersister.appendLog(entry)
+    } else {
+      // We reset it right away to prevent race conditions (since the persister might log a new message asynchronously)
+      this.willPersistMessage = true
+    }
 
     if (this.displayLevel >= this.currentMessageLevel!) {
       // eslint-disable-next-line no-console
