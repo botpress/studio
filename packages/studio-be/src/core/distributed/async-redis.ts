@@ -22,18 +22,21 @@ export const getOrCreate = (type: 'subscriber' | 'commands' | 'socket', url?: st
       return Math.min(times * 200, 5000)
     }
 
+    const { REDIS_URL, REDIS_OPTIONS, BP_REDIS_SCOPE, SERVER_ID } = process.env
+
     let redisNodes: ClusterNode[] = []
     try {
-      redisNodes = process.env.REDIS_URL ? JSON.parse(process.env.REDIS_URL) : []
+      redisNodes = REDIS_URL ? JSON.parse(REDIS_URL) : []
     } catch {}
 
     let options = {}
     try {
-      options = process.env.REDIS_OPTIONS ? JSON.parse(process.env.REDIS_OPTIONS) : {}
+      options = REDIS_OPTIONS ? JSON.parse(REDIS_OPTIONS) : {}
     } catch {}
 
     const redisOptions: RedisOptions = {
-      retryStrategy: RETRY_STRATEGY
+      retryStrategy: RETRY_STRATEGY,
+      connectionName: `${BP_REDIS_SCOPE ? `${BP_REDIS_SCOPE}/` : ''}studio/${SERVER_ID}`
     }
 
     if (redisNodes.length > 0) {
