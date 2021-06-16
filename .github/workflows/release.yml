@@ -49,7 +49,7 @@ jobs:
         if: ${{ steps.validate_semver.outputs.valid_latest_tag != steps.validate_semver.outputs.valid_current_version }}
         uses: softprops/action-gh-release@v1
         with:
-          files: ./binaries/studio-v*
+          files: ./bin/studio-v*
           prerelease: false
           draft: false
           body: ${{ steps.validate_semver.outputs.change_log }}
