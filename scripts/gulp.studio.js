@@ -1,6 +1,5 @@
 require('bluebird-global')
 const gulp = require('gulp')
-const exec = require('child_process').exec
 const rimraf = require('gulp-rimraf')
 const path = require('path')
 
@@ -58,13 +57,11 @@ const package = async () => {
 
   try {
     await execute('yarn', { cwd: './packages/studio-be' })
+    await execute('cross-env pkg package.json', undefined, { silent: true })
 
-    const cmd = `cross-env pkg --targets node12-win32-x64,node12-linux-x64,node12-macos-x64 --output ./binaries/studio ./package.json`
-    await execute(cmd, undefined, { silent: true })
-
-    await fse.rename('./binaries/studio-win.exe', `./binaries/studio-v${version}-win-x64.exe`)
-    await fse.rename('./binaries/studio-linux', `./binaries/studio-v${version}-linux-x64`)
-    await fse.rename('./binaries/studio-macos', `./binaries/studio-v${version}-darwin-x64`)
+    await fse.rename('./bin/studio-win.exe', `./bin/studio-v${version}-win-x64.exe`)
+    await fse.rename('./bin/studio-linux', `./bin/studio-v${version}-linux-x64`)
+    await fse.rename('./bin/studio-macos', `./bin/studio-v${version}-darwin-x64`)
   } catch (err) {
     console.error('Error running: ', err.cmd, '\nMessage: ', err.stderr, err)
   }

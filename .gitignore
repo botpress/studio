@@ -1,6 +1,6 @@
 out/
 node_modules/
-binaries/
+bin/
 yarn-error.log
 dist/
 lib/
