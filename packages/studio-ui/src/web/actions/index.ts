@@ -252,8 +252,8 @@ export const fetchContentItems = ({ contentType, ...query }) => dispatch => {
 
 const getBatchedContentItems = ids =>
   axios.post(`${window.STUDIO_API_PATH}/cms/elements`, { ids }).then(({ data }) =>
-    data.reduce((acc, item, i) => {
-      acc[ids[i]] = item
+    data.reduce((acc, item) => {
+      acc[item.id] = item
       return acc
     }, {})
   )
