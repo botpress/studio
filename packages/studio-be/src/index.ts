@@ -102,6 +102,7 @@ try {
       async argv => {
         if (process.env.BP_DATA_FOLDER) {
           process.DATA_LOCATION = process.env.BP_DATA_FOLDER
+          process.IS_STANDALONE = yn(process.env.IS_STANDALONE)
         } else if (argv.dataFolder) {
           process.IS_STANDALONE = true
           process.IS_PRO_ENABLED = false
