@@ -12,7 +12,7 @@ export interface ToastOptions {
   icon?: IconName | JSX.Element
   hideDismiss?: boolean
   key?: string
-  toasterProperties ?: IToasterProps
+  toasterProperties?: IToasterProps
   onDismiss?: (didTimeoutExpire: boolean) => void
 }
 
@@ -50,17 +50,15 @@ const warningOptions = {
   key: 'warning'
 }
 
-const selectToaster = (options ?: IToasterProps) =>
-{
+const selectToaster = (options?: IToasterProps) => {
   if(options){
     return Toaster.create(options)
-  }
-  else{
+  } else{
     return defaultToaster
   }
 }
 
-const dismiss = (key: string, options ?: IToasterProps) => {
+const dismiss = (key: string, options?: IToasterProps) => {
   if (!toastKeys[key]) {
     return
   }
