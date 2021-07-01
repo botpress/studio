@@ -50,7 +50,7 @@ const warningOptions = {
   key: 'warning'
 }
 
-const selectToaster = (options?) => options ? Toaster.create(options) : defaultToaster
+const selectToaster = (options?: IToasterProps) => (options ? Toaster.create(options) : defaultToaster)
 
 const dismiss = (key: string, options?: IToasterProps) => {
   if (!toastKeys[key]) {
@@ -84,7 +84,7 @@ const showToast = (message: string | React.ReactElement, intent, options: ToastO
   }
 
   const showToast = () => {
-    dismiss(options.key! , options.toasterProps)
+    dismiss(options.key!, options.toasterProps)
 
     toastKeys[options.key!] = selectToaster(options.toasterProps).show({
       message: typeof message === 'string' ? lang(message) : message,
