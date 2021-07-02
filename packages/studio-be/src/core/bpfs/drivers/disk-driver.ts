@@ -1,6 +1,5 @@
 import { Mutex } from 'async-mutex'
 import { DirectoryListingOptions } from 'botpress/sdk'
-import { BPError } from 'core/dialog/errors'
 import { forceForwardSlashes } from 'core/misc/utils'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
@@ -10,11 +9,11 @@ import _ from 'lodash'
 import path from 'path'
 import { VError } from 'verror'
 
-import { FileRevision, StorageDriver } from '../'
+import { BPError, FileRevision, StorageDriver } from '../'
 
 @injectable()
 export class DiskStorageDriver implements StorageDriver {
-  resolvePath = (p: string) => path.resolve(process.PROJECT_LOCATION, p)
+  resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
   mutexes: { [filename: string]: Mutex } = {}
 
   async upsertFile(filePath: string, content: string | Buffer): Promise<void>
