@@ -1,5 +1,6 @@
 import { Mutex } from 'async-mutex'
 import { DirectoryListingOptions } from 'botpress/sdk'
+import { BPError } from 'core/dialog/errors'
 import { forceForwardSlashes } from 'core/misc/utils'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
@@ -9,11 +10,11 @@ import _ from 'lodash'
 import path from 'path'
 import { VError } from 'verror'
 
-import { BPError, FileRevision, StorageDriver } from '../'
+import { FileRevision, StorageDriver } from '../'
 
 @injectable()
 export class DiskStorageDriver implements StorageDriver {
-  resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
+  resolvePath = (p: string) => path.resolve(process.PROJECT_LOCATION, p)
   mutexes: { [filename: string]: Mutex } = {}
 
   async upsertFile(filePath: string, content: string | Buffer): Promise<void>
@@ -22,17 +23,13 @@ export class DiskStorageDriver implements StorageDriver {
       const filename = this.resolvePath(filePath)
       const folder = path.dirname(filename)
 
-      //const mutex = this._getMutex(filename)
-      //const release = await mutex.acquire()
+      const mutex = this._getMutex(filename)
+      const release = await mutex.acquire()
       try {
         await fse.mkdirp(folder)
-        console.log('writing', filePath)
-        if (filePath.includes('main.flow.json')) {
-          console.log('writing content into', filePath, content)
-        }
         await fse.writeFile(filename, content)
       } finally {
-        //release()
+        release()
       }
     } catch (e) {
       throw new VError(e, `[Disk Storage] Error upserting file "${filePath}"`)
@@ -47,18 +44,12 @@ export class DiskStorageDriver implements StorageDriver {
     try {
       const filename = this.resolvePath(filePath)
 
-      //const mutex = this._getMutex(filename)
-      //const release = await mutex.acquire()
+      const mutex = this._getMutex(filename)
+      const release = await mutex.acquire()
       try {
-        const content = await fse.readFile(filename)
-
-        if (filePath.includes('main.flow.json')) {
-          console.log('reading content into', filePath, content)
-        }
-
-        return content
+        return fse.readFile(filename)
       } finally {
-        //release()
+        release()
       }
     } catch (e) {
       if (e.code === 'ENOENT') {
