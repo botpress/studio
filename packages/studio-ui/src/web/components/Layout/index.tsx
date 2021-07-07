@@ -15,6 +15,7 @@ import Content from '~/views/Content'
 import FlowBuilder from '~/views/FlowBuilder'
 import Module from '~/views/Module'
 import NLU from '~/views/Nlu'
+import QNA from '~/views/Qna'
 
 import BottomPanel from './BottomPanel'
 import BotUmountedWarning from './BotUnmountedWarning'
@@ -221,6 +222,8 @@ const Layout: FC<Props> = (props: Props) => {
                 <Route exact path="/flows/:flow*" component={FlowBuilder} />
                 <Route exact path="/config" component={Config} />
                 <Route exact path="/nlu" component={NLU} />
+                <Route exact path="/qna" component={QNA} />
+
                 <Route exact path="/modules/:moduleName/:componentName?" render={props => <Module {...props} />} />
               </Switch>
             </main>
