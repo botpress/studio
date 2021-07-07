@@ -17,6 +17,7 @@ import { Memoize } from 'lodash-decorators'
 import LRUCache from 'lru-cache'
 import moment from 'moment'
 import ms from 'ms'
+import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 
 import { validateFlowSchema } from '../utils/validator'
@@ -67,7 +68,8 @@ export class FlowService {
     @inject(TYPES.KeyValueStore) private kvs: KeyValueStore,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.JobService) private jobService: JobService,
-    @inject(TYPES.QnaService) private qnaService: QNAService
+    @inject(TYPES.QnaService) private qnaService: QNAService,
+    @inject(TYPES.NLUService) private nluService: NLUService
   ) {
     this._listenForCacheInvalidation()
   }
@@ -110,6 +112,7 @@ export class FlowService {
         this.logger,
         this.botService,
         this.qnaService,
+        this.nluService,
         (key, flow, newKey) => this.invalidateFlow(botId, key, flow, newKey)
       )
       this.scopes[botId] = scope
@@ -129,6 +132,7 @@ export class ScopedFlowService {
     private logger: Logger,
     private botService: BotService,
     private qnaService: QNAService,
+    private nluService: NLUService,
     private invalidateFlow: (key: string, flow?: FlowView, newKey?: string) => void
   ) {
     this.cache = new ArrayCache<string, FlowView>(
@@ -494,8 +498,13 @@ export class ScopedFlowService {
     topics = topics.filter(x => x.name !== topicName)
 
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
-    await this.qnaService.onTopicChanged({ botId: this.botId, oldName: topicName, newName: undefined })
-    await coreActions.onModuleEvent('onTopicChanged', { botId: this.botId, oldName: topicName, newName: undefined })
+
+    const topicChanged = { botId: this.botId, oldName: topicName, newName: undefined }
+    await this.qnaService.onTopicChanged(topicChanged)
+    await this.nluService.onTopicChanged(topicChanged)
+
+    // TODO remove eventually
+    await coreActions.onModuleEvent('onTopicChanged', topicChanged)
   }
 
   public async createTopic(topic: Topic) {
@@ -503,8 +512,13 @@ export class ScopedFlowService {
     topics = _.uniqBy([...topics, topic], x => x.name)
 
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
-    await this.qnaService.onTopicChanged({ botId: this.botId, oldName: undefined, newName: topic.name })
-    await coreActions.onModuleEvent('onTopicChanged', { botId: this.botId, oldName: undefined, newName: topic.name })
+
+    const topicChanged = { botId: this.botId, oldName: undefined, newName: topic.name }
+    await this.qnaService.onTopicChanged(topicChanged)
+    await this.nluService.onTopicChanged(topicChanged)
+
+    // TODO remove eventually
+    await coreActions.onModuleEvent('onTopicChanged', topicChanged)
   }
 
   public async updateTopic(topic: Topic, topicName: string) {
@@ -514,8 +528,10 @@ export class ScopedFlowService {
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
 
     if (topicName !== topic.name) {
-      await this.qnaService.onTopicChanged({ botId: this.botId, oldName: topicName, newName: topic.name })
-      await coreActions.onModuleEvent('onTopicChanged', { botId: this.botId, oldName: topicName, newName: topic.name })
+      const topicChanged = { botId: this.botId, oldName: topicName, newName: topic.name }
+      await this.nluService.onTopicChanged(topicChanged)
+      await this.qnaService.onTopicChanged(topicChanged)
+      await coreActions.onModuleEvent('onTopicChanged', topicChanged)
 
       const flows = await this.loadAll()
 

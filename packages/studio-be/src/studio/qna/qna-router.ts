@@ -1,12 +1,12 @@
 import { QnaEntry } from 'common/typings'
 import { validate } from 'joi'
 import _ from 'lodash'
-
 import moment from 'moment'
 import multer from 'multer'
 import nanoid from 'nanoid'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+
 import { importQuestions, prepareExport, prepareImport } from './transfer'
 import { QnaDefSchema } from './validation'
 
@@ -18,7 +18,7 @@ export class QNARouter extends CustomStudioRouter {
   }
 
   setupRoutes() {
-    const router = this.router
+    const router = this.router.use(this.needPermissions('write', 'module.qna'))
 
     router.get(
       '/questions',

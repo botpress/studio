@@ -26,5 +26,8 @@ export const coreActions = {
   },
   setStudioReady: async () => {
     await coreClient?.post('/setStudioReady')
+  },
+  checkForDirtyModels: async (botId: string) => {
+    await coreClient?.post('/checkForDirtyModels', { botId })
   }
 }
