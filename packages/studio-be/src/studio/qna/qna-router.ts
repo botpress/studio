@@ -18,10 +18,11 @@ export class QNARouter extends CustomStudioRouter {
   }
 
   setupRoutes() {
-    const router = this.router.use(this.needPermissions('write', 'module.qna'))
+    const router = this.router
 
     router.get(
       '/questions',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         try {
           const {
@@ -42,6 +43,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.post(
       '/questions',
+      this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res, next) => {
         try {
           const qnaEntry = (await validate(req.body, QnaDefSchema)) as QnaEntry
@@ -56,6 +58,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.get(
       '/questions/:id',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         try {
           const { storage } = await this.qnaService.getBotStorage(req.params.botId)
@@ -69,6 +72,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.post(
       '/questions/:id',
+      this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res, next) => {
         const {
           query: { limit, offset, question, filteredContexts }
@@ -90,6 +94,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.post(
       '/questions/:id/delete',
+      this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         const {
           query: { limit, offset, question, filteredContexts }
@@ -110,6 +115,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.post(
       '/questions/:id/convert',
+      this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res, next) => {
         const {
           query: { limit, offset, question, filteredContexts }
@@ -130,6 +136,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.get(
       '/export',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         const { storage } = await this.qnaService.getBotStorage(req.params.botId)
         const data: string = await prepareExport(storage, this.cmsService)
@@ -142,6 +149,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.get(
       '/contentElementUsage',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         const { storage } = await this.qnaService.getBotStorage(req.params.botId)
         const usage = await storage.getContentElementUsage()
@@ -152,6 +160,7 @@ export class QNARouter extends CustomStudioRouter {
     const upload = multer()
     router.post(
       '/analyzeImport',
+      this.needPermissions('write', 'module.qna'),
       upload.single('file'),
       this.asyncMiddleware(async (req, res) => {
         const { storage } = await this.qnaService.getBotStorage(req.params.botId)
@@ -170,6 +179,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.post(
       '/import',
+      this.needPermissions('write', 'module.qna'),
       upload.single('file'),
       this.asyncMiddleware(async (req, res) => {
         const uploadStatusId = nanoid()
@@ -199,6 +209,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.get(
       '/json-upload-status/:uploadStatusId',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         res.end(this.jsonUploadStatuses[req.params.uploadStatusId])
       })
@@ -206,6 +217,7 @@ export class QNARouter extends CustomStudioRouter {
 
     router.get(
       '/questionsByTopic',
+      this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         try {
           const { storage } = await this.qnaService.getBotStorage(req.params.botId)

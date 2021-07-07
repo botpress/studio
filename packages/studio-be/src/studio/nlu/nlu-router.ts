@@ -22,7 +22,6 @@ export class NLURouter extends CustomStudioRouter {
   setupRoutes() {
     this.router.get(
       '/intents',
-      this.checkTokenHeader,
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -33,7 +32,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.get(
       '/intents/:intent',
-      this.checkTokenHeader,
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, intent } = req.params
@@ -44,7 +42,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/intents/:intent/delete',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, intent } = req.params
@@ -63,7 +60,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/intents',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -87,7 +83,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/intents/:intentName',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, intentName } = req.params
@@ -106,7 +101,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/condition/intentChanged',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -128,7 +122,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/sync/intents/topics',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -149,7 +142,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.get(
       '/contexts',
-      this.checkTokenHeader,
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
@@ -165,7 +157,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.get(
       '/entities',
-      this.checkTokenHeader,
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -180,7 +171,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.get(
       '/entities/:entityName',
-      this.checkTokenHeader,
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, entityName } = req.params
@@ -199,7 +189,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/entities',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
@@ -223,7 +212,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/entities/:id',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, id } = req.params
@@ -246,7 +234,6 @@ export class NLURouter extends CustomStudioRouter {
 
     this.router.post(
       '/entities/:id/delete',
-      this.checkTokenHeader,
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, id } = req.params
