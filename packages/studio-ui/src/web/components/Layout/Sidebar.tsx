@@ -41,7 +41,7 @@ const BASIC_MENU_ITEMS = [
     id: 'qna',
     name: lang.tr('qna.fullName'),
     path: '/qna',
-    rule: { res: 'bot.qna', op: 'read' },
+    rule: { res: 'module.qna', op: 'write' },
     icon: 'chat'
   }
 ]

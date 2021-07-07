@@ -4,6 +4,7 @@ import { EmptyState, HeaderButtonProps, lang, MainLayout } from 'botpress/shared
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import React, { FC, useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import { reorderFlows } from '~/components/Shared/Utils'
 import withLanguage from '~/components/Util/withLanguage'
 
 import ContextSelector from './Components/ContextSelector'
@@ -13,7 +14,6 @@ import QnA from './Components/QnA'
 import EmptyStateIcon from './Icons/EmptyStateIcon'
 import style from './style.scss'
 import { dispatchMiddleware, fetchReducer, itemHasError, ITEMS_PER_PAGE, Props } from './utils/qnaList.utils'
-import { reorderFlows } from './utils/studio-utils'
 
 const QnAList: FC<Props> = props => {
   const [flows, setFlows] = useState([])

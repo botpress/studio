@@ -8,9 +8,9 @@ import React, { FC, Fragment, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Select from 'react-select'
 
+import { getFlowLabel } from '~/components/Shared/Utils'
 import style from '../style.scss'
 import { NEW_QNA_PREFIX } from '../utils/qnaList.utils'
-import { getFlowLabel } from '../utils/studio-utils'
 import ContextSelector from './ContextSelector'
 import TextAreaList from './TextAreaList'
 
