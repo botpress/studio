@@ -478,7 +478,7 @@ export const getQNAContentElementUsage = () => dispatch => {
 export const receiveQNACountByTopic = createAction('QNA/COUNT_BY_TOPIC')
 export const getQnaCountByTopic = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/qna/questionsByTopic`).then(({ data }) => {
+  axios.get(`${window.STUDIO_API_PATH}/qna/questionsByTopic`).then(({ data }) => {
     dispatch(receiveQNACountByTopic(data))
   })
 }
