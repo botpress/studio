@@ -30,7 +30,7 @@ const RETRY_SECURITY_FACTOR = 3
 const DEBOUNCE_DELAY = 100
 
 interface Props {
-  eventId: string
+  messageId: string
   autoFocus: boolean
   setAutoFocus: (newValue: boolean) => void
   commonButtons: any
@@ -65,8 +65,8 @@ export class Debugger extends React.Component<Props, State> {
   lastMessage = undefined
 
   async componentDidMount() {
-    if (this.props.eventId) {
-      await this.loadEvent(this.props.eventId)
+    if (this.props.messageId) {
+      await this.loadEvent(this.props.messageId)
     }
 
     try {
@@ -83,12 +83,12 @@ export class Debugger extends React.Component<Props, State> {
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps.eventId !== this.props.eventId) {
-      await this.loadEvent(this.props.eventId)
+    if (prevProps.messageId !== this.props.messageId) {
+      await this.loadEvent(this.props.messageId)
     }
   }
 
-  loadEvent = async (eventId: string) => {
+  loadEvent = async (messageId: string) => {
     if (this.state.unauthorized) {
       return
     }
@@ -97,7 +97,7 @@ export class Debugger extends React.Component<Props, State> {
     this.setState({ fetching: true })
 
     try {
-      const event = await this.getEvent(eventId)
+      const event = await this.getEvent(messageId)
 
       this.setState({ event, showEventNotFound: !event })
 
@@ -121,7 +121,7 @@ export class Debugger extends React.Component<Props, State> {
         this.currentRetryCount++
 
         await Promise.delay(DELAY_BETWEEN_CALLS)
-        await this.loadEvent(eventId)
+        await this.loadEvent(messageId)
       } else {
         this.currentRetryCount = 0
         this.setState({ fetching: false })
@@ -132,15 +132,19 @@ export class Debugger extends React.Component<Props, State> {
     }
   }
 
-  getEvent = async (eventId: string): Promise<sdk.IO.IncomingEvent> => {
+  getEvent = async (messageId: string): Promise<sdk.IO.IncomingEvent> => {
+    if (!messageId) {
+      return
+    }
+
     const eventsCache = this.state.eventsCache
 
-    const existing = eventsCache.find(x => x.id === eventId)
+    const existing = eventsCache.find(x => x.messageId === messageId)
     if (existing) {
       return existing
     }
 
-    const { data: event } = await axios.get(`${window.BOT_API_PATH}/mod/extensions/events/${eventId}`)
+    const { data: event } = await axios.get(`${window.BOT_API_PATH}/mod/extensions/message-to-event/${messageId}`)
     if (!event.processing?.completed) {
       return event
     }
