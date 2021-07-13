@@ -73,5 +73,15 @@ export class InternalRouter extends CustomStudioRouter {
         res.sendStatus(200)
       })
     )
+
+    router.post(
+      '/checkBotMigrations',
+      this.asyncMiddleware(async (req, res) => {
+        const { botId } = req.body
+        await this.botService.migrateBotContent(botId)
+
+        res.sendStatus(200)
+      })
+    )
   }
 }

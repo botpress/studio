@@ -195,9 +195,16 @@ export class BotService {
     await this.mountBot(destBotId)
   }
 
-  private async _migrateBotContent(botId: string): Promise<void> {
-    const config = await this.configProvider.getBotConfig(botId)
-    return this.migrationService.botMigration.executeMissingBotMigrations(botId, config.version)
+  public async migrateBotContent(botId: string): Promise<void> {
+    if (botId) {
+      const config = await this.configProvider.getBotConfig(botId)
+      return this.migrationService.botMigration.executeMissingBotMigrations(botId, config.version)
+    }
+
+    for (const bot of await this.getBotsIds()) {
+      const config = await this.configProvider.getBotConfig(bot)
+      await this.migrationService.botMigration.executeMissingBotMigrations(bot, config.version)
+    }
   }
 
   public async botExists(botId: string, ignoreCache?: boolean): Promise<boolean> {
@@ -238,7 +245,7 @@ export class BotService {
         throw new Error('Supported languages must include the default language of the bot')
       }
 
-      await this._migrateBotContent(botId)
+      await this.migrateBotContent(botId)
 
       await this.cms.loadElementsForBot(botId)
 
