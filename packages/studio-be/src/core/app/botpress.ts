@@ -6,6 +6,7 @@ import { BotpressConfig, ConfigProvider } from 'core/config'
 import Database from 'core/database'
 import { LoggerFilePersister, LoggerProvider } from 'core/logger'
 import { LoggerDbPersister } from 'core/logger/persister/db-persister'
+import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
 import { ModuleLoader } from 'core/modules'
 import { HintsService } from 'core/user-code'
@@ -51,7 +52,8 @@ export class Botpress {
     @inject(TYPES.LoggerDbPersister) private loggerDbPersister: LoggerDbPersister,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
     @inject(TYPES.BotService) private botService: BotService,
-    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService
+    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
+    @inject(TYPES.MigrationService) private migrationService: MigrationService
   ) {
     this.botpressPath = path.join(process.cwd(), 'dist')
     this.configLocation = path.join(this.botpressPath, '/config')
@@ -66,6 +68,7 @@ export class Botpress {
 
   private async initialize(options: StartOptions) {
     this.config = await this.configProvider.getBotpressConfig()
+    this.migrationService.botService = this.botService
 
     setDebugScopes(process.core_env.DEBUG || '')
 

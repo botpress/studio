@@ -104,7 +104,7 @@ async function start() {
 
   logger.info(chalk`========================================
 {bold ${centerText('Botpress Studio', 40, 9)}}
-{dim ${centerText(`Version ${process.BOTPRESS_VERSION}`, 40, 9)}}
+{dim ${centerText(`Version ${process.STUDIO_VERSION}`, 40, 9)}}
 ${_.repeat(' ', 9)}========================================`)
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
