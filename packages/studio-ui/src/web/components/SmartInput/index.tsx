@@ -26,7 +26,7 @@ interface ExposedProps {
 const { hasCommandModifier } = KeyBindingUtil
 const A_KEY = 65
 
-type ConnectedProps = ExposedProps & { hints: any[] }
+type ConnectedProps = ExposedProps & { hints: any[]; contentLang: string }
 
 interface State {
   beforeContentStateText?: string
@@ -141,7 +141,11 @@ class SmartInput extends React.Component<ConnectedProps, State> {
     }
 
     return (
-      <div className={cx(style.editor, this.props.className)} onClick={this.focus}>
+      <div
+        className={cx(style.editor, this.props.className)}
+        style={this.props.contentLang === 'ar' ? { direction: 'rtl' } : null}
+        onClick={this.focus}
+      >
         <Editor
           stripPastedStyles
           placeholder={this.placeholder}
@@ -170,7 +174,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
 }
 
 const mapDispatchToProps = { refreshHints }
-const mapStateToProps = ({ hints: { inputs } }) => ({ hints: inputs })
+const mapStateToProps = ({ hints: { inputs }, language: { contentLang } }) => ({ hints: inputs, contentLang })
 const ConnectedSmartInput = connect(mapStateToProps, mapDispatchToProps)(SmartInput)
 
 // Passing store explicitly since this component may be imported from another botpress-module
