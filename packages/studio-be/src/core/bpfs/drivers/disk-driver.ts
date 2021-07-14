@@ -35,7 +35,7 @@ export class DiskStorageDriver implements StorageDriver {
         await fse.mkdirp(folder)
         await fse.writeFile(filename, content)
       } finally {
-        release()
+        await release()
       }
     } catch (e) {
       throw new VError(e, `[Disk Storage] Error upserting file "${filePath}"`)
