@@ -14,7 +14,6 @@
   "dependencies": {
     "@botpress/native-extensions": "0.0.1",
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
-    "async-mutex": "^0.3.1",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "bluebird-global": "^1.0.1",
@@ -53,6 +52,7 @@
     "plur": "^4.0.0",
     "portfinder": "^1.0.28",
     "pg": "^7.8.0",
+    "proper-lockfile": "^4.1.2",
     "reflect-metadata": "^0.1.13",
     "replace-in-file": "^4.1.1",
     "rimraf": "^3.0.2",
@@ -81,6 +81,7 @@
     "@types/joi": "^13.4.5",
     "@types/lodash": "4.14.123",
     "@types/node": "^12.13.1",
+    "@types/proper-lockfile": "^4.1.2",
     "@types/verror": "^1.10.3"
   }
 }
