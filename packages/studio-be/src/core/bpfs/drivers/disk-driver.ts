@@ -1,11 +1,11 @@
 import { DirectoryListingOptions } from 'botpress/sdk'
-import { forceForwardSlashes } from 'core/misc/utils'
-import crypto from 'crypto'
+import { calculateHash, forceForwardSlashes } from 'core/misc/utils'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
 import glob from 'glob'
 import { injectable, postConstruct } from 'inversify'
 import _ from 'lodash'
+import ms from 'ms'
 import path from 'path'
 import lockfile from 'proper-lockfile'
 import { VError } from 'verror'
@@ -21,8 +21,8 @@ export class DiskStorageDriver implements StorageDriver {
     retries: {
       retries: 5,
       factor: 3,
-      minTimeout: 1 * 1000,
-      maxTimeout: 10 * 1000,
+      minTimeout: ms('1s'),
+      maxTimeout: ms('10s'),
       randomize: true
     },
     lockfilePath: path.join(this.lockfilePath, `${file}.lock`)
@@ -42,11 +42,10 @@ export class DiskStorageDriver implements StorageDriver {
   async upsertFile(filePath: string, content: string | Buffer, recordRevision: boolean = false): Promise<void> {
     try {
       const filename = this.resolvePath(filePath)
-      const folder = path.dirname(filename)
+      await fse.ensureFile(filename)
 
-      const release = await lockfile.lock(filename, this.lockOptions(this._hash(filename)))
+      const release = await lockfile.lock(filename, this.lockOptions(calculateHash(filename)))
       try {
-        await fse.mkdirp(folder)
         await fse.writeFile(filename, content)
       } finally {
         await release()
@@ -64,7 +63,7 @@ export class DiskStorageDriver implements StorageDriver {
     try {
       const filename = this.resolvePath(filePath)
 
-      const release = await lockfile.lock(filename, this.lockOptions(this._hash(filename)))
+      const release = await lockfile.lock(filename, this.lockOptions(calculateHash(filename)))
       try {
         return fse.readFile(filename)
       } finally {
@@ -198,13 +197,6 @@ export class DiskStorageDriver implements StorageDriver {
       .map(f => f.split('/')[0])
       .uniq()
       .value()
-  }
-
-  private _hash(str: string): string {
-    return crypto
-      .createHash('sha256')
-      .update(str)
-      .digest('hex')
   }
 
   private async _getGhostIgnorePatterns(ghostIgnorePath: string): Promise<string[]> {
