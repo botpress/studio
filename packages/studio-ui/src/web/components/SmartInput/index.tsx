@@ -139,11 +139,10 @@ class SmartInput extends React.Component<ConnectedProps, State> {
     if (this.props.singleLine) {
       plugins.push(createSingleLinePlugin())
     }
-
     return (
       <div
         className={cx(style.editor, this.props.className)}
-        style={this.props.contentLang === 'ar' ? { direction: 'rtl' } : null}
+        style={{ paddingRight: '32px !important', direction: this.props.contentLang === 'ar' ? 'rtl' : 'ltr' }}
         onClick={this.focus}
       >
         <Editor
