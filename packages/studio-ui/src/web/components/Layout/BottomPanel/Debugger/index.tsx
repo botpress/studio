@@ -144,7 +144,7 @@ export class Debugger extends React.Component<Props, State> {
       return existing
     }
 
-    const { data: event } = await axios.get(`${window.BOT_API_PATH}/mod/extensions/message-to-event/${messageId}`)
+    const { data: event } = await axios.get(`${window.BOT_API_PATH}/messaging/message-to-event/${messageId}`)
     if (!event.processing?.completed) {
       return event
     }
