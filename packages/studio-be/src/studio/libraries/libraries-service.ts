@@ -24,6 +24,46 @@ export class LibrariesService {
     return this.bpfs.forBot(botId).fileExists(LIB_FOLDER, 'package.json')
   }
 
+  createDefaultPackage = async (botId: string) => {
+    const packageExists = await this.bpfs.forBot(botId).fileExists(LIB_FOLDER, 'package.json')
+    if (packageExists) {
+      return
+    }
+
+    const baseJson = {
+      name: 'shared_libs',
+      version: '1.0.0',
+      description: 'Shared Libraries',
+      repository: 'none',
+      dependencies: {},
+      author: '',
+      private: true
+    }
+
+    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', JSON.stringify(baseJson, undefined, 2))
+  }
+
+  initialize = async (botId: string) => {
+    await this.createDefaultPackage(botId)
+
+    if (process.BPFS_STORAGE === 'database') {
+      await this.copyFileLocally(botId, 'package.json')
+      await this.copyFileLocally(botId, 'package-lock.json')
+    }
+  }
+
+  publishPackageChanges = async (botId: string) => {
+    if (process.BPFS_STORAGE !== 'database') {
+      return
+    }
+
+    const packageContent = await fse.readJSON(getBotLibPath(botId, 'package.json'))
+    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', packageContent)
+
+    const packageLockContent = await fse.readFile(getBotLibPath(botId, 'package-lock.json'), 'UTF-8')
+    await this.bpfs.forBot(botId).upsertFile('libraries', 'package-lock.json', packageLockContent)
+  }
+
   prepareArgs = (args: string[]) => {
     // if (isOffline) {
     //   args.push('--offline')
@@ -42,9 +82,8 @@ export class LibrariesService {
     const npmPath = this.getNpmPath()
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
 
-    if (!(await this.isInitialized(botId))) {
-      await this.initialize(botId)
-    }
+    // Make sure we have the latest package.json file and that we can run commands correctly
+    await this.initialize(botId)
 
     const cleanArgs = this.prepareArgs(args)
     const cwd = path.resolve(process.DATA_LOCATION, 'bots', botId, LIB_FOLDER)
@@ -168,36 +207,6 @@ export class LibrariesService {
     } catch (err) {
       console.log(err.message)
     }
-  }
-
-  initialize = async (botId: string) => {
-    const baseJson = {
-      name: 'shared_libs',
-      version: '1.0.0',
-      description: 'Shared Libraries',
-      repository: 'none',
-      dependencies: {},
-      author: '',
-      private: true
-    }
-
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', JSON.stringify(baseJson, undefined, 2))
-
-    if (process.BPFS_STORAGE === 'database') {
-      await fse.writeJson(getBotLibPath(botId, 'package.json'), baseJson)
-    }
-  }
-
-  publishPackageChanges = async (botId: string) => {
-    if (process.BPFS_STORAGE !== 'database') {
-      return
-    }
-
-    const packageContent = await fse.readJSON(getBotLibPath(botId, 'package.json'))
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', packageContent)
-
-    const packageLockContent = await fse.readFile(getBotLibPath(botId, 'package-lock.json'), 'UTF-8')
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package-lock.json', packageLockContent)
   }
 
   // packageLibrary = async (name: string, version: string) => {
