@@ -2,6 +2,7 @@ import { Button, ControlGroup, InputGroup, Radio, RadioGroup } from '@blueprintj
 import axios from 'axios'
 import { lang, toast } from 'botpress/shared'
 import React, { useState } from 'react'
+import { isOperationAllowed } from '~/components/Shared/Utils'
 
 import Dropdown from './LibDropdown'
 import PackageLib from './PackageLib'
@@ -95,9 +96,9 @@ const AddLibrary = props => {
         <Radio label={lang.tr('libraries.searchGithub')} value="github" />
         <Radio label={lang.tr('libraries.uploadArchive')} value="archive" />
 
-        {/* {isOperationAllowed && isOperationAllowed({ superAdmin: true }) && (
+        {isOperationAllowed({ superAdmin: true }) && (
           <Radio label={lang.tr('libraries.customCommand')} value="command" />
-        )} */}
+        )}
       </RadioGroup>
       <br />
 
@@ -120,7 +121,6 @@ const AddLibrary = props => {
                   disabled={processing}
                   text={lang.tr(processing ? 'pleaseWait' : 'libraries.addLibrary')}
                 />
-                <PackageLib name={activeItem.name} version=""></PackageLib>
               </div>
             </div>
           )}

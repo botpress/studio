@@ -30,9 +30,11 @@
     "searchGithub": "Add from a GitHub repository (can be slow)",
     "uploadArchive": "Upload an archive",
     "splash": {
-      "text1": "These libraries can be used by every bots, actions and hooks. You can also create custom pieces of code which can be imported by hooks and actions on the code editor.",
-      "text2": "It is also possible to edit manually the package.json file to install shared libraries using the code editor"
+      "text1": "These libraries can be used for this bot's actions and hooks. You can also create custom pieces of code which can be imported by hooks and actions on the code editor. They will be exported in the generated bot archive.",
+      "text2": "When editing the file 'package.json' manually using the code editor, please click the 'Sync' button below to update dependencies"
     },
+    "sync": "Synchronize",
+    "syncSuccess": "Sync completed successfully",
     "viewGithub": "View on Github",
     "customCommand": "Type a custom command",
     "openConsole": "Open the console to view command output",

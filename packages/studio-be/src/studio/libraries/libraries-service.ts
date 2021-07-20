@@ -1,20 +1,24 @@
 import * as sdk from 'botpress/sdk'
 import { spawn } from 'child_process'
+import { ObjectCache } from 'common/object-cache'
 import { GhostService } from 'core/bpfs'
+import { createArchive } from 'core/misc/archive'
 import fse from 'fs-extra'
+import glob from 'glob'
 import mkdirp from 'mkdirp'
 import ncp from 'ncp'
 import path from 'path'
 import tmp from 'tmp'
 
 import example from './example'
+import { addBundledDeps, disableScripts, Package } from './utils'
 
 const debug = DEBUG('libraries')
 const LIB_FOLDER = 'libraries/'
 
 const sanitizeArg = (text: string) => text.replace(/[^a-zA-Z0-9\/_.@^\-\(\) ]/g, '').replace(/\/\//, '/')
-const getBotLibPath = (botId: string, fileName: string) =>
-  path.join(process.DATA_LOCATION, `bots/${botId}/${LIB_FOLDER}/${fileName}`)
+const getBotLibPath = (botId: string, fileName?: string) =>
+  path.join(process.DATA_LOCATION, `bots/${botId}/${LIB_FOLDER}${fileName ? `/${fileName}` : ''}`)
 
 export class LibrariesService {
   private npmPath?: string
@@ -53,15 +57,22 @@ export class LibrariesService {
   }
 
   publishPackageChanges = async (botId: string) => {
-    if (process.BPFS_STORAGE !== 'database') {
+    // We create an archive of node_modules whenever a change is made (in case a db sync is done in the future)
+    const nodeModules = getBotLibPath(botId, 'node_modules')
+    const archivePath = await createArchive(`${nodeModules}.tgz`, nodeModules, glob.sync('**/*', { cwd: nodeModules }))
+
+    if (process.BPFS_STORAGE === 'disk') {
       return
     }
 
     const packageContent = await fse.readJSON(getBotLibPath(botId, 'package.json'))
     await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', packageContent)
 
-    const packageLockContent = await fse.readFile(getBotLibPath(botId, 'package-lock.json'), 'UTF-8')
+    const packageLockContent = await fse.readJSON(getBotLibPath(botId, 'package-lock.json'))
     await this.bpfs.forBot(botId).upsertFile('libraries', 'package-lock.json', packageLockContent)
+
+    const archive = await fse.readFile(archivePath)
+    await this.bpfs.forBot(botId).upsertFile('libraries', 'node_modules.tgz', archive)
   }
 
   prepareArgs = (args: string[]) => {
@@ -82,37 +93,37 @@ export class LibrariesService {
     const npmPath = this.getNpmPath()
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
 
-    // Make sure we have the latest package.json file and that we can run commands correctly
-    await this.initialize(botId)
-
     const cleanArgs = this.prepareArgs(args)
-    const cwd = path.resolve(process.DATA_LOCATION, 'bots', botId, LIB_FOLDER)
+    const cwd = customLibsDir ?? path.resolve(process.DATA_LOCATION, 'bots', botId, LIB_FOLDER)
 
     mkdirp.sync(cwd)
     debug('executing npm', { execPath: process.execPath, cwd, args, cleanArgs })
 
-    try {
-      const spawned = spawn(process.execPath, [cliPath, ...cleanArgs], {
-        cwd,
-        env: {
-          ...process.env,
-          PATH: `${process.env.PATH}:${path.dirname(process.execPath)}`,
-          PKG_EXECPATH: 'PKG_INVOKE_NODEJS'
-        }
-      })
+    const spawned = spawn(process.execPath, [cliPath, ...cleanArgs], {
+      cwd,
+      env: {
+        ...process.env,
+        PATH: `${process.env.PATH}:${path.dirname(process.execPath)}`,
+        PKG_EXECPATH: 'PKG_INVOKE_NODEJS'
+      }
+    })
 
-      const resultBuffer: string[] = []
+    const resultBuffer: string[] = []
 
-      spawned.stdout.on('data', msg => resultBuffer.push(msg.toString()))
-      spawned.stderr.on('data', msg => resultBuffer.push(msg.toString()))
+    spawned.stdout.on('data', msg => resultBuffer.push(msg.toString()))
+    spawned.stderr.on('data', msg => resultBuffer.push(msg.toString()))
 
-      await Promise.fromCallback(cb => spawned.stdout.on('close', cb))
+    await Promise.fromCallback(cb => spawned.stdout.on('close', cb))
+    const result = resultBuffer.join('')
 
-      return resultBuffer.join('')
-    } catch (err) {
-      console.error('error ', err)
+    if (result.indexOf('ERR!') === -1) {
+      await this.publishPackageChanges(botId)
+      this.logger.info(`Command executed successfully: ${result}`)
+    } else {
+      throw new Error(result)
     }
-    return ''
+
+    return resultBuffer.join('')
   }
 
   createNodeSymlink = async () => {
@@ -146,39 +157,42 @@ export class LibrariesService {
     }
   }
 
-  deleteLibraryArchive = async (filename: string) => {
-    // try {
-    //   if (await this.bpfs.global().fileExists(LIB_FOLDER, filename)) {
-    //     await this.bpfs.global().deleteFile(LIB_FOLDER, filename)
-    //   }
-    //   if (await fse.pathExists(path.join(sharedLibsDir, filename))) {
-    //     await fse.remove(path.join(sharedLibsDir, filename))
-    //   }
-    // } catch (err) {
-    //   this.logger.warn(`Error while deleting the library archive ${err}`)
-    // }
+  deleteLibraryArchive = async (botId: string, filename: string) => {
+    try {
+      if (await this.bpfs.forBot(botId).fileExists(LIB_FOLDER, filename)) {
+        await this.bpfs.forBot(botId).deleteFile(LIB_FOLDER, filename)
+      }
+
+      if (await fse.pathExists(getBotLibPath(botId, filename))) {
+        await fse.remove(getBotLibPath(botId, filename))
+      }
+    } catch (err) {
+      this.logger.warn(`Error while deleting the library archive ${err}`)
+    }
   }
 
-  removeLibrary = async (name: string, logger: sdk.Logger, bpfs: GhostService): Promise<boolean> => {
+  removeLibrary = async (botId: string, name: string): Promise<boolean> => {
     let source, packageContent
-    // try {
-    //   packageContent = await fse.readJson(packageJsonPath)
-    //   source = packageContent.dependencies[name]
-    // } catch (err) {
-    //   logger.attachError(err).error("Couldn't read package json")
-    //   return false
-    // }
+    try {
+      packageContent = await fse.readJson(getBotLibPath(botId, 'package.json'))
+      source = packageContent.dependencies[name]
+    } catch (err) {
+      this.logger.attachError(err).error("Couldn't read package json")
+      return false
+    }
 
-    // if (!source) {
-    //   return false
-    // }
+    if (!source) {
+      return false
+    }
 
-    // if (source.endsWith('.tgz')) {
-    //   await this.deleteLibraryArchive(source.replace('file:', ''))
-    // }
+    if (source.endsWith('.tgz')) {
+      await this.deleteLibraryArchive(botId, source.replace('file:', ''))
+    }
 
-    // delete packageContent.dependencies[name]
-    // await fse.writeJSON(packageJsonPath, packageContent)
+    delete packageContent.dependencies[name]
+    await fse.writeJSON(getBotLibPath(botId, 'package.json'), packageContent)
+
+    await this.executeNpm(botId)
 
     return true
   }
@@ -208,35 +222,4 @@ export class LibrariesService {
       console.log(err.message)
     }
   }
-
-  // packageLibrary = async (name: string, version: string) => {
-  //   const tmpDir = tmp.dirSync({ unsafeCleanup: true })
-
-  //   const tempPackageJson = path.join(tmpDir.name, 'package.json')
-  //   const libFolder = path.join(tmpDir.name, 'node_modules', name)
-  //   const libPackageJson = path.join(libFolder, 'package.json')
-
-  //   try {
-  //     await fse.writeJson(tempPackageJson, emptyPackage)
-
-  //     // Legacy bundling ensures the library's dependencies are inside the library folder
-  //     const installResult = await executeNpm(['install', `${name}@${version}`, '--legacy-bundling'], tmpDir.name)
-  //     debug('Temporary installation of the library ', { installResult })
-
-  //     const pkg: Package = await fse.readJson(libPackageJson)
-  //     addBundledDeps(pkg)
-  //     disableScripts(pkg)
-
-  //     await fse.writeJson(libPackageJson, pkg)
-
-  //     const packResult = await executeNpm(['pack'], libFolder)
-  //     debug('Temporary packaging of the library ', { packResult })
-
-  //     const archiveName = (await fse.readdir(libFolder)).find(x => x.endsWith('.tgz'))
-  //     return await fse.readFile(path.join(libFolder, archiveName))
-  //   } catch (err) {
-  //     bpLogger.attachError(err).error('Error while trying to package the library')
-  //   } finally {
-  //     tmpDir.removeCallback()
-  //   }
 }

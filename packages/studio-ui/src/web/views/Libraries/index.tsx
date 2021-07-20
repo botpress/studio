@@ -1,3 +1,4 @@
+import { Button } from '@blueprintjs/core'
 import axios from 'axios'
 import { confirmDialog, lang, toast, ModuleUI } from 'botpress/shared'
 import React, { useEffect, useState } from 'react'
@@ -16,6 +17,7 @@ const MainView = props => {
   const [libraries, setLibraries] = useState([])
   const [page, setPage] = useState('splash')
   const [lib, setLib] = useState<InstalledLibrary>()
+  const [processing, setProcessing] = useState(false)
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -59,6 +61,20 @@ const MainView = props => {
     }
   }
 
+  const syncLibs = async () => {
+    setProcessing(true)
+
+    try {
+      await axios.post(`${window.STUDIO_API_PATH}/libraries/sync`)
+      await refreshLibraries()
+      toast.info('libraries.syncSuccess')
+    } catch (err) {
+      toast.failure(err.message)
+    } finally {
+      setProcessing(false)
+    }
+  }
+
   const handleLibClicked = item => {
     setLib(item.data)
   }
@@ -86,6 +102,13 @@ const MainView = props => {
                 <br />
                 <br />
                 {lang.tr('libraries.splash.text2')}
+                <br />
+                <br />
+                <Button
+                  onClick={syncLibs}
+                  disabled={processing}
+                  text={lang.tr(processing ? 'pleaseWait' : 'libraries.sync')}
+                />
               </div>
             }
           />

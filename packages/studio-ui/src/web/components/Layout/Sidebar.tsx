@@ -38,11 +38,11 @@ const BASIC_MENU_ITEMS = [
     icon: 'translate'
   },
   {
-    id: 'libs',
-    name: lang.tr('Libraries'),
+    id: 'libraries',
+    name: lang.tr('libraries.fullName'),
     path: '/libraries',
     rule: { res: 'bot.nlu', op: 'read' },
-    icon: 'page-layout'
+    icon: 'book'
   }
 ]
 

@@ -1,8 +1,4 @@
 import axios from 'axios'
-import * as sdk from 'botpress/sdk'
-import { asyncMiddleware as asyncMw, BPRequest } from 'common/http'
-import { Response } from 'express'
-import fse from 'fs-extra'
 import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -27,23 +23,8 @@ export class LibrariesRouter extends CustomStudioRouter {
         }
 
         const { dependencies } = await this.bpfs.forBot(req.params.botId).readFileAsObject('libraries', 'package.json')
-        // const { dependencies } = await fse.readJson(packageJsonPath)
 
         res.send(dependencies)
-      })
-    )
-
-    router.post(
-      '/package',
-      this.asyncMiddleware(async (req: any, res: any) => {
-        // const { name, version } = validateNameVersion(req.body)
-        // const archive = await packageLibrary(name, version!)
-        // res.writeHead(200, {
-        //   'Content-Type': 'application/tar+gzip',
-        //   'Content-Disposition': 'attachment; filename=archive.tgz',
-        //   'Content-Length': archive?.length
-        // })
-        // res.end(archive)
       })
     )
 
@@ -51,10 +32,10 @@ export class LibrariesRouter extends CustomStudioRouter {
       '/executeNpm',
       this.asyncMiddleware(async (req: any, res: any) => {
         const { botId } = req.params
-
         const { command } = req.body
-        const result = await this.libService.executeNpm(command.split(' '))
-        this.logger.forBot(req.params.botId).info(`Executing NPM command ${command} \n ${result}`)
+
+        this.logger.forBot(req.params.botId).info(`Executing NPM command ${command}...`)
+        await this.libService.executeNpm(botId, command.split(' '))
 
         res.sendStatus(200)
       })
@@ -82,6 +63,20 @@ export class LibrariesRouter extends CustomStudioRouter {
     )
 
     router.post(
+      '/sync',
+      this.asyncMiddleware(async (req: any, res: any) => {
+        const { botId } = req.params
+
+        this.logger.forBot(req.params.botId).info('Syncing libraries...')
+
+        await this.libService.initialize(botId)
+        await this.libService.executeNpm(botId)
+
+        res.sendStatus(200)
+      })
+    )
+
+    router.post(
       '/add',
       this.asyncMiddleware(async (req: any, res: any) => {
         const { botId } = req.params
@@ -93,31 +88,27 @@ export class LibrariesRouter extends CustomStudioRouter {
           await this.libService.copyFileLocally(botId, path.basename(uploaded))
         }
 
-        const result = await this.libService.executeNpm(botId, ['install', !version ? name : `${name}@${version}`])
-        this.logger.forBot(req.params.botId).info(`Installing library ${name}\n ${result}`)
+        // Ensure we have a package.json file to start with
+        await this.libService.initialize(botId)
 
-        if (result.indexOf('ERR!') === -1) {
-          await this.libService.publishPackageChanges(botId)
+        this.logger.forBot(req.params.botId).info(`Installing library ${name}...`)
+        await this.libService.executeNpm(botId, ['install', !version ? name : `${name}@${version}`])
 
-          res.sendStatus(200)
-        } else {
-          res.sendStatus(400)
-        }
+        res.sendStatus(200)
       })
     )
 
     router.post(
       '/delete',
-      this.asyncMiddleware(async (req: BPRequest, res: Response) => {
+      this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
         const { name } = validateNameVersion(req.body)
 
-        if (!(await this.libService.removeLibrary(name, this.logger, this.bpfs))) {
+        this.logger.forBot(req.params.botId).info(`Removing library ${name}...`)
+
+        if (!(await this.libService.removeLibrary(botId, name))) {
           return res.sendStatus(400)
         }
-
-        const result = await this.libService.executeNpm(botId)
-        this.logger.forBot(req.params.botId).info(`Removing library ${name}\n ${result}`)
 
         res.sendStatus(200)
       })
