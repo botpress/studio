@@ -90,7 +90,7 @@ export class LibrariesService {
   }
 
   executeNpm = async (botId: string, args: string[] = ['install'], customLibsDir?: string): Promise<string> => {
-    const npmPath = this.getNpmPath()
+    const npmPath = await this.getNpmPath()
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
 
     const cleanArgs = this.prepareArgs(args)
@@ -135,11 +135,6 @@ export class LibrariesService {
         await fse.symlink(process.execPath, nodePath)
       }
     }
-  }
-
-  syncAllFiles = async () => {
-    // const files = await this.bpfs.global().directoryListing(LIB_FOLDER, '*.*')
-    // await Promise.mapSeries(files, file => this.copyFileLocally(file))
   }
 
   copyFileLocally = async (botId: string, fileName: string): Promise<boolean> => {
@@ -201,25 +196,23 @@ export class LibrariesService {
     await this.bpfs.global().upsertFile(LIB_FOLDER, 'example.js', example)
   }
 
-  getNpmPath = () => {
+  getNpmPath = async () => {
     if (this.npmPath) {
       return this.npmPath
     }
 
-    const tmpDir = tmp.dirSync({ unsafeCleanup: true })
     if (!process.pkg) {
       return (this.npmPath = path.resolve(process.cwd(), '../../../node_modules/npm'))
     }
 
-    const modPath = path.resolve(path.dirname(require.main?.filename || ''), '../../node_modules/npm')
+    const npmAppPath = path.resolve(process.APP_DATA_PATH, 'npm')
+    if (!(await fse.pathExists(npmAppPath))) {
+      const modPath = path.resolve(path.dirname(require.main?.path || ''), '../../node_modules/npm')
 
-    this.npmPath = tmpDir.name
-    try {
-      ncp(modPath, this.npmPath, err => {
-        console.log('DONE', this.npmPath, err)
-      })
-    } catch (err) {
-      console.log(err.message)
+      await Promise.fromCallback(cb => ncp(modPath, npmAppPath, cb))
+      debug('Extracted NPM %o', { npmAppPath, modPath })
     }
+
+    return (this.npmPath = npmAppPath)
   }
 }
