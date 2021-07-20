@@ -36,6 +36,13 @@ const BASIC_MENU_ITEMS = [
     path: '/nlu',
     rule: { res: 'bot.nlu', op: 'read' },
     icon: 'translate'
+  },
+  {
+    id: 'libs',
+    name: lang.tr('Libraries'),
+    path: '/libraries',
+    rule: { res: 'bot.nlu', op: 'read' },
+    icon: 'page-layout'
   }
 ]
 

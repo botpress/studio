@@ -23,6 +23,7 @@ import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
+import { LibrariesRouter } from './libraries/libraries-router'
 import MediaRouter from './media/media-router'
 import { TopicsRouter } from './topics/topics-router'
 import { fixStudioMappingMw } from './utils/api-mapper'
@@ -55,6 +56,7 @@ export class StudioRouter extends CustomRouter {
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
   private internalRouter: InternalRouter
+  private libsRouter: LibrariesRouter
 
   constructor(
     logger: Logger,
@@ -99,6 +101,7 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
     this.internalRouter = new InternalRouter(studioServices)
+    this.libsRouter = new LibrariesRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -111,6 +114,7 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.internalRouter.setupRoutes()
+    this.libsRouter.setupRoutes()
 
     app.use('/api/internal', this.internalRouter.router)
 
@@ -140,6 +144,7 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/topics', this.checkTokenHeader, this.topicsRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
+    this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
 
     this.setupUnauthenticatedRoutes(app)
     this.setupStaticRoutes(app)
