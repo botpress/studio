@@ -232,7 +232,7 @@ class Diagram extends Component<Props> {
     this.props.fetchFlows()
     this.setState({ expandedNodes: getExpandedNodes() })
 
-    ReactDOM.findDOMNode(this.diagramWidget).addEventListener('click', this. onDiagramClick)
+    ReactDOM.findDOMNode(this.diagramWidget).addEventListener('click', this.onDiagramClick)
     ReactDOM.findDOMNode(this.diagramWidget).addEventListener('mousedown', this.onMouseDown)
     ReactDOM.findDOMNode(this.diagramWidget).addEventListener('dblclick', this.onDiagramDoubleClick)
     document.getElementById('diagramContainer').addEventListener('keydown', this.onKeyDown)
@@ -545,7 +545,6 @@ class Diagram extends Component<Props> {
 
   onDiagramClick = (event: MouseEvent) => {
     const selectedNode = this.manager.getSelectedNode() as BlockModel
-    console.log('SELECTED NODE', selectedNode.id)
     const currentNode = this.props.currentFlowNode
     const target = this.diagramWidget.getMouseElement(event)
 
