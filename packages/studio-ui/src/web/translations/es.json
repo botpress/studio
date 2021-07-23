@@ -366,6 +366,7 @@
         "renamingAndDeletingDisabled": "Cambiar el nombre y eliminar flujos está deshabilitado",
         "somebodyIsEditing": "Alguien está editando otro flujo",
         "whenDiscussionTimeouts": "Cuando se espera un tiempo de espera de discusión (el usuario no responde en el marco temporal configurado) será redirigido aquí.",
+        "whenConversationEnds": "Cuando finalice una conversación (sin transición), será redirigido aquí.",
         "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí"
       },
       "topic": "Tema",

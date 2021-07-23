@@ -11,6 +11,7 @@ export const FLOW_ICON = 'document'
 export const MAIN_FLOW_ICON = 'flow-end'
 export const ERROR_FLOW_ICON = 'pivot'
 export const TIMEOUT_ICON = 'time'
+export const CONVERSATION_END_ICON = 'stop'
 
 const lockedFlows = ['main.flow.json', 'error.flow.json']
 
