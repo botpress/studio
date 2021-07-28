@@ -3,6 +3,7 @@
 interface CssExports {
   'btnWrapper': string;
   'buttons': string;
+  'buttons_shifted': string;
   'header': string;
 }
 declare var cssExports: CssExports;

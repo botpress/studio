@@ -192,6 +192,7 @@ const FlowBuilder = (props: Props) => {
           handleFilterChanged={handleFilterChanged}
           highlightFilter={highlightFilter}
           mutexInfo={mutex}
+          showFlowNodeProps={props.showFlowNodeProps}
           ref={el => {
             if (!!el) {
               // @ts-ignore

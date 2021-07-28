@@ -77,6 +77,7 @@ interface OwnProps {
   defaultLang: string
   mutexInfo: string
   handleFilterChanged: (event: any) => void
+  showFlowNodeProps: boolean
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -723,6 +724,7 @@ class Diagram extends Component<Props> {
         <WorkflowToolbar
           highlightFilter={this.props.highlightFilter}
           handleFilterChanged={value => this.props.handleFilterChanged({ target: { value } })}
+          showFlowNodeProps={this.props.showFlowNodeProps}
         />
         <div
           id="diagramContainer"
