@@ -16,7 +16,7 @@ import { BPError, FileRevision, StorageDriver } from '../'
 export class DiskStorageDriver implements StorageDriver {
   resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
 
-  private readonly lockfilePath = this.resolvePath(path.join('locks'))
+  private readonly lockfilePath = this.resolvePath('locks')
   private lockOptions = (file: string): lockfile.LockOptions => ({
     retries: {
       retries: 5,
