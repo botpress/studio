@@ -1,11 +1,13 @@
 import { DirectoryListingOptions } from 'botpress/sdk'
-import { forceForwardSlashes } from 'core/misc/utils'
+import { calculateHash, forceForwardSlashes } from 'core/misc/utils'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
 import glob from 'glob'
-import { injectable } from 'inversify'
+import { injectable, postConstruct } from 'inversify'
 import _ from 'lodash'
+import ms from 'ms'
 import path from 'path'
+import lockfile from 'proper-lockfile'
 import { VError } from 'verror'
 
 import { BPError, FileRevision, StorageDriver } from '../'
@@ -14,12 +16,40 @@ import { BPError, FileRevision, StorageDriver } from '../'
 export class DiskStorageDriver implements StorageDriver {
   resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
 
+  private readonly lockfilePath = this.resolvePath('locks')
+  private lockOptions = (file: string): lockfile.LockOptions => ({
+    retries: {
+      retries: 5,
+      factor: 3,
+      minTimeout: ms('1s'),
+      maxTimeout: ms('10s'),
+      randomize: true
+    },
+    lockfilePath: path.join(this.lockfilePath, `${file}.lock`)
+  })
+
+  @postConstruct()
+  async init() {
+    const isDirEmpty = async (dirname: string) => (await fse.readdir(dirname)).length === 0
+
+    const exists = await fse.pathExists(this.lockfilePath)
+    if ((exists && !(await isDirEmpty(this.lockfilePath))) || !exists) {
+      await fse.emptyDir(this.lockfilePath)
+    }
+  }
+
   async upsertFile(filePath: string, content: string | Buffer): Promise<void>
   async upsertFile(filePath: string, content: string | Buffer, recordRevision: boolean = false): Promise<void> {
     try {
-      const folder = path.dirname(this.resolvePath(filePath))
-      await fse.mkdirp(folder)
-      await fse.writeFile(this.resolvePath(filePath), content)
+      const filename = this.resolvePath(filePath)
+      await fse.ensureFile(filename)
+
+      const release = await lockfile.lock(filename, this.lockOptions(calculateHash(filename)))
+      try {
+        await fse.writeFile(filename, content)
+      } finally {
+        await release()
+      }
     } catch (e) {
       throw new VError(e, `[Disk Storage] Error upserting file "${filePath}"`)
     }
@@ -31,7 +61,14 @@ export class DiskStorageDriver implements StorageDriver {
 
   async readFile(filePath: string): Promise<Buffer> {
     try {
-      return fse.readFile(this.resolvePath(filePath))
+      const filename = this.resolvePath(filePath)
+
+      const release = await lockfile.lock(filename, this.lockOptions(calculateHash(filename)))
+      try {
+        return fse.readFile(filename)
+      } finally {
+        await release()
+      }
     } catch (e) {
       if (e.code === 'ENOENT') {
         throw new BPError(`[Disk Storage] File "${filePath}" not found`, 'ENOENT')
