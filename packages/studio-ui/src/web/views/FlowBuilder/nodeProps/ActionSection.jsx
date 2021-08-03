@@ -118,7 +118,7 @@ export default class ActionSection extends Component {
         <div className={style.actionList}>
           {this.renderWait()}
           {items.map((item, i) => (
-            <Popover interactionKind={PopoverInteractionKind.HOVER} position={PopoverPosition.LEFT}>
+            <Popover interactionKind={PopoverInteractionKind.HOVER} position={PopoverPosition.BOTTOM}>
               <ActionItem className={style.item} text={item} key={`${i}.${item}`}>
               </ActionItem>
               {!readOnly && (
