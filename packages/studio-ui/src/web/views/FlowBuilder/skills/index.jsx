@@ -156,7 +156,6 @@ class SkillsBuilder extends React.Component {
 
   render() {
     const skill = this.findInstalledSkill()
-    const modalClassName = style['size-' + this.state.windowSize]
     const submitName = this.props.action === 'new' ? lang.tr('insert') : lang.tr('save')
     const title =
       this.props.action === 'new' ? lang.tr('studio.flow.skills.insert') : lang.tr('studio.flow.skills.edit')
@@ -164,8 +163,6 @@ class SkillsBuilder extends React.Component {
     return (
       <Dialog.Wrapper
         title={`${title} | ${lang.tr(skill && skill.name)}`}
-        size="lg"
-        className={modalClassName}
         isOpen={this.props.opened}
         onClose={this.onCancel}
       >

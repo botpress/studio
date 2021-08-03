@@ -43,7 +43,6 @@ const CreateTopicModal: FC<Props> = props => {
       icon="add"
       isOpen={props.isOpen}
       onClose={closeModal}
-      size="sm"
       onSubmit={submit}
     >
       <Dialog.Body>

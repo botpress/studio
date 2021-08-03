@@ -56,7 +56,6 @@ const EditTopicModal: FC<Props> = props => {
       icon="edit"
       isOpen={props.isOpen}
       onClose={closeModal}
-      size="sm"
       onSubmit={submit}
     >
       <Dialog.Body>
