@@ -140,7 +140,7 @@ $dialog-padding: $pt-grid-size * 2 !default;
   display: flex;
   justify-content: flex-end;
 
-  .#{$ns}-button {
+  .btn {
     margin-left: $pt-grid-size;
   }
 }
