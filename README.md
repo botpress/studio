@@ -2,7 +2,8 @@
 
 Currently, it is not recommended to run the studio on its own. Therefore, you must start the Botpress Server, which will provide a couple of required parameters so the studio can work smoothly with the server.
 
-- Type `yarn` and `yarn build` to build everything
+- Type `yarn`
+- Build everything using `yarn build`
 - Use `yarn watch` to start a watcher on both the backend and frontend
 - Type `yarn package` to generate a single executable file for every available OS
 
