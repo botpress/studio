@@ -16,7 +16,8 @@ export const Wrapper: FC<DialogProps> = props => {
     <Dialog
       className={style.dialog}
       transitionDuration={0}
-      canOutsideClickClose={false}
+      canOutsideClickClose
+      canEscapeKeyClose
       enforceFocus={false}
       {...props}
     >
