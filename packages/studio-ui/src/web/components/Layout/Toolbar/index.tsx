@@ -67,6 +67,7 @@ const Toolbar: FC<Props> = props => {
             <button
               className={classNames(style.item, style.itemSpacing, { [style.active]: isEmulatorOpen })}
               onClick={onToggleEmulator}
+              id="statusbar_emulator"
             >
               <Icon color="#1a1e22" icon="chat" iconSize={16} />
               <span className={style.label}>{lang.tr('toolbar.emulator')}</span>

@@ -96,7 +96,7 @@ const Sidebar: FC<Props> = props => {
 
   return (
     <aside className={classnames(style.sidebar, 'bp-sidebar')}>
-      <a href="admin/" className={classnames(style.logo, 'bp-logo')}>
+      <a href="admin/" className={classnames(style.logo, 'bp-logo')} id="all-bots-navigation">
         <img width="19" src="assets/studio/ui/public/img/logo-icon.svg" alt="Botpress Logo" />
       </a>
       <ul className={classnames('nav')}>
