@@ -40,7 +40,7 @@ const navigateToIntentDefinition = (intent: string, isQna: boolean) => () => {
   if (isQna) {
     url = `/modules/qna?id=${intent}`
   } else {
-    url = intent === 'none' ? '/modules/nlu' : `/modules/nlu?type=intent&id=${intent}`
+    url = intent === 'none' ? '/nlu' : `/nlu?type=intent&id=${intent}`
   }
   window.parent.postMessage({ action: 'navigate-url', payload: url }, '*')
 }
