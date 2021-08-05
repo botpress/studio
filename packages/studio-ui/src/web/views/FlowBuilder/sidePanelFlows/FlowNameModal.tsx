@@ -62,7 +62,7 @@ const FlowNameModal: FC<Props> = props => {
   }
 
   return (
-    <Dialog isOpen={props.isOpen} onClose={closeModal} transitionDuration={0} {...dialog}>
+    <Dialog isOpen={props.isOpen} onClose={closeModal} transitionDuration={0} {...dialog} style={{ width: 500 }}>
       <form onSubmit={submit}>
         <div className={Classes.DIALOG_BODY}>
           <FormGroup
