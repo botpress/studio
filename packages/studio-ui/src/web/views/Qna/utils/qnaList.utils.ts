@@ -19,7 +19,6 @@ export interface State {
 }
 
 export interface Props {
-  bp: any
   isLite?: boolean
   topicName: string
   contentLang: string
@@ -61,7 +60,7 @@ export const itemHasError = (qnaItem: QnaItem, currentLang: string): string[] =>
 }
 
 export const dispatchMiddleware = async (dispatch, action) => {
-  const { qnaItem, bp } = action.data
+  const { qnaItem } = action.data
   switch (action.type) {
     case 'updateQnA':
       const { currentLang } = action.data
@@ -268,7 +267,7 @@ export const fetchReducer = (state: State, action): State => {
     const [deletedItem] = newItems.splice(index, 1)
 
     if (!deletedItem.id.startsWith(NEW_QNA_PREFIX)) {
-      bp.axios
+      axios
         .post(`${window.STUDIO_API_PATH}/qna/questions/${deletedItem.id}/convert`)
         .then(() => {})
         .catch(() => {})
