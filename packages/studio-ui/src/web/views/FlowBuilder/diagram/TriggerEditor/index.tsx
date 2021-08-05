@@ -132,6 +132,7 @@ const EditTriggerModal: FC<Props> = props => {
     <Dialog.Wrapper
       isOpen={isOpen}
       onClose={close}
+      style={{ width: 750, minHeight: 380 }}
       icon="edit"
       title={
         !isEditing

@@ -41,8 +41,9 @@ const CreateTopicModal: FC<Props> = props => {
     <Dialog.Wrapper
       title={lang.tr('studio.flow.topicEditor.createNewTopic')}
       icon="add"
-      isOpen={props.isOpen}
+      isOpen={true}
       onClose={closeModal}
+      size="sm"
       onSubmit={submit}
     >
       <Dialog.Body>

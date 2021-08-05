@@ -6,6 +6,14 @@ import style from './style.scss'
 import { DialogProps } from './typings'
 
 export const Wrapper: FC<DialogProps> = props => {
+  let width: any = undefined
+  if (props.size === 'sm') {
+    width = 360
+  } else if (props.size === 'md') {
+    width = 700
+  } else if (props.size === 'lg') {
+    width = 900
+  }
 
   const onSubmit = e => {
     e.preventDefault()
@@ -19,6 +27,7 @@ export const Wrapper: FC<DialogProps> = props => {
       canOutsideClickClose
       canEscapeKeyClose
       enforceFocus={false}
+      style={{ width, height: props.height }}
       {...props}
     >
       {props.onSubmit ? (
