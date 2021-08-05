@@ -17,6 +17,7 @@ const EditTopicQnAModal: FC<Props> = props => (
     icon="edit"
     isOpen={props.isOpen}
     onClose={props.toggle}
+    style={{ width: 1000, minHeight: 550 }}
   >
     <Dialog.Body className="qna-dialog">
       <InjectedModuleView
