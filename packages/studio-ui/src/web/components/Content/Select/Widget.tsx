@@ -116,14 +116,19 @@ class ContentPickerWidget extends Component<Props> {
 
     return (
       <ControlGroup fill>
-        <InputGroup
-          placeholder={placeholder}
-          value={textContent}
-          disabled
-          id={inputId || ''}
-          className={style.contentInput}
-        />
-        {contentItem && <Button icon="edit" onClick={this.editItem} className={Classes.FIXED} />}
+        <div
+          style={{ display: 'flex', flexDirection: 'row'}}
+          onClick={() => (contentItem ? this.editItem() : window.botpress.pickContent({ contentType }, this.onChange))}
+        >
+          <InputGroup
+            placeholder={placeholder}
+            value={textContent}
+            disabled
+            id={inputId || ''}
+            className={style.contentInput}
+          />
+          {contentItem && <Button icon="edit" className={Classes.FIXED} />}
+        </div>
         <Button
           icon="folder-open"
           onClick={() => window.botpress.pickContent({ contentType }, this.onChange)}
