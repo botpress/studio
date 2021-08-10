@@ -17,18 +17,18 @@ type Props = StateProps & RouteComponentProps
 
 const BASIC_MENU_ITEMS = [
   {
-    id: 'content',
-    name: lang.tr('content'),
-    path: '/content',
-    rule: { res: 'bot.content', op: 'read' },
-    icon: 'description'
-  },
-  {
     id: 'flows',
     name: lang.tr('flows'),
     path: '/flows',
     rule: { res: 'bot.flows', op: 'read' },
     icon: 'page-layout'
+  },
+    {
+    id: 'content',
+    name: lang.tr('content'),
+    path: '/content',
+    rule: { res: 'bot.content', op: 'read' },
+    icon: 'description'
   },
   {
     id: 'nlu',
