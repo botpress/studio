@@ -472,13 +472,7 @@ reducer = reduceReducers(
               const next = node.next.map((value, index) => {
                 const link = nodeLinks.find(link => Number(link.sourcePort.replace('out', '')) === index)
                 const targetNode = _.find(currentFlow.nodes, { id: (link || {}).target })
-                let remapNode = ''
-
-                if (value.node.includes('.flow.json') || value.node === 'END' || value.node.startsWith('#')) {
-                  remapNode = value.node
-                }
-
-                return { ...value, node: (targetNode && targetNode.name) || remapNode }
+                return { ...value, node: _.get(targetNode, 'name') || value.node }
               })
 
               return { ...node, next, lastModified: new Date() }

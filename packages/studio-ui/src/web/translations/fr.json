@@ -467,6 +467,7 @@
         "renamingAndDeletingDisabled": "Renommer et supprimer des flows est désactivé",
         "somebodyIsEditing": "Quelqu'un modifie un autre flow",
         "whenDiscussionTimeouts": "Lors d'un délai d'attente de discussion (l'utilisateur ne répond pas dans le délai configuré), il sera redirigé ici.",
+        "whenConversationEnds": "Lorsqu'une conversation se termine (pas de transition), il sera redirigé ici.",
         "whenErrorEncountered": "Lorsqu'une erreur est rencontrée dans le flux, l'utilisateur est redirigé ici"
       },
       "topic": "Sujet",
