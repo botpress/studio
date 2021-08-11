@@ -562,7 +562,12 @@ class Diagram extends Component<Props> {
       this.handleContextMenu(event as any)
     }
 
-    if (this.canTargetOpenInspector(target)) {
+    if (
+      this.canTargetOpenInspector(target) &&
+      selectedNode &&
+      selectedNode.oldX === selectedNode.x &&
+      selectedNode.oldY === selectedNode.y
+    ) {
       this.props.openFlowNodeProps()
     }
 
