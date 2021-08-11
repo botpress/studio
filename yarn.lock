@@ -995,6 +995,13 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
   integrity sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==
 
+"@types/proper-lockfile@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@types/proper-lockfile/-/proper-lockfile-4.1.2.tgz#49537cee7134055ee13a1833b76a1c298f39bb26"
+  integrity sha512-kd4LMvcnpYkspDcp7rmXKedn8iJSCoa331zRRamUp5oanKt/CefbEGPQP7G89enz7sKD4bvsr8mHSsC8j5WOvA==
+  dependencies:
+    "@types/retry" "*"
+
 "@types/puppeteer@*":
   version "5.4.3"
   resolved "https://registry.npmjs.org/@types/puppeteer/-/puppeteer-5.4.3.tgz#cdca84aa7751d77448d8a477dbfa0af1f11485f2"
@@ -1068,6 +1075,11 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/retry@*":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
+  integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
 
 "@types/scheduler@*":
   version "0.16.1"
@@ -4640,7 +4652,7 @@ debug@^3.1.0, debug@^3.1.1, debug@^3.2.6, debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-debuglog@*, debuglog@^1.0.1:
+debuglog@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/debuglog/-/debuglog-1.0.1.tgz#aa24ffb9ac3df9a2351837cfb2d279360cd78492"
   integrity sha1-qiT/uaw9+aI1GDfPstJ5NgzXhJI=
@@ -7285,7 +7297,7 @@ import-local@^2.0.0:
     pkg-dir "^3.0.0"
     resolve-cwd "^2.0.0"
 
-imurmurhash@*, imurmurhash@^0.1.4:
+imurmurhash@^0.1.4:
   version "0.1.4"
   resolved "https://registry.npmjs.org/imurmurhash/-/imurmurhash-0.1.4.tgz#9218b9b2b928a238b13dc4fb6b6d576f231453ea"
   integrity sha1-khi5srkoojixPcT7a21XbyMUU+o=
@@ -8437,16 +8449,7 @@ jest@^24.9.0:
     import-local "^2.0.0"
     jest-cli "^24.9.0"
 
-joi@13.6.0:
-  version "13.6.0"
-  resolved "https://registry.npmjs.org/joi/-/joi-13.6.0.tgz#877d820e3ad688a49c32421ffefc746bfbe2d0a0"
-  integrity sha512-E4QB0yRgEa6ZZKcSHJuBC+QeAwy+akCG0Bsa9edLqljyhlr+GuGDSmXYW1q7sj/FuAPy+ECUI3evVtK52tVfwg==
-  dependencies:
-    hoek "5.x.x"
-    isemail "3.x.x"
-    topo "3.x.x"
-
-joi@^13.6.0:
+joi@13.7.0, joi@^13.6.0:
   version "13.7.0"
   resolved "https://registry.npmjs.org/joi/-/joi-13.7.0.tgz#cfd85ebfe67e8a1900432400b4d03bbd93fb879f"
   integrity sha512-xuY5VkHfeOYK3Hdi91ulocfuFopwgbSORmIwzcwHKESQhC7w1kD5jaVSPnqDxS2I8t3RZ9omCKAxNwXN5zG1/Q==
@@ -9097,11 +9100,6 @@ lodash-es@^4.2.1:
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
-lodash._baseindexof@*:
-  version "3.1.0"
-  resolved "https://registry.npmjs.org/lodash._baseindexof/-/lodash._baseindexof-3.1.0.tgz#fe52b53a1c6761e42618d654e4a25789ed61822c"
-  integrity sha1-/lK1OhxnYeQmGNZU5KJXie1hgiw=
-
 lodash._baseuniq@~4.6.0:
   version "4.6.0"
   resolved "https://registry.npmjs.org/lodash._baseuniq/-/lodash._baseuniq-4.6.0.tgz#0ebb44e456814af7905c6212fa2c9b2d51b841e8"
@@ -9110,32 +9108,10 @@ lodash._baseuniq@~4.6.0:
     lodash._createset "~4.0.0"
     lodash._root "~3.0.0"
 
-lodash._bindcallback@*:
-  version "3.0.1"
-  resolved "https://registry.npmjs.org/lodash._bindcallback/-/lodash._bindcallback-3.0.1.tgz#e531c27644cf8b57a99e17ed95b35c748789392e"
-  integrity sha1-5THCdkTPi1epnhftlbNcdIeJOS4=
-
-lodash._cacheindexof@*:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/lodash._cacheindexof/-/lodash._cacheindexof-3.0.2.tgz#3dc69ac82498d2ee5e3ce56091bafd2adc7bde92"
-  integrity sha1-PcaayCSY0u5ePOVgkbr9Ktx73pI=
-
-lodash._createcache@*:
-  version "3.1.2"
-  resolved "https://registry.npmjs.org/lodash._createcache/-/lodash._createcache-3.1.2.tgz#56d6a064017625e79ebca6b8018e17440bdcf093"
-  integrity sha1-VtagZAF2JeeevKa4AY4XRAvc8JM=
-  dependencies:
-    lodash._getnative "^3.0.0"
-
 lodash._createset@~4.0.0:
   version "4.0.3"
   resolved "https://registry.npmjs.org/lodash._createset/-/lodash._createset-4.0.3.tgz#0f4659fbb09d75194fa9e2b88a6644d363c9fe26"
   integrity sha1-D0ZZ+7CddRlPqeK4imZE02PJ/iY=
-
-lodash._getnative@*, lodash._getnative@^3.0.0:
-  version "3.9.1"
-  resolved "https://registry.npmjs.org/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
-  integrity sha1-VwvH3t5G1hzc3mh9ZdPuy6o6r/U=
 
 lodash._root@~3.0.0:
   version "3.0.1"
@@ -9241,11 +9217,6 @@ lodash.pick@4.4.0:
   version "4.4.0"
   resolved "https://registry.npmjs.org/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
   integrity sha1-UvBWEP/53tQiYRRB7R/BI6AwAbM=
-
-lodash.restparam@*:
-  version "3.6.1"
-  resolved "https://registry.npmjs.org/lodash.restparam/-/lodash.restparam-3.6.1.tgz#936a4e309ef330a7645ed4145986c85ae5b20805"
-  integrity sha1-k2pOMJ7zMKdkXtQUWYbIWuWyCAU=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -11769,6 +11740,15 @@ prop-types@15.7.2, prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, 
     object-assign "^4.1.1"
     react-is "^16.8.1"
 
+proper-lockfile@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/proper-lockfile/-/proper-lockfile-4.1.2.tgz#c8b9de2af6b2f1601067f98e01ac66baa223141f"
+  integrity sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==
+  dependencies:
+    graceful-fs "^4.2.4"
+    retry "^0.12.0"
+    signal-exit "^3.0.2"
+
 proto-list@~1.2.1:
   version "1.2.4"
   resolved "https://registry.npmjs.org/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
@@ -13088,7 +13068,7 @@ retry@^0.10.0:
 
 retry@^0.12.0:
   version "0.12.0"
-  resolved "https://registry.npmjs.org/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
+  resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
   integrity sha1-G0KmJmoh8HQh0bC1S33BZ7AcATs=
 
 reusify@^1.0.4:

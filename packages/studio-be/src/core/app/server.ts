@@ -29,6 +29,8 @@ import _ from 'lodash'
 import ms from 'ms'
 import path from 'path'
 import portFinder from 'portfinder'
+import { NLUService } from 'studio/nlu'
+import { QNAService } from 'studio/qna'
 import { StudioRouter } from 'studio/studio-router'
 import { URL } from 'url'
 import yn from 'yn'
@@ -69,7 +71,9 @@ export class HTTPServer {
     @inject(TYPES.HintsService) hintsService: HintsService,
     @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.BotService) private botService: BotService,
-    @inject(TYPES.ObjectCache) private objectCache: MemoryObjectCache
+    @inject(TYPES.ObjectCache) private objectCache: MemoryObjectCache,
+    @inject(TYPES.NLUService) nluService: NLUService,
+    @inject(TYPES.QnaService) qnaService: QNAService
   ) {
     this.app = express()
 
@@ -104,6 +108,8 @@ export class HTTPServer {
       actionServersService,
       hintsService,
       objectCache,
+      nluService,
+      qnaService,
       this
     )
   }

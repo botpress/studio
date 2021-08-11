@@ -99,7 +99,7 @@ const EditTriggerModal: FC<Props> = props => {
 
       const def = props.backendConditions.find(x => x.id === condition.id)
       if (def.callback) {
-        await axios.post(`${window.BOT_API_PATH}/${def.callback}`, { action: 'delete', condition })
+        await axios.post(`${window.STUDIO_API_PATH}/${def.callback}`, { action: 'delete', condition })
       }
     }
   }

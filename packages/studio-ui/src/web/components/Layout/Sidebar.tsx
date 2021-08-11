@@ -38,6 +38,13 @@ const BASIC_MENU_ITEMS = [
     icon: 'translate'
   },
   {
+    id: 'qna',
+    name: lang.tr('qna.fullName'),
+    path: '/qna',
+    rule: { res: 'module.qna', op: 'write' },
+    icon: 'chat'
+  },
+  {
     id: 'libraries',
     name: lang.tr('libraries.fullName'),
     path: '/libraries',

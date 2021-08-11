@@ -9,6 +9,8 @@ import { MediaServiceProvider } from 'core/media'
 import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
 import { ContainerModule, interfaces } from 'inversify'
+import { NLUService } from 'studio/nlu'
+import { QNAService } from 'studio/qna'
 
 import { TYPES } from '../types'
 
@@ -57,6 +59,14 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
 
   bind<BotService>(TYPES.BotService)
     .to(BotService)
+    .inSingletonScope()
+
+  bind<NLUService>(TYPES.NLUService)
+    .to(NLUService)
+    .inSingletonScope()
+
+  bind<QNAService>(TYPES.QnaService)
+    .to(QNAService)
     .inSingletonScope()
 })
 

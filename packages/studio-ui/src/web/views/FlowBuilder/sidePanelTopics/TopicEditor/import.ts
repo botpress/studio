@@ -12,7 +12,7 @@ export const analyzeTopicFile = async (file: ExportedTopic, flows: FlowView[]) =
   const importActions: ImportAction[] = []
 
   try {
-    const { data: questions } = await axios.get(`${window.BOT_API_PATH}/mod/qna/questions`)
+    const { data: questions } = await axios.get(`${window.STUDIO_API_PATH}/qna/questions`)
 
     for (const question of file.knowledge) {
       const existing = questions.items.find(x => x.id === question.id)
@@ -47,7 +47,7 @@ export const executeTopicActions = async (actions: ImportAction[]) => {
   const getActionType = type => actions.filter(x => x.type === type && !x.identical)
   try {
     await Promise.each(getActionType('knowledge'), ({ data: { id, data } }) =>
-      axios.post(`${window.BOT_API_PATH}/mod/qna/questions/${id}`, data)
+      axios.post(`${window.STUDIO_API_PATH}/qna/questions/${id}`, data)
     )
   } catch (err) {
     console.error(`Can't import knowledge: ${err}`)
