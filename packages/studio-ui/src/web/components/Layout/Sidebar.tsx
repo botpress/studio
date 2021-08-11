@@ -36,6 +36,13 @@ const BASIC_MENU_ITEMS = [
     path: '/nlu',
     rule: { res: 'bot.nlu', op: 'read' },
     icon: 'translate'
+  },
+  {
+    id: 'qna',
+    name: lang.tr('qna.fullName'),
+    path: '/qna',
+    rule: { res: 'module.qna', op: 'write' },
+    icon: 'chat'
   }
 ]
 

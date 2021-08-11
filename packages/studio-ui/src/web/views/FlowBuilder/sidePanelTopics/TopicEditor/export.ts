@@ -8,7 +8,7 @@ import { exportCompleteWorkflow } from '../WorkflowEditor/export'
 const getKnowledge = async (topicName: string) => {
   try {
     const { data } = await axios.get(
-      `${window.BOT_API_PATH}/mod/qna/questions?question=&categories[]=${topicName}&limit=5&offset=0`
+      `${window.STUDIO_API_PATH}/qna/questions?question=&categories[]=${topicName}&limit=5&offset=0`
     )
 
     return data?.items

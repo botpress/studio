@@ -24,6 +24,8 @@ import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
 import MediaRouter from './media/media-router'
+import { NLURouter, NLUService } from './nlu'
+import { QNARouter, QNAService } from './qna'
 import { TopicsRouter } from './topics/topics-router'
 import { fixStudioMappingMw } from './utils/api-mapper'
 
@@ -41,6 +43,8 @@ export interface StudioServices {
   hintsService: HintsService
   bpfs: GhostService
   objectCache: MemoryObjectCache
+  nluService: NLUService
+  qnaService: QNAService
 }
 
 export class StudioRouter extends CustomRouter {
@@ -55,6 +59,8 @@ export class StudioRouter extends CustomRouter {
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
   private internalRouter: InternalRouter
+  private nluRouter: NLURouter
+  private qnaRouter: QNARouter
 
   constructor(
     logger: Logger,
@@ -70,6 +76,8 @@ export class StudioRouter extends CustomRouter {
     actionServersService: ActionServersService,
     hintsService: HintsService,
     objectCache: MemoryObjectCache,
+    nluService: NLUService,
+    qnaService: QNAService,
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -88,7 +96,9 @@ export class StudioRouter extends CustomRouter {
       cmsService,
       actionServersService,
       hintsService,
-      objectCache
+      objectCache,
+      nluService,
+      qnaService
     }
 
     this.cmsRouter = new CMSRouter(studioServices)
@@ -99,6 +109,8 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
     this.internalRouter = new InternalRouter(studioServices)
+    this.nluRouter = new NLURouter(studioServices)
+    this.qnaRouter = new QNARouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -111,6 +123,8 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.internalRouter.setupRoutes()
+    this.nluRouter.setupRoutes()
+    this.qnaRouter.setupRoutes()
 
     app.use('/api/internal', this.internalRouter.router)
 
@@ -136,6 +150,8 @@ export class StudioRouter extends CustomRouter {
 
     this.router.use('/actions', this.checkTokenHeader, this.actionsRouter.router)
     this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
+    this.router.use('/nlu', this.checkTokenHeader, this.nluRouter.router)
+    this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/topics', this.checkTokenHeader, this.topicsRouter.router)
