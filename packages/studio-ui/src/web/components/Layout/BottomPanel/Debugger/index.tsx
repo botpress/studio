@@ -70,7 +70,7 @@ export class Debugger extends React.Component<Props, State> {
     }
 
     try {
-      const { data } = await axios.get(`${window.BOT_API_PATH}/mod/extensions/events/update-frequency`)
+      const { data } = await axios.get(`${window.BOT_API_PATH}/events/update-frequency`)
       const { collectionInterval } = data
       const maxDelai = ms(collectionInterval as string) * RETRY_SECURITY_FACTOR
       this.allowedRetryCount = Math.ceil(maxDelai / DELAY_BETWEEN_CALLS)
@@ -140,7 +140,7 @@ export class Debugger extends React.Component<Props, State> {
       return existing
     }
 
-    const { data: event } = await axios.get(`${window.BOT_API_PATH}/mod/extensions/events/${eventId}`)
+    const { data: event } = await axios.get(`${window.BOT_API_PATH}/events/${eventId}`)
     if (!event.processing?.completed) {
       return event
     }
