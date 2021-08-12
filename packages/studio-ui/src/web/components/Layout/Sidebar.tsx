@@ -23,7 +23,7 @@ const BASIC_MENU_ITEMS = [
     rule: { res: 'bot.flows', op: 'read' },
     icon: 'page-layout'
   },
-    {
+  {
     id: 'content',
     name: lang.tr('content'),
     path: '/content',
