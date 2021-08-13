@@ -44,7 +44,7 @@ export default class GuidedTour extends React.Component {
           'Use the emulator to try out your bot at any time! You can also use it to troubleshoot.'
       },
       {
-        selector: '#all-bots-navigation',
+        selector: '#bp-menu_admin',
         content: 'Finally, this button will allow you to return to the administration panel or switch bot.'
       },
       {
