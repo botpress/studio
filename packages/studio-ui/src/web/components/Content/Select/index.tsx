@@ -320,7 +320,7 @@ class SelectContent extends Component<Props, State> {
               key={i}
               onClick={() => this.setState({ newItemCategory: category, newItemData: null })}
               className={`list-group-item list-group-item-action ${style.createItem} ${
-                hasSearchResults === false && i === this.state.activeItemIndex ? 'active' : ''
+                !hasSearchResults && i === this.state.activeItemIndex ? 'active' : ''
               }`}
             >
               {lang.tr('studio.content.createNew', { title: lang.tr(category.title) })}
