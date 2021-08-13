@@ -25,7 +25,7 @@ export default class GuidedTour extends React.Component {
         content: 'Welcome to Botpress! This is a quick tour of the most important features.'
       },
       {
-        selector: '.Pane.Pane1',
+        selector: '#bp-menu_flows',
         content:
           'The Flows screen is the main interface where you can see and edit your conversation flows.'
       },
