@@ -298,7 +298,7 @@ class SelectContent extends Component<Props, State> {
       }
     }
 
-    const thereIsASearchResult = this.props.contentItems.length > 0
+    const hasSearchResults = this.props.contentItems.length > 0
 
     return (
       <div>
@@ -320,7 +320,7 @@ class SelectContent extends Component<Props, State> {
               key={i}
               onClick={() => this.setState({ newItemCategory: category, newItemData: null })}
               className={`list-group-item list-group-item-action ${style.createItem} ${
-                thereIsASearchResult ? '' : i === this.state.activeItemIndex ? 'active' : ''
+                hasSearchResults === false && i === this.state.activeItemIndex ? 'active' : ''
               }`}
             >
               {lang.tr('studio.content.createNew', { title: lang.tr(category.title) })}
