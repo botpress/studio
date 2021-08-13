@@ -118,7 +118,6 @@ class ContentPickerWidget extends Component<Props> {
       <ControlGroup fill>
         <div
           className={style.clickableInput}
-          style={{ display: 'flex', flexDirection: 'row'}}
           onClick={() => (contentItem ? this.editItem() : window.botpress.pickContent({ contentType }, this.onChange))}
         >
           <InputGroup
