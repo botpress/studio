@@ -14,6 +14,7 @@ import Inspector from '../inspector'
 import FlowNameModal from './FlowNameModal'
 import FlowsList from './FlowsList'
 import style from './style.scss'
+import { useResizeDetector } from 'react-resize-detector'
 
 export type PanelPermissions = 'create' | 'rename' | 'delete'
 
@@ -30,6 +31,7 @@ interface Props {
   mutexInfo: string
   readOnly: boolean
   showFlowNodeProps: boolean
+  setNodePropsWidth: (width: string) => void
 }
 
 const SidePanelContent: FC<Props> = props => {
@@ -104,8 +106,11 @@ const SidePanelContent: FC<Props> = props => {
 }
 
 const SidePanelInspectorContent: FC<Props> = props => {
+  const { width, ref } = useResizeDetector()
+  props.setNodePropsWidth(`${width}px`)
+
   return (
-    <div className={props.showFlowNodeProps ? style.rightPanelActive : style.rightPanel}>
+    <div ref={ref} className={props.showFlowNodeProps ? style.rightPanelActive : style.rightPanel}>
       <SidePanel>
         <SidePanelSection label="Inspector">
         </SidePanelSection>

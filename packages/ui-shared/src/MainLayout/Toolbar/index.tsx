@@ -17,7 +17,7 @@ const Toolbar: FC<ToolbarProps> = props => {
         <Tabs currentTab={props.currentTab} tabChange={props.tabChange} shouldFloat tabs={props.tabs} />
       )}
       {!!props.buttons?.length && (
-        <NavbarGroup className={cx(props.shift ? style.buttons_shifted : style.buttons, 'toolbar-buttons')} align={Alignment.RIGHT}>
+        <NavbarGroup style={{ marginRight: props.nodePropsWidth, marginTop: '5px' }} align={Alignment.RIGHT}>
           {props.rightContent}
           {props.buttons.map((button, index) => (
             <div key={index} className={style.btnWrapper} id={button.id}>

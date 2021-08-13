@@ -11,6 +11,7 @@ export interface ToolbarProps {
   rightContent?: Jsx
   className?: string
   shift?: boolean
+  nodePropsWidth?: string
 }
 
 export interface ToolbarButtonProps {
