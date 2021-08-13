@@ -3,6 +3,7 @@
 interface CssExports {
   'actionBtn': string;
   'body': string;
+  'clickableInput': string;
   'contentInput': string;
   'createItem': string;
   'editButton': string;
