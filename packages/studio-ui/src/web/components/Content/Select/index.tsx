@@ -249,6 +249,16 @@ class SelectContent extends Component<Props, State> {
     return `${lang.tr('search')} ${lang.tr(title)} (${this.props.contentItems?.length})`
   }
 
+  openNewEditor = category => {
+    let newItemData = null
+
+    if (category?.id === 'builtin_text') {
+      const textLangKey = `text$${this.props.contentLang}`
+      newItemData = { [textLangKey]: this.state.searchTerm }
+    }
+    this.setState({ newItemCategory: category, newItemData })
+  }
+
   onKeyDown = event => {
     if (event.key === 'Enter') {
       // open first active search
@@ -257,7 +267,7 @@ class SelectContent extends Component<Props, State> {
       }
       if (this.props.contentItems) {
         const category = this.getVisibleCategories()[0]
-        this.setState({ newItemCategory: category, newItemData: null })
+        this.openNewEditor(category)
       }
     }
   }
@@ -318,7 +328,7 @@ class SelectContent extends Component<Props, State> {
           {categories.map((category, i) => (
             <a
               key={i}
-              onClick={() => this.setState({ newItemCategory: category, newItemData: null })}
+              onClick={() => this.openNewEditor(category)}
               className={`list-group-item list-group-item-action ${style.createItem} ${
                 !hasSearchResults && i === this.state.activeItemIndex ? 'active' : ''
               }`}
