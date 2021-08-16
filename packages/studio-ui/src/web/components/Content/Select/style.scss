@@ -29,7 +29,7 @@
   padding: 20px 20px 0;
 
   :global(.list-group) {
-    margin-bottom: 0
+    margin-bottom: 0;
   }
 }
 
@@ -37,8 +37,14 @@
   input {
     color: #000 !important;
   }
+  flex: 1;
 }
 
 .imagePreview {
   height: 16px;
+}
+
+.clickableInput {
+  display: flex; 
+  flex-direction: row;
 }

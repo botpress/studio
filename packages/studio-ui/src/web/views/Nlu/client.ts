@@ -4,7 +4,7 @@ import { NLU } from 'botpress/sdk'
 export type NluClient = ReturnType<typeof makeNLUClient>
 
 export const makeNLUClient = () => {
-  const client = axios.create({ baseURL: `${window.BOT_API_PATH}/nlu` })
+  const client = axios.create({ baseURL: `${window.STUDIO_API_PATH}/nlu` })
   return {
     fetchContexts: (): Promise<string[]> => client.get('/contexts').then(res => res.data),
     fetchIntentsWithQNAs: (): Promise<NLU.IntentDefinition[]> => client.get('/intents').then(res => res.data),
@@ -18,7 +18,7 @@ export const makeNLUClient = () => {
     updateIntent: (targetIntent: string, intent: Partial<NLU.IntentDefinition>): Promise<void> =>
       client.post(`/intents/${targetIntent}`, intent),
     deleteIntent: (name: string): Promise<void> => client.post(`/intents/${name}/delete`),
-    syncIntentTopics: (intentNames?: string[]): Promise<void> => client.post('/sync/intents/topics', { intentNames }),
+    syncIntentTopics: (): Promise<void> => client.post('/sync/intents/topics'),
     fetchEntities: (): Promise<NLU.EntityDefinition[]> => client.get('/entities').then(res => res.data),
     fetchEntity: (entityName: string): Promise<NLU.EntityDefinition> =>
       client.get(`/entities/${entityName}`).then(res => res.data),

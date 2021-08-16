@@ -17,13 +17,6 @@ type Props = StateProps & RouteComponentProps
 
 const BASIC_MENU_ITEMS = [
   {
-    id: 'content',
-    name: lang.tr('content'),
-    path: '/content',
-    rule: { res: 'bot.content', op: 'read' },
-    icon: 'description'
-  },
-  {
     id: 'flows',
     name: lang.tr('flows'),
     path: '/flows',
@@ -31,11 +24,25 @@ const BASIC_MENU_ITEMS = [
     icon: 'page-layout'
   },
   {
+    id: 'content',
+    name: lang.tr('content'),
+    path: '/content',
+    rule: { res: 'bot.content', op: 'read' },
+    icon: 'description'
+  },
+  {
     id: 'nlu',
     name: lang.tr('studio.sideBar.nlu'),
     path: '/nlu',
     rule: { res: 'bot.nlu', op: 'read' },
     icon: 'translate'
+  },
+  {
+    id: 'qna',
+    name: lang.tr('qna.fullName'),
+    path: '/qna',
+    rule: { res: 'module.qna', op: 'write' },
+    icon: 'chat'
   }
 ]
 
