@@ -24,7 +24,7 @@ export const Wrapper: FC<DialogProps> = props => {
     <Dialog
       className={style.dialog}
       transitionDuration={0}
-      canOutsideClickClose
+      canOutsideClickClose={false}
       canEscapeKeyClose
       enforceFocus={false}
       style={{ width, height: props.height }}
