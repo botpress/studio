@@ -404,7 +404,14 @@ class Diagram extends Component<Props> {
           </Fragment>
         )}
 
-        <MenuItem tagName="button" text={lang.tr('skills')} icon="add">
+        <MenuItem
+          tagName="button"
+          text={lang.tr('skills')}
+          icon="add"
+          onClick={e => {
+            e.stopPropagation()
+          }}
+        >
           {this.props.skills.map(skill => (
             <MenuItem
               key={skill.id}

@@ -25,27 +25,31 @@ export default class GuidedTour extends React.Component {
         content: 'Welcome to Botpress! This is a quick tour of the most important features.'
       },
       {
-        selector: '#bp-menu_qna',
-        content: 'The QnA module is great for easily adding knowledge to you bot as "Question & Answer" pairs.'
+        selector: '#bp-menu_flows',
+        content:
+          'The Flows screen is the main interface where you can see and edit your conversation flows.'
       },
       {
         selector: '#bp-menu_nlu',
         content:
-          'The "Understanding" screen will allow you to understand more complex user queries (Intents) and extract structured information (Entities).'
+          'The Natural Language Understanding screen is where you will give example sentences to train the AI for understanding humans.'
       },
       {
-        selector: '#bp-menu_Flows',
-        content:
-          'The "Flows" screen is the main interface. Using this tool, you can go beyond static responses by designing more complex, multi-turn dialogs.'
+        selector: '#bp-menu_qna',
+        content: 'Anyone on your team can easily add questions and answers to the Q&A page.'
       },
       {
         selector: '#statusbar_emulator',
         content:
-          'When making changes to your bot, you will use the Emulator to chat with your bot and debug your conversations.'
+          'Use the emulator to try out your bot at any time! You can also use it to troubleshoot.'
       },
       {
-        selector: '#statusbar_switchbot',
+        selector: '#bp-menu_admin',
         content: 'Finally, this button will allow you to return to the administration panel or switch bot.'
+      },
+      {
+        selector: '',
+        content: 'All done. Enjoy building bots! For more information, please refer to the guide on botpress.com/docs'
       }
     ]
 
@@ -54,7 +58,7 @@ export default class GuidedTour extends React.Component {
         steps={steps}
         isOpen={this.props.isDisplayed}
         onRequestClose={this.props.onToggle}
-        lastStepNextButton={<Button>Let's get to work!</Button>}
+        showNumber={false}
       />
     )
   }

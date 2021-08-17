@@ -180,7 +180,7 @@ const Layout: FC<Props> = (props: Props) => {
     'go-module-qna': () => gotoUrl('/modules/qna'),
     'go-module-testing': () => gotoUrl('/modules/testing'),
     'go-module-analytics': () => gotoUrl('/modules/analytics'),
-    'go-understanding': () => gotoUrl('/modules/nlu'),
+    'go-understanding': () => gotoUrl('/nlu'),
     'toggle-inspect': props.toggleInspector
   }
 
