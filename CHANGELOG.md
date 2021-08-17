@@ -1,3 +1,12 @@
+## [0.0.26](https://github.com/botpress/studio/compare/v0.0.23...v0.0.26) (2021-08-16)
+
+
+### Features
+
+* **studio:** implement bot migration ([89a3a0a](https://github.com/botpress/studio/commit/89a3a0ae6a56484bfcffe3e744f1b4405b62ab1f))
+
+
+
 ## [0.0.21](https://github.com/botpress/studio/compare/v0.0.20...v0.0.21) (2021-06-16)
 
 
