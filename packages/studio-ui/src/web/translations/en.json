@@ -44,7 +44,8 @@
     "confirmRemove": "Are you sure you want to remove this library?",
     "deleteSuccess": "Library removed successfully",
     "removeFailure": "There was an error while removing the library. Please check server logs for details",
-    "bundleError": "There was an error while packaging the library"
+    "bundleError": "There was an error while packaging the library",
+    "betaWarning": "This is an experimental module. Please do not rely on it too much because the implementation may change in the near future"
   },
   "nlu": {
     "autoTrain": "Auto Training",

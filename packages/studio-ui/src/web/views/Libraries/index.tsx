@@ -92,6 +92,7 @@ const MainView = props => {
         </SidePanelSection>
       </SidePanel>
       <div>
+        <div className={style.beta}>{lang.tr('libraries.betaWarning')}</div>
         {page === 'splash' && (
           <SplashScreen
             icon="book"
