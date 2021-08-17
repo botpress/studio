@@ -6,7 +6,7 @@ import style from './style.scss'
 import { DialogProps } from './typings'
 
 export const Wrapper: FC<DialogProps> = props => {
-  let width: any;
+  let width: any
   if (props.size === 'sm') {
     width = 360
   } else if (props.size === 'md') {
