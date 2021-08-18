@@ -460,6 +460,22 @@
   position: relative;
   width: 135px;
   z-index: 1;
+  //
+  //&.rtl {
+  //  top: 2px;
+  //  left: 2px;
+  //  right: auto;
+  //  .insertBtn {
+  //    top: 2px;
+  //    left: 2px;
+  //    right: auto;
+  //    &MoreSpacing {
+  //      top: 5px;
+  //      left: 5px;
+  //      right: auto;
+  //    }
+  //  }
+  //}
 
   &.small {
     height: auto;
@@ -552,4 +568,8 @@
 
 .hidden {
   display: none;
+}
+
+.rtl {
+  direction: rtl;
 }
