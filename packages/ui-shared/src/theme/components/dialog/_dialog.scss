@@ -68,10 +68,13 @@ $dialog-padding: $pt-grid-size * 2 !default;
   border-radius: $dialog-border-radius;
   box-shadow: $pt-dialog-box-shadow;
   background: $light-gray4;
-  width: $pt-grid-size * 50;
-  padding-bottom: $pt-grid-size * 2;
+  padding-bottom:0;
   pointer-events: all;
   user-select: text;
+  width: 500px;
+  height: auto;
+  max-width: 100%;
+  max-height: 90%;
 
   &:focus {
     outline: 0;
@@ -139,8 +142,10 @@ $dialog-padding: $pt-grid-size * 2 !default;
 .#{$ns}-dialog-footer-actions {
   display: flex;
   justify-content: flex-end;
+  padding-top:10px;
+  padding-bottom:10px;
 
-  .#{$ns}-button {
+  .btn {
     margin-left: $pt-grid-size;
   }
 }
