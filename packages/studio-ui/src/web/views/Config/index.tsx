@@ -1,19 +1,19 @@
-import { Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea } from '@blueprintjs/core'
+import {Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea} from '@blueprintjs/core'
 import axios from 'axios'
-import { BotConfig } from 'botpress/sdk'
-import { confirmDialog, lang } from 'botpress/shared'
-import { BotEditSchema } from 'common/validation'
+import {BotConfig} from 'botpress/sdk'
+import {confirmDialog, lang} from 'botpress/shared'
+import {BotEditSchema} from 'common/validation'
 import Joi from 'joi'
 import _ from 'lodash'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import Select from 'react-select'
-import { fetchBotInformation } from '~/actions'
-import { Container, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
-import { Item } from '~/components/Shared/Interface/typings'
-import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
+import {fetchBotInformation} from '~/actions'
+import {Container, SidePanel, SidePanelSection} from '~/components/Shared/Interface'
+import {Item} from '~/components/Shared/Interface/typings'
+import {toastFailure, toastSuccess} from '~/components/Shared/Utils/Toaster'
 
-import { ItemList } from '../../components/Shared/Interface'
+import {ItemList} from '../../components/Shared/Interface'
 
 import style from './style.scss'
 
@@ -24,6 +24,7 @@ const axiosConfig = {
 }
 
 interface StateBot {
+  id: string
   name: string
   status: SelectItem
   description: string
@@ -61,6 +62,7 @@ interface SelectItem {
 
 class ConfigView extends Component<Props, State> {
   initialFormState: StateBot = {
+    id: '',
     name: '',
     status: { value: '', label: '' },
     description: '',
@@ -123,6 +125,7 @@ class ConfigView extends Component<Props, State> {
     const status = bot.disabled ? 'disabled' : bot.private ? 'private' : 'public'
 
     this.initialFormState = {
+      id: bot.id,
       name: bot.name || '',
       status: statuses.find(s => s.value === status),
       description: bot.description || '',
@@ -147,11 +150,10 @@ class ConfigView extends Component<Props, State> {
 
   async fetchLanguages(): Promise<SelectItem[]> {
     const { data } = await axios.get('admin/management/languages/available', axiosConfig)
-    const languages = _.sortBy(data.languages, 'name').map(language => ({
+    return _.sortBy(data.languages, 'name').map(language => ({
       label: lang.tr(`language.${language.name.toLowerCase()}`),
       value: language.code
     }))
-    return languages
   }
 
   async fetchLicensing(): Promise<Licensing> {
@@ -167,6 +169,7 @@ class ConfigView extends Component<Props, State> {
     this.setState({ error: undefined, isSaving: true })
 
     const bot: Partial<BotConfig> = {
+      id: this.state.id,
       name: this.state.name,
       disabled: this.state.status.value === 'disabled',
       private: this.state.status.value === 'private',
@@ -332,6 +335,9 @@ class ConfigView extends Component<Props, State> {
             {this.state.activeTab === 'main' && (
               <div>
                 <h1 className={style.title}>{lang.tr('general')}</h1>
+                <FormGroup label={lang.tr('config.botId')} labelFor="botId">
+                  <InputGroup id="bot-id" name="botId" value={this.state.id} readOnly />
+                </FormGroup>
                 <FormGroup label={lang.tr('name')} labelFor="name">
                   <InputGroup id="name" name="name" value={this.state.name} onChange={this.handleInputChanged} />
                 </FormGroup>
