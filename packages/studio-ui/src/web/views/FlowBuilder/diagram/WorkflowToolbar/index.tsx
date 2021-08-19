@@ -16,9 +16,7 @@ const WorkflowToolbar = ({
   tabChange,
   undo,
   highlightFilter,
-  handleFilterChanged,
-  showFlowNodeProps,
-  nodePropsWidth
+  handleFilterChanged
 }) => {
   const tabs = [
     {
@@ -60,8 +58,6 @@ const WorkflowToolbar = ({
       currentTab={currentTab}
       tabChange={tabChange}
       rightContent={searchBar}
-      shift={showFlowNodeProps}
-      nodePropsWidth={nodePropsWidth}
     />
   )
 }

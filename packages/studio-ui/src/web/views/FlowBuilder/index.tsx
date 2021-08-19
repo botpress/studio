@@ -47,7 +47,6 @@ const FlowBuilder = (props: Props) => {
   const [mutex, setMutex] = useState<any>()
   const [actions, setActions] = useState(allActions)
   const [highlightFilter, setHighlightFilter] = useState<string>()
-  const [nodePropsWidth, setNodePropsWidth] = useState<string>()
 
   useEffect(() => {
     props.refreshActions()
@@ -193,7 +192,6 @@ const FlowBuilder = (props: Props) => {
             highlightFilter={highlightFilter}
             mutexInfo={mutex}
             showFlowNodeProps={props.showFlowNodeProps}
-            nodePropsWidth={nodePropsWidth}
             ref={el => {
               if (!!el) {
                 // @ts-ignore
@@ -203,7 +201,7 @@ const FlowBuilder = (props: Props) => {
           />
         </div>
         {!window.USE_ONEFLOW &&
-        <SidePanelInspector setNodePropsWidth={setNodePropsWidth} />
+        <SidePanelInspector />
         }
       </div>
 
