@@ -191,7 +191,7 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
   }
 })
 
-export const pasteFlowNode: ({ x, y }) => void = wrapAction(requestPasteFlowNode, async (payload, state, dispatch) => {
+const someActionBeforeRequestPasteFlowNode = wrapAction(requestPasteFlowNode, async (payload, state, dispatch) => {
   await updateCurrentFlow(payload, state)
   dispatch(refreshFlowsLinks())
 
@@ -201,6 +201,50 @@ export const pasteFlowNode: ({ x, y }) => void = wrapAction(requestPasteFlowNode
     }
   }
 })
+
+export const pasteFlowNode = payload => async (dispatch, getState) => {
+  console.log('state', getState())
+  const newNodes: any[] | undefined = getState().flows.buffer.nodes
+  if (newNodes !== undefined && newNodes.length) {
+    for (const node of newNodes) {
+      console.log('node', node)
+      const onEnterIds = node.onEnter?.map(action => action.split(' ')[1])
+
+      if (onEnterIds !== undefined) {
+        const newOnEnterIds = []
+        for (const id of onEnterIds) {
+          console.log('id', id)
+          const item = await getSingleContentItem(id.split('#!')[1])
+          console.log('item', item)
+          const { contentType, formData } = item
+          console.log('contentType', contentType)
+          console.log('formData', formData)
+          const { data: newItemId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
+          console.log('newItemId', newItemId)
+          newOnEnterIds.push(`say #!${newItemId}`)
+        }
+
+        node.onEnter = newOnEnterIds
+      }
+
+      const onReceiveIds = node.onReceive?.map(action => action.split(' ')[1])
+
+      if (onReceiveIds !== undefined) {
+        const newOnReceiveIds = []
+
+        for (const id of onReceiveIds) {
+          const item = await getSingleContentItem(id.split('#!')[1])
+          const { contentType, formData } = item
+          const { data: newItemId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
+          newOnReceiveIds.push(`say #!${newItemId}`)
+        }
+
+        node.onReceive = newOnReceiveIds
+      }
+    }
+  }
+  dispatch(someActionBeforeRequestPasteFlowNode(payload))
+}
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
 // actions that do not modify flow
@@ -284,8 +328,12 @@ export const fetchContentItemsCount = (contentType = 'all') => dispatch =>
     .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
     .then(data => dispatch(receiveContentItemsCount(data)))
 
-export const upsertContentItem = ({ contentType, formData, modifyId }) => () =>
-  axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
+export const upsertContentItem = ({ contentType, formData, modifyId }) => () => {
+  console.log('contentType', contentType)
+  console.log('formData', formData)
+  console.log('modifyId', modifyId)
+  return axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
+}
 
 export const deleteContentItems = data => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
 export const deleteMedia = data => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
