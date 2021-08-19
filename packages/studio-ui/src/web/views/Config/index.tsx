@@ -1,7 +1,7 @@
 import {Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea} from '@blueprintjs/core'
 import axios from 'axios'
 import {BotConfig} from 'botpress/sdk'
-import {confirmDialog, lang} from 'botpress/shared'
+import {confirmDialog, lang, toast} from 'botpress/shared'
 import {BotEditSchema} from 'common/validation'
 import Joi from 'joi'
 import _ from 'lodash'
@@ -12,6 +12,7 @@ import {fetchBotInformation} from '~/actions'
 import {Container, SidePanel, SidePanelSection} from '~/components/Shared/Interface'
 import {Item} from '~/components/Shared/Interface/typings'
 import {toastFailure, toastSuccess} from '~/components/Shared/Utils/Toaster'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import {ItemList} from '../../components/Shared/Interface'
 
@@ -336,7 +337,19 @@ class ConfigView extends Component<Props, State> {
               <div>
                 <h1 className={style.title}>{lang.tr('general')}</h1>
                 <FormGroup label={lang.tr('config.botId')} labelFor="botId">
-                  <InputGroup id="bot-id" name="botId" value={this.state.id} readOnly />
+                  <div style={{ display: 'flex',  justifyContent: 'space-between' }}>
+                    <div style={{flexGrow: 1, marginRight: '10px'}}>
+                      <InputGroup id="bot-id" name="botId" value={this.state.id} readOnly />
+                    </div>
+                    <CopyToClipboard
+                        text={this.state.id}
+                        onCopy={() => toast.info(lang.tr('config.copyToClipboard'))}
+                    >
+                      <Button
+                          icon="clipboard"
+                      />
+                    </CopyToClipboard>
+                  </div>
                 </FormGroup>
                 <FormGroup label={lang.tr('name')} labelFor="name">
                   <InputGroup id="name" name="name" value={this.state.name} onChange={this.handleInputChanged} />

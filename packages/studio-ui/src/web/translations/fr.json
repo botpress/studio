@@ -22,7 +22,8 @@
     "requireImageFile": "{targetProp} doit être une image",
     "supportedLanguages": "Langues supportées",
     "website": "Site web",
-    "botId": "Id du bot"
+    "botId": "Id du bot",
+    "copyToClipboard": "Copié dans le presse papier"
   },
   "nlu": {
     "autoTrain": "Entraînement automatique",

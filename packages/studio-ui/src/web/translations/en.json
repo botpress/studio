@@ -22,7 +22,8 @@
     "requireImageFile": "{targetProp} requires an image file",
     "supportedLanguages": "Supported languages",
     "website": "Website",
-    "botId": "Bot Id"
+    "botId": "Bot Id",
+    "copyToClipboard": "Copied to clipboard"
   },
   "nlu": {
     "autoTrain": "Auto Training",
