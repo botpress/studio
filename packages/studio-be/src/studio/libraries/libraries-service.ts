@@ -1,6 +1,7 @@
 import * as sdk from 'botpress/sdk'
 import { spawn } from 'child_process'
 import { ObjectCache } from 'common/object-cache'
+import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { createArchive } from 'core/misc/archive'
 import fse from 'fs-extra'
@@ -8,10 +9,8 @@ import glob from 'glob'
 import mkdirp from 'mkdirp'
 import ncp from 'ncp'
 import path from 'path'
-import tmp from 'tmp'
 
 import example from './example'
-import { addBundledDeps, disableScripts, Package } from './utils'
 
 const debug = DEBUG('libraries')
 const LIB_FOLDER = 'libraries/'
@@ -69,6 +68,8 @@ export class LibrariesService {
 
     const archive = await fse.readFile(archivePath)
     await this.bpfs.forBot(botId).upsertFile('libraries', 'node_modules.tgz', archive)
+
+    await coreActions.syncBotLibs(botId)
   }
 
   prepareArgs = (args: string[]) => {
@@ -85,8 +86,18 @@ export class LibrariesService {
     return args.map(x => sanitizeArg(x))
   }
 
+  async syncLocalPackage(botId: string) {
+    if (!(await this.isInitialized(botId))) {
+      await this.createDefaultPackage(botId)
+      // Ensure we have the latest copy from the database before running operations
+    } else if (process.BPFS_STORAGE === 'database') {
+      await this.copyFileLocally(botId, 'package.json')
+      await this.copyFileLocally(botId, 'package-lock.json')
+    }
+  }
+
   executeNpm = async (botId: string, args: string[] = ['install'], customLibsDir?: string): Promise<string> => {
-    await this.createDefaultPackage(botId)
+    await this.syncLocalPackage(botId)
 
     const npmPath = await this.getNpmPath()
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
