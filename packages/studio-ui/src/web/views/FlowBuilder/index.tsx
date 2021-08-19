@@ -183,25 +183,28 @@ const FlowBuilder = (props: Props) => {
         />
       )}
 
-      {!window.USE_ONEFLOW && <SidePanelInspector setNodePropsWidth={setNodePropsWidth} />}
-
-      <div className={style.diagram}>
-        <Diagram
-          readOnly={readOnly}
-          showSearch={showSearch}
-          hideSearch={() => setShowSearch(false)}
-          handleFilterChanged={handleFilterChanged}
-          highlightFilter={highlightFilter}
-          mutexInfo={mutex}
-          showFlowNodeProps={props.showFlowNodeProps}
-          nodePropsWidth={nodePropsWidth}
-          ref={el => {
-            if (!!el) {
-              // @ts-ignore
-              diagram = el.getWrappedInstance()
-            }
-          }}
-        />
+      <div className={style.container}>
+        <div className={style.diagram}>
+          <Diagram
+            readOnly={readOnly}
+            showSearch={showSearch}
+            hideSearch={() => setShowSearch(false)}
+            handleFilterChanged={handleFilterChanged}
+            highlightFilter={highlightFilter}
+            mutexInfo={mutex}
+            showFlowNodeProps={props.showFlowNodeProps}
+            nodePropsWidth={nodePropsWidth}
+            ref={el => {
+              if (!!el) {
+                // @ts-ignore
+                diagram = el.getWrappedInstance()
+              }
+            }}
+          />
+        </div>
+        {!window.USE_ONEFLOW &&
+        <SidePanelInspector setNodePropsWidth={setNodePropsWidth} />
+        }
       </div>
 
       <DocumentationProvider file="flows" />
