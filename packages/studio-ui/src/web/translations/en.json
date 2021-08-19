@@ -1,6 +1,6 @@
 {
   "config": {
-    "additionalDetails": "Additionails Details",
+    "additionalDetails": "Additional Details",
     "avatarAndCover": "Avatar & Cover picture",
     "avatarUploadSuccess": "The bot avatar has been uploaded successfully. You need to save the form in order for the changes to take effect.",
     "botAvatar": "Bot Avatar",
@@ -22,6 +22,30 @@
     "requireImageFile": "{targetProp} requires an image file",
     "supportedLanguages": "Supported languages",
     "website": "Website"
+  },
+  "libraries": {
+    "fullName": "Libraries",
+    "addLibrary": "Add this library",
+    "searchNpm": "Search library on NPM (recommended)",
+    "searchGithub": "Add from a GitHub repository (can be slow)",
+    "uploadArchive": "Upload an archive",
+    "splash": {
+      "text1": "These libraries can be used for this bot's actions and hooks. You can also create custom pieces of code which can be imported by hooks and actions on the code editor. They will be exported in the generated bot archive.",
+      "text2": "When editing the file 'package.json' manually using the code editor, please click the 'Sync' button below to update dependencies"
+    },
+    "sync": "Synchronize",
+    "syncSuccess": "Sync completed successfully",
+    "viewGithub": "View on Github",
+    "customCommand": "Type a custom command",
+    "openConsole": "Open the console to view command output",
+    "bundleDeps": "Package with dependencies",
+    "addSuccess": "Library added successfully!",
+    "libraryName": "Library name",
+    "confirmRemove": "Are you sure you want to remove this library?",
+    "deleteSuccess": "Library removed successfully",
+    "removeFailure": "There was an error while removing the library. Please check server logs for details",
+    "bundleError": "There was an error while packaging the library",
+    "betaWarning": "This is an experimental module. Please do not rely on it too much because the implementation may change in the near future"
   },
   "nlu": {
     "autoTrain": "Auto Training",
