@@ -29,36 +29,32 @@ export class LibrariesService {
   }
 
   createDefaultPackage = async (botId: string) => {
-    const packageExists = await this.bpfs.forBot(botId).fileExists(LIB_FOLDER, 'package.json')
-    if (packageExists) {
+    const pkgFileLocation = getBotLibPath(botId, 'package.json')
+
+    if (await fse.pathExists(pkgFileLocation)) {
       return
     }
 
     const baseJson = {
-      name: 'shared_libs',
+      name: 'libraries',
       version: '1.0.0',
-      description: 'Shared Libraries',
+      description: 'Libraries',
       repository: 'none',
       dependencies: {},
       author: '',
       private: true
     }
 
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', JSON.stringify(baseJson, undefined, 2))
-  }
-
-  initialize = async (botId: string) => {
-    await this.createDefaultPackage(botId)
-
-    if (process.BPFS_STORAGE === 'database') {
-      await this.copyFileLocally(botId, 'package.json')
-      await this.copyFileLocally(botId, 'package-lock.json')
-    }
+    await fse.writeJSON(pkgFileLocation, baseJson)
   }
 
   publishPackageChanges = async (botId: string) => {
     // We create an archive of node_modules whenever a change is made (in case a db sync is done in the future)
     const nodeModules = getBotLibPath(botId, 'node_modules')
+    if (!(await fse.pathExists(nodeModules))) {
+      return
+    }
+
     const archivePath = await createArchive(`${nodeModules}.tgz`, nodeModules, glob.sync('**/*', { cwd: nodeModules }))
 
     if (process.BPFS_STORAGE === 'disk') {
@@ -90,6 +86,8 @@ export class LibrariesService {
   }
 
   executeNpm = async (botId: string, args: string[] = ['install'], customLibsDir?: string): Promise<string> => {
+    await this.createDefaultPackage(botId)
+
     const npmPath = await this.getNpmPath()
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
 
