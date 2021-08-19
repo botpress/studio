@@ -69,7 +69,6 @@ export class LibrariesRouter extends CustomStudioRouter {
 
         this.logger.forBot(req.params.botId).info('Syncing libraries...')
 
-        await this.libService.initialize(botId)
         await this.libService.executeNpm(botId)
 
         res.sendStatus(200)
@@ -87,9 +86,6 @@ export class LibrariesRouter extends CustomStudioRouter {
           // Since we rely on the code-editor for uploading the archive, the file needs to be copied on the file system before installing
           await this.libService.copyFileLocally(botId, path.basename(uploaded))
         }
-
-        // Ensure we have a package.json file to start with
-        await this.libService.initialize(botId)
 
         this.logger.forBot(req.params.botId).info(`Installing library ${name}...`)
         await this.libService.executeNpm(botId, ['install', !version ? name : `${name}@${version}`])
