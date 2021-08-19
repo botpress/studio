@@ -44,6 +44,7 @@ export class LibrariesService {
       private: true
     }
 
+    mkdirp.sync(getBotLibPath(botId))
     await fse.writeJSON(pkgFileLocation, baseJson)
   }
 

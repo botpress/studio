@@ -1,3 +1,12 @@
+## [0.0.31](https://github.com/botpress/studio/compare/v0.0.30...v0.0.31) (2021-08-19)
+
+
+### Bug Fixes
+
+* **libraries:** updated logic to use disk first ([f42a3eb](https://github.com/botpress/studio/commit/f42a3eb67f512aab181df598ed832b810b7f9faf))
+
+
+
 ## [0.0.26](https://github.com/botpress/studio/compare/v0.0.23...v0.0.26) (2021-08-16)
 
 
