@@ -21,7 +21,9 @@
     "phoneNumber": "Número de teléfono",
     "requireImageFile": "{targetProp} requiere un archivo de imagen",
     "supportedLanguages": "Idiomas admitidos",
-    "website": "Sitio web"
+    "website": "Sitio web",
+    "botId": "Bot id",
+    "copyToClipboard": "Copiada al portapapeles"
   },
   "nlu": {
     "autoTrain": "Auto Entrenamietno",

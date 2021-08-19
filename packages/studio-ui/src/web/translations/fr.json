@@ -21,7 +21,9 @@
     "phoneNumber": "Numéro de téléphone",
     "requireImageFile": "{targetProp} doit être une image",
     "supportedLanguages": "Langues supportées",
-    "website": "Site web"
+    "website": "Site web",
+    "botId": "Id du bot",
+    "copyToClipboard": "Copié dans le presse papier"
   },
   "libraries": {
     "fullName": "Librairies",
