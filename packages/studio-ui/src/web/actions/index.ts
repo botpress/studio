@@ -203,35 +203,28 @@ const someActionBeforeRequestPasteFlowNode = wrapAction(requestPasteFlowNode, as
 })
 
 export const pasteFlowNode = payload => async (dispatch, getState) => {
+  const generateContentCopies = async (actions) => {
+    const itemPromises = actions
+      .map(action => action.replace(/say #!/, ''))
+      .map(id => getSingleContentItem(id))
+
+    const items = await Promise.all(itemPromises)
+
+    const upsertPromises = items.map(({ contentType, formData }) =>
+      upsertContentItem({ contentType, formData, modifyId: undefined })())
+
+    const responses = await Promise.all(upsertPromises)
+
+    return responses.map(({data: newItemId}) => `say #!${newItemId}`)
+  }
   const newNodes: any[] | undefined = getState().flows.buffer.nodes
-  if (newNodes !== undefined && newNodes.length) {
+  if (newNodes) {
     for (const node of newNodes) {
-      const onEnterIds = node.onEnter?.map(action => action.split(' ')[1])
-      if (onEnterIds !== undefined) {
-        const newOnEnterIds = []
-        for (const id of onEnterIds) {
-          const item = await getSingleContentItem(id.split('#!')[1])
-          const { contentType, formData } = item
-          const { data: newItemId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
-          newOnEnterIds.push(`say #!${newItemId}`)
-        }
-
-        node.onEnter = newOnEnterIds
+      if (node.onEnter) {
+        node.onEnter = await generateContentCopies(node.onEnter)
       }
-
-      const onReceiveIds = node.onReceive?.map(action => action.split(' ')[1])
-
-      if (onReceiveIds !== undefined) {
-        const newOnReceiveIds = []
-
-        for (const id of onReceiveIds) {
-          const item = await getSingleContentItem(id.split('#!')[1])
-          const { contentType, formData } = item
-          const { data: newItemId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
-          newOnReceiveIds.push(`say #!${newItemId}`)
-        }
-
-        node.onReceive = newOnReceiveIds
+      if (node.onReceive) {
+        node.onReceive = await generateContentCopies(node.onReceive)
       }
     }
   }
