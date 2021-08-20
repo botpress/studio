@@ -203,19 +203,18 @@ const someActionBeforeRequestPasteFlowNode = wrapAction(requestPasteFlowNode, as
 })
 
 export const pasteFlowNode = payload => async (dispatch, getState) => {
-  const generateContentCopies = async (actions) => {
-    const itemPromises = actions
-      .map(action => action.replace(/say #!/, ''))
-      .map(id => getSingleContentItem(id))
+  const generateContentCopies = async actions => {
+    const itemPromises = actions.map(action => action.replace(/say #!/, '')).map(id => getSingleContentItem(id))
 
     const items = await Promise.all(itemPromises)
 
     const upsertPromises = items.map(({ contentType, formData }) =>
-      upsertContentItem({ contentType, formData, modifyId: undefined })())
+      upsertContentItem({ contentType, formData, modifyId: undefined })()
+    )
 
     const responses = await Promise.all(upsertPromises)
 
-    return responses.map(({data: newItemId}) => `say #!${newItemId}`)
+    return responses.map(({ data: newItemId }) => `say #!${newItemId}`)
   }
   const newNodes: any[] | undefined = getState().flows.buffer.nodes
   if (newNodes) {
