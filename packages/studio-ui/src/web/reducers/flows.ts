@@ -730,7 +730,6 @@ reducer = reduceReducers(
           return state
         }
 
-        console.log('copied nodes', nodes)
         return {
           ...state,
           buffer: { ...state.buffer, nodes: _.cloneDeep(nodes) }

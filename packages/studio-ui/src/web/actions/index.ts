@@ -203,24 +203,16 @@ const someActionBeforeRequestPasteFlowNode = wrapAction(requestPasteFlowNode, as
 })
 
 export const pasteFlowNode = payload => async (dispatch, getState) => {
-  console.log('state', getState())
   const newNodes: any[] | undefined = getState().flows.buffer.nodes
   if (newNodes !== undefined && newNodes.length) {
     for (const node of newNodes) {
-      console.log('node', node)
       const onEnterIds = node.onEnter?.map(action => action.split(' ')[1])
-
       if (onEnterIds !== undefined) {
         const newOnEnterIds = []
         for (const id of onEnterIds) {
-          console.log('id', id)
           const item = await getSingleContentItem(id.split('#!')[1])
-          console.log('item', item)
           const { contentType, formData } = item
-          console.log('contentType', contentType)
-          console.log('formData', formData)
           const { data: newItemId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
-          console.log('newItemId', newItemId)
           newOnEnterIds.push(`say #!${newItemId}`)
         }
 
@@ -328,12 +320,8 @@ export const fetchContentItemsCount = (contentType = 'all') => dispatch =>
     .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
     .then(data => dispatch(receiveContentItemsCount(data)))
 
-export const upsertContentItem = ({ contentType, formData, modifyId }) => () => {
-  console.log('contentType', contentType)
-  console.log('formData', formData)
-  console.log('modifyId', modifyId)
-  return axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
-}
+export const upsertContentItem = ({ contentType, formData, modifyId }) => () =>
+  axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
 
 export const deleteContentItems = data => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
 export const deleteMedia = data => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
