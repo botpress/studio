@@ -47,7 +47,7 @@ export class ModulesRouter extends CustomRouter {
         try {
           const metadata: FlowGeneratorMetadata = {
             botId: req.query.botId?.toString() || '',
-            isOneFlow: yn(req.query.isOneFlow)
+            isOneFlow: yn(req.query.isOneFlow) || false
           }
           res.send(this.skillService.finalizeFlow(await flowGenerator(req.body, metadata)))
         } catch (err) {
