@@ -26,7 +26,6 @@ export class BotService {
 
   private _botIds: string[] | undefined
   private static _mountedBots: Map<string, boolean> = new Map()
-  private _trainWatchers: { [botId: string]: ListenHandle } = {}
 
   constructor(
     @inject(TYPES.Logger)
@@ -254,16 +253,6 @@ export class BotService {
       BotService._mountedBots.set(botId, true)
       this._invalidateBotIds()
 
-      // Call the BP client to check if bots must be trained, until the logic is moved on the studio
-      this._trainWatchers[botId] = this.ghostService.forBot(botId).onFileChanged(async filePath => {
-        const hasPotentialNLUChange = filePath.includes('/intents/') || filePath.includes('/entities/')
-        if (!hasPotentialNLUChange) {
-          return
-        }
-
-        await coreActions.checkForDirtyModels(botId)
-      })
-
       return true
     } catch (err) {
       this.logger
@@ -289,7 +278,6 @@ export class BotService {
     BotService._mountedBots.set(botId, false)
 
     this._invalidateBotIds()
-    this._trainWatchers[botId]?.remove()
     debug.forBot(botId, `Unmount took ${Date.now() - startTime}ms`)
   }
 
