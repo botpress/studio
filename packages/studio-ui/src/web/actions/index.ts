@@ -203,27 +203,34 @@ const someActionBeforeRequestPasteFlowNode = wrapAction(requestPasteFlowNode, as
 })
 
 export const pasteFlowNode = payload => async (dispatch, getState) => {
-  const generateContentCopies = async actions => {
-    const itemPromises = actions.map(action => action.replace(/say #!/, '')).map(id => getSingleContentItem(id))
+  const generateActionCopies = async actions => {
+    const saySomethingRegex = new RegExp(/say #!.+\b/)
 
-    const items = await Promise.all(itemPromises)
+    const result = []
 
-    const upsertPromises = items.map(({ contentType, formData }) =>
-      upsertContentItem({ contentType, formData, modifyId: undefined })()
-    )
+    for (const action of actions) {
+      if (saySomethingRegex.test(action)) {
+        const contentId = action.replace(/say #!/, '')
+        const { contentType, formData } = await getSingleContentItem(contentId)
 
-    const responses = await Promise.all(upsertPromises)
+        const { data: newContentId } = await upsertContentItem({ contentType, formData, modifyId: undefined })()
 
-    return responses.map(({ data: newItemId }) => `say #!${newItemId}`)
+        result.push(`say #!${newContentId}`)
+      } else {
+        result.push(action)
+      }
+    }
+
+    return result
   }
   const newNodes: any[] | undefined = getState().flows.buffer.nodes
   if (newNodes) {
     for (const node of newNodes) {
       if (node.onEnter) {
-        node.onEnter = await generateContentCopies(node.onEnter)
+        node.onEnter = await generateActionCopies(node.onEnter)
       }
       if (node.onReceive) {
-        node.onReceive = await generateContentCopies(node.onReceive)
+        node.onReceive = await generateActionCopies(node.onReceive)
       }
     }
   }
