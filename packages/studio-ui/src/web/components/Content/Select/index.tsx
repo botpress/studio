@@ -249,6 +249,29 @@ class SelectContent extends Component<Props, State> {
     return `${lang.tr('search')} ${lang.tr(title)} (${this.props.contentItems?.length})`
   }
 
+  openNewEditor = category => {
+    let newItemData = null
+
+    if (category?.id === 'builtin_text') {
+      const textLangKey = `text$${this.props.contentLang}`
+      newItemData = { [textLangKey]: this.state.searchTerm }
+    }
+    this.setState({ newItemCategory: category, newItemData })
+  }
+
+  onKeyDown = event => {
+    if (event.key === 'Enter') {
+      // open first active search
+      if (this.props.contentItems.length > 0) {
+        return this.handlePick(this.props.contentItems[0])
+      }
+      if (this.props.contentItems) {
+        const category = this.getVisibleCategories()[0]
+        this.openNewEditor(category)
+      }
+    }
+  }
+
   renderMainBody() {
     const categories = this.getVisibleCategories()
 
@@ -285,6 +308,8 @@ class SelectContent extends Component<Props, State> {
       }
     }
 
+    const hasSearchResults = this.props.contentItems.length > 0
+
     return (
       <div>
         {this.renderCurrentCategoryInfo()}
@@ -296,14 +321,17 @@ class SelectContent extends Component<Props, State> {
           onChange={this.onSearchChange}
           autoFocus
           value={this.state.searchTerm}
+          onKeyDown={this.onKeyDown}
         />
         <hr />
         <div className="list-group">
           {categories.map((category, i) => (
             <a
               key={i}
-              onClick={() => this.setState({ newItemCategory: category, newItemData: null })}
-              className={`list-group-item list-group-item-action ${style.createItem}`}
+              onClick={() => this.openNewEditor(category)}
+              className={`list-group-item list-group-item-action ${style.createItem} ${
+                !hasSearchResults && i === this.state.activeItemIndex ? 'active' : ''
+              }`}
             >
               {lang.tr('studio.content.createNew', { title: lang.tr(category.title) })}
             </a>

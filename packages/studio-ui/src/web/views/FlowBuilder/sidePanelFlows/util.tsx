@@ -5,7 +5,14 @@ import find from 'lodash/find'
 import React from 'react'
 import { getFlowLabel, reorderFlows } from '~/components/Shared/Utils'
 
-import { ERROR_FLOW_ICON, FLOW_ICON, FOLDER_ICON, MAIN_FLOW_ICON, TIMEOUT_ICON } from './FlowsList'
+import {
+  ERROR_FLOW_ICON,
+  FLOW_ICON,
+  FOLDER_ICON,
+  MAIN_FLOW_ICON,
+  TIMEOUT_ICON,
+  CONVERSATION_END_ICON
+} from './FlowsList'
 
 /**
  * Returns a different display for special flows.
@@ -45,6 +52,19 @@ const getFlowInfo = (flowId: string, flowName: string) => {
       label: (
         <Tooltip
           content={<span>{lang.tr('studio.flow.whenDiscussionTimeouts')}</span>}
+          hoverOpenDelay={500}
+          position={Position.BOTTOM}
+        >
+          <strong>{getFlowLabel(flowName)}</strong>
+        </Tooltip>
+      )
+    }
+  } else if (flowId === 'conversation_end') {
+    return {
+      icon: CONVERSATION_END_ICON,
+      label: (
+        <Tooltip
+          content={<span>{lang.tr('studio.flow.toolbar.whenConversationEnds')}</span>}
           hoverOpenDelay={500}
           position={Position.BOTTOM}
         >

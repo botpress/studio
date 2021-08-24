@@ -74,7 +74,7 @@ const TopicList: FC<Props> = props => {
   useEffect(() => {
     const qna = props.topics.filter(filterByText).map(topic => ({
       name: `${topic.name}/qna`,
-      label: lang.tr('module.qna.fullName'),
+      label: lang.tr('qna.fullName'),
       type: 'qna' as NodeType,
       icon: 'chat'
     }))
