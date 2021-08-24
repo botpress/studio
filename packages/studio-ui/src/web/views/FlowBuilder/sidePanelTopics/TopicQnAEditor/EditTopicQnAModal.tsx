@@ -1,7 +1,9 @@
 import { Dialog, lang } from 'botpress/shared'
 import React, { FC } from 'react'
-import InjectedModuleView from '~/components/PluginInjectionSite/module'
+
 import withLanguage from '~/components/Util/withLanguage'
+import QNA from '../../../Qna'
+
 interface Props {
   selectedTopic: string
   contentLang: string
@@ -17,20 +19,14 @@ const EditTopicQnAModal: FC<Props> = props => (
     icon="edit"
     isOpen={props.isOpen}
     onClose={props.toggle}
-    size="lg"
     style={{ width: 1000, minHeight: 550 }}
   >
     <Dialog.Body className="qna-dialog">
-      <InjectedModuleView
-        moduleName="qna"
-        componentName="LiteEditor"
-        contentLang={props.contentLang}
-        extraProps={{
-          isLite: true,
-          topicName: props.selectedTopic,
-          languages: props.languages,
-          defaultLanguage: props.defaultLanguage
-        }}
+      <QNA
+        isLite={true}
+        topicName={props.selectedTopic}
+        languages={props.languages}
+        defaultLanguage={props.defaultLanguage}
       />
     </Dialog.Body>
   </Dialog.Wrapper>

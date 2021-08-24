@@ -252,8 +252,8 @@ export const fetchContentItems = ({ contentType, ...query }) => dispatch => {
 
 const getBatchedContentItems = ids =>
   axios.post(`${window.STUDIO_API_PATH}/cms/elements`, { ids }).then(({ data }) =>
-    data.reduce((acc, item, i) => {
-      acc[ids[i]] = item
+    data.reduce((acc, item) => {
+      acc[item.id] = item
       return acc
     }, {})
   )
@@ -470,7 +470,7 @@ export const removeElementFromLibrary = (elementId: string) => dispatch => {
 export const receiveQNAContentElement = createAction('QNA/CONTENT_ELEMENT')
 export const getQNAContentElementUsage = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/mod/qna/contentElementUsage`).then(({ data }) => {
+  axios.get(`${window.STUDIO_API_PATH}/qna/contentElementUsage`).then(({ data }) => {
     dispatch(receiveQNAContentElement(data))
   })
 }
@@ -478,7 +478,7 @@ export const getQNAContentElementUsage = () => dispatch => {
 export const receiveQNACountByTopic = createAction('QNA/COUNT_BY_TOPIC')
 export const getQnaCountByTopic = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/mod/qna/questionsByTopic`).then(({ data }) => {
+  axios.get(`${window.STUDIO_API_PATH}/qna/questionsByTopic`).then(({ data }) => {
     dispatch(receiveQNACountByTopic(data))
   })
 }

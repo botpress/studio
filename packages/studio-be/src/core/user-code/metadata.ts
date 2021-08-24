@@ -53,7 +53,7 @@ export const extractMetadata = (code: string): ActionMetadata => {
 
   const hidden = _.find(extracted.tags, { title: 'hidden' })
   if (hidden) {
-    metadata.hidden = yn((hidden as any).description)
+    metadata.hidden = yn((hidden as any).description) || false
   }
 
   metadata.params = _.filter(extracted.tags, { title: 'param' }).map(tag => {

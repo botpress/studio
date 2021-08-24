@@ -7,3 +7,5 @@ lib/
 public/
 metadata.json
 *.node.bak
+.idea/
+.idea

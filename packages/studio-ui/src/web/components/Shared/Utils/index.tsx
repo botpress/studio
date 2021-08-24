@@ -21,6 +21,8 @@ export const getFlowLabel = (name: string) => {
     return 'Error handling'
   } else if (name === 'timeout') {
     return 'Timeout'
+  } else if (name === 'conversation_end') {
+    return 'Conversation End'
   } else {
     return name
   }

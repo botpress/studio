@@ -389,7 +389,14 @@ class Diagram extends Component<Props> {
           </Fragment>
         )}
 
-        <MenuItem tagName="button" text={lang.tr('skills')} icon="add">
+        <MenuItem
+          tagName="button"
+          text={lang.tr('skills')}
+          icon="add"
+          onClick={e => {
+            e.stopPropagation()
+          }}
+        >
           {this.props.skills.map(skill => (
             <MenuItem
               key={skill.id}
@@ -547,7 +554,12 @@ class Diagram extends Component<Props> {
       this.handleContextMenu(event as any)
     }
 
-    if (this.canTargetOpenInspector(target)) {
+    if (
+      this.canTargetOpenInspector(target) &&
+      selectedNode &&
+      selectedNode.oldX === selectedNode.x &&
+      selectedNode.oldY === selectedNode.y
+    ) {
       this.props.openFlowNodeProps()
     }
 

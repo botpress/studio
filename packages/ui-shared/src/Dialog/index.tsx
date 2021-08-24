@@ -6,7 +6,7 @@ import style from './style.scss'
 import { DialogProps } from './typings'
 
 export const Wrapper: FC<DialogProps> = props => {
-  let width = 500
+  let width: any
   if (props.size === 'sm') {
     width = 360
   } else if (props.size === 'md') {
@@ -25,12 +25,13 @@ export const Wrapper: FC<DialogProps> = props => {
       className={style.dialog}
       transitionDuration={0}
       canOutsideClickClose={false}
+      canEscapeKeyClose
       enforceFocus={false}
       style={{ width, height: props.height }}
       {...props}
     >
       {props.onSubmit ? (
-        <form className={style.form} onSubmit={onSubmit}>
+        <form onSubmit={onSubmit}>
           {props.children}
         </form>
       ) : (

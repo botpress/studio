@@ -63,7 +63,8 @@ interface LoadedModule {
 
 interface ErroredModule {
   entry: ModuleConfigEntry
-  err: Error
+  err?: Error
+  message?: string
 }
 
 async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: ModuleResolver) {
@@ -73,9 +74,13 @@ async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: Modu
   for (const entry of moduleConfigs) {
     try {
       const moduleLocation = await resolver.resolve(entry.location)
-      const rawEntry = resolver.requireModule(moduleLocation)
-      const entryPoint = ModuleLoader.processModuleEntryPoint(rawEntry, entry.location)
-      loadedModules.push({ entry, entryPoint, rawEntry, moduleLocation })
+      if (moduleLocation) {
+        const rawEntry = resolver.requireModule(moduleLocation)
+        const entryPoint = ModuleLoader.processModuleEntryPoint(rawEntry, entry.location)
+        loadedModules.push({ entry, entryPoint, rawEntry, moduleLocation })
+      } else {
+        erroredModules.push({ entry, message: 'Module not found' })
+      }
     } catch (e) {
       erroredModules.push({ entry, err: e })
     }
@@ -104,7 +109,7 @@ async function start() {
 
   logger.info(chalk`========================================
 {bold ${centerText('Botpress Studio', 40, 9)}}
-{dim ${centerText(`Version ${process.BOTPRESS_VERSION}`, 40, 9)}}
+{dim ${centerText(`Version ${process.STUDIO_VERSION}`, 40, 9)}}
 ${_.repeat(' ', 9)}========================================`)
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
@@ -123,8 +128,12 @@ This is a fatal error, process will exit.`
     }
   }
 
-  for (const erroredModule of erroredModules) {
-    logger.attachError(erroredModule.err).error(`Error loading module ${erroredModule.entry.location}`)
+  for (const { entry, err, message } of erroredModules) {
+    if (err) {
+      logger.attachError(err).error(`Error while loading module ${entry.location}`)
+    } else {
+      logger.error(`Error while loading module ${entry.location}: ${message}`)
+    }
   }
 
   await app.botpress.start({ modules: loadedModules.map(m => m.entryPoint) }).catch(err => {
