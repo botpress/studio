@@ -22,6 +22,7 @@ const BOT_CONFIG_FILENAME = 'bot.config.json'
 const BOT_DIRECTORIES = ['actions', 'flows', 'entities', 'content-elements', 'intents', 'qna']
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
 const BOTID_REGEX = /^[A-Z0-9]+[A-Z0-9_-]{1,}[A-Z0-9]+$/i
+const IGNORED_ACTION = ['say']
 
 const DEFAULT_BOT_CONFIGS = {
   locked: false,
@@ -332,6 +333,30 @@ export class BotService {
     for (const bot of await this.getBotsIds()) {
       const config = await this.configProvider.getBotConfig(bot)
       await this.migrationService.botMigration.executeMissingBotMigrations(bot, config.version)
+    }
+  }
+
+  async addLocalBotActions(botId: string, flowActions: string[]) {
+    const botActions = await this.ghostService.forBot(botId).directoryListing('actions', '*.*')
+
+    const missingLocalActions = flowActions
+      .filter(x => !IGNORED_ACTION.includes(x))
+      .map(x => `${x}.js`)
+      .filter(x => !botActions.find(b => x === b))
+
+    for (const actionName of missingLocalActions) {
+      const builtinActionsPath = path.resolve(getBuiltinPath('actions'), actionName)
+      let content
+
+      if (await this.ghostService.global().fileExists('actions', actionName)) {
+        content = await this.ghostService.global().readFileAsBuffer('actions', actionName)
+      } else if (await fse.pathExists(builtinActionsPath)) {
+        content = await fse.readFile(builtinActionsPath)
+      }
+
+      if (content) {
+        await this.ghostService.forBot(botId).upsertFile('actions', actionName, content)
+      }
     }
   }
 
