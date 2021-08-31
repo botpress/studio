@@ -1,7 +1,7 @@
 import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
-import { FlowView, NodeView } from 'common/typings'
+import { Categories, FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Alert } from 'react-bootstrap'
@@ -204,13 +204,14 @@ class ContentView extends Component<Props, State> {
   }
 
   render() {
+    console.log('categories', this.props.categories)
     const { selectedId = 'all', contentToEdit } = this.state
-    const categories = this.props.categories ?? []
-    const selectedCategory = _.find(categories, { id: this.currentContentType() })
+    const categoriesEnabled = this.props.categories.enabled ?? []
+    const selectedCategory = _.find(categoriesEnabled, { id: this.currentContentType() })
 
     const classNames = classnames(style.content, 'bp-content')
 
-    if (!categories.length) {
+    if (!categoriesEnabled.length) {
       return (
         <div className={classNames}>
           <Alert bsStyle="warning">
@@ -231,7 +232,7 @@ class ContentView extends Component<Props, State> {
       <Container>
         <Sidebar
           readOnly={!this.canEdit}
-          categories={categories}
+          categories={this.props.categories}
           selectedId={selectedId}
           handleAdd={this.handleCreateNew}
           handleCategorySelected={this.handleCategorySelected}
@@ -240,8 +241,8 @@ class ContentView extends Component<Props, State> {
           readOnly={!this.canEdit}
           count={
             this.state.selectedId === 'all'
-              ? _.sumBy(categories, 'count') || 0
-              : _.find(categories, { id: this.state.selectedId }).count
+              ? _.sumBy(categoriesEnabled, 'count') || 0
+              : _.find(categoriesEnabled, { id: this.state.selectedId }).count
           }
           className={style.contentListWrapper}
           contentItems={this.props.contentItems ?? []}
@@ -298,7 +299,7 @@ type Props = {
   upsertContentItem: Function
   deleteContentItems: Function
   deleteMedia: Function
-  categories: any
+  categories: Categories
   contentItems: ContentElementUsage[]
   flows: FlowReducer
   user: UserReducer

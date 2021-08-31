@@ -1,12 +1,14 @@
 import axios from 'axios'
 import { Dialog, lang } from 'botpress/shared'
 import classnames from 'classnames'
+import { ParsedContentType } from 'common/typings'
 import React, { Component } from 'react'
 import { Alert, Button } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import { deleteMedia, fetchContentCategories, fetchContentItems, upsertContentItem } from '~/actions'
 import Loading from '~/components/Util/Loading'
+import { RootReducer } from '~/reducers'
 import { CONTENT_TYPES_MEDIA } from '~/util/ContentDeletion'
 
 import withLanguage from '../../Util/withLanguage'
@@ -28,7 +30,7 @@ interface Props {
   deleteMedia: Function
   fetchContentItems: Function
   contentItems: any
-  categories: any
+  categories: ParsedContentType[]
   upsertContentItem: Function
   onSelect: any
   onClose: any
@@ -360,10 +362,7 @@ class SelectContent extends Component<Props, State> {
   }
 
   render() {
-    const {
-      state: { newItemCategory, show },
-      props: { container }
-    } = this
+    const { newItemCategory, show } = this.state
     const schema = (newItemCategory || {}).schema || { json: {}, ui: {} }
 
     return (
@@ -383,9 +382,9 @@ class SelectContent extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootReducer) => ({
   contentItems: state.content.currentItems,
-  categories: state.content.categories
+  categories: state.content.categories.enabled
 })
 
 const mapDispatchToProps = {

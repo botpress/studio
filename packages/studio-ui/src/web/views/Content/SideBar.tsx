@@ -1,5 +1,6 @@
 import { IconName } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
+import { Categories } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { ItemList, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
@@ -11,8 +12,14 @@ export default class SidebarView extends Component<Props> {
     count: null
   }
 
+  CATEGORY_DISABLED = {
+    id: 'disabled',
+    title: lang.tr('disabled'),
+    count: null
+  }
+
   render() {
-    const contentTypeActions = this.props.categories.map(cat => {
+    const contentTypeActions = this.props.categories.enabled.map(cat => {
       return {
         id: `btn-create-${cat.id}`,
         label: lang.tr(cat.title),
@@ -32,7 +39,7 @@ export default class SidebarView extends Component<Props> {
       }
     ]
 
-    const contentTypes = [this.CATEGORY_ALL, ...this.props.categories].map(cat => {
+    const contentTypes = [this.CATEGORY_ALL, ...this.props.categories.enabled].map(cat => {
       return {
         id: `btn-filter-${cat.id}`,
         label: !!cat.count ? `${lang.tr(cat.title)} (${cat.count})` : lang.tr(cat.title),
@@ -52,10 +59,21 @@ export default class SidebarView extends Component<Props> {
       }
     })
 
+    const contentTypesDisabled = [this.CATEGORY_DISABLED, ...this.props.categories.disabled].map(cat => {
+      return {
+        id: `btn-filter-${cat.id}`,
+        label: lang.tr(cat.title),
+        value: cat,
+        selected: cat.id === this.CATEGORY_DISABLED.id,
+        actions: []
+      }
+    })
+
     return (
       <SidePanel>
         <SidePanelSection label={lang.tr('studio.content.sideBar.filterByType')} actions={actions}>
           <ItemList items={contentTypes} onElementClicked={el => this.props.handleCategorySelected(el.value.id)} />
+          <ItemList items={contentTypesDisabled} />
         </SidePanelSection>
       </SidePanel>
     )
@@ -63,7 +81,7 @@ export default class SidebarView extends Component<Props> {
 }
 
 interface Props {
-  categories: any
+  categories: Categories
   handleCategorySelected: (id: string) => void
   selectedId: string
   readOnly: boolean

@@ -1,4 +1,4 @@
-import { BotDetails, Flow, FlowNode, IO, RolloutStrategy, StageRequestApprovers, StrategyUser } from 'botpress/sdk'
+import { ContentType, Flow, FlowNode, IO, RolloutStrategy, StageRequestApprovers, StrategyUser } from 'botpress/sdk'
 import { Request } from 'express'
 
 export interface IDisposeOnExit {
@@ -110,6 +110,23 @@ export interface LibraryElement {
   type: 'say_something' | 'execute'
   preview: string
   path: string
+}
+
+export interface ParsedContentType {
+  id: ContentType['id']
+  count: number
+  title: ContentType['title']
+  hidden: ContentType['hidden']
+  schema: {
+    json: ContentType['jsonSchema']
+    ui: ContentType['uiSchema']
+    title: ContentType['title']
+    renderer: ContentType['id']
+  }
+}
+export interface Categories {
+  enabled: ParsedContentType[]
+  disabled: Pick<ParsedContentType, 'id' | 'title'>[]
 }
 
 export interface OutgoingEventCommonArgs {
