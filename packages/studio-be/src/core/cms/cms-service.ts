@@ -169,8 +169,6 @@ export class CMSService implements IDisposeOnExit {
     const contentTypeParsed = await sandbox.run(fileName)
     const contentType: ContentType = contentTypeParsed?.default ?? contentTypeParsed
 
-    // console.log(contentTypeParsed)
-
     if (!contentType || !contentType.id) {
       throw new Error(`Invalid content type ${fileName}`)
     }
