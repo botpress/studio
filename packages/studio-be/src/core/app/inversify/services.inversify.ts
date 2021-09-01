@@ -6,9 +6,12 @@ import { DialogContainerModule } from 'core/dialog/dialog.inversify'
 import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
 import { KeyValueStore } from 'core/kvs'
 import { MediaServiceProvider } from 'core/media'
+import { MigrationService } from 'core/migration'
 import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
 import { ContainerModule, interfaces } from 'inversify'
+import { NLUService } from 'studio/nlu'
+import { QNAService } from 'studio/qna'
 
 import { TYPES } from '../types'
 
@@ -57,6 +60,18 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
 
   bind<BotService>(TYPES.BotService)
     .to(BotService)
+    .inSingletonScope()
+
+  bind<MigrationService>(TYPES.MigrationService)
+    .to(MigrationService)
+    .inSingletonScope()
+
+  bind<NLUService>(TYPES.NLUService)
+    .to(NLUService)
+    .inSingletonScope()
+
+  bind<QNAService>(TYPES.QnaService)
+    .to(QNAService)
     .inSingletonScope()
 })
 

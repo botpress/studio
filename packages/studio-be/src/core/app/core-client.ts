@@ -26,5 +26,11 @@ export const coreActions = {
   },
   setStudioReady: async () => {
     await coreClient?.post('/setStudioReady')
+  },
+  checkForDirtyModels: async (botId: string) => {
+    await coreClient?.post('/checkForDirtyModels', { botId })
+  },
+  syncBotLibs: async (botId: string) => {
+    await coreClient?.post('/syncBotLibs', { botId, serverId: process.env.SERVER_ID })
   }
 }

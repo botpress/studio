@@ -1,6 +1,6 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.21",
+  "version": "0.0.33",
   "description": "Create your virtual assistants",
   "main": "index.js",
   "bin": "./packages/studio-be/out/index.js",
@@ -16,6 +16,7 @@
       "./node_modules/@botpress/native-extensions/bin/**/*",
       "./node_modules/vm2/lib/*.js",
       "./node_modules/xml-encryption/lib/templates/*.tpl.xml",
+      "./node_modules/npm/**/*",
       "./packages/studio-be/out/ui/**"
     ],
     "targets": [

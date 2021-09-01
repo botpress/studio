@@ -10,6 +10,8 @@ import { AuthService, TOKEN_AUDIENCE, needPermissions, checkTokenHeader } from '
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import { RequestHandler, Router } from 'express'
+import { NLUService } from 'studio/nlu'
+import { QNAService } from 'studio/qna'
 import { StudioServices } from 'studio/studio-router'
 
 export abstract class CustomStudioRouter {
@@ -26,6 +28,8 @@ export abstract class CustomStudioRouter {
   protected hintsService: HintsService
   protected bpfs: GhostService
   protected objectCache: MemoryObjectCache
+  protected nluService: NLUService
+  protected qnaService: QNAService
 
   protected readonly needPermissions: (operation: string, resource: string) => RequestHandler
   protected readonly asyncMiddleware: AsyncMiddleware
@@ -53,5 +57,7 @@ export abstract class CustomStudioRouter {
     this.bpfs = services.bpfs
     this.hintsService = services.hintsService
     this.objectCache = services.objectCache
+    this.nluService = services.nluService
+    this.qnaService = services.qnaService
   }
 }

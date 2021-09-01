@@ -44,7 +44,7 @@ if (process.env.APP_DATA_PATH) {
   process.APP_DATA_PATH = getAppDataPath()
 }
 
-process.IS_FAILSAFE = yn(process.env.BP_FAILSAFE)
+process.IS_FAILSAFE = yn(process.env.BP_FAILSAFE) || false
 process.LOADED_MODULES = {}
 
 process.STUDIO_LOCATION = process.pkg
@@ -84,9 +84,10 @@ try {
   process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
 
-  process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED)
-  process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO.ENABLED'])
-  process.BOTPRESS_VERSION = metadata.version
+  process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
+  process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
+  process.STUDIO_VERSION = metadata.version
+  process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
 
   require('yargs')
     .command(
@@ -102,6 +103,7 @@ try {
       async argv => {
         if (process.env.BP_DATA_FOLDER) {
           process.DATA_LOCATION = process.env.BP_DATA_FOLDER
+          process.IS_STANDALONE = yn(process.env.IS_STANDALONE) || false
         } else if (argv.dataFolder) {
           process.IS_STANDALONE = true
           process.IS_PRO_ENABLED = false

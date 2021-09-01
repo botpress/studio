@@ -44,8 +44,8 @@ declare namespace NodeJS {
     IS_PRO_AVAILABLE: boolean
     IS_PRO_ENABLED: boolean
     CLUSTER_ENABLED: boolean
+    STUDIO_VERSION: string
     BOTPRESS_VERSION: string
-
     TELEMETRY_URL: string
     core_env: BotpressEnvironmentVariables
     distro: OSDistribution
