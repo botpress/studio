@@ -10,6 +10,7 @@ interface CssExports {
   'mentionSuggestionsEntry': string;
   'mentionSuggestionsEntryFocused': string;
   'mentionSuggestionsEntryText': string;
+  'rtl': string;
   'variable': string;
 }
 declare var cssExports: CssExports;

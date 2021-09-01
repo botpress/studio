@@ -12,6 +12,7 @@ interface CssExports {
   'missingTranslation': string;
   'msg': string;
   'name': string;
+  'rtl': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;
