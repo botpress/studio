@@ -2,13 +2,13 @@ import { BotConfig, Logger, ListenHandle, BotTemplate } from 'botpress/sdk'
 import { BotEditSchema } from 'common/validation'
 import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
-import { FileContent, GhostService, ReplaceContent } from 'core/bpfs'
+import { FileContent, GhostService, ReplaceContent, ScopedGhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { ConfigProvider } from 'core/config'
 import { JobService } from 'core/distributed/job-service'
 import { MigrationService } from 'core/migration'
 import { getBuiltinPath, listDir } from 'core/misc/list-dir'
-import { stringify } from 'core/misc/utils'
+import { calculateHash, stringify } from 'core/misc/utils'
 import { InvalidOperationError } from 'core/routers'
 import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
@@ -16,8 +16,10 @@ import fse from 'fs-extra'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
 import _ from 'lodash'
+import os from 'os'
 import path from 'path'
 
+const CHECKSUM = '//CHECKSUM:'
 const BOT_CONFIG_FILENAME = 'bot.config.json'
 const BOT_DIRECTORIES = ['actions', 'flows', 'entities', 'content-elements', 'intents', 'qna']
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
@@ -269,6 +271,21 @@ export class BotService {
     }
   }
 
+  private addChecksum = (fileContent: string) => {
+    return `${CHECKSUM}${calculateHash(fileContent)}${os.EOL}${fileContent}`
+  }
+
+  private async addContentTypes(ghost: ScopedGhostService): Promise<string[]> {
+    const contentTypes = await listDir(getBuiltinPath('content-types'), { fileFilter: '**/*.js' })
+
+    for (const type of contentTypes) {
+      const content = await fse.readFile(type.absolutePath, 'utf-8')
+      await ghost.upsertFile('content-types', type.relativePath, this.addChecksum(content))
+    }
+
+    return contentTypes.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
+  }
+
   private async _createBotFromTemplate(botConfig: BotConfig, template: BotTemplate): Promise<BotConfig | undefined> {
     const templatePath = path.resolve(getBuiltinPath('bot-templates'), template.id)
     const templateConfigPath = path.resolve(templatePath, BOT_CONFIG_FILENAME)
@@ -289,10 +306,7 @@ export class BotService {
         version: process.BOTPRESS_VERSION
       }
 
-      if (!mergedConfigs.imports.contentTypes) {
-        const allContentTypes = await this.cms.getAllContentTypes()
-        mergedConfigs.imports.contentTypes = allContentTypes.map(x => x.id)
-      }
+      await this.addContentTypes(scopedGhost)
 
       if (!mergedConfigs.defaultLanguage) {
         mergedConfigs.disabled = true
@@ -313,7 +327,7 @@ export class BotService {
 
   private async _loadBotTemplateFiles(templatePath: string): Promise<FileContent[]> {
     const startsWithADot = /^\./gm
-    const templateFiles = await listDir(templatePath, [startsWithADot, new RegExp(BOT_CONFIG_FILENAME)])
+    const templateFiles = await listDir(templatePath, { ignores: [startsWithADot, new RegExp(BOT_CONFIG_FILENAME)] })
 
     return templateFiles.map(
       f =>
@@ -400,6 +414,7 @@ export class BotService {
 
       await this.migrateBotContent(botId)
 
+      await this.cms.loadContentTypesFromFiles(botId)
       await this.cms.loadElementsForBot(botId)
 
       BotService._mountedBots.set(botId, true)
