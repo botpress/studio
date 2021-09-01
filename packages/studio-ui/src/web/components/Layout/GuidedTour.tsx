@@ -13,8 +13,8 @@ interface Props {
 
 export default class GuidedTour extends React.Component<Props> {
   componentDidMount() {
-    if (!Boolean(utils.storage.get(TOUR_KEY))) {
-      utils.storage.set(TOUR_KEY, 'true')
+    if (!Boolean(utils.storage.get<boolean>(TOUR_KEY))) {
+      utils.storage.set(TOUR_KEY, true)
       this.props.onToggle()
     }
   }

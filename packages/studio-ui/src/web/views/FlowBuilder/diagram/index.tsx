@@ -79,7 +79,7 @@ export const MAX_NUMBER_OF_POINTS_PER_LINK = 3
 
 const getExpandedNodes = () => {
   try {
-    return JSON.parse(utils.storage.get(EXPANDED_NODES_KEY) || '[]')
+    return utils.storage.get<any[]>(EXPANDED_NODES_KEY) || []
   } catch (error) {
     return []
   }
@@ -170,7 +170,7 @@ class Diagram extends Component<Props> {
       expandedNodes.push(nodeId)
     }
 
-    utils.storage.set(EXPANDED_NODES_KEY, JSON.stringify(expandedNodes))
+    utils.storage.set(EXPANDED_NODES_KEY, expandedNodes)
     this.setState({ expandedNodes })
   }
 

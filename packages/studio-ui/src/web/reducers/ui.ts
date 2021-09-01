@@ -29,8 +29,8 @@ export interface UiReducer {
 
 const bottomPanelStorageKey = `bp::${window.BOT_ID}::bottom-panel-open`
 const inspectorEnabledStorageKey = `bp::${window.BOT_ID}::enable-inspector`
-const defaultBottomPanelOpen = utils.storage.get(bottomPanelStorageKey) === 'true'
-const defaultInspectorEnabled = utils.storage.get(inspectorEnabledStorageKey) === 'true'
+const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
+const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
 
 const defaultState = {
   viewMode: -1,

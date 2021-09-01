@@ -19,8 +19,10 @@ const AUTO_FOCUS_DEBUGGER = 'autoFocusDebugger'
 const DevPanel = MainLayout.BottomPanel
 
 const BottomPanel = props => {
-  const [tab, setTab] = useState<string>(utils.storage.get(BOTTOM_PANEL_TAB) || 'debugger')
-  const [autoFocusDebugger, setAutoFocusDebugger] = useState<any>(utils.storage.get(AUTO_FOCUS_DEBUGGER) ?? true)
+  const [tab, setTab] = useState<string>(utils.storage.get<string>(BOTTOM_PANEL_TAB) || 'debugger')
+  const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(
+    utils.storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true
+  )
   const [eventId, setEventId] = useState()
   const [dataHistory, setDataHistory] = useState<DataEntry[]>([])
   const [customTabs, setCustomTabs] = useState([])
@@ -48,7 +50,7 @@ const BottomPanel = props => {
     }
   })
 
-  const handleChangeTab = newTab => {
+  const handleChangeTab = (newTab: string) => {
     utils.storage.set(BOTTOM_PANEL_TAB, newTab)
     setTab(newTab)
   }
@@ -68,9 +70,9 @@ const BottomPanel = props => {
     }
   }
 
-  const handleAutoFocus = newValue => {
+  const handleAutoFocus = (newValue: boolean) => {
     setAutoFocusDebugger(newValue)
-    utils.storage.set(AUTO_FOCUS_DEBUGGER, newValue.toString())
+    utils.storage.set(AUTO_FOCUS_DEBUGGER, newValue)
   }
 
   const commonButtons = (
