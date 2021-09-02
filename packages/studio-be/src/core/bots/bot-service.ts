@@ -18,6 +18,7 @@ import Joi from 'joi'
 import _ from 'lodash'
 import os from 'os'
 import path from 'path'
+import { ComponentService } from './component-service'
 
 const CHECKSUM = '//CHECKSUM:'
 const BOT_CONFIG_FILENAME = 'bot.config.json'
@@ -65,6 +66,7 @@ export class BotService {
   private _botIds: string[] | undefined
   private static _mountedBots: Map<string, boolean> = new Map()
   private _trainWatchers: { [botId: string]: ListenHandle } = {}
+  private componentService: ComponentService
 
   constructor(
     @inject(TYPES.Logger)
@@ -78,6 +80,7 @@ export class BotService {
     @inject(TYPES.MigrationService) private migrationService: MigrationService
   ) {
     this._botIds = undefined
+    this.componentService = new ComponentService(this.logger, this.ghostService, this.cms)
   }
 
   @postConstruct()
@@ -415,6 +418,8 @@ export class BotService {
       await this.migrateBotContent(botId)
 
       await this.cms.loadContentTypesFromFiles(botId)
+      await this.componentService.extractBotComponents(botId)
+
       await this.cms.loadElementsForBot(botId)
 
       BotService._mountedBots.set(botId, true)
@@ -467,5 +472,9 @@ export class BotService {
     const bots: string[] = []
     BotService._mountedBots.forEach((isMounted, bot) => isMounted && bots.push(bot))
     return bots
+  }
+
+  public getBotTranslations(botId: string) {
+    return this.componentService.getBotTranslations(botId)
   }
 }

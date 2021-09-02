@@ -92,7 +92,7 @@ export class HTTPServer {
       this.app.use(compression())
     }
 
-    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService)
+    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService, botService)
 
     this.studioRouter = new StudioRouter(
       logger,

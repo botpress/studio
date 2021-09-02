@@ -1060,12 +1060,17 @@ declare module 'botpress/sdk' {
      * @param channel The channel used to communicate, e.g. channel-web, messenger, twilio, etc.
      * @returns Return an array of rendered Content Elements
      */
-     renderElement: (data: object, channel: string) => any //object[] | object
+     renderElement: (data: object, channel: string) => object[] | object
     /**
      * Function that computes the visual representation of the text.
      * This function resides in the javascript definition of the Content Type.
      */
     computePreviewText?: (formData: any) => string
+  }
+
+  export type CustomContentType = Omit<Partial<ContentType>, 'id'> & {
+    /** A custom component must extend a builtin type */
+    extends: string
   }
 
   /**
