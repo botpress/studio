@@ -423,6 +423,7 @@ export class CMSService implements IDisposeOnExit {
     const content = JSON.stringify(elements, undefined, 2)
 
     await this.ghost.forBot(botId).upsertFile(this.elementsDir, fileName, content)
+    await coreActions.invalidateCmsForBot(botId)
   }
 
   private _translateElement(element: ContentElement, language: string, botId: string) {
