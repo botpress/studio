@@ -73,6 +73,7 @@ export class FlowService {
     @inject(TYPES.NLUService) private nluService: NLUService
   ) {
     this._listenForCacheInvalidation()
+    this.botService.flowService = this
   }
 
   @postConstruct()
@@ -183,13 +184,24 @@ export class ScopedFlowService {
     }
   }
 
-  public async addMissingBotActions(flow: FlowView) {
+  public async getAllFlowActions() {
+    const allFlows = await this.loadAll()
+    const actions = await Promise.map(allFlows, this._getFlowActions)
+
+    return _.uniq(_.flatMap(actions))
+  }
+
+  private _getFlowActions(flow: FlowView) {
     const actions = flow.nodes
       .map(node => [...((node.onEnter as string[]) ?? []), ...((node.onReceive as string[]) ?? [])])
       .reduce((acc, cur) => [...acc, ...cur], [])
       .map(parseActionInstruction)
 
-    const flowActions = _.uniq(actions.map(x => x.actionName))
+    return actions.map(x => x.actionName)
+  }
+
+  private async _addMissingBotActions(flow: FlowView) {
+    const flowActions = _.uniq(this._getFlowActions(flow))
     await this.botService.addLocalBotActions(this.botId, flowActions)
   }
 
@@ -356,7 +368,7 @@ export class ScopedFlowService {
       this.ghost.upsertFile(FLOW_DIR, uiPath, JSON.stringify(uiContent, undefined, 2))
     ])
 
-    await this.addMissingBotActions(flow)
+    await this._addMissingBotActions(flow)
   }
 
   async deleteFlow(flowName: string, userEmail: string) {

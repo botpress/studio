@@ -5,6 +5,7 @@ import { TYPES } from 'core/app/types'
 import { FileContent, GhostService, ReplaceContent, ScopedGhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { ConfigProvider } from 'core/config'
+import { FlowService } from 'core/dialog'
 import { JobService } from 'core/distributed/job-service'
 import { MigrationService } from 'core/migration'
 import { getBuiltinPath, listDir } from 'core/misc/list-dir'
@@ -60,6 +61,7 @@ const debug = DEBUG('services:bots')
 
 @injectable()
 export class BotService {
+  public flowService!: FlowService
   public mountBot: Function = this.localMount
   public unmountBot: Function = this.localUnmount
 
@@ -289,6 +291,17 @@ export class BotService {
     return contentTypes.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
   }
 
+  private async addHooks(ghost: ScopedGhostService): Promise<string[]> {
+    const hooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
+
+    for (const type of hooks) {
+      const content = await fse.readFile(type.absolutePath, 'utf-8')
+      await ghost.upsertFile('hooks', type.relativePath, this.addChecksum(content))
+    }
+
+    return hooks.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
+  }
+
   private async _createBotFromTemplate(botConfig: BotConfig, template: BotTemplate): Promise<BotConfig | undefined> {
     const templatePath = path.resolve(getBuiltinPath('bot-templates'), template.id)
     const templateConfigPath = path.resolve(templatePath, BOT_CONFIG_FILENAME)
@@ -309,8 +322,6 @@ export class BotService {
         version: process.BOTPRESS_VERSION
       }
 
-      await this.addContentTypes(scopedGhost)
-
       if (!mergedConfigs.defaultLanguage) {
         mergedConfigs.disabled = true
       }
@@ -318,6 +329,12 @@ export class BotService {
       await scopedGhost.ensureDirs('/', BOT_DIRECTORIES)
       await scopedGhost.upsertFile('/', BOT_CONFIG_FILENAME, stringify(mergedConfigs))
       await scopedGhost.upsertFiles('/', files)
+
+      await this.addContentTypes(scopedGhost)
+      await this.addHooks(scopedGhost)
+
+      const flowActions = await this.flowService.forBot(botConfig.id).getAllFlowActions()
+      await this.addLocalBotActions(botConfig.id, flowActions)
 
       return mergedConfigs
     } catch (err) {
