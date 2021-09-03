@@ -5,6 +5,7 @@ import { ConfigProvider } from 'core/config'
 import { PersistedConsoleLogger, centerText } from 'core/logger'
 import _ from 'lodash'
 import stripAnsi from 'strip-ansi'
+import yn from 'yn'
 
 import { MigrationEntry, MigrationFile, MigrationService, types } from '.'
 
@@ -20,6 +21,10 @@ export class BotMigrationService {
 
   async executeMissingBotMigrations(botId: string, currentVersion: string, isDown?: boolean) {
     debug.forBot(botId, 'Checking missing migrations for bot ', { botId, currentVersion, isDown })
+
+    if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
+      currentVersion = yn(process.env.TESTMIG_NEW) ? process.BOTPRESS_VERSION : '12.0.0'
+    }
 
     const missingMigrations = this.migService.filterMigrations(this.migService.getAllMigrations(), currentVersion, {
       isDown,
