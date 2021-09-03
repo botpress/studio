@@ -313,7 +313,8 @@
         "all": "All",
         "createNew": "Create new {name}",
         "createNewContent": "Create new content",
-        "filterByType": "Filter by Content Type"
+        "filterByType": "Filter by Content Type",
+        "unregisteredWarning": "Content-types is unregistered."
       },
       "switchToDefaultLang": "Switch to {defaultLang} and start editing",
       "usageModal": {

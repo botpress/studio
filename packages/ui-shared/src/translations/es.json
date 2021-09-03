@@ -240,6 +240,7 @@
   "trigger": "Disparador",
   "type": "Tipo",
   "undo": "Deshacer",
+  "unregistered": "No registrado",
   "update": "Actualizar",
   "upload": "Subir",
   "usage": "Uso",

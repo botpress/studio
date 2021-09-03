@@ -13,9 +13,9 @@ export default class SidebarView extends Component<Props> {
     count: null
   }
 
-  CATEGORY_DISABLED = {
-    id: 'disabled',
-    title: lang.tr('disabled'),
+  CATEGORY_UNREGISTERED = {
+    id: 'unregistered',
+    title: lang.tr('unregistered'),
     count: null
   }
 
@@ -60,16 +60,16 @@ export default class SidebarView extends Component<Props> {
       }
     })
 
-    const contentTypesDisabled = [this.CATEGORY_DISABLED, ...this.props.categories.disabled].map(cat => {
+    const contentTypesUnregistered = [this.CATEGORY_UNREGISTERED, ...this.props.categories.disabled].map(cat => {
       return {
         id: `btn-filter-${cat.id}`,
-        label: lang.tr(cat.title),
+        label: cat.title,
         value: cat,
-        selected: cat.id === this.CATEGORY_DISABLED.id,
+        selected: cat.id === this.CATEGORY_UNREGISTERED.id,
         actions: [
-          cat.id !== this.CATEGORY_DISABLED.id && {
+          cat.id !== this.CATEGORY_UNREGISTERED.id && {
             id: `btn-list-warning-${cat.id}`,
-            tooltip: 'Content-types is unregistered.',
+            tooltip: lang.tr('studio.content.sideBar.unregisteredWarning'),
             icon: 'warning-sign' as IconName
           }
         ]
@@ -80,7 +80,7 @@ export default class SidebarView extends Component<Props> {
       <SidePanel>
         <SidePanelSection label={lang.tr('studio.content.sideBar.filterByType')} actions={actions}>
           <ItemList items={contentTypes} onElementClicked={el => this.props.handleCategorySelected(el.value.id)} />
-          <ItemList items={contentTypesDisabled} />
+          <ItemList items={contentTypesUnregistered} />
         </SidePanelSection>
       </SidePanel>
     )
