@@ -4,6 +4,7 @@ import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
 import { PersistedConsoleLogger, centerText } from 'core/logger'
 import _ from 'lodash'
+import semver from 'semver'
 import stripAnsi from 'strip-ansi'
 import yn from 'yn'
 
@@ -23,7 +24,12 @@ export class BotMigrationService {
     debug.forBot(botId, 'Checking missing migrations for bot ', { botId, currentVersion, isDown })
 
     if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
-      currentVersion = yn(process.env.TESTMIG_NEW) ? process.BOTPRESS_VERSION : '12.0.0'
+      if (yn(process.env.TESTMIG_ALL)) {
+        currentVersion = '12.0.0'
+      } else {
+        const isBotOlder = semver.lt(currentVersion, process.BOTPRESS_VERSION)
+        currentVersion = isBotOlder ? currentVersion : process.BOTPRESS_VERSION
+      }
     }
 
     const missingMigrations = this.migService.filterMigrations(this.migService.getAllMigrations(), currentVersion, {
