@@ -33,22 +33,38 @@ const migration: Migration = {
     let hasChanges = false
     const flowService = inversify.get<FlowService>(TYPES.FlowService)
 
-    const baseTypes = await ghostService.global().directoryListing(CONTENT_DIR, '*.*')
+    const globalTypes = await ghostService.global().directoryListing(CONTENT_DIR, '*.*')
+    const builtinTypes = await listDir(getBuiltinPath(CONTENT_DIR), { fileFilter: '**/*.js' })
+
+    const contentTypes = [
+      ...globalTypes.filter(x => !x.startsWith('builtin/')),
+      ...builtinTypes.map(x => x.relativePath)
+    ]
 
     const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
       const botTypes = await ghostService.forBot(botId).directoryListing(CONTENT_DIR, '*.*')
+      if (botTypes.length) {
+        return
+      }
 
-      if (!botTypes.length) {
-        for (const type of baseTypes) {
-          const buffer = await ghostService.global().readFileAsBuffer(CONTENT_DIR, type)
-          await ghostService.forBot(botId).upsertFile(CONTENT_DIR, type, buffer)
+      for (const type of contentTypes) {
+        let content
+        if (builtinTypes.find(x => x.relativePath === type)) {
+          content = await fse.readFile(path.join(getBuiltinPath(CONTENT_DIR), type))
+        } else if (globalTypes.find(x => x === type)) {
+          content = await ghostService.global().readFileAsBuffer(CONTENT_DIR, type)
         }
-        hasChanges = true
+
+        if (content) {
+          await ghostService.forBot(botId).upsertFile(CONTENT_DIR, type, content)
+          hasChanges = true
+        }
       }
     }
 
     /**
-     * Scan each flows and extract actions, then if the bot doesn't have it locally, fetch it from global or builtin
+     * Scan each flows and extract actions, then if the bot doesn't have it locally, fetch it from builtin or global.
+     * We prefer builtin first because we had to make slight adjustments to some actions
      */
     const globalActions = await ghostService.global().directoryListing('actions', '*.*')
     const builtinActions = await listDir(getBuiltinPath('actions'))
@@ -64,10 +80,10 @@ const migration: Migration = {
         }
 
         let content
-        if (globalActions.find(x => x === actionFile)) {
-          content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
-        } else if (builtinActions.find(x => x.relativePath === actionFile)) {
+        if (builtinActions.find(x => x.relativePath === actionFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
+        } else if (globalActions.find(x => x === actionFile)) {
+          content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
         }
 
         if (content) {
