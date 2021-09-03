@@ -22,6 +22,15 @@ const create = async () => {
   const packageJson = fse.readJsonSync(packageJsonPath)
   fse.writeJSONSync(packageJsonPath, { name: args.name, ...packageJson }, { spaces: 2 })
 
+  try {
+    const schema = path.join(componentDir, 'src/backend/schema.ts')
+
+    const schemaContent = fse.readFileSync(schema, 'utf-8').toString()
+    fse.writeFileSync(schema, schemaContent.replace('COMPONENT_NAME', args.name))
+  } catch (err) {
+    console.error(`Couldn't edit schema ${err}`)
+  }
+
   console.log(`
 Component created successfully! 
 
