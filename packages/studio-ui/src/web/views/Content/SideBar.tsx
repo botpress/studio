@@ -80,7 +80,7 @@ export default class SidebarView extends Component<Props> {
       <SidePanel>
         <SidePanelSection label={lang.tr('studio.content.sideBar.filterByType')} actions={actions}>
           <ItemList items={contentTypes} onElementClicked={el => this.props.handleCategorySelected(el.value.id)} />
-          <ItemList items={contentTypesUnregistered} />
+          {this.props.categories.disabled.length > 0 && <ItemList items={contentTypesUnregistered} />}
         </SidePanelSection>
       </SidePanel>
     )
