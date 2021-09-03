@@ -4,6 +4,7 @@ import { Categories } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { ItemList, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
+import { SectionAction } from '~/components/Shared/Interface/typings'
 
 export default class SidebarView extends Component<Props> {
   CATEGORY_ALL = {
@@ -19,23 +20,23 @@ export default class SidebarView extends Component<Props> {
   }
 
   render() {
-    const contentTypeActions = this.props.categories.enabled.map(cat => {
+    const contentTypeActions: SectionAction[] = this.props.categories.enabled.map(cat => {
       return {
         id: `btn-create-${cat.id}`,
         label: lang.tr(cat.title),
-        onClick: () => {
+        onClick: (_: React.MouseEvent) => {
           this.props.handleCategorySelected(cat.id)
           this.props.handleAdd()
         }
       }
     })
 
-    const actions = [
+    const actions: SectionAction[] = [
       {
         tooltip: lang.tr('studio.content.sideBar.createNewContent'),
         id: 'btn-add-content',
         icon: 'add' as IconName,
-        items: [contentTypeActions]
+        items: contentTypeActions
       }
     ]
 
@@ -65,7 +66,13 @@ export default class SidebarView extends Component<Props> {
         label: lang.tr(cat.title),
         value: cat,
         selected: cat.id === this.CATEGORY_DISABLED.id,
-        actions: []
+        actions: [
+          cat.id !== this.CATEGORY_DISABLED.id && {
+            id: `btn-list-warning-${cat.id}`,
+            tooltip: 'Content-types is unregistered.',
+            icon: 'warning-sign' as IconName
+          }
+        ]
       }
     })
 

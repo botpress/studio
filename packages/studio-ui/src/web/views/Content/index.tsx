@@ -1,3 +1,4 @@
+import { Callout, Intent } from '@blueprintjs/core'
 import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
