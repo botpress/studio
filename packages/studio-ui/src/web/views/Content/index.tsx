@@ -1,4 +1,3 @@
-import { Callout, Intent } from '@blueprintjs/core'
 import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
@@ -212,7 +211,9 @@ class ContentView extends Component<Props, State> {
 
     const classNames = classnames(style.content, 'bp-content')
 
-    if (!categoriesRegistered.length && !categoriesUnregistered.length) {
+    const hasContentTypes = categoriesRegistered.length || categoriesUnregistered.length
+
+    if (!hasContentTypes) {
       return (
         <div className={classNames}>
           <Alert bsStyle="warning">
@@ -239,14 +240,14 @@ class ContentView extends Component<Props, State> {
           handleCategorySelected={this.handleCategorySelected}
         />
         <List
-          readOnly={!this.canEdit}
+          readOnly={!this.canEdit || !categoriesRegistered.length}
           count={
             this.state.selectedId === 'all'
               ? _.sumBy(categoriesRegistered, 'count') || 0
               : _.find(categoriesRegistered, { id: this.state.selectedId }).count
           }
           className={style.contentListWrapper}
-          contentItems={this.props.contentItems ?? []}
+          contentItems={categoriesRegistered.length ? this.props.contentItems ?? [] : []}
           handleRefresh={this.handleRefresh}
           handleEdit={this.handleModalShowForEdit}
           handleDeleteSelected={this.handleDeleteSelected}

@@ -33,14 +33,16 @@ export default class SidebarView extends Component<Props> {
       }
     })
 
-    const actions: SectionAction[] = [
-      {
-        tooltip: lang.tr('studio.content.sideBar.createNewContent'),
-        id: 'btn-add-content',
-        icon: 'add' as IconName,
-        items: contentTypeActions
-      }
-    ]
+    const actions: SectionAction[] = contentTypeActions.length
+      ? [
+          {
+            tooltip: lang.tr('studio.content.sideBar.createNewContent'),
+            id: 'btn-add-content',
+            icon: 'add' as IconName,
+            items: contentTypeActions
+          }
+        ]
+      : []
 
     const contentTypes = [this.CATEGORY_ALL, ...registered].map(cat => {
       return {
