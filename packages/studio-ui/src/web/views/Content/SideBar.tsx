@@ -20,7 +20,9 @@ export default class SidebarView extends Component<Props> {
   }
 
   render() {
-    const contentTypeActions: SectionAction[] = this.props.categories.enabled.map(cat => {
+    const { registered, unregistered } = this.props.categories
+
+    const contentTypeActions: SectionAction[] = registered.map(cat => {
       return {
         id: `btn-create-${cat.id}`,
         label: lang.tr(cat.title),
@@ -40,7 +42,7 @@ export default class SidebarView extends Component<Props> {
       }
     ]
 
-    const contentTypes = [this.CATEGORY_ALL, ...this.props.categories.enabled].map(cat => {
+    const contentTypes = [this.CATEGORY_ALL, ...registered].map(cat => {
       return {
         id: `btn-filter-${cat.id}`,
         label: !!cat.count ? `${lang.tr(cat.title)} (${cat.count})` : lang.tr(cat.title),
@@ -60,7 +62,7 @@ export default class SidebarView extends Component<Props> {
       }
     })
 
-    const contentTypesUnregistered = [this.CATEGORY_UNREGISTERED, ...this.props.categories.disabled].map(cat => {
+    const contentTypesUnregistered = [this.CATEGORY_UNREGISTERED, ...unregistered].map(cat => {
       return {
         id: `btn-filter-${cat.id}`,
         label: cat.title,
@@ -79,8 +81,10 @@ export default class SidebarView extends Component<Props> {
     return (
       <SidePanel>
         <SidePanelSection label={lang.tr('studio.content.sideBar.filterByType')} actions={actions}>
-          <ItemList items={contentTypes} onElementClicked={el => this.props.handleCategorySelected(el.value.id)} />
-          {this.props.categories.disabled.length > 0 && <ItemList items={contentTypesUnregistered} />}
+          {registered.length > 0 && (
+            <ItemList items={contentTypes} onElementClicked={el => this.props.handleCategorySelected(el.value.id)} />
+          )}
+          {unregistered.length > 0 && <ItemList items={contentTypesUnregistered} />}
         </SidePanelSection>
       </SidePanel>
     )

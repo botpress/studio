@@ -74,7 +74,7 @@ const SayNodeContent: FC<Props> = props => {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  categories: state.content.categories.enabled
+  categories: state.content.categories.registered
 })
 
 const mapDispatchToProps = {

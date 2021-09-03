@@ -384,7 +384,7 @@ class SelectContent extends Component<Props, State> {
 
 const mapStateToProps = (state: RootReducer) => ({
   contentItems: state.content.currentItems,
-  categories: state.content.categories.enabled
+  categories: state.content.categories.registered
 })
 
 const mapDispatchToProps = {

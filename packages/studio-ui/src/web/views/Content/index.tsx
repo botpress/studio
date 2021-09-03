@@ -206,12 +206,13 @@ class ContentView extends Component<Props, State> {
 
   render() {
     const { selectedId = 'all', contentToEdit } = this.state
-    const categoriesEnabled = this.props.categories.enabled ?? []
-    const selectedCategory = _.find(categoriesEnabled, { id: this.currentContentType() })
+    const categoriesRegistered = this.props.categories.registered ?? []
+    const categoriesUnregistered = this.props.categories.unregistered ?? []
+    const selectedCategory = _.find(categoriesRegistered, { id: this.currentContentType() })
 
     const classNames = classnames(style.content, 'bp-content')
 
-    if (!categoriesEnabled.length) {
+    if (!categoriesRegistered.length && !categoriesUnregistered.length) {
       return (
         <div className={classNames}>
           <Alert bsStyle="warning">
@@ -241,8 +242,8 @@ class ContentView extends Component<Props, State> {
           readOnly={!this.canEdit}
           count={
             this.state.selectedId === 'all'
-              ? _.sumBy(categoriesEnabled, 'count') || 0
-              : _.find(categoriesEnabled, { id: this.state.selectedId }).count
+              ? _.sumBy(categoriesRegistered, 'count') || 0
+              : _.find(categoriesRegistered, { id: this.state.selectedId }).count
           }
           className={style.contentListWrapper}
           contentItems={this.props.contentItems ?? []}

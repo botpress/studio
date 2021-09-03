@@ -97,7 +97,7 @@ const CommandPalette: FC<Props> = props => {
 const mapStateToProps = (state: RootReducer) => ({
   modules: state.modules,
   bots: state.bots.bots,
-  contentTypes: state.content.categories.enabled,
+  contentTypes: state.content.categories.registered,
   user: state.user
 })
 

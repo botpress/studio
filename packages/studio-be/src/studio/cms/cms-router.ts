@@ -23,8 +23,8 @@ export class CMSRouter extends CustomStudioRouter {
         const botId = req.params.botId
         const types = await this.cmsService.getAllContentTypes(botId)
         const categories: Categories = {
-          enabled: [],
-          disabled: types.disabled.map(x => ({
+          registered: [],
+          unregistered: types.disabled.map(x => ({
             id: x,
             title: x
           }))
@@ -34,7 +34,7 @@ export class CMSRouter extends CustomStudioRouter {
           const type = types.enabled[i]
           const count = await this.cmsService.countContentElementsForContentType(botId, type.id)
 
-          categories.enabled.push({
+          categories.registered.push({
             id: type.id,
             count,
             title: type.title,

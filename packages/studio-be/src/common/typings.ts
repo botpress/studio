@@ -125,8 +125,8 @@ export interface ParsedContentType {
   }
 }
 export interface Categories {
-  enabled: ParsedContentType[]
-  disabled: Pick<ParsedContentType, 'id' | 'title'>[]
+  registered: ParsedContentType[]
+  unregistered: Pick<ParsedContentType, 'id' | 'title'>[]
 }
 
 export interface OutgoingEventCommonArgs {

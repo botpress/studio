@@ -198,7 +198,7 @@ const mapStateToProps = (state: RootReducer) => ({
   currentFlow: getCurrentFlow(state),
   currentFlowNode: getCurrentFlowNode(state) as any,
   user: state.user,
-  contentTypes: state.content.categories.enabled
+  contentTypes: state.content.categories.registered
 })
 
 const mapDispatchToProps = {
