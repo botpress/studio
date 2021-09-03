@@ -204,7 +204,6 @@ class ContentView extends Component<Props, State> {
   }
 
   render() {
-    console.log('categories', this.props.categories)
     const { selectedId = 'all', contentToEdit } = this.state
     const categoriesEnabled = this.props.categories.enabled ?? []
     const selectedCategory = _.find(categoriesEnabled, { id: this.currentContentType() })
