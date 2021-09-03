@@ -110,6 +110,7 @@ export class HTTPServer {
       objectCache,
       nluService,
       qnaService,
+      skillService,
       this
     )
   }

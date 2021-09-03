@@ -107,6 +107,13 @@
       "placeholderText": "Le placeholder de la liste déroulante"
     }
   },
+  "skills": {
+    "callApi": "Appel API",
+    "choice": "Choix",
+    "fullName": "Compétences de base",
+    "sendEmail": "Envoi courriel",
+    "slotFilling": "Remplir slot"
+  },
   "libraries": {
     "fullName": "Librairies",
     "addLibrary": "Ajouter cette librairie",

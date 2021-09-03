@@ -12,16 +12,16 @@ const INTENT_PREFIX = 'intent:'
  */
 const validateChoice = async data => {
   let choice = undefined
-  const config = await bp.config.getModuleConfigForBot('basic-skills', event.botId)
+  const config = await bp.bots.getBotById(event.botId)
   const nb = _.get(event.preview && event.preview.match(/^[#).!]?([\d]{1,2})[#).!]?$/), '[1]')
 
-  if (config.matchNumbers && nb) {
+  if (config.skillChoice && config.skillChoice.matchNumbers && nb) {
     const index = parseInt(nb) - 1
     const element = await bp.cms.getContentElement(event.botId, data.contentId)
     choice = _.get(element, `formData.choices.${index}.value`)
   }
 
-  if (!choice && config.matchNLU) {
+  if (!choice && config.skillChoice && config.skillChoice.matchNLU) {
     choice = _.findKey(data.keywords, keywords => {
       const intents = keywords
         .filter(x => (x || '').toLowerCase().startsWith(INTENT_PREFIX))
