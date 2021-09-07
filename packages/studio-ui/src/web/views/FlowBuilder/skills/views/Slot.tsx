@@ -25,9 +25,9 @@ export class Slot extends React.Component<any, any> {
     turnExpiry: -1
   }
 
-  componentDidMount() {
-    this.fetchActions()
-    this.fetchIntents().then(() => this.setStateFromProps())
+  async componentDidMount() {
+    await this.fetchActions()
+    await this.fetchIntents().then(() => this.setStateFromProps())
   }
 
   setStateFromProps = () => {
