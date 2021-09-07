@@ -1,21 +1,56 @@
-import { BotConfig, Logger, ListenHandle } from 'botpress/sdk'
+import { BotConfig, Logger, ListenHandle, BotTemplate } from 'botpress/sdk'
 import { BotEditSchema } from 'common/validation'
 import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
-import { GhostService, ReplaceContent } from 'core/bpfs'
+import { FileContent, GhostService, ReplaceContent } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { ConfigProvider } from 'core/config'
 import { JobService } from 'core/distributed/job-service'
 import { MigrationService } from 'core/migration'
+import { getBuiltinPath, listDir } from 'core/misc/list-dir'
+import { stringify } from 'core/misc/utils'
 import { InvalidOperationError } from 'core/routers'
+import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
+import fse from 'fs-extra'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
 import _ from 'lodash'
 import path from 'path'
 
 const BOT_CONFIG_FILENAME = 'bot.config.json'
+const BOT_DIRECTORIES = ['actions', 'flows', 'entities', 'content-elements', 'intents', 'qna']
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
+const BOTID_REGEX = /^[A-Z0-9]+[A-Z0-9_-]{1,}[A-Z0-9]+$/i
+
+const DEFAULT_BOT_CONFIGS = {
+  locked: false,
+  disabled: false,
+  private: false,
+  details: {}
+}
+
+const BotCreationSchema = Joi.object().keys({
+  id: Joi.string()
+    .regex(BOTID_REGEX)
+    .required(),
+  name: Joi.string()
+    .max(50)
+    .allow('')
+    .optional(),
+  category: Joi.string().allow(null),
+  description: Joi.string()
+    .max(500)
+    .allow(''),
+  pipeline_status: {
+    current_stage: {
+      promoted_by: Joi.string(),
+      promoted_on: Joi.date(),
+      id: Joi.string()
+    }
+  },
+  locked: Joi.bool()
+})
 
 const debug = DEBUG('services:bots')
 
@@ -35,6 +70,7 @@ export class BotService {
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.CMSService) private cms: CMSService,
     @inject(TYPES.GhostService) private ghostService: GhostService,
+    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.JobService) private jobService: JobService,
     @inject(TYPES.MigrationService) private migrationService: MigrationService
   ) {
@@ -195,6 +231,96 @@ export class BotService {
     // const workspaceId = await this.workspaceService.getBotWorkspaceId(sourceBotId)
     // await this.workspaceService.addBotRef(destBotId, workspaceId)
     await this.mountBot(destBotId)
+  }
+
+  async getBotTemplates(): Promise<any[]> {
+    const builtinPath = getBuiltinPath('bot-templates')
+    const templates = await fse.readdir(builtinPath)
+
+    const detailed = await templates.map(id => {
+      try {
+        const details = require(path.join(builtinPath, id, 'bot.config.json'))
+        return { id, name: details.name, desc: details.desc, moduleId: 'builtin', moduleName: 'Botpress Builtin' }
+      } catch (err) {}
+    })
+
+    return detailed.filter(x => x !== undefined)
+  }
+
+  async makeBotId(botId: string, workspaceId: string) {
+    const workspace = await this.workspaceService.findWorkspace(workspaceId)
+    return workspace?.botPrefix ? `${workspace.botPrefix}__${botId}` : botId
+  }
+
+  async addBot(bot: BotConfig, botTemplate: BotTemplate): Promise<void> {
+    const { error } = Joi.validate(bot, BotCreationSchema)
+    if (error) {
+      throw new InvalidOperationError(`An error occurred while creating the bot: ${error.message}`)
+    }
+
+    const mergedConfigs = await this._createBotFromTemplate(bot, botTemplate)
+    if (mergedConfigs) {
+      if (!mergedConfigs.disabled) {
+        await coreActions.onBotCreation(bot.id)
+      }
+
+      this._invalidateBotIds()
+    }
+  }
+
+  private async _createBotFromTemplate(botConfig: BotConfig, template: BotTemplate): Promise<BotConfig | undefined> {
+    const templatePath = path.resolve(getBuiltinPath('bot-templates'), template.id)
+    const templateConfigPath = path.resolve(templatePath, BOT_CONFIG_FILENAME)
+
+    try {
+      const scopedGhost = this.ghostService.forBot(botConfig.id)
+      const files = await this._loadBotTemplateFiles(templatePath)
+
+      if (!(await fse.pathExists(templateConfigPath))) {
+        throw new Error("Bot template doesn't exist")
+      }
+
+      const templateConfig = JSON.parse(await fse.readFile(templateConfigPath, 'utf-8'))
+      const mergedConfigs = {
+        ...DEFAULT_BOT_CONFIGS,
+        ...templateConfig,
+        ...botConfig,
+        version: process.BOTPRESS_VERSION
+      }
+
+      if (!mergedConfigs.imports.contentTypes) {
+        const allContentTypes = await this.cms.getAllContentTypes()
+        mergedConfigs.imports.contentTypes = allContentTypes.map(x => x.id)
+      }
+
+      if (!mergedConfigs.defaultLanguage) {
+        mergedConfigs.disabled = true
+      }
+
+      await scopedGhost.ensureDirs('/', BOT_DIRECTORIES)
+      await scopedGhost.upsertFile('/', BOT_CONFIG_FILENAME, stringify(mergedConfigs))
+      await scopedGhost.upsertFiles('/', files)
+
+      return mergedConfigs
+    } catch (err) {
+      this.logger
+        .forBot(botConfig.id)
+        .attachError(err)
+        .error(`Error creating bot ${botConfig.id} from template "${template.name}"`)
+    }
+  }
+
+  private async _loadBotTemplateFiles(templatePath: string): Promise<FileContent[]> {
+    const startsWithADot = /^\./gm
+    const templateFiles = await listDir(templatePath, [startsWithADot, new RegExp(BOT_CONFIG_FILENAME)])
+
+    return templateFiles.map(
+      f =>
+        <FileContent>{
+          name: f.relativePath,
+          content: fse.readFileSync(f.absolutePath)
+        }
+    )
   }
 
   public async migrateBotContent(botId: string): Promise<void> {
