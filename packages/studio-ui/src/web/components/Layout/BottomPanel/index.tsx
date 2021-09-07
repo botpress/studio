@@ -23,7 +23,7 @@ const BottomPanel = props => {
   const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(
     utils.storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true
   )
-  const [eventId, setEventId] = useState()
+  const [messageId, setMessageId] = useState()
   const [dataHistory, setDataHistory] = useState<DataEntry[]>([])
   const [customTabs, setCustomTabs] = useState([])
 
@@ -66,7 +66,7 @@ const BottomPanel = props => {
         handleChangeTab('debugger')
       }
 
-      setEventId(payload.eventId)
+      setMessageId(payload.messageId)
     }
   }
 
@@ -115,7 +115,7 @@ const BottomPanel = props => {
         <Logs commonButtons={commonButtons} hidden={tab !== 'logs'} />
 
         <Debugger
-          eventId={eventId}
+          messageId={messageId}
           autoFocus={autoFocusDebugger}
           setAutoFocus={handleAutoFocus}
           commonButtons={commonButtons}

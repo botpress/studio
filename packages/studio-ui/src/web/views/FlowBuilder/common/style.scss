@@ -21,6 +21,13 @@
     margin-right: 8px;
   }
 
+  &.rtl{
+    .icon {
+      margin-right: unset;
+      margin-left: 8px;
+    }
+  }
+
   .name {
     line-height: 1.25;
 
@@ -81,4 +88,8 @@
 
 .imagePreview {
   width: 140px;
+}
+
+.rtl {
+  direction: rtl;
 }
