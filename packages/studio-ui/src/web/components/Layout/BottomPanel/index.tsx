@@ -19,7 +19,7 @@ const AUTO_FOCUS_DEBUGGER = 'autoFocusDebugger'
 const DevPanel = MainLayout.BottomPanel
 
 const BottomPanel = props => {
-  const [tab, setTab] = useState<string>(utils.storage.get<string>(BOTTOM_PANEL_TAB) || 'debugger')
+  const [tab, setTab] = useState<string>(utils.storage.get(BOTTOM_PANEL_TAB) || 'debugger')
   const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(
     utils.storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true
   )

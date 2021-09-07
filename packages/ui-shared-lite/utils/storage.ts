@@ -2,7 +2,7 @@ import Cookie from 'js-cookie'
 
 export interface BPStorage {
   set: <T>(key: string, value: T) => void
-  get: <T>(key: string) => T | undefined
+  get: <T = string>(key: string) => T | undefined
   del: (key: string) => void
 }
 
@@ -30,31 +30,32 @@ const getDriver = (): 'cookie' | Storage => {
 }
 
 const serialize = <T>(value: T): string => {
-  let strValue = ''
-  if (typeof value !== 'string') {
-    try {
-      strValue = JSON.stringify(value)
-    } catch {}
-  } else {
-    strValue = value
+  if (value === null || value === undefined) {
+    throw new Error('[Storage] Cannot store null or undefined values')
   }
 
-  return strValue
+  if (typeof value === 'string') {
+    return value
+  }
+
+  try {
+    return JSON.stringify(value)
+  } catch {
+    console.error('[Storage] Error parsing value', value)
+    return ''
+  }
 }
 
-const deserialize = <T>(strValue?: string | null): T | undefined => {
-  if (strValue === undefined || strValue === null) {
+const deserialize = <T>(strValue: string | null | undefined): T | undefined => {
+  if (strValue === null || strValue === undefined) {
     return undefined
   }
 
-  let value: T | undefined = undefined
   try {
-    value = JSON.parse(strValue)
+    return JSON.parse(strValue)
   } catch {
-    value = strValue as any
+    return strValue as any
   }
-
-  return value
 }
 
 const storage: BPStorage = {
@@ -66,7 +67,7 @@ const storage: BPStorage = {
       console.error('Error while setting data into storage.', err.message)
     }
   },
-  get: <T>(key: string): T | undefined => {
+  get: <T = string>(key: string): T | undefined => {
     try {
       const driver = getDriver()
       return driver !== 'cookie' ? deserialize(driver.getItem(key)) : deserialize(Cookie.get(key))
