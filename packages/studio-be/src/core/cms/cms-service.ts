@@ -42,9 +42,9 @@ export class CMSService implements IDisposeOnExit {
   private readonly typesDir = 'content-types'
   private readonly elementsDir = 'content-elements'
 
-  private contentTypes: ContentType[] = []
-  private filesById = {}
-  private sandbox!: SafeCodeSandbox
+  private contentTypesByBot: { [botId: string]: ContentType[] } = {}
+  private filesByBotAndId: { [botId: string]: any } = {}
+  private sandboxByBot: { [botId: string]: SafeCodeSandbox } = {}
 
   constructor(
     @inject(TYPES.Logger)
@@ -59,7 +59,7 @@ export class CMSService implements IDisposeOnExit {
   ) {}
 
   disposeOnExit() {
-    this.sandbox?.dispose()
+    Object.keys(this.sandboxByBot).forEach(botId => this.sandboxByBot[botId]?.dispose())
   }
 
   async initialize() {
@@ -71,7 +71,6 @@ export class CMSService implements IDisposeOnExit {
     this.broadcastInvalidateForBot = await this.jobService.broadcast<string>(this.local__invalidateForBot.bind(this))
 
     await this.prepareDb()
-    await this._loadContentTypesFromFiles()
   }
 
   private async prepareDb() {
@@ -136,44 +135,46 @@ export class CMSService implements IDisposeOnExit {
       .delete()
   }
 
-  private async _loadContentTypesFromFiles(): Promise<void> {
-    const fileNames = await this.ghost.global().directoryListing(this.typesDir, '*.js')
+  public async loadContentTypesFromFiles(botId: string): Promise<void> {
+    const fileNames = await this.ghost.forBot(botId).directoryListing(this.typesDir, '*.js')
 
     const codeFiles = await Promise.map(fileNames, async filename => {
-      const content = <string>await this.ghost.global().readFileAsString(this.typesDir, filename)
-      const folder = path.dirname(filename)
+      const content = <string>await this.ghost.forBot(botId).readFileAsString(this.typesDir, filename)
+      const folder = botId
       return <CodeFile>{ code: content, folder, relativePath: path.basename(filename) }
     })
 
-    this.sandbox = new SafeCodeSandbox(codeFiles, await this.loggerProvider('CMS[Render]'))
-    let filesLoaded = 0
+    this.sandboxByBot[botId] = new SafeCodeSandbox(botId, await this.loggerProvider('CMS[Render]'))
+    await this.sandboxByBot[botId].addFiles(codeFiles)
 
-    for (const file of this.sandbox.ls()) {
+    this.contentTypesByBot[botId] = []
+    this.filesByBotAndId[botId] = {}
+
+    for (const file of this.sandboxByBot[botId].ls()) {
       try {
         const filename = path.basename(file)
         if (filename.startsWith('_')) {
           // File to exclude
           continue
         }
-        await this._loadContentTypeFromFile(file)
-        filesLoaded++
+
+        await this._loadContentTypeFromFile(file, botId, this.sandboxByBot[botId])
       } catch (err) {
         this.logger.attachError(err).error(`Could not load Content Type "${file}"`)
       }
     }
-
-    this.logger.info(`Loaded ${filesLoaded} content types`)
   }
 
-  private async _loadContentTypeFromFile(fileName: string): Promise<void> {
-    const contentType = <ContentType>await this.sandbox.run(fileName)
+  private async _loadContentTypeFromFile(fileName: string, botId: string, sandbox): Promise<void> {
+    const contentTypeParsed = await sandbox.run(fileName)
+    const contentType: ContentType = contentTypeParsed?.default ?? contentTypeParsed
 
     if (!contentType || !contentType.id) {
       throw new Error(`Invalid content type ${fileName}`)
     }
 
-    this.filesById[contentType.id] = `${contentType.id}.json`
-    this.contentTypes.push(contentType)
+    this.filesByBotAndId[botId][contentType.id] = `${contentType.id}.json`
+    this.contentTypesByBot[botId].push(contentType)
   }
 
   async listContentElements(
@@ -216,7 +217,7 @@ export class CMSService implements IDisposeOnExit {
     const dbElements = await query.offset(from)
     const elements: ContentElement[] = dbElements.map(this.transformDbItemToApi)
 
-    return Promise.map(elements, el => (language ? this._translateElement(el, language) : el))
+    return Promise.map(elements, el => (language ? this._translateElement(el, language, botId) : el))
   }
 
   async getContentElement(botId: string, id: string, language?: string): Promise<ContentElement> {
@@ -225,14 +226,14 @@ export class CMSService implements IDisposeOnExit {
       .first()
 
     const deserialized = this.transformDbItemToApi(element)
-    return language ? this._translateElement(deserialized, language) : deserialized
+    return language ? this._translateElement(deserialized, language, botId) : deserialized
   }
 
   async getContentElements(botId: string, ids: string[], language?: string): Promise<ContentElement[]> {
     const elements = await this.memDb(this.contentTable).where(builder => builder.where({ botId }).whereIn('id', ids))
 
     const apiElements: ContentElement[] = elements.map(this.transformDbItemToApi)
-    return Promise.map(apiElements, el => (language ? this._translateElement(el, language) : el))
+    return Promise.map(apiElements, el => (language ? this._translateElement(el, language, botId) : el))
   }
 
   async countContentElements(botId?: string): Promise<number> {
@@ -292,18 +293,15 @@ export class CMSService implements IDisposeOnExit {
     })
   }
 
-  async getAllContentTypes(botId?: string): Promise<ContentType[]> {
-    if (botId) {
-      const botConfig = await this.configProvider.getBotConfig(botId)
-      const enabledTypes = botConfig.imports.contentTypes || []
-      return Promise.map(enabledTypes, x => this.getContentType(x))
-    }
+  async getAllContentTypes(botId: string): Promise<ContentType[]> {
+    const botConfig = await this.configProvider.getBotConfig(botId)
+    const enabledTypes = botConfig.imports.contentTypes || this.contentTypesByBot[botId].map(x => x.id)
 
-    return this.contentTypes
+    return Promise.map(enabledTypes, x => this.getContentType(x, botId))
   }
 
-  getContentType(contentTypeId: string): ContentType {
-    const type = this.contentTypes.find(x => x.id === contentTypeId)
+  getContentType(contentTypeId: string, botId: string): ContentType {
+    const type = this.contentTypesByBot[botId].find(x => x.id === contentTypeId)
     if (!type) {
       throw new Error(`Content type "${contentTypeId}" is not a valid registered content type ID`)
     }
@@ -331,7 +329,7 @@ export class CMSService implements IDisposeOnExit {
     language?: string
   ): Promise<string> {
     contentTypeId = contentTypeId.toLowerCase()
-    const contentType = _.find(this.contentTypes, { id: contentTypeId })
+    const contentType = _.find(this.contentTypesByBot[botId], { id: contentTypeId })
 
     if (!contentType) {
       throw new Error(`Content type "${contentTypeId}" is not a valid registered content type ID`)
@@ -354,7 +352,7 @@ export class CMSService implements IDisposeOnExit {
 
     const contentElement = {
       formData,
-      ...(await this.fillComputedProps(contentType, formData, languages, defaultLanguage))
+      ...(await this.fillComputedProps(contentType, formData, languages, defaultLanguage, botId))
     }
     const body = this.transformItemApiToDb(botId, contentElement)
 
@@ -421,17 +419,17 @@ export class CMSService implements IDisposeOnExit {
     const elements = (await this.listContentElements(botId, contentTypeId, params)).map(element =>
       _.pick(element, 'id', 'formData', 'createdBy', 'createdOn', 'modifiedOn')
     )
-    const fileName = this.filesById[contentTypeId]
+    const fileName = this.filesByBotAndId[botId][contentTypeId]
     const content = JSON.stringify(elements, undefined, 2)
 
     await this.ghost.forBot(botId).upsertFile(this.elementsDir, fileName, content)
     await coreActions.invalidateCmsForBot(botId)
   }
 
-  private _translateElement(element: ContentElement, language: string) {
+  private _translateElement(element: ContentElement, language: string, botId: string) {
     return {
       ...element,
-      formData: this.getOriginalProps(element.formData, this.getContentType(element.contentType), language)
+      formData: this.getOriginalProps(element.formData, this.getContentType(element.contentType, botId), language)
     }
   }
 
@@ -468,7 +466,7 @@ export class CMSService implements IDisposeOnExit {
   async recomputeElementsForBot(botId: string): Promise<void> {
     const { languages, defaultLanguage } = await this.configProvider.getBotConfig(botId)
 
-    for (const contentType of this.contentTypes) {
+    for (const contentType of this.contentTypesByBot[botId]) {
       let elementId
       try {
         await this.memDb(this.contentTable)
@@ -482,7 +480,8 @@ export class CMSService implements IDisposeOnExit {
               contentType,
               JSON.parse(element.formData),
               languages,
-              defaultLanguage
+              defaultLanguage,
+              botId
             )
             element = { ...element, ...computedProps }
 
@@ -500,19 +499,25 @@ export class CMSService implements IDisposeOnExit {
     }
   }
 
-  private async fillComputedProps(contentType: ContentType, formData: object, languages: string[], defaultLanguage) {
+  private async fillComputedProps(
+    contentType: ContentType,
+    formData: object,
+    languages: string[],
+    defaultLanguage: string,
+    botId: string
+  ) {
     if (formData == null) {
       throw new Error(`"formData" must be a valid object (content type: ${contentType.id})`)
     }
 
     const expandedFormData = await this.resolveRefs(formData)
-    const previews = this.computePreviews(contentType.id, expandedFormData, languages, defaultLanguage)
+    const previews = this.computePreviews(contentType.id, expandedFormData, languages, defaultLanguage, botId)
 
     return { previews }
   }
 
-  private computePreviews(contentTypeId, formData, languages, defaultLang) {
-    const contentType = this.contentTypes.find(x => x.id === contentTypeId)
+  private computePreviews(contentTypeId, formData, languages, defaultLang, botId: string) {
+    const contentType = this.contentTypesByBot[botId].find(x => x.id === contentTypeId)
 
     if (!contentType) {
       throw new Error(`Unknown content type ${contentTypeId}`)
@@ -551,7 +556,7 @@ export class CMSService implements IDisposeOnExit {
       } else {
         // When switching default language, we make sure that the default one has all content elements
         if (!this._hasTranslation(el.formData, toLang)) {
-          const contentType = this.contentTypes.find(x => x.id === el.contentType)
+          const contentType = this.contentTypesByBot[botId].find(x => x.id === el.contentType)
           const originalProps = this.getOriginalProps(el.formData, contentType!, fromLang)
           const translatedProps = this.getTranslatedProps(originalProps, toLang)
 

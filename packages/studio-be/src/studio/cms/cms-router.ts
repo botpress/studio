@@ -72,7 +72,7 @@ export class CMSRouter extends CustomStudioRouter {
           ids
         })
 
-        const augmentedElements = await Promise.map(elements, this._augmentElement)
+        const augmentedElements = await Promise.map(elements, el => this._augmentElement(el, botId))
         res.send(augmentedElements)
       })
     )
@@ -101,7 +101,7 @@ export class CMSRouter extends CustomStudioRouter {
           return res.status(404).send(`Element ${elementId} not found`)
         }
 
-        res.send(await this._augmentElement(element))
+        res.send(await this._augmentElement(element, botId))
       })
     )
 
@@ -279,8 +279,8 @@ export class CMSRouter extends CustomStudioRouter {
     )*/
   }
 
-  private _augmentElement = async (element: ContentElement) => {
-    const contentType = await this.cmsService.getContentType(element.contentType)
+  private _augmentElement = async (element: ContentElement, botId: string) => {
+    const contentType = await this.cmsService.getContentType(element.contentType, botId)
     return {
       ...element,
       schema: {
