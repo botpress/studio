@@ -49,25 +49,27 @@ export class Slot extends React.Component<any, any> {
     }
   }
 
-  componentDidUpdate() {
-    if (this.isFormValid()) {
-      const intent = this.getSelectedIntent()
-      const slot = this.getSelectedSlot(intent)
-
-      const data = {
-        retryAttempts: this.state.maxRetryAttempts,
-        contentElement: this.state.contentElement,
-        notFoundElement: this.state.notFoundElement,
-        turnExpiry: this.state.turnExpiry,
-        validationAction: this.state.selectedActionOption && this.state.selectedActionOption.value,
-        intent: intent && intent.name,
-        slotName: slot && slot.name,
-        entities: slot && slot.entities
-      }
-
-      this.props.onDataChanged && this.props.onDataChanged(data)
-      this.props.onValidChanged && this.props.onValidChanged(true)
+  componentDidUpdate(prevProps, prevState) {
+    if (!this.isFormValid() || prevState === this.state) {
+      return
     }
+
+    const intent = this.getSelectedIntent()
+    const slot = this.getSelectedSlot(intent)
+
+    const data = {
+      retryAttempts: this.state.maxRetryAttempts,
+      contentElement: this.state.contentElement,
+      notFoundElement: this.state.notFoundElement,
+      turnExpiry: this.state.turnExpiry,
+      validationAction: this.state.selectedActionOption && this.state.selectedActionOption.value,
+      intent: intent && intent.name,
+      slotName: slot && slot.name,
+      entities: slot && slot.entities
+    }
+
+    this.props.onDataChanged && this.props.onDataChanged(data)
+    this.props.onValidChanged && this.props.onValidChanged(true)
   }
 
   fetchIntents = () => {
