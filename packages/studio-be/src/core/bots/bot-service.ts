@@ -32,7 +32,14 @@ const DEFAULT_BOT_CONFIGS = {
   locked: false,
   disabled: false,
   private: false,
-  details: {}
+  details: {},
+  skillChoice: {
+    matchNLU: true,
+    matchNumbers: true
+  },
+  skillSendEmail: {
+    transportConnectionString: '<<change me>>'
+  }
 }
 
 const BotCreationSchema = Joi.object().keys({

@@ -108,6 +108,29 @@
       "useMarkdown": "Use markdown"
     }
   },
+  "skills": {
+    "label": "Skills",
+    "callApi": "Call API",
+    "choice": "Choice",
+    "fullName": "Basic Skills",
+    "sendEmail": "Send Email",
+    "slotFilling": "Slot Filling",
+    "authGate": {
+      "title": "Auth Gate",
+      "fullName": "Internal Users",
+      "promptUnauthenticated": "Prompt for login if user is unauthenticated",
+      "whenChecked": "When checked, user will be asked to login if they are not already logged in. Otherwise, it will only act as a simple gate: allow or disallow",
+      "loginPromptMessage": "Login prompt message (required)",
+      "selectContent": "Select a content element",
+      "loginUrl": "Login URL Markdown",
+      "urlTooltip": "Copy and paste that small snippet of code in your text message to display a clickable URL in the chat for users to authenticate",
+      "copiedToClipboard": "Copied to clipboard",
+      "inviteMessage": "Message for invite code (if rollout strategy requires it)",
+      "invitePlaceholder": "Message asking for invite code",
+      "retryLimit": "Retry limit for invite code",
+      "loginLink": "[Login Link]({{temp.login_url}})"
+    }
+  },
   "libraries": {
     "fullName": "Libraries",
     "addLibrary": "Add this library",

@@ -1,0 +1,21 @@
+.element {
+  margin: 18px 0;
+
+  .title {
+    font-weight: bold;
+    margin: 5px 0;
+  }
+
+  .details {
+    font-size: 90%;
+    margin-top: 7px;
+  }
+}
+
+.retry {
+  width: 200px;
+}
+
+.flex {
+  display: flex;
+}

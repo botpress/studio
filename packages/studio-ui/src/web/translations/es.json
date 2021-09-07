@@ -107,6 +107,13 @@
       "useMarkdown": "Usar markdown"
     }
   },
+  "skills": {
+    "callApi": "Llamar API",
+    "choice": "Elección",
+    "fullName": "Habilidades Básicas",
+    "sendEmail": "Enviar Email",
+    "slotFilling": "Rellenar Slot"
+  },
   "nlu": {
     "autoTrain": "Auto Entrenamietno",
     "cancelTraining": "Cancelar Entrenamietno",

@@ -7,15 +7,15 @@ const Promise = require('bluebird')
  */
 
 const getTransport = async botId => {
-  const config = await bp.config.getModuleConfigForBot('basic-skills', botId)
+  const config = await bp.bots.getBotById(botId)
 
-  if (!config || !config.transportConnectionString || config.transportConnectionString === '<<change me>>') {
+  if (!config || !config.skillSendEmail || config.skillSendEmail.transportConnectionString === '<<change me>>') {
     throw new Error(
-      `You must configure the "basic-skills" module with valid SMTP credentials to send emails. Please see 'global/config/basic-skills.json'.`
+      `You must configure your bot with valid SMTP credentials to send emails. Please see 'bots/botId/bot.config.json'.`
     )
   }
 
-  return config.transportConnectionString
+  return config.skillSendEmail.transportConnectionString
 }
 
 const extractTextFromPayloads = payloads => {

@@ -926,12 +926,39 @@ declare module 'botpress/sdk' {
     locked: boolean
     pipeline_status: BotPipelineStatus
     oneflow?: boolean
+    qna: {
+      disabled: boolean
+    }
+    skillChoice: {
+      /**
+       * @default true
+       */
+      matchNumbers: boolean
+      /**
+       * @default true
+       */
+      matchNLU: boolean
+    }
+    skillSendEmail: {
+      /**
+       * Nodemailer2 transport connection string.
+       * @see https://www.npmjs.com/package/nodemailer2
+       *
+       * Alternatively, you can pass an object with any required parameters
+       * @see https://nodemailer.com/smtp/#examples
+       *
+       * @example smtps://user%40gmail.com:pass@smtp.gmail.com
+       * @default <<change me>>
+       */
+      transportConnectionString: string
+    }
 
     /**
      * constant number used to seed nlu random number generators
      * if not set, seed is computed from botId
      */
     nluSeed?: number
+
   }
 
   export type Pipeline = Stage[]
