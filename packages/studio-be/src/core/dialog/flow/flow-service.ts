@@ -1,4 +1,5 @@
 import { Flow, Logger } from 'botpress/sdk'
+import { parseActionInstruction } from 'common/action'
 import { ArrayCache } from 'common/array-cache'
 import { ObjectCache } from 'common/object-cache'
 import { TreeSearch, PATH_SEPARATOR } from 'common/treeSearch'
@@ -182,6 +183,16 @@ export class ScopedFlowService {
     }
   }
 
+  public async addMissingBotActions(flow: FlowView) {
+    const actions = flow.nodes
+      .map(node => [...((node.onEnter as string[]) ?? []), ...((node.onReceive as string[]) ?? [])])
+      .reduce((acc, cur) => [...acc, ...cur], [])
+      .map(parseActionInstruction)
+
+    const flowActions = _.uniq(actions.map(x => x.actionName))
+    await this.botService.addLocalBotActions(this.botId, flowActions)
+  }
+
   private setExpectedSaves(flowName: string, amount: number) {
     this.expectedSavesCache.set(flowName, amount)
   }
@@ -344,6 +355,8 @@ export class ScopedFlowService {
       this.ghost.upsertFile(FLOW_DIR, flowPath!, JSON.stringify(flowContent, undefined, 2)),
       this.ghost.upsertFile(FLOW_DIR, uiPath, JSON.stringify(uiContent, undefined, 2))
     ])
+
+    await this.addMissingBotActions(flow)
   }
 
   async deleteFlow(flowName: string, userEmail: string) {

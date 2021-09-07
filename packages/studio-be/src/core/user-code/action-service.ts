@@ -3,16 +3,17 @@ import { ObjectCache } from 'common/object-cache'
 import { ActionScope, LocalActionDefinition } from 'common/typings'
 import { BotService } from 'core/bots'
 import { GhostService } from 'core/bpfs'
+import { getBuiltinPath, listDir } from 'core/misc/list-dir'
 import { NotFoundError } from 'core/routers/errors'
 import { TYPES } from 'core/types'
 import { WorkspaceService } from 'core/users'
+import fse from 'fs-extra'
 import { inject, injectable, tagged } from 'inversify'
 import _ from 'lodash'
 import ms from 'ms'
-import path from 'path'
 
 import { extractMetadata } from './metadata'
-import { enabled, getBaseLookupPaths } from './utils'
+import { enabled } from './utils'
 
 const debug = DEBUG('actions')
 const DEBOUNCE_DELAY = ms('2s')
@@ -60,6 +61,7 @@ export class ActionService {
 }
 
 export class ScopedActionService {
+  private _builtinActionsCache: LocalActionDefinition[] | undefined
   private _globalActionsCache: LocalActionDefinition[] | undefined
   private _localActionsCache: LocalActionDefinition[] | undefined
   private _scriptsCache: Map<string, string> = new Map()
@@ -77,8 +79,31 @@ export class ScopedActionService {
   async listActions(): Promise<LocalActionDefinition[]> {
     const globalActions = await this._listGlobalActions()
     const localActions = await this.listLocalActions()
+    const builtinActions = await this.listBuiltinActions()
 
-    return globalActions.concat(localActions)
+    const userActions = [...globalActions, ...localActions]
+
+    // We ignore builtin actions when they already exists for the bot locally
+    return [...userActions, ..._.differenceBy(builtinActions, userActions, x => x.name)]
+  }
+
+  public async listBuiltinActions() {
+    if (this._builtinActionsCache) {
+      return this._builtinActionsCache
+    }
+
+    const actionFiles = await listDir(getBuiltinPath('actions'))
+
+    const actions = await Promise.map(actionFiles, async file => {
+      const name = file.relativePath.replace(/\.js|\.http\.js$/i, '')
+      const legacy = !file.relativePath.includes('.http.js')
+      const script = await fse.readFile(file.absolutePath, 'utf-8')
+
+      return { name, scope: 'bot' as ActionScope, legacy, ...extractMetadata(script) }
+    })
+
+    this._builtinActionsCache = actions
+    return actions
   }
 
   public async listLocalActions() {
