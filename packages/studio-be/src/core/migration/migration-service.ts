@@ -8,7 +8,7 @@ import Database from 'core/database'
 import { BotMigrationService } from 'core/migration'
 import fse from 'fs-extra'
 import glob from 'glob'
-import { Container, inject, injectable, tagged } from 'inversify'
+import { Container, inject, injectable, postConstruct, tagged } from 'inversify'
 import _ from 'lodash'
 import path from 'path'
 import semver from 'semver'
@@ -44,6 +44,16 @@ export class MigrationService {
   ) {
     this.botMigration = new BotMigrationService(this, logger, configProvider, bpfs)
     this.targetVersion = process.BOTPRESS_VERSION
+  }
+
+  @postConstruct()
+  async initialize() {
+    const migrations = await this.getAllMigrations()
+
+    if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
+      const versions = migrations.map(x => x.version).sort(semver.compare)
+      this.targetVersion = _.last(versions)!
+    }
   }
 
   public async getMigrationOpts(metadata?: sdk.MigrationMetadata): Promise<MigrationOpts> {
