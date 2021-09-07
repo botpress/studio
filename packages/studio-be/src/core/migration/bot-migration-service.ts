@@ -23,13 +23,9 @@ export class BotMigrationService {
   async executeMissingBotMigrations(botId: string, currentVersion: string, isDown?: boolean) {
     debug.forBot(botId, 'Checking missing migrations for bot ', { botId, currentVersion, isDown })
 
-    if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
-      if (yn(process.env.TESTMIG_ALL)) {
-        currentVersion = '12.0.0'
-      } else {
-        const isBotOlder = semver.lt(currentVersion, process.BOTPRESS_VERSION)
-        currentVersion = isBotOlder ? currentVersion : process.BOTPRESS_VERSION
-      }
+    if (process.env.TESTMIG_NEW) {
+      const isBotOlder = semver.lt(currentVersion, process.BOTPRESS_VERSION)
+      currentVersion = isBotOlder ? currentVersion : process.BOTPRESS_VERSION
     }
 
     const missingMigrations = this.migService.filterMigrations(this.migService.getAllMigrations(), currentVersion, {
