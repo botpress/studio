@@ -8,7 +8,8 @@ import Database from 'core/database'
 import { BotMigrationService } from 'core/migration'
 import fse from 'fs-extra'
 import glob from 'glob'
-import { Container, inject, injectable, tagged } from 'inversify'
+import { Container, inject, injectable, postConstruct, tagged } from 'inversify'
+import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import path from 'path'
 import semver from 'semver'
@@ -25,6 +26,9 @@ export interface MigrationEntry {
   details: string | string[]
   created_at: any
 }
+
+const FIRST_VERSION = '12.0.0'
+
 @injectable()
 export class MigrationService {
   /** This is the version we want to migrate to (either up or down) */
@@ -44,6 +48,24 @@ export class MigrationService {
   ) {
     this.botMigration = new BotMigrationService(this, logger, configProvider, bpfs)
     this.targetVersion = process.BOTPRESS_VERSION
+  }
+
+  @postConstruct()
+  async initialize() {
+    const migrations = await this.getAllMigrations()
+
+    if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
+      const versions = migrations.map(x => x.version).sort(semver.compare)
+      this.targetVersion = _.last(versions)!
+    }
+
+    if (process.env.TESTMIG_ALL) {
+      await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
+
+      for (const botId of await this.botService.getBotsIds()) {
+        await this.botMigration.executeMissingBotMigrations(botId, FIRST_VERSION)
+      }
+    }
   }
 
   public async getMigrationOpts(metadata?: sdk.MigrationMetadata): Promise<MigrationOpts> {

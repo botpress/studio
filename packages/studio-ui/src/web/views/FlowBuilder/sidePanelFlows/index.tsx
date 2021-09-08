@@ -104,6 +104,7 @@ const SidePanelContent: FC<Props> = props => {
 }
 
 const SidePanelInspectorContent: FC<Props> = props => {
+
   return (
     <div className={props.showFlowNodeProps ? style.rightPanelActive : style.rightPanel}>
       <SidePanel>
