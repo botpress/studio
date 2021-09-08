@@ -17,6 +17,7 @@ interface ExposedProps {
   className?: string
   placeholder?: string
   isSideForm?: boolean
+  isCode?: boolean
   singleLine: boolean
   readOnly?: boolean
   value: string
@@ -26,7 +27,7 @@ interface ExposedProps {
 const { hasCommandModifier } = KeyBindingUtil
 const A_KEY = 65
 
-type ConnectedProps = ExposedProps & { hints: any[]; contentLang: string }
+type ConnectedProps = ExposedProps & { hints: any[]; isRTLContentLang: boolean }
 
 interface State {
   beforeContentStateText?: string
@@ -141,8 +142,9 @@ class SmartInput extends React.Component<ConnectedProps, State> {
     }
     return (
       <div
-        className={cx(style.editor, this.props.className)}
-        style={{ paddingRight: '32px !important', direction: this.props.contentLang === 'ar' ? 'rtl' : 'ltr' }}
+        className={cx(style.editor, this.props.className, {
+          [style.rtl]: this.props.isRTLContentLang && !this.props.isCode
+        })}
         onClick={this.focus}
       >
         <Editor
@@ -173,7 +175,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
 }
 
 const mapDispatchToProps = { refreshHints }
-const mapStateToProps = ({ hints: { inputs }, language: { contentLang } }) => ({ hints: inputs, contentLang })
+const mapStateToProps = ({ hints: { inputs }, language: { isRTLContentLang } }) => ({ hints: inputs, isRTLContentLang })
 const ConnectedSmartInput = connect(mapStateToProps, mapDispatchToProps)(SmartInput)
 
 // Passing store explicitly since this component may be imported from another botpress-module
