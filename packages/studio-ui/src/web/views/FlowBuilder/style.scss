@@ -1,5 +1,13 @@
 .diagram {
   height: calc(100%);
+  flex-shrink: 0;
+  flex: auto;
+}
+
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%
 }
 
 .diagram :global(.srd-diagram) {

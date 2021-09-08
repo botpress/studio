@@ -21,7 +21,32 @@
     "phoneNumber": "Numéro de téléphone",
     "requireImageFile": "{targetProp} doit être une image",
     "supportedLanguages": "Langues supportées",
-    "website": "Site web"
+    "website": "Site web",
+    "botId": "Id du bot",
+    "copyToClipboard": "Copié dans le presse papier"
+  },
+  "libraries": {
+    "fullName": "Librairies",
+    "addLibrary": "Ajouter cette librairie",
+    "searchNpm": "Chercher une librairie sur NPM (recommandé)",
+    "searchGithub": "Ajouter un répertoire GitHub (peut être lent)",
+    "uploadArchive": "Téléverser une archive",
+    "libraries": "Librairies",
+    "splash": {
+      "text1": "Ces librairies peuvent être utilisées par les actions et les hooks de ce bot.",
+      "text2": "Lorsque vous modifiez le fichier 'package.json' via l'éditeur de code, appuyez sur le bouton ci-dessous pour le synchroniser."
+    },
+    "viewGithub": "Voir sur Github",
+    "customCommand": "Taper une commande personnalisée",
+    "openConsole": "Ouvrez la console pour voir le résultat de la commande",
+    "bundleDeps": "Empaqueter avec ses dépendances",
+    "addSuccess": "Librairie ajoutée avec succès!",
+    "libraryName": "Nom de la librairie",
+    "confirmRemove": "Êtes-vous sûr de vouloir retirer cette librairie?",
+    "deleteSuccess": "Librairie retirée avec succès",
+    "removeFailure": "Il y a eu une erreur lors du retrait de la librairie. Veuillez regarder les journaux du serveur pour plus de détails",
+    "bundleError": "Il y a eu une erreur lors de l'empaquetage de la librairie.",
+    "betaWarning": "C'est un module expérmental. L'implémentation peut changer drastiquement à court terme"
   },
   "nlu": {
     "autoTrain": "Entraînement automatique",

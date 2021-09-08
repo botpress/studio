@@ -1,3 +1,21 @@
+## [0.0.33](https://github.com/botpress/studio/compare/v0.0.32...v0.0.33) (2021-08-20)
+
+
+### Features
+
+* **config:** Add bot id as readonly on bot config ([49cffc5](https://github.com/botpress/studio/commit/49cffc5836cdf0ef065f49ec0d4cb506a84466e4))
+
+
+
+## [0.0.31](https://github.com/botpress/studio/compare/v0.0.30...v0.0.31) (2021-08-19)
+
+
+### Bug Fixes
+
+* **libraries:** updated logic to use disk first ([f42a3eb](https://github.com/botpress/studio/commit/f42a3eb67f512aab181df598ed832b810b7f9faf))
+
+
+
 ## [0.0.26](https://github.com/botpress/studio/compare/v0.0.23...v0.0.26) (2021-08-16)
 
 

@@ -177,7 +177,7 @@ export class HTTPServer {
     const botpressConfig = await this.configProvider.getBotpressConfig()
     const config = botpressConfig.httpServer
 
-    process.USE_JWT_COOKIES = yn(botpressConfig.jwtToken.useCookieStorage)
+    process.USE_JWT_COOKIES = yn(botpressConfig.jwtToken.useCookieStorage) || false
 
     /**
      * The loading of language models can take some time, access to Botpress is disabled until it is completed

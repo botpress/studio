@@ -8,11 +8,17 @@ import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import nanoid from 'nanoid'
 
-import { getOrCreate as redisFactory } from './async-redis'
+import { getOrCreate as redisFactory, makeRedisKey } from './async-redis'
 
-type Channel = 'job_start' | 'job_done'
-const JobStartChannel: Channel = 'job_start'
-const JobDoneChannel: Channel = 'job_done'
+const JobStartChannel = makeRedisKey('job_start')
+const JobDoneChannel = makeRedisKey('job_done')
+
+interface JobMessage {
+  clientId: string
+  jobId: string
+  jobName: string
+  args?: any[]
+}
 
 interface Job {
   jobId: string
@@ -109,7 +115,7 @@ export class RedisJobService implements JobService, IInitializeFromConfig {
     }
   }
 
-  private async _onMessageReceived(channel: Channel, rawMessage) {
+  private async _onMessageReceived(channel: string, rawMessage: string) {
     if (channel !== JobDoneChannel) {
       return
     }
@@ -148,10 +154,10 @@ export class RedisJobService implements JobService, IInitializeFromConfig {
     return Promise.race([timeoutPromise, jobPromise])
   }
 
-  private onMessage(client: Redis, jobChannel: Channel, cb: Function) {
-    client.on('message', (channel, message) => {
+  private onMessage(client: Redis, jobChannel: string, cb: (arg: JobMessage) => Promise<void>) {
+    client.on('message', async (channel: string, message: string) => {
       if (channel === jobChannel) {
-        cb(JSON.parse(message))
+        await cb(JSON.parse(message))
       }
     })
   }
@@ -159,11 +165,10 @@ export class RedisJobService implements JobService, IInitializeFromConfig {
   getNumberOfSubscribers(): Promise<number> {
     return new Promise((resolve, reject) => {
       // @ts-ignore typing missing for that method
-      this._redisPub.pubsub(['NUMSUB', JobDoneChannel], (err, reply) => {
+      this._redisPub.pubsub(['NUMSUB', JobDoneChannel], (err: Error, reply: number[]) => {
         if (err) {
           reject(err)
         }
-
         resolve(reply[1])
       })
     })
