@@ -1,15 +1,15 @@
 import { ObjectCache } from 'common/object-cache'
 import { IInitializeFromConfig } from 'common/typings'
 import { CacheInvalidators, MemoryObjectCache } from 'core/bpfs'
-import { getOrCreate as redisFactory } from 'core/distributed'
+import { makeRedisKey, getOrCreate as redisFactory } from 'core/distributed'
 import { TYPES } from 'core/types'
 import { EventEmitter } from 'events'
 import { inject, injectable } from 'inversify'
 import { Redis } from 'ioredis'
 
-const REDIS_INVALIDATE_STARTING_WITH = 'object-cache/invalidate-starting-with'
-const REDIS_INVALIDATE = 'object-cache/invalidate'
-const REDIS_SYNC = 'redis/sync'
+const REDIS_INVALIDATE_STARTING_WITH = makeRedisKey('object-cache/invalidate-starting-with')
+const REDIS_INVALIDATE = makeRedisKey('object-cache/invalidate')
+const REDIS_SYNC = makeRedisKey('redis/sync')
 
 @injectable()
 export class RedisObjectCache implements ObjectCache, IInitializeFromConfig {

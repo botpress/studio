@@ -1,12 +1,14 @@
 import { Button } from '@blueprintjs/core'
 import cx from 'classnames'
 import React, { FC, SyntheticEvent, useState } from 'react'
-
+import { connect } from 'react-redux'
+import {RootReducer} from '~/reducers'
 import { NodeDebugInfo } from '../../debugger'
 
 import { DebugInfo } from './DebugInfo'
 import style from './style.scss'
 
+type StateProps = ReturnType<typeof mapStateToProps>
 interface Props {
   setExpanded?: (expanded: boolean) => void
   expanded?: boolean
@@ -18,7 +20,7 @@ interface Props {
   nodeType: string
 }
 
-const NodeHeader: FC<Props> = ({
+const NodeHeader: FC<StateProps & Props> = ({
   setExpanded,
   expanded,
   defaultLabel,
@@ -26,13 +28,16 @@ const NodeHeader: FC<Props> = ({
   debugInfo,
   children,
   nodeType,
-  className
+  className,
+  isRTLContentLang
 }) => {
   const [startMouse, setStartMouse] = useState({ x: 0, y: 0 })
   const icon = expanded ? 'chevron-down' : 'chevron-right'
 
   return (
-    <div className={cx(style.headerWrapper, className)}>
+    <div className={cx(style.headerWrapper, className, {
+      [style.rtl]: isRTLContentLang
+    })}>
       {debugInfo && <DebugInfo {...debugInfo} nodeType={nodeType} className={className}></DebugInfo>}
       <Button
         icon={setExpanded ? icon : null}
@@ -52,4 +57,8 @@ const NodeHeader: FC<Props> = ({
   )
 }
 
-export default NodeHeader
+const mapStateToProps = (state: RootReducer) => ({
+  isRTLContentLang: state.language.isRTLContentLang
+})
+
+export default connect(mapStateToProps)(NodeHeader)
