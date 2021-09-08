@@ -21,7 +21,6 @@ import path from 'path'
 
 const CHECKSUM = '//CHECKSUM:'
 const BOT_CONFIG_FILENAME = 'bot.config.json'
-const BOT_DIRECTORIES = ['actions', 'flows', 'entities', 'content-elements', 'intents', 'qna']
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
 const BOTID_REGEX = /^[A-Z0-9]+[A-Z0-9_-]{1,}[A-Z0-9]+$/i
 const IGNORED_ACTION = ['say']
@@ -312,7 +311,6 @@ export class BotService {
         mergedConfigs.disabled = true
       }
 
-      await scopedGhost.ensureDirs('/', BOT_DIRECTORIES)
       await scopedGhost.upsertFile('/', BOT_CONFIG_FILENAME, stringify(mergedConfigs))
       await scopedGhost.upsertFiles('/', files)
 

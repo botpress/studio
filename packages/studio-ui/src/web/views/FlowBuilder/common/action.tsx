@@ -1,6 +1,5 @@
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
-import _ from 'lodash'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
@@ -21,6 +20,7 @@ interface Props {
   items: any
   contentLang: string
   layoutv2?: boolean
+  isRTLContentLang: boolean
 }
 
 export const textToItemId = text => text?.match(/^say #!(.*)$/)?.[1]
@@ -49,6 +49,7 @@ class ActionItem extends Component<Props> {
   }
 
   render() {
+    const { isRTLContentLang } = this.props
     const action = this.props.text
     const isAction = typeof action !== 'string' || !action.startsWith('say ')
 
@@ -127,7 +128,7 @@ class ActionItem extends Component<Props> {
     }
 
     return (
-      <div className={classnames(this.props.className, style['action-item'], style.msg)}>
+      <div className={classnames(this.props.className, style['action-item'], style.msg, isRTLContentLang ? style.rtl : null)}>
         <span className={style.icon}>💬</span>
         <span className={className} dangerouslySetInnerHTML={html} />
         {this.props.children}
@@ -136,7 +137,10 @@ class ActionItem extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({ items: state.content.itemsById })
+const mapStateToProps = state => ({
+  items: state.content.itemsById,
+  isRTLContentLang: state.language.isRTLContentLang
+})
 const mapDispatchToProps = { fetchContentItem, refreshFlowsLinks }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withLanguage(ActionItem))

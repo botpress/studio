@@ -37,7 +37,21 @@
     }
   }
 
-  &:hover, &:focus-within {
+  &.rtl {
+    .insertBtn {
+      top: 2px;
+      left: 2px;
+      right: auto;
+      &MoreSpacing {
+        top: 5px;
+        left: 5px;
+        right: auto;
+      }
+    }
+  }
+
+  &:hover,
+  &:focus-within {
     .insertBtn {
       background: rgba(255, 255, 255, 0.9);
       span[icon] {
@@ -79,7 +93,7 @@
 
 .mentionSuggestions .description {
   font-size: 12px;
-  color: #5C7080;
+  color: #5c7080;
   line-height: 15px;
 }
 
@@ -91,7 +105,7 @@
 
   &:active,
   &.mentionSuggestionsEntryFocused {
-    background-color: #E5EAEC;
+    background-color: #e5eaec;
   }
 }
 
@@ -108,4 +122,8 @@
 
 .mention {
   background-color: #cce7ff;
+}
+
+.rtl {
+  direction: rtl;
 }
