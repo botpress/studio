@@ -10,11 +10,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { fetchBotInformation } from '~/actions'
-import { Container, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
+import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/Shared/Interface'
 import { Item } from '~/components/Shared/Interface/typings'
 import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
-
-import { ItemList } from '../../components/Shared/Interface'
 
 import style from './style.scss'
 
@@ -170,7 +168,6 @@ class ConfigView extends Component<Props, State> {
     this.setState({ error: undefined, isSaving: true })
 
     const bot: Partial<BotConfig> = {
-      id: this.state.id,
       name: this.state.name,
       disabled: this.state.status.value === 'disabled',
       private: this.state.status.value === 'private',
@@ -336,10 +333,10 @@ class ConfigView extends Component<Props, State> {
             {this.state.activeTab === 'main' && (
               <div>
                 <h1 className={style.title}>{lang.tr('general')}</h1>
-                <FormGroup label={lang.tr('config.botId')} labelFor="botId">
+                <FormGroup label={lang.tr('config.botId')} labelFor="id">
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div style={{ flexGrow: 1, marginRight: '10px' }}>
-                      <InputGroup id="bot-id" name="botId" value={this.state.id} readOnly />
+                      <InputGroup id="id" name="id" value={this.state.id} readOnly />
                     </div>
                     <CopyToClipboard text={this.state.id} onCopy={() => toast.info(lang.tr('config.copyToClipboard'))}>
                       <Button icon="clipboard" />
