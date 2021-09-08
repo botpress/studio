@@ -112,6 +112,7 @@
     "@types/react-jsonschema-form": "^1.7.5",
     "@types/react-router-dom": "^4.3.3",
     "@types/reactour": "^1.18.1",
+    "@types/redux-actions": "^2.2.1",
     "@types/slate": "0.47.1",
     "@types/slate-react": "0.22.5",
     "autoprefixer": "^6.5.3",

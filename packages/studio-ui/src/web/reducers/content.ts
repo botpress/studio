@@ -1,4 +1,4 @@
-import { LibraryElement } from 'common/typings'
+import { Categories, LibraryElement } from 'common/typings'
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import {
@@ -11,7 +11,7 @@ import {
   receiveQNAContentElement
 } from '~/actions'
 const defaultState = {
-  categories: null,
+  categories: { enabled: [], disabled: [] },
   currentItems: [],
   itemsById: {},
   itemsCount: 0
@@ -64,7 +64,7 @@ export default handleActions(
 )
 
 export interface ContentReducer {
-  categories: any
+  categories: Categories
   currentItems: any
   qnaUsage: any
   library: LibraryElement[]
