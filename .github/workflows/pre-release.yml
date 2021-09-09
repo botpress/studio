@@ -1,4 +1,4 @@
-name: Release
+name: Pre-Release
 on:
   push:
     branches:
@@ -6,7 +6,7 @@ on:
       - '!master'
 
 jobs:
-  release_bin:
+  pre_release_bin:
     name: Pre-Release Binaries
     runs-on: ubuntu-latest
     steps:
@@ -15,20 +15,12 @@ jobs:
       - name: Fetch Node Packages
         run: |
           yarn
-      - name: Get Current Version
-        id: extract_version
         uses: Saionaro/extract-package-version@v1.0.6
       - name: Extract Branch Name
+        id: extract_branch
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
-      - name: Validate Semver
-        id: validate_semver
-        run: |
-          valid_current_version=$(node ./node_modules/semver/bin/semver.js ${{ steps.extract_version.outputs.version }})
 
-          echo $valid_current_version
-          echo "::set-output name=valid_current_version::$valid_current_version"
       - name: 'Build and Package'
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
