@@ -19,11 +19,14 @@ jobs:
         id: extract_branch
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-
+      - name: Get Previous Tag
+        id: previous_tag
+        run: node .github/workflows/code/latest_release_tag.js
       - name: 'Build and Package'
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
+          echo name: ${{ steps.previous_tag.outputs.tag  }}
           yarn build --prod
           yarn package
           node .github/workflows/code/rename_binary.js
@@ -33,7 +36,7 @@ jobs:
           files: ./bin/studio*
           prerelease: true
           draft: false
-          name: br-${{ steps.extract_branch.outputs.branch }}
-          tag_name: br-${{ steps.extract_branch.outputs.branch }}
+          name: ${{ steps.extract_branch.outputs.branch }}
+          tag_name: ${{ steps.extract_branch.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
