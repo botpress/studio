@@ -1,18 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const sanitizeBranchName = input => {
-  const regex = {
-    illegalFile: /[\/\?<>\\:\*\|"]/g,
-    control: /[\x00-\x1f\x80-\x9f]/g
-  }
-
-  return input
-    .replace('refs/heads/', '')
-    .replace(/\.|\//gi, '_')
-    .replace(regex.control, '')
-    .replace(regex.illegalFile, '')
-}
+const sanitizeBranchName = input => input.replace(/[\W_]+/g, '_')
 
 const rename = () => {
   const githubEvent = JSON.parse(process.env.GITHUB_EVENT)

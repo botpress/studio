@@ -1,22 +1,22 @@
-name: Remove Pre-Release
-on:
-  delete:
-    branches:
-      - '*'
-      - '!master'
+name: Branch deleted
+on: delete
 
 jobs:
   remove:
+    if: github.event.ref_type == 'branch'
     name: Remove Pre-Release
     runs-on: ubuntu-latest
     steps:
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      - uses: dev-drprasad/delete-tag-and-release@v0.2.0
-        with:
-          delete_release: true
-          tag_name: br-${{ steps.extract_branch.outputs.branch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+          echo  ${GITHUB_REF}
+          echo  ${{ github.event.ref }}"
+      # - uses: dev-drprasad/delete-tag-and-release@v0.2.0
+      #   with:
+      #     delete_release: true
+      #     tag_name: br-${{ steps.extract_branch.outputs.branch }}
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
