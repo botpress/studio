@@ -64,10 +64,13 @@ const migration: Migration = {
 
     /**
      * Scan each flows and extract actions, then if the bot doesn't have it locally, fetch it from builtin or global.
-     * We prefer builtin first because we had to make slight adjustments to some actions
+     * We prefer builtin first because we had to make slight adjustments to some actions (module config was moved to bot config)
      */
     const globalActions = await ghostService.global().directoryListing('actions', '*.*')
     const builtinActions = await listDir(getBuiltinPath('actions'))
+
+    // We ignore actions of custom modules for now, since they may require their custom node_modules folder
+    const globalWithoutCustomModules = globalActions.filter(fileName => path.dirname(fileName) === '.')
 
     const updateBotActions = async (botId: string) => {
       const botActions = await ghostService.forBot(botId).directoryListing(ACTIONS_DIR, '*.*')
@@ -82,7 +85,7 @@ const migration: Migration = {
         let content
         if (builtinActions.find(x => x.relativePath === actionFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
-        } else if (globalActions.find(x => x === actionFile)) {
+        } else if (globalWithoutCustomModules.find(x => x === actionFile)) {
           content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
         }
 
@@ -97,12 +100,13 @@ const migration: Migration = {
      * Take all global hooks, ignore our own modules and those which are not related to bots.
      * Then we copy all any remaining global hook locally, and we add builtin ones.
      */
-    const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
     const globalHooks = await ghostService.global().directoryListing(HOOKS_DIR, '*.*')
+    const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
 
+    // Ignore hooks of custom modules, since they may need their node_modules. We copy other global hooks locally
     const globalBotHooks = globalHooks.filter(path => {
-      const [hookType, moduleName] = path.split('/')
-      return BOT_HOOKS.includes(hookType) && !BP_MODULES.includes(moduleName)
+      const [hookType, _moduleName, fileName] = path.split('/')
+      return BOT_HOOKS.includes(hookType) && !fileName
     })
 
     const globalWithBuiltin = [...globalBotHooks, ...builtinHooks.map(x => x.relativePath)]
