@@ -15,7 +15,6 @@ jobs:
       - name: Fetch Node Packages
         run: |
           yarn
-        uses: Saionaro/extract-package-version@v1.0.6
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
