@@ -309,7 +309,8 @@
       "sideBar": {
         "createNew": "Créer nouveau {name}",
         "createNewContent": "Créer nouveau contenu",
-        "filterByType": "Filtrer par type de contenu"
+        "filterByType": "Filtrer par type de contenu",
+        "unregisteredWarning": "Le type de contenu n'est pas enregistré."
       },
       "switchToDefaultLang": "Basculer sur {defaultLang} et commencer à modifier",
       "usageModal": {

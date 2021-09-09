@@ -240,6 +240,7 @@
   "trigger": "Trigger",
   "type": "Type",
   "undo": "Undo",
+  "unregistered": "Unregistered",
   "update": "Update",
   "upload": "Upload",
   "usage": "Usage",
