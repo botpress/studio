@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const sanitizeBranchName = input => input.replace(/[\W_]+/g, '_')
+const sanitizeBranchName = input => input.replace('refs/heads/', '').replace(/[\W_]+/g, '_')
 
 const rename = () => {
   const githubEvent = JSON.parse(process.env.GITHUB_EVENT)

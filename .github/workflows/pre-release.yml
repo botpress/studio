@@ -33,7 +33,6 @@ jobs:
           files: ./bin/studio*
           prerelease: true
           draft: false
-          body: 'Branch build'
           name: br-${{ steps.extract_branch.outputs.branch }}
           tag_name: br-${{ steps.extract_branch.outputs.branch }}
         env:
