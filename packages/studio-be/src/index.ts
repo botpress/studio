@@ -71,7 +71,7 @@ process.on('uncaughtException', err => {
     process.exit(1)
   }
 })
-
+console.log('TEST')
 try {
   require('dotenv').config({ path: path.resolve(process.PROJECT_LOCATION, '.env') })
   process.core_env = process.env as BotpressEnvironmentVariables

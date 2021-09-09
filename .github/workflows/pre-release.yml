@@ -38,5 +38,6 @@ jobs:
           draft: false
           name: ${{ steps.extract_branch.outputs.branch }}
           tag_name: ${{ steps.extract_branch.outputs.branch }}
+          target_commitish: ${{ steps.extract_branch.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
