@@ -173,7 +173,7 @@ export interface ActionParameterDefinition {
   description: string
   required: boolean
   type: string
-  default: any
+  default: string
 }
 
 export type ActionServerWithActions = ActionServer & {
