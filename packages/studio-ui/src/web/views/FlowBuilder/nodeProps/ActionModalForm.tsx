@@ -1,6 +1,6 @@
 import { ContentElement } from 'botpress/sdk'
 import { confirmDialog, Dialog, lang } from 'botpress/shared'
-import { ActionParameterDefinition } from 'common/typings'
+import { ActionDefinition, ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Button, OverlayTrigger, Radio, Tooltip } from 'react-bootstrap'
@@ -14,24 +14,18 @@ import ParametersTable, { Parameter } from './ParametersTable'
 import SelectActionDropdown from './SelectActionDropdown'
 import style from './style.scss'
 
-interface ActionMetadata {
-  params: ActionParameterDefinition[]
-  title: string
-  description: string
-  category: string
-}
 interface Action {
   label: string
   value: string
-  metadata: ActionMetadata
+  metadata: LocalActionDefinition
 }
-
 interface Item {
   type: string
   functionName?: string
   message?: string
   parameters: Parameter
 }
+
 interface OwnProps {
   show: boolean
   layoutv2?: boolean
@@ -47,7 +41,7 @@ type Props = StateProps & OwnProps
 interface State {
   actionType: string
   avActions: Action[]
-  actionMetadata?: ActionMetadata
+  actionMetadata?: LocalActionDefinition
   functionInputValue?: Action
   isEdit: boolean
   messageValue: string
@@ -108,7 +102,7 @@ class ActionModalForm extends Component<Props, State> {
         return {
           label: x.name,
           value: x.name,
-          metadata: { params: x.params, title: x.title, description: x.description, category: x.category }
+          metadata: { ...x }
         }
       })
     })
