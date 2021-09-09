@@ -18,6 +18,10 @@ jobs:
       - name: Get Current Version
         id: extract_version
         uses: Saionaro/extract-package-version@v1.0.6
+      - name: Extract Branch Name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Validate Semver
         id: validate_semver
         run: |
@@ -39,7 +43,7 @@ jobs:
           prerelease: true
           draft: false
           body: 'Branch build'
-          name: v${{ steps.validate_semver.outputs.valid_current_version }}
-          tag_name: v${{ steps.validate_semver.outputs.valid_current_version }}
+          name: br-${{ steps.extract_branch.outputs.branch }}
+          tag_name: br-${{ steps.extract_branch.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
