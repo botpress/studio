@@ -1,32 +1,48 @@
-import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-
-import { Table } from 'react-bootstrap'
+import { lang } from 'botpress/shared'
 import classnames from 'classnames'
+import { ActionParameterDefinition } from 'common/typings'
 import _ from 'lodash'
+import React, { Component } from 'react'
+import { OverlayTrigger, Tooltip, Table } from 'react-bootstrap'
 
 import SmartInput from '~/components/SmartInput'
-import { lang } from 'botpress/shared'
 
-const style = require('./parameters.scss')
+import style from './parameters.scss'
 
-export default class ParametersTable extends Component {
-  constructor(props) {
+export interface Parameter {
+  [key: string]: string
+}
+
+export interface Arguments {
+  [key: string]: Parameter
+}
+
+interface Props {
+  value: Parameter
+  definitions: ActionParameterDefinition[]
+  className?: string
+  onChange: (args: Arguments) => void
+}
+
+interface State {
+  arguments: Arguments
+}
+
+export default class ParametersTable extends Component<Props, State> {
+  state: State
+
+  constructor(props: Props) {
     super(props)
     this.state = { arguments: this.transformArguments(props.value) }
   }
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     this.setState({ arguments: this.transformArguments(nextProps.value) })
   }
 
-  transformArguments(args) {
-    const valuesArray = [..._.map(args, (value, key) => ({ key, value })), { key: '', value: '' }]
+  transformArguments(params: Parameter): Arguments {
+    const valuesArray = [..._.map(params, (value, key) => ({ key, value })), { key: '', value: '' }]
     return _.fromPairs(valuesArray.map((el, i) => [i, el]))
-  }
-
-  getValues() {
-    return this.state.arguments
   }
 
   onChanged() {
@@ -36,7 +52,7 @@ export default class ParametersTable extends Component {
   }
 
   render() {
-    const renderRow = id => {
+    const renderRow = (id: string) => {
       const args = this.state.arguments
 
       const regenerateEmptyRowIfNeeded = () => {
@@ -62,7 +78,7 @@ export default class ParametersTable extends Component {
         }
       }
 
-      const editKey = evt => {
+      const editKey = (evt: React.ChangeEvent<HTMLInputElement>) => {
         if (evt.target.value !== '') {
           regenerateEmptyRowIfNeeded()
         } else {
@@ -78,7 +94,7 @@ export default class ParametersTable extends Component {
         this.onChanged()
       }
 
-      const editValue = value => {
+      const editValue = (value: string) => {
         if (value !== '') {
           regenerateEmptyRowIfNeeded()
         } else {
@@ -88,7 +104,7 @@ export default class ParametersTable extends Component {
         }
 
         this.setState({
-          arguments: { ...args, [id]: { value: value, key: args[id].key } }
+          arguments: { ...args, [id]: { value, key: args[id].key } }
         })
 
         this.onChanged()
@@ -99,13 +115,13 @@ export default class ParametersTable extends Component {
       const paramName = args[id].key
       const paramValue = args[id].value
 
-      const definition = _.find(this.props.definitions || [], { name: paramName }) || {
+      const definition = (_.find(this.props.definitions || [], { name: paramName }) || {
         required: false,
         description: lang.tr('studio.flow.node.noDescription'),
         default: '',
         type: 'Unknown',
         fake: true
-      }
+      }) as ActionParameterDefinition & { fake: boolean }
 
       const tooltip = (
         <Tooltip id={`param-${paramName}`}>
