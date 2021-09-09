@@ -22,6 +22,7 @@ const BOT_CONFIG_FILENAME = 'bot.config.json'
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
 const BOTID_REGEX = /^[A-Z0-9]+[A-Z0-9_-]{1,}[A-Z0-9]+$/i
 const IGNORED_ACTION = ['say']
+const COPY_LOCAL_FOLDERS = ['.', 'builtin', 'basic-skills', 'channel-web', 'internal-users']
 
 const DEFAULT_BOT_CONFIGS = {
   locked: false,
@@ -339,6 +340,8 @@ export class BotService {
 
     const missingLocalActions = flowActions
       .filter(x => !IGNORED_ACTION.includes(x))
+      // We ignore actions from modules because they may need access to their node_modules
+      .filter(fileName => COPY_LOCAL_FOLDERS.includes(path.dirname(fileName)))
       .map(x => `${x}.js`)
       .filter(x => !botActions.find(b => x === b))
 
@@ -346,10 +349,10 @@ export class BotService {
       const builtinActionsPath = path.resolve(getBuiltinPath('actions'), actionName)
       let content
 
-      if (await this.ghostService.global().fileExists('actions', actionName)) {
-        content = await this.ghostService.global().readFileAsBuffer('actions', actionName)
-      } else if (await fse.pathExists(builtinActionsPath)) {
+      if (await fse.pathExists(builtinActionsPath)) {
         content = await fse.readFile(builtinActionsPath)
+      } else if (await this.ghostService.global().fileExists('actions', actionName)) {
+        content = await this.ghostService.global().readFileAsBuffer('actions', actionName)
       }
 
       if (content) {
