@@ -1,6 +1,6 @@
 import { ContentElement } from 'botpress/sdk'
 import { confirmDialog, Dialog, lang } from 'botpress/shared'
-import { ActionDefinition, ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
+import { ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Button, OverlayTrigger, Radio, Tooltip } from 'react-bootstrap'
