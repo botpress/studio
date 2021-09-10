@@ -1,4 +1,5 @@
 const { exec } = require('child_process')
+const core = require('@actions/core')
 require('bluebird-global')
 
 /**
@@ -16,6 +17,8 @@ const getLastTags = async () => {
 
   for (i = 0; i < revs.length; i++) {
     if (/^v\d/.test(revs[i])) {
+      core.setOutput('LAST_TAG', revs[i])
+      console.log(revs[i])
       return revs[i]
     }
   }
