@@ -9,6 +9,11 @@ const getLastTags = async () => {
   console.log('Getlast')
 
   const status = await Promise.fromCallback(cb => exec('git status', cb))
+
+  exec('git rev-list --tags --max-count=20', (err, revsList, stderr) => {
+    console.log('RVLIST', revsList)
+  })
+
   console.log('status', status)
   const rawTags = await Promise.fromCallback(cb => exec('git rev-list --tags --max-count=20', cb))
   const tags = rawTags
