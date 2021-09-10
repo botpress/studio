@@ -21,7 +21,13 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       - name: Get Previous Tag
         id: previous_tag
-        run: echo "##[set-output name=tag;]$(echo $(node .github/workflows/code/latest_release_tag.js))"
+        run: |
+          echo "::set-output name=tag::$(node .github/workflows/code/latest_release_tag.js)"
+          echo $(node .github/workflows/code/latest_release_tag.js) >> test
+          cat test
+      - name: Test output
+        run: |
+          echo name: ${{ steps.previous_tag.outputs.tag  }}  ${{ steps.previous_tag.outputs  }}
       - name: 'Build and Package'
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
