@@ -21,7 +21,9 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       - name: Get Previous Tag
         id: previous_tag
-        run: node .github/workflows/code/latest_release_tag.js
+        run: |
+          latest_tag=$(node .github/workflows/code/latest_release_tag.js)
+          echo "$valid_latest_tag"
       - name: 'Build and Package'
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
