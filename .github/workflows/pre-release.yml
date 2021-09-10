@@ -14,12 +14,12 @@ jobs:
         uses: actions/checkout@master
       - name: Git Unshallow
         run: git fetch --prune --unshallow
+      - name: Get Previous Release Tag
+        id: previous_tag
+        uses: botpress/gh-actions/latest_release_tag
       - name: Fetch Node Packages
         run: |
           yarn
-      - name: Get Previous Release Tag
-        id: previous_tag
-        uses: botpress/botpress/.github/actions/latest_release_tag@ya-gh-actions
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
