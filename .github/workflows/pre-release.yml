@@ -17,12 +17,12 @@ jobs:
           yarn
           yarn add @actions/core -W
       - name: Get Previous Tag
-        id: previous_tag
-        uses: ./.github/workflows/code/latest_release
+        id: latest_release_tag
+        uses: ./.github/workflows/code/latest_release_tag
       - name: Test output
         run: |
-          echo name: ${{ steps.previous_tag.outputs.last_tag  }}
-          echo name2: ${{ steps.previous_tag.outputs.LAST_TAG  }}
+          echo name: ${{ steps.latest_release_tag.outputs.tag  }}
+          echo name: ${{ steps.latest_release_tag.outputs.test  }}
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
@@ -31,7 +31,7 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
-          echo name: ${{ steps.previous_tag.outputs.tag  }}
+          echo name: ${{ steps.latest_release_tag.outputs.tag  }}
           yarn build --prod
           yarn package
           node .github/workflows/code/rename_binary.js

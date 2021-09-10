@@ -1,10 +1,8 @@
 const { exec } = require('child_process')
 const core = require('@actions/core')
 
-/**
- * Returns the latest release tag (ignore branches)
- */
 const getLastTags = async () => {
+  core.setOutput('test', 'bla')
   exec('git rev-list --tags --max-count=20', (err, rawTags, stderr) => {
     const tags = rawTags
       .trim()
@@ -16,7 +14,7 @@ const getLastTags = async () => {
 
       for (i = 0; i < revs.length; i++) {
         if (/^v\d/.test(revs[i])) {
-          core.setOutput('last_tag', revs[i])
+          core.setOutput('tag', revs[i])
           console.log(revs[i])
           return revs[i]
         }
