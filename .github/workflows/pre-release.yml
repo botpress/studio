@@ -16,7 +16,7 @@ jobs:
         run: git fetch --prune --unshallow
       - name: Get Release Details
         id: release_details
-        uses: botpress/gh-actions/get_release_details@dev
+        uses: botpress/gh-actions/get_release_details@master
       - name: Fix Change Log
         id: changelog
         run: echo "::set-output name=value::${{ steps.release_details.outputs.changelog }}"
