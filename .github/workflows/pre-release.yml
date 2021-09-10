@@ -17,15 +17,9 @@ jobs:
       - name: Get Release Details
         id: release_details
         uses: botpress/gh-actions/get_release_details@dev
-      - name: Fix changelog
+      - name: Fix Change Log
         id: changelog
         run: echo "::set-output name=value::${{ steps.release_details.outputs.changelog }}"
-      - name: Show info
-        run: |
-          echo ${{ steps.release_details.outputs.latest_tag }}
-          echo ${{ steps.release_details.outputs.is_new_release }}
-          echo ${{ steps.release_details.outputs.changelog }}
-          echo ${{ steps.changelog.outputs.value }}
       - name: Fetch Node Packages
         run: |
           yarn
@@ -34,8 +28,6 @@ jobs:
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       - name: 'Build and Package'
-        env:
-          GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
           yarn build --prod
           yarn package
