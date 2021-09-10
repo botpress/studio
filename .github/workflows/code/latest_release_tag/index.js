@@ -1,5 +1,4 @@
 const { exec } = require('child_process')
-// const core = require('@actions/core')
 require('bluebird-global')
 
 const getLastTags = async () => {
