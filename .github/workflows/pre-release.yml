@@ -7,7 +7,7 @@ on:
 
 jobs:
   pre_release_bin:
-    name: Pre-Release Binaries
+    name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -39,7 +39,7 @@ jobs:
           files: ./bin/studio*
           prerelease: true
           draft: false
-          body: ${{ steps.changelog.outputs.value }}
+          body: ${{ steps.release_details.outputs.changelog }}
           name: ${{ steps.extract_branch.outputs.branch }}
           tag_name: pre-${{ steps.extract_branch.outputs.branch }}
           target_commitish: ${{ steps.extract_branch.outputs.branch }}
