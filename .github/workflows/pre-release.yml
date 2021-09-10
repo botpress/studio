@@ -18,7 +18,7 @@ jobs:
       - name: Get Previous Tag
         id: previous_tag
         run: |
-          yarn add @actions/core
+          yarn add @actions/core -W
           node .github/workflows/code/latest_release_tag.js
           echo $LAST_TAG
       - name: Test output
