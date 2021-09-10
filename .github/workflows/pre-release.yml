@@ -17,8 +17,12 @@ jobs:
       - name: Get Previous Release Tag
         id: previous_tag
         uses: botpress/gh-actions/latest_release_tag@master
+      - name: Test changelog
+        id: build_changelog
+        uses: botpress/gh-actions/build_changelog@master
       - name: Fetch Node Packages
         run: |
+          echo ${{ steps.build_changelog.outputs.changelog }}
           yarn
       - name: Extract Branch Name
         id: extract_branch
@@ -32,7 +36,7 @@ jobs:
           yarn build --prod
           yarn package
       - name: Rename Binary Files
-        uses: botpress/botpress/.github/actions/rename_binaries@ya-gh-actions
+        uses: botpress/gh-actions/rename_binaries@master
       - name: 'Release'
         uses: softprops/action-gh-release@v1
         with:
