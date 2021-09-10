@@ -12,28 +12,42 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+
       - name: Git Unshallow
         run: git fetch --prune --unshallow
+
       - name: Get Release Details
         id: release_details
         uses: botpress/gh-actions/get_release_details@master
+
       - name: Fix Change Log
         id: changelog
         run: echo "::set-output name=value::${{ steps.release_details.outputs.changelog }}"
+
       - name: Fetch Node Packages
         run: |
           yarn
+
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      - name: 'Build and Package'
-        run: |
-          yarn build --prod
-          yarn package
+
+      - name: Build Project
+        run: yarn build --prod
+
+      - name: Update Metadata File
+        uses: botpress/gh-actions/merge_json@master
+        with:
+          - path: packages/studio-be/out/metadata.json
+          - json: '{ "devBranch": "${{ steps.extract_branch.outputs.branch }}" }'
       - name: Rename Binary Files
         uses: botpress/gh-actions/rename_binaries@master
-      - name: 'Release'
+
+      - name: Package Binaries
+        run: yarn package
+
+      - name: Create Pre-Release
         uses: softprops/action-gh-release@v1
         with:
           files: ./bin/studio*

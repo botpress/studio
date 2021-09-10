@@ -89,6 +89,17 @@ async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: Modu
   return { loadedModules, erroredModules }
 }
 
+const writeBanner = logger => {
+  const devBranch = process.DEV_BRANCH ? `Branch: ${process.DEV_BRANCH}` : ''
+  const isSource = process.pkg ? '' : 'Running from sources'
+  const infos = [`Version ${process.STUDIO_VERSION}`, devBranch, isSource]
+
+  logger.info(chalk`========================================
+  {bold ${centerText('Botpress Studio', 40, 9)}}
+  ${chalk.blackBright(infos.filter(x => x.length).join(' - '))}
+  ${_.repeat(' ', 9)}========================================`)
+}
+
 async function start() {
   const app = createApp()
   await setupDebugLogger(app.logger)
@@ -107,10 +118,7 @@ async function start() {
     process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
   }
 
-  logger.info(chalk`========================================
-{bold ${centerText('Botpress Studio', 40, 9)}}
-{dim ${centerText(`Version ${process.STUDIO_VERSION}`, 40, 9)}}
-${_.repeat(' ', 9)}========================================`)
+  writeBanner(logger)
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
     try {

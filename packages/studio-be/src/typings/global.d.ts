@@ -53,6 +53,8 @@ declare namespace NodeJS {
     IS_FAILSAFE: boolean
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
+
+    DEV_BRANCH?: string
   }
 }
 
