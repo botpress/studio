@@ -89,14 +89,14 @@ async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: Modu
   return { loadedModules, erroredModules }
 }
 
-const writeBanner = logger => {
-  const devBranch = process.DEV_BRANCH ? `Branch: ${process.DEV_BRANCH}` : ''
-  const isSource = process.pkg ? '' : 'Running from sources'
-  const infos = [`Version ${process.STUDIO_VERSION}`, devBranch, isSource]
+const showBanner = logger => {
+  const devBranch = process.DEV_BRANCH && `Branch: ${process.DEV_BRANCH}`
+  const fromSource = !process.pkg && 'Running from sources'
+  const infos = [`Version ${process.STUDIO_VERSION}`, devBranch, fromSource]
 
   logger.info(chalk`========================================
   {bold ${centerText('Botpress Studio', 40, 9)}}
-  ${chalk.blackBright(infos.filter(x => x.length).join(' - '))}
+  ${chalk.blackBright(infos.filter(x => x !== undefined).join(' - '))}
   ${_.repeat(' ', 9)}========================================`)
 }
 
@@ -118,7 +118,7 @@ async function start() {
     process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
   }
 
-  writeBanner(logger)
+  showBanner(logger)
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
     try {
