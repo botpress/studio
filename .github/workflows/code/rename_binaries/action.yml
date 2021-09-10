@@ -1,0 +1,10 @@
+name: 'rename_binaries'
+description: 'Rename binaries based on the branch name'
+inputs:
+  path:
+    description: 'Path to binary folder'
+    required: true
+    default: './bin'
+runs:
+  using: 'node12'
+  main: 'index.js'

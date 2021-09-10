@@ -14,6 +14,10 @@ jobs:
         uses: actions/checkout@master
       - name: Git Unshallow
         run: git fetch --prune --unshallow
+      - name: Rename bin
+        uses: botpress/studio/.github/workflows/code/rename_binaries@ya-branch-bin
+        with:
+          path: .lol
       - name: Fetch Node Packages
         run: |
           yarn
