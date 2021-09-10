@@ -1,20 +1,18 @@
-import {Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea} from '@blueprintjs/core'
+import { Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea } from '@blueprintjs/core'
 import axios from 'axios'
-import {BotConfig} from 'botpress/sdk'
-import {confirmDialog, lang, toast} from 'botpress/shared'
-import {BotEditSchema} from 'common/validation'
+import { BotConfig } from 'botpress/sdk'
+import { confirmDialog, lang, toast } from 'botpress/shared'
+import { BotEditSchema } from 'common/validation'
 import Joi from 'joi'
 import _ from 'lodash'
-import React, {Component} from 'react'
-import {connect} from 'react-redux'
-import Select from 'react-select'
-import {fetchBotInformation} from '~/actions'
-import {Container, SidePanel, SidePanelSection} from '~/components/Shared/Interface'
-import {Item} from '~/components/Shared/Interface/typings'
-import {toastFailure, toastSuccess} from '~/components/Shared/Utils/Toaster'
+import React, { Component } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-
-import {ItemList} from '../../components/Shared/Interface'
+import { connect } from 'react-redux'
+import Select from 'react-select'
+import { fetchBotInformation } from '~/actions'
+import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/Shared/Interface'
+import { Item } from '~/components/Shared/Interface/typings'
+import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
 
 import style from './style.scss'
 
@@ -170,7 +168,6 @@ class ConfigView extends Component<Props, State> {
     this.setState({ error: undefined, isSaving: true })
 
     const bot: Partial<BotConfig> = {
-      id: this.state.id,
       name: this.state.name,
       disabled: this.state.status.value === 'disabled',
       private: this.state.status.value === 'private',
@@ -336,18 +333,13 @@ class ConfigView extends Component<Props, State> {
             {this.state.activeTab === 'main' && (
               <div>
                 <h1 className={style.title}>{lang.tr('general')}</h1>
-                <FormGroup label={lang.tr('config.botId')} labelFor="botId">
-                  <div style={{ display: 'flex',  justifyContent: 'space-between' }}>
-                    <div style={{flexGrow: 1, marginRight: '10px'}}>
-                      <InputGroup id="bot-id" name="botId" value={this.state.id} readOnly />
+                <FormGroup label={lang.tr('config.botId')} labelFor="id">
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ flexGrow: 1, marginRight: '10px' }}>
+                      <InputGroup id="id" name="id" value={this.state.id} readOnly />
                     </div>
-                    <CopyToClipboard
-                        text={this.state.id}
-                        onCopy={() => toast.info(lang.tr('config.copyToClipboard'))}
-                    >
-                      <Button
-                          icon="clipboard"
-                      />
+                    <CopyToClipboard text={this.state.id} onCopy={() => toast.info(lang.tr('config.copyToClipboard'))}>
+                      <Button icon="clipboard" />
                     </CopyToClipboard>
                   </div>
                 </FormGroup>

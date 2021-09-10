@@ -149,4 +149,4 @@ const ConnectedContentPicker = connect<DispatchProps, StateProps, OwnProps>(
 )(withLanguage(ContentPickerWidget))
 
 // Passing store explicitly since this component may be imported from another botpress-module
-export default props => <ConnectedContentPicker {...props} store={store} />
+export default (props: OwnProps) => <ConnectedContentPicker {...props} store={store} />
