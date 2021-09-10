@@ -14,12 +14,17 @@ jobs:
         uses: actions/checkout@master
       - name: Git Unshallow
         run: git fetch --prune --unshallow
-      - name: Get Previous Release Tag
+      - name: Get Release Details
         id: previous_tag
-        uses: botpress/gh-actions/latest_release_tag@master
+        uses: botpress/gh-actions/get_release_details@master
+      - name: Show info
+        run: |
+          echo ${{ steps.previous_tag.outputs.tag }}
+          echo ${{ steps.previous_tag.outputs.isNewRelease }}
       - name: Test changelog
         id: build_changelog
         uses: botpress/gh-actions/build_changelog@master
+
       - name: Fetch Node Packages
         run: |
           echo ${{ steps.build_changelog.outputs.changelog }}
