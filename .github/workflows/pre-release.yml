@@ -14,15 +14,15 @@ jobs:
         uses: actions/checkout@master
       - name: Git Unshalow
         run: git fetch --prune --unshallow
+      - name: Fetch Node Packages
+        run: |
+          yarn
       - name: Get Previous Tag
         id: latest_release_tag
         uses: ./.github/workflows/code/latest_release_tag
       - name: Test output
         run: |
           echo test: ${{ steps.previous_tag.outputs.tag  }}
-      - name: Fetch Node Packages
-        run: |
-          yarn
 
       - name: Test output
         run: |
