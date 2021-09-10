@@ -22,7 +22,8 @@ jobs:
       - name: Test output
         run: |
           echo name: ${{ steps.latest_release_tag.outputs.tag  }}
-          echo name: ${{ steps.latest_release_tag.outputs.test  }}
+          echo name2: ${{ steps.latest_release_tag.outputs.test  }}
+          echo name3: ${{ steps.latest_release_tag.outputs.test2  }}
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
