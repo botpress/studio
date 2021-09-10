@@ -22,7 +22,7 @@ jobs:
         run: echo "::set-output name=value::${{ steps.release_details.outputs.changelog }}"
       - name: 'test cond'
         if: ${{ steps.release_details.outputs.is_new_release }}
-        run: echo "is new"
+        run: echo "is new ttest"
       - name: Show info
         run: |
           echo ${{ steps.release_details.outputs.latest_tag }}
