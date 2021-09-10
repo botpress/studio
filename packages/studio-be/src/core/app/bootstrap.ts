@@ -91,12 +91,12 @@ async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: Modu
 
 const showBanner = logger => {
   const devBranch = process.DEV_BRANCH && `Branch: ${process.DEV_BRANCH}`
-  const fromSource = !process.pkg && 'Running from sources'
+  const fromSource = process.pkg ? '' : 'Running from sources'
   const infos = [`Version ${process.STUDIO_VERSION}`, devBranch, fromSource]
 
   logger.info(chalk`========================================
   {bold ${centerText('Botpress Studio', 40, 9)}}
-  ${chalk.blackBright(infos.filter(x => x !== undefined).join(' - '))}
+  ${centerText(chalk.blackBright(infos.filter(x => x !== undefined).join(' - ')), 40, 13)}
   ${_.repeat(' ', 9)}========================================`)
 }
 
