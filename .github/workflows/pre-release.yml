@@ -16,7 +16,7 @@ jobs:
         run: git fetch --prune --unshallow
       - name: Get Release Details
         id: previous_tag
-        uses: botpress/gh-actions/get_release_details@master
+        uses: botpress/gh-actions/get_release_details@dev
       - name: Show info
         run: |
           echo ${{ steps.previous_tag.outputs.tag }}
