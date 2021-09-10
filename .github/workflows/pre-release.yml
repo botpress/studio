@@ -14,11 +14,12 @@ jobs:
         uses: actions/checkout@master
       - name: Git Unshallow
         run: git fetch --prune --unshallow
-      - name: Rename bin
-        uses: botpress/studio/.github/workflows/code/rename_binaries@ya-branch-bin
       - name: Fetch Node Packages
         run: |
           yarn
+      - name: Get Previous Release Tag
+        id: previous_tag
+        uses: botpress/botpress/.github/actions/latest_release_tag@ya-gh-actions
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
@@ -27,9 +28,11 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
+          echo ${{ steps.previous_tag.outputs.tag }}
           yarn build --prod
           yarn package
-          node .github/workflows/code/rename_binary.js
+      - name: Rename Binary Files
+        uses: botpress/botpress/.github/actions/rename_binaries@ya-gh-actions
       - name: 'Release'
         uses: softprops/action-gh-release@v1
         with:
