@@ -53,8 +53,6 @@ jobs:
         with:
           files: ./bin/studio*
           prerelease: true
-          draft: false
-          body: ${{ steps.changelog.outputs.value }}
           name: ${{ steps.extract_branch.outputs.branch }}
           tag_name: dev-${{ steps.extract_branch.outputs.branch }}
           target_commitish: ${{ steps.extract_branch.outputs.branch }}
