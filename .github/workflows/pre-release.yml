@@ -39,8 +39,9 @@ jobs:
       - name: Update Metadata File
         uses: botpress/gh-actions/merge_json@master
         with:
-          - path: packages/studio-be/out/metadata.json
-          - json: '{ "devBranch": "${{ steps.extract_branch.outputs.branch }}" }'
+          path: packages/studio-be/out/metadata.json
+          json: '{ "devBranch": "${{ steps.extract_branch.outputs.branch }}" }'
+
       - name: Rename Binary Files
         uses: botpress/gh-actions/rename_binaries@master
 
