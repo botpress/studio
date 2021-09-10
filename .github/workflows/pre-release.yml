@@ -12,24 +12,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Git Unshalow
+      - name: Git Unshallow
         run: git fetch --prune --unshallow
       - name: Fetch Node Packages
         run: |
           yarn
-      - name: Get Previous Tag
-        id: latest_release_tag
-        uses: ./.github/workflows/code/latest_release_tag
-      - name: Test output
-        run: |
-          echo test: ${{ steps.previous_tag.outputs.tag  }}
-
-      - name: Test output
-        run: |
-          echo name: ${{ steps.latest_release_tag.outputs.tag  }}
-          echo name2: ${{ steps.latest_release_tag.outputs.test  }}
-          echo name3: ${{ steps.latest_release_tag.outputs.test2  }}
-          echo name4: ${{ steps.previous_tag.outputs.tag  }}
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
@@ -38,7 +25,6 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
-          echo name: ${{ steps.latest_release_tag.outputs.tag  }}
           yarn build --prod
           yarn package
           node .github/workflows/code/rename_binary.js
