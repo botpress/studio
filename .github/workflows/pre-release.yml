@@ -16,7 +16,7 @@ jobs:
         run: git fetch --prune --unshallow
       - name: Get Previous Release Tag
         id: previous_tag
-        uses: botpress/gh-actions/latest_release_tag
+        uses: botpress/gh-actions/latest_release_tag@master
       - name: Fetch Node Packages
         run: |
           yarn
