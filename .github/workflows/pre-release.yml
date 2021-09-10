@@ -19,7 +19,7 @@ jobs:
         id: previous_tag
         shell: bash
         run: |
-          last_tag=$(node -e "require('.github/workflows/code/latest_release_tag.js').getLastTags().then(cl => console.log(cl))")
+          last_tag=$(node -e "require('./.github/workflows/code/latest_release_tag.js').getLastTags().then(cl => console.log(cl))")
           echo $last_tag
           echo "::set-output name=last_tag::$last_tag"
       - name: Test output
