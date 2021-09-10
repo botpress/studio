@@ -17,7 +17,7 @@ jobs:
       - name: Rename bin
         uses: botpress/studio/.github/workflows/code/rename_binaries@ya-branch-bin
         with:
-          path: .lol
+          path: haha
       - name: Fetch Node Packages
         run: |
           yarn

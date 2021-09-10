@@ -3,14 +3,12 @@ const path = require('path')
 
 const sanitizeBranchName = input => input.replace('refs/heads/', '').replace(/[\W_]+/g, '_')
 
-console.log('d', process.env.GITHUB_REF)
+console.log('ref', process.env.GITHUB_REF)
 const BIN_PATH = process.env.INPUT_PATH
+console.log('bp BIN', BIN_PATH)
+console.log('env', process.env)
 
-console.log(process.env)
-console.log('bp', BIN_PATH)
-
-const githubEvent = JSON.parse(process.env.GITHUB_EVENT)
-const branchName = sanitizeBranchName(githubEvent.ref)
+const branchName = sanitizeBranchName(process.env.GITHUB_REF)
 console.log('branch', branchName)
 for (const fileName of fs.readdirSync(BIN_PATH)) {
   const [name, _version, platform, arch] = fileName.split('-')
