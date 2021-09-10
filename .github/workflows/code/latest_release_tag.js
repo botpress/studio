@@ -24,4 +24,4 @@ const getLastTags = async () => {
   }
 }
 
-module.exports = { getLastTags }
+getLastTags()
