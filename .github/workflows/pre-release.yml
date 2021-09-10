@@ -15,10 +15,10 @@ jobs:
       - name: Fetch Node Packages
         run: |
           yarn
-          yarn add @actions/core
+          yarn add @actions/core -W
       - name: Get Previous Tag
         id: previous_tag
-        uses: ./github/workflows/code/latest_release_tag
+        uses: ./.github/workflows/code/latest_release_tag
       - name: Test output
         run: |
           echo name: ${{ steps.previous_tag.outputs.last_tag  }}
