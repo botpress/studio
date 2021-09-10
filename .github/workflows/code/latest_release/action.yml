@@ -1,0 +1,8 @@
+name: 'latest_release_tag'
+description: ' Returns the latest release tag (ignore branches)'
+outputs:
+  tag:
+    description: 'Latest Release Tag'
+runs:
+  using: 'node12'
+  main: 'index.js'
