@@ -87,6 +87,7 @@ try {
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
   process.STUDIO_VERSION = metadata.version
+  process.DEV_BRANCH = metadata['devBranch']
   process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
 
   require('yargs')
