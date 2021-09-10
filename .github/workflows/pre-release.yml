@@ -42,11 +42,11 @@ jobs:
           path: packages/studio-be/out/metadata.json
           json: '{ "devBranch": "${{ steps.extract_branch.outputs.branch }}" }'
 
-      - name: Rename Binary Files
-        uses: botpress/gh-actions/rename_binaries@master
-
       - name: Package Binaries
         run: yarn package
+
+      - name: Rename Binary Files
+        uses: botpress/gh-actions/rename_binaries@master
 
       - name: Create Pre-Release
         uses: softprops/action-gh-release@v1
