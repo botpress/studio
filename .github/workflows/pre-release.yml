@@ -12,6 +12,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+      - name: Get Previous tagtest
+        id: previous_tag
+        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
+      - name: Test output
+        run: |
+          echo test: ${{ steps.previous_tag.outputs.tag  }}
       - name: Fetch Node Packages
         run: |
           yarn
@@ -19,9 +25,6 @@ jobs:
       - name: Get Previous Tag
         id: latest_release_tag
         uses: ./.github/workflows/code/latest_release_tag
-      - name: Get Previous tagtest
-        id: previous_tag
-        uses: 'WyriHaximus/github-action-get-previous-tag@v1'
       - name: Test output
         run: |
           echo name: ${{ steps.latest_release_tag.outputs.tag  }}

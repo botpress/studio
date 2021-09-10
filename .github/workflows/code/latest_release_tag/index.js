@@ -11,7 +11,7 @@ exec('git rev-list --tags --max-count=20', (err, rawTags, stderr) => {
 
   if (err) {
     console.log('err rev', stderr)
-    process.exit(1)
+    // process.exit(1)
   }
 
   const tags = rawTags
@@ -22,7 +22,7 @@ exec('git rev-list --tags --max-count=20', (err, rawTags, stderr) => {
   exec(`git describe --abbrev=0 --tags ${tags}`, (err, rawRevs, stderr) => {
     if (err) {
       console.log('err desc', stderr)
-      process.exit(1)
+      // process.exit(1)
     }
 
     console.log('revs', rawRevs)
