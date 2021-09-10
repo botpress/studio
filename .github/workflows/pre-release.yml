@@ -12,16 +12,19 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
-      - name: Get Previous Tag
-        id: previous_tag
-        shell: bash
-        run: echo "::set-output name=tag::$(node .github/workflows/code/latest_release_tag.js)"
-      - name: Test output
-        run: |
-          echo name: ${{ steps.previous_tag.outputs.tag  }}  ${{ steps.previous_tag.outputs  }}
       - name: Fetch Node Packages
         run: |
           yarn
+      - name: Get Previous Tag
+        id: previous_tag
+        shell: bash
+        run: |
+          last_tag=$(node -e "require('.github/workflows/code/latest_release_tag.js').getLastTags().then(cl => console.log(cl))")
+          echo $last_tag
+          echo "::set-output name=last_tag::$last_tag"
+      - name: Test output
+        run: |
+          echo name: ${{ steps.previous_tag.outputs.last_tag  }}
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
