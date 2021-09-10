@@ -15,19 +15,19 @@ jobs:
       - name: Git Unshallow
         run: git fetch --prune --unshallow
       - name: Get Release Details
-        id: previous_tag
+        id: release_details
         uses: botpress/gh-actions/get_release_details@dev
+      - name: 'test cond'
+        if: ${{ steps.release_details.outputs.is_new_release }}
+        run: echo "is new"
       - name: Show info
         run: |
-          echo ${{ steps.previous_tag.outputs.tag }}
-          echo ${{ steps.previous_tag.outputs.isNewRelease }}
-      - name: Test changelog
-        id: build_changelog
-        uses: botpress/gh-actions/build_changelog@master
-
+          echo ${{ steps.release_details.outputs.tag }}
+          echo ${{ steps.release_details.outputs.is_new_release }}
+          echo ${{ steps.release_details.outputs.changelog }}
       - name: Fetch Node Packages
         run: |
-          echo ${{ steps.build_changelog.outputs.changelog }}
+          echo ${{ steps.release_details.outputs.changelog }}
           yarn
       - name: Extract Branch Name
         id: extract_branch
@@ -37,7 +37,6 @@ jobs:
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
         run: |
-          echo ${{ steps.previous_tag.outputs.tag }}
           yarn build --prod
           yarn package
       - name: Rename Binary Files
@@ -48,7 +47,7 @@ jobs:
           files: ./bin/studio*
           prerelease: true
           draft: false
-          body: ${{ steps.build_changelog.outputs.changelog }}
+          body: ${{ steps.release_details.outputs.changelog }}
           name: ${{ steps.extract_branch.outputs.branch }}
           tag_name: ${{ steps.extract_branch.outputs.branch }}
           target_commitish: ${{ steps.extract_branch.outputs.branch }}
