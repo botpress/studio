@@ -6,11 +6,11 @@ require('bluebird-global')
  * Returns the latest release tag (ignore branches)
  */
 const getLastTags = async () => {
-  console.log('Getlast')
+  console.log('getLastTags')
 
   const status = await Promise.fromCallback(cb => exec('git status', cb))
 
-  exec('git rev-list --tags --max-count=20', (err, revsList, stderr) => {
+  exec('git rev-list --tags', (err, revsList, stderr) => {
     console.log('RVLIST', revsList)
   })
 
