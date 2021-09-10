@@ -12,7 +12,8 @@ const getLastTags = async () => {
 
       for (i = 0; i < revisions.length; i++) {
         if (/^v\d/.test(tags[i])) {
-          return console.log(`::set-output name=tag::${tags[i]}`)
+          console.log(`::set-output name=tag::${tags[i]}`)
+          return
         }
       }
     })

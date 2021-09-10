@@ -23,7 +23,7 @@ jobs:
         id: previous_tag
         run: |
           latest_tag=$(node .github/workflows/code/latest_release_tag.js)
-          echo "$valid_latest_tag"
+          echo "$latest_tag"
       - name: 'Build and Package'
         env:
           GITHUB_EVENT: ${{ toJson(github.event) }}
