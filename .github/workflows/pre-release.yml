@@ -25,9 +25,10 @@ jobs:
         run: echo "is new"
       - name: Show info
         run: |
-          echo ${{ steps.release_details.outputs.tag }}
+          echo ${{ steps.release_details.outputs.latest_tag }}
           echo ${{ steps.release_details.outputs.is_new_release }}
           echo ${{ steps.release_details.outputs.changelog }}
+          echo ${{ steps.changelog.outputs.value }}
       - name: Fetch Node Packages
         run: |
           yarn
