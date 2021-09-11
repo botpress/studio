@@ -10,10 +10,12 @@ jobs:
       - name: Extract Branch Name
         id: extract_branch
         shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: |
+          DELETED_BRANCH=${{ github.event.ref }}
+          echo "##[set-output name=branch;]$(echo ${DELETED_BRANCH#refs/heads/})"
       - uses: dev-drprasad/delete-tag-and-release@v0.2.0
         with:
           delete_release: true
-          tag_name: pre-${{ steps.extract_branch.outputs.branch }}
+          tag_name: dev-${{ steps.extract_branch.outputs.branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
