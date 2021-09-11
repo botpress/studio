@@ -10,6 +10,7 @@ import { centerText, LoggerProvider, LogLevel } from 'core/logger'
 import { ModuleLoader, ModuleResolver } from 'core/modules'
 import fs from 'fs'
 import _ from 'lodash'
+import { showBanner } from './banner'
 import { coreActions } from './core-client'
 
 async function setupEnv(app: BotpressApp) {
@@ -89,17 +90,6 @@ async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: Modu
   return { loadedModules, erroredModules }
 }
 
-const showBanner = logger => {
-  const devBranch = process.DEV_BRANCH && `Branch: ${process.DEV_BRANCH}`
-  const fromSource = process.pkg ? '' : 'Running from sources'
-  const infos = [`Version ${process.STUDIO_VERSION}`, devBranch, fromSource]
-
-  logger.info(chalk`========================================
-  {bold ${centerText('Botpress Studio', 40, 9)}}
-  ${centerText(chalk.blackBright(infos.filter(x => x !== undefined).join(' - ')), 40, 13)}
-  ${_.repeat(' ', 9)}========================================`)
-}
-
 async function start() {
   const app = createApp()
   await setupDebugLogger(app.logger)
@@ -118,7 +108,7 @@ async function start() {
     process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
   }
 
-  showBanner(logger)
+  showBanner({ title: 'Botpress Studio', version: process.STUDIO_VERSION, labelLength: 9, lineWidth: 75, logger })
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
     try {
