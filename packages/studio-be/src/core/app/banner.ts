@@ -1,5 +1,6 @@
 import sdk from 'botpress/sdk'
 import chalk from 'chalk'
+import { centerText } from 'core/logger'
 import _ from 'lodash'
 import moment from 'moment'
 
@@ -17,11 +18,6 @@ interface BuildMetadata {
   version: string
   date: number
   branch: string
-}
-
-const centerText = (text: string, width: number, indent: number = 0) => {
-  const padding = Math.floor((width - text.length) / 2)
-  return _.repeat(' ', padding + indent) + text + _.repeat(' ', padding)
 }
 
 export const showBanner = (config: BannerConfig) => {
