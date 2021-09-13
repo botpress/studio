@@ -26,8 +26,6 @@ jobs:
         id: extract_branch
         shell: bash
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        if: ${{ steps.cache.outputs.cache-hit == 'true' }}
-        env: GULP_PARALLEL=true
 
       - name: Get Release Details
         id: release_details
