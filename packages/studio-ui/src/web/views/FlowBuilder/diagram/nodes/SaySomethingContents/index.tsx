@@ -4,6 +4,7 @@ import React, { FC, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { fetchContentCategories } from '~/actions'
 import withLanguage from '~/components/Util/withLanguage'
+import { RootReducer } from '~/reducers'
 import { getFormData } from '~/util/NodeFormData'
 import commonStyle from '~/views/FlowBuilder/common/style.scss'
 
@@ -72,8 +73,8 @@ const SayNodeContent: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({
-  categories: state.content.categories
+const mapStateToProps = (state: RootReducer) => ({
+  categories: state.content.categories.registered
 })
 
 const mapDispatchToProps = {

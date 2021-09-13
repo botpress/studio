@@ -1,4 +1,6 @@
+import { ContentElement } from 'botpress/sdk'
 import { confirmDialog, Dialog, lang } from 'botpress/shared'
+import { ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Button, OverlayTrigger, Radio, Tooltip } from 'react-bootstrap'
@@ -8,15 +10,28 @@ import ContentPickerWidget from '~/components/Content/Select/Widget'
 import { LinkDocumentationProvider } from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
 
-import ParametersTable from './ParametersTable'
+import ParametersTable, { Parameter } from './ParametersTable'
 import SelectActionDropdown from './SelectActionDropdown'
 import style from './style.scss'
+
+interface Action {
+  label: string
+  value: string
+  metadata: LocalActionDefinition
+}
+interface Item {
+  type: string
+  functionName?: string
+  message?: string
+  parameters: Parameter
+}
 
 interface OwnProps {
   show: boolean
   layoutv2?: boolean
-  onSubmit: any
-  onClose: any
+  onSubmit: (item: Item) => void
+  onClose: () => void
+  item?: Item
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -25,32 +40,28 @@ type Props = StateProps & OwnProps
 
 interface State {
   actionType: string
-  avActions: any[]
-  actionMetadata: any
-  functionInputValue: any
+  avActions: Action[]
+  actionMetadata?: LocalActionDefinition
+  functionInputValue?: Action
   isEdit: boolean
   messageValue: string
-  functionParams: any
-  paramsDef: any
+  functionParams: Parameter
+  paramsDef: ActionParameterDefinition[]
 }
 
 class ActionModalForm extends Component<Props, State> {
-  private parametersTable: any
-
   state: State = {
     actionType: 'message',
     avActions: [],
-    actionMetadata: {},
-    functionInputValue: '',
     messageValue: '',
     functionParams: {},
     isEdit: false,
-    paramsDef: undefined
+    paramsDef: []
   }
 
-  textToItemId = text => _.get(text.match(/^say #!(.*)$/), '[1]')
+  textToItemId = (text: string) => _.get(text.match(/^say #!(.*)$/), '[1]')
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { item } = nextProps
 
     if (this.props.show || !nextProps.show) {
@@ -79,7 +90,7 @@ class ActionModalForm extends Component<Props, State> {
     this.prepareActions()
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.actions !== this.props.actions) {
       this.prepareActions()
     }
@@ -91,21 +102,24 @@ class ActionModalForm extends Component<Props, State> {
         return {
           label: x.name,
           value: x.name,
-          metadata: { params: x.params, title: x.title, description: x.description, category: x.category }
+          metadata: { ...x }
         }
       })
     })
   }
 
-  onChangeType = type => () => {
+  onChangeType = (type: string) => () => {
     this.setState({ actionType: type })
   }
 
   resetForm() {
     this.setState({
       actionType: 'message',
-      functionInputValue: '',
-      messageValue: ''
+      functionInputValue: undefined,
+      messageValue: '',
+      functionParams: {},
+      paramsDef: [],
+      actionMetadata: undefined
     })
   }
 
@@ -113,8 +127,6 @@ class ActionModalForm extends Component<Props, State> {
     const { avActions } = this.state
 
     const tooltip = <Tooltip id="notSeeingAction">{lang.tr('studio.flow.node.actionsRegisteredOnServer')}</Tooltip>
-
-    const tooltip2 = <Tooltip id="whatIsThis">{lang.tr('studio.flow.node.youCanChangeActions')}</Tooltip>
 
     const help = (
       <OverlayTrigger placement="bottom" overlay={tooltip}>
@@ -124,17 +136,15 @@ class ActionModalForm extends Component<Props, State> {
 
     const paramsHelp = <LinkDocumentationProvider file="main/memory" />
 
-    const onParamsChange = params => {
-      params = _.values(params).reduce((sum, n) => {
+    const onArgsChange = (args: any) => {
+      args = _.values(args).reduce((sum, n) => {
         if (n.key === '') {
           return sum
         }
         return { ...sum, [n.key]: n.value }
       }, {})
-      this.setState({ functionParams: params })
+      this.setState({ functionParams: args })
     }
-
-    // const args = JSON.stringify(this.state.functionParams, null, 4)
 
     return (
       <div>
@@ -142,15 +152,15 @@ class ActionModalForm extends Component<Props, State> {
         <div className={style.section}>
           <SelectActionDropdown
             id="select-action"
-            value={this.state.functionInputValue}
+            value={this.state.functionInputValue || ''}
             options={avActions}
             onChange={val => {
               const fn = avActions.find(fn => fn.value === (val && val.value))
-              const paramsDefinition = _.get(fn, 'metadata.params') || []
+              const paramsDefinition = (_.get(fn, 'metadata.params') || []) as ActionParameterDefinition[]
               this.setState({
                 functionInputValue: val,
                 paramsDef: paramsDefinition,
-                actionMetadata: fn.metadata || {}
+                actionMetadata: fn.metadata || undefined
               })
 
               // TODO Detect if default or custom arguments
@@ -168,16 +178,15 @@ class ActionModalForm extends Component<Props, State> {
               })
             }}
           />
-          {this.state.actionMetadata.title && <h4>{this.state.actionMetadata.title}</h4>}
-          {this.state.actionMetadata.description && <Markdown source={this.state.actionMetadata.description} />}
+          {this.state.actionMetadata?.title && <h4>{this.state.actionMetadata.title}</h4>}
+          {this.state.actionMetadata?.description && <Markdown source={this.state.actionMetadata.description} />}
         </div>
         <h5>
           {lang.tr('studio.flow.node.actionParameters')} {paramsHelp}
         </h5>
         <div className={style.section}>
           <ParametersTable
-            ref={el => (this.parametersTable = el)}
-            onChange={onParamsChange}
+            onChange={onArgsChange}
             value={this.state.functionParams}
             definitions={this.state.paramsDef}
           />
@@ -187,7 +196,7 @@ class ActionModalForm extends Component<Props, State> {
   }
 
   renderSectionMessage() {
-    const handleChange = item => {
+    const handleChange = (item: ContentElement) => {
       this.setState({ messageValue: `say #!${item.id}` })
     }
 
@@ -212,13 +221,14 @@ class ActionModalForm extends Component<Props, State> {
     this.props.onSubmit &&
       this.props.onSubmit({
         type: this.state.actionType,
-        functionName: this.state.functionInputValue && this.state.functionInputValue.value,
+        functionName: this.state.functionInputValue?.value,
         message: this.state.messageValue,
         parameters: this.state.functionParams
       })
   }
 
   onClose = () => {
+    this.resetForm()
     this.props.onClose && this.props.onClose()
   }
 
