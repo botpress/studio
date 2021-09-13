@@ -1,7 +1,7 @@
 import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
-import { FlowView, NodeView } from 'common/typings'
+import { Categories, FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Alert } from 'react-bootstrap'
@@ -205,12 +205,15 @@ class ContentView extends Component<Props, State> {
 
   render() {
     const { selectedId = 'all', contentToEdit } = this.state
-    const categories = this.props.categories ?? []
-    const selectedCategory = _.find(categories, { id: this.currentContentType() })
+    const categoriesRegistered = this.props.categories.registered ?? []
+    const categoriesUnregistered = this.props.categories.unregistered ?? []
+    const selectedCategory = _.find(categoriesRegistered, { id: this.currentContentType() })
 
     const classNames = classnames(style.content, 'bp-content')
 
-    if (!categories.length) {
+    const hasContentTypes = categoriesRegistered.length || categoriesUnregistered.length
+
+    if (!hasContentTypes) {
       return (
         <div className={classNames}>
           <Alert bsStyle="warning">
@@ -231,20 +234,20 @@ class ContentView extends Component<Props, State> {
       <Container>
         <Sidebar
           readOnly={!this.canEdit}
-          categories={categories}
+          categories={this.props.categories}
           selectedId={selectedId}
           handleAdd={this.handleCreateNew}
           handleCategorySelected={this.handleCategorySelected}
         />
         <List
-          readOnly={!this.canEdit}
+          readOnly={!this.canEdit || !categoriesRegistered.length}
           count={
             this.state.selectedId === 'all'
-              ? _.sumBy(categories, 'count') || 0
-              : _.find(categories, { id: this.state.selectedId }).count
+              ? _.sumBy(categoriesRegistered, 'count') || 0
+              : _.find(categoriesRegistered, { id: this.state.selectedId }).count
           }
           className={style.contentListWrapper}
-          contentItems={this.props.contentItems ?? []}
+          contentItems={categoriesRegistered.length ? this.props.contentItems ?? [] : []}
           handleRefresh={this.handleRefresh}
           handleEdit={this.handleModalShowForEdit}
           handleDeleteSelected={this.handleDeleteSelected}
@@ -298,7 +301,7 @@ type Props = {
   upsertContentItem: Function
   deleteContentItems: Function
   deleteMedia: Function
-  categories: any
+  categories: Categories
   contentItems: ContentElementUsage[]
   flows: FlowReducer
   user: UserReducer
