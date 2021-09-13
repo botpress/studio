@@ -7,11 +7,11 @@ import { connect } from 'react-redux'
 import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
+import { isRTLLocale } from '~/translations'
 import withLanguage from '../../../components/Util/withLanguage'
 import { ActionPopover } from './actionPopover'
 
 import style from './style.scss'
-import { isRTLLocale } from '~/translations'
 
 interface Props {
   text: string
@@ -128,12 +128,9 @@ class ActionItem extends Component<Props> {
 
     return (
       <div
-        className={classnames(
-          this.props.className,
-          style['action-item'],
-          style.msg,
-          isRTLLocale(this.props.contentLang) ? style.rtl : null
-        )}
+        className={classnames(this.props.className, style['action-item'], style.msg, {
+          [style.rtl]: isRTLLocale(this.props.contentLang) ? style.rtl : null
+        })}
       >
         <span className={style.icon}>💬</span>
         <span className={className} dangerouslySetInnerHTML={html} />

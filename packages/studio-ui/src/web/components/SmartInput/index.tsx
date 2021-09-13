@@ -142,7 +142,6 @@ class SmartInput extends React.Component<ConnectedProps, State> {
       plugins.push(createSingleLinePlugin())
     }
 
-    isRTLLocale(this.props.contentLang)
     return (
       <div
         className={cx(style.editor, this.props.className, {
