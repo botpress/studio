@@ -234,7 +234,7 @@ export class BotService {
     await this.mountBot(destBotId)
   }
 
-  async getBotTemplates(): Promise<any[]> {
+  async getBotTemplates(): Promise<BotTemplate[]> {
     const builtinPath = getBuiltinPath('bot-templates')
     const templates = await fse.readdir(builtinPath)
 
@@ -245,7 +245,7 @@ export class BotService {
       } catch (err) {}
     })
 
-    return detailed.filter(x => x !== undefined)
+    return detailed.filter(x => x !== undefined) as BotTemplate[]
   }
 
   async makeBotId(botId: string, workspaceId: string) {
@@ -291,7 +291,7 @@ export class BotService {
 
       if (!mergedConfigs.imports.contentTypes) {
         const allContentTypes = await this.cms.getAllContentTypes()
-        mergedConfigs.imports.contentTypes = allContentTypes.map(x => x.id)
+        mergedConfigs.imports.contentTypes = allContentTypes.enabled.map(x => x.id)
       }
 
       if (!mergedConfigs.defaultLanguage) {

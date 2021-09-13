@@ -1,6 +1,6 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Create your virtual assistants",
   "main": "index.js",
   "bin": "./packages/studio-be/out/index.js",
