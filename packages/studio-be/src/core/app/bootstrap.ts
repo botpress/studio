@@ -10,6 +10,7 @@ import { centerText, LoggerProvider, LogLevel } from 'core/logger'
 import { ModuleLoader, ModuleResolver } from 'core/modules'
 import fs from 'fs'
 import _ from 'lodash'
+import { showBanner } from './banner'
 import { coreActions } from './core-client'
 
 async function setupEnv(app: BotpressApp) {
@@ -107,10 +108,7 @@ async function start() {
     process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
   }
 
-  logger.info(chalk`========================================
-{bold ${centerText('Botpress Studio', 40, 9)}}
-{dim ${centerText(`Version ${process.STUDIO_VERSION}`, 40, 9)}}
-${_.repeat(' ', 9)}========================================`)
+  showBanner({ title: 'Botpress Studio', version: process.STUDIO_VERSION, logScopeLength: 9, bannerWidth: 75, logger })
 
   if (!fs.existsSync(process.APP_DATA_PATH)) {
     try {

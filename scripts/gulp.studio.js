@@ -2,7 +2,7 @@ require('bluebird-global')
 const gulp = require('gulp')
 const rimraf = require('gulp-rimraf')
 const path = require('path')
-
+const { exec } = require('child_process')
 const file = require('gulp-file')
 const fse = require('fs-extra')
 const { execute } = require('./utils/exec')
@@ -71,18 +71,23 @@ const package = async () => {
   }
 }
 
-const writeMetadata = () => {
-  const version = require(path.join(__dirname, '../package.json')).version
-  const metadata = JSON.stringify(
-    {
-      version,
-      build_version: `${version}__${Date.now()}`
-    },
-    null,
-    2
-  )
+const writeMetadata = async () => {
+  const metadata = {
+    version: require(path.join(__dirname, '../package.json')).version,
+    date: Date.now(),
+    branch: 'master'
+  }
 
-  return file('./packages/studio-be/src/metadata.json', metadata, { src: true }).pipe(gulp.dest('./'))
+  try {
+    const currentBranch = await Promise.fromCallback(cb => exec('git rev-parse --abbrev-ref HEAD', cb))
+    metadata.branch = currentBranch.replace('\n', '')
+  } catch (err) {
+    console.error(`Couldn't get active branch`, err)
+  }
+
+  return file('./packages/studio-be/src/metadata.json', JSON.stringify(metadata, null, 2), { src: true }).pipe(
+    gulp.dest('./')
+  )
 }
 
 module.exports = {
