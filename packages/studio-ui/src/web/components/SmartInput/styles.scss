@@ -50,8 +50,7 @@
     }
   }
 
-  &:hover,
-  &:focus-within {
+  &:hover, &:focus-within {
     .insertBtn {
       background: rgba(255, 255, 255, 0.9);
       span[icon] {
@@ -93,7 +92,7 @@
 
 .mentionSuggestions .description {
   font-size: 12px;
-  color: #5c7080;
+  color: #5C7080;
   line-height: 15px;
 }
 
@@ -105,7 +104,7 @@
 
   &:active,
   &.mentionSuggestionsEntryFocused {
-    background-color: #e5eaec;
+    background-color: #E5EAEC;
   }
 }
 

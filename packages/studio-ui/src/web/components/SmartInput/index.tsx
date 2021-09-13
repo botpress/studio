@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { refreshHints } from '~/actions'
 import store from '~/store'
 
+import { isRTLLocale } from '~/translations'
 import createMentionPlugin, { defaultSuggestionsFilter } from './Base'
 import style from './styles.scss'
 
@@ -27,7 +28,7 @@ interface ExposedProps {
 const { hasCommandModifier } = KeyBindingUtil
 const A_KEY = 65
 
-type ConnectedProps = ExposedProps & { hints: any[]; isRTLContentLang: boolean }
+type ConnectedProps = ExposedProps & { hints: any[]; contentLang: string }
 
 interface State {
   beforeContentStateText?: string
@@ -140,10 +141,11 @@ class SmartInput extends React.Component<ConnectedProps, State> {
     if (this.props.singleLine) {
       plugins.push(createSingleLinePlugin())
     }
+
     return (
       <div
         className={cx(style.editor, this.props.className, {
-          [style.rtl]: this.props.isRTLContentLang && !this.props.isCode
+          [style.rtl]: isRTLLocale(this.props.contentLang) && !this.props.isCode
         })}
         onClick={this.focus}
       >
@@ -175,7 +177,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
 }
 
 const mapDispatchToProps = { refreshHints }
-const mapStateToProps = ({ hints: { inputs }, language: { isRTLContentLang } }) => ({ hints: inputs, isRTLContentLang })
+const mapStateToProps = ({ hints: { inputs }, language: { contentLang } }) => ({ hints: inputs, contentLang })
 const ConnectedSmartInput = connect(mapStateToProps, mapDispatchToProps)(SmartInput)
 
 // Passing store explicitly since this component may be imported from another botpress-module

@@ -1,17 +1,12 @@
 import classnames from 'classnames'
 import _ from 'lodash'
 import Mustache from 'mustache'
-import React, {Component} from 'react'
-import {OverlayTrigger, Popover, Well} from 'react-bootstrap'
-import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import { OverlayTrigger, Popover, Well } from 'react-bootstrap'
 
 const style = require('./style.scss')
 
-const mapStateToProps = (state) => ({
-  isRTLContentLang: state.language.isRTLContentLang
-})
-
-class ConditionItem extends Component {
+export default class ConditionItem extends Component {
   renderNormal(child) {
     return child
   }
@@ -33,6 +28,7 @@ class ConditionItem extends Component {
   render() {
     let raw
     const { position } = this.props
+
     const { condition, caption } = this.props.condition
 
     const renderer = caption ? this.renderOverlay : this.renderNormal
@@ -44,7 +40,7 @@ class ConditionItem extends Component {
       const restoreDots = str => str.replace(/--dot--/g, '.')
 
       const htmlTpl = caption.replace(/\[(.+)]/gi, x => {
-        const name = stripDots(x.replace(/\[|]/g, ''))
+        const name = stripDots(x.replace(/[\[\]]/g, ''))
         vars[name] = '<span class="val">' + _.escape(name) + '</span>'
         return '{{{' + name + '}}}'
       })
@@ -60,11 +56,9 @@ class ConditionItem extends Component {
 
     return renderer(
       <div className={classnames(this.props.className, style['action-item'], style['condition'])}>
-        <span className={style.name} dangerouslySetInnerHTML={{ __html: raw }}/>
+        <span className={style.name} dangerouslySetInnerHTML={{ __html: raw }} />
         {this.props.children}
       </div>
     )
   }
 }
-
-export default connect(mapStateToProps)(ConditionItem)
