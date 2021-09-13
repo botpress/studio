@@ -18,12 +18,12 @@ yargs
       const version = (await fse.readJSON(path.join('package.json'))).version
       const newVersion = semver.inc(version, argv.releaseType)
 
-      const changes = await changelog.build({ writeToFile: true })
-      logger.info(`Change Log:\n\n${changes}`)
-
       spawn('yarn', ['version', '--new-version', newVersion, '--no-git-tag-version'], {
         stdio: 'inherit',
         shell: true
+      }).on('close', async () => {
+        const changes = await changelog.build({ writeToFile: true })
+        logger.info(`Change Log:\n\n${changes}`)
       })
     } catch (err) {
       logger.error(err)
