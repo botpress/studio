@@ -10,8 +10,22 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@master
+
+      - name: Configure Caching
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+            ${{ runner.os }}-modules-
+
+      - name: Extract Branch Name
+        id: extract_branch
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: Git Unshallow
         run: git fetch --prune --unshallow
@@ -20,27 +34,11 @@ jobs:
         id: release_details
         uses: botpress/gh-actions/get_release_details@master
 
-      - name: Fix Change Log
-        id: changelog
-        run: echo "::set-output name=value::${{ steps.release_details.outputs.changelog }}"
-
       - name: Fetch Node Packages
-        run: |
-          yarn
-
-      - name: Extract Branch Name
-        id: extract_branch
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        run: yarn
 
       - name: Build Project
         run: yarn build --prod
-
-      - name: Update Metadata File
-        uses: botpress/gh-actions/merge_json@master
-        with:
-          path: packages/studio-be/out/metadata.json
-          json: '{ "devBranch": "${{ steps.extract_branch.outputs.branch }}" }'
 
       - name: Package Binaries
         run: yarn package
