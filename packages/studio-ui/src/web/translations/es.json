@@ -376,7 +376,8 @@
         "all": "Todo",
         "createNew": "Crear nuevo {name}",
         "createNewContent": "Crear nuevo contenido",
-        "filterByType": "Filtrar por tipo de contenido"
+        "filterByType": "Filtrar por tipo de contenido",
+        "unregisteredWarning": "El tipo de contenido no está registrado."
       },
       "switchToDefaultLang": "Cambie a {defaultLang} y comience a editar",
       "usageModal": {
