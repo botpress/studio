@@ -38,7 +38,7 @@ export class BaseNodeModel extends NodeModel {
     const waitOnReceive = !_.isNil(onReceive)
 
     if (!this.ports['in'] && this.type !== 'trigger') {
-      // TODO: refactor thisfor Trigger
+      // TODO: refactor this for Trigger
       this.addPort(new StandardIncomingPortModel('in', inNodeType))
     }
 

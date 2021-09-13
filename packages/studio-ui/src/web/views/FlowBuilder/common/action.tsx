@@ -6,11 +6,12 @@ import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
-import { isMissingCurlyBraceClosure } from '../../../components/Util/form.util'
+import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import withLanguage from '../../../components/Util/withLanguage'
 import { ActionPopover } from './actionPopover'
 
 import style from './style.scss'
+import { isRTLLocale } from '~/translations'
 
 interface Props {
   text: string
@@ -20,7 +21,6 @@ interface Props {
   items: any
   contentLang: string
   layoutv2?: boolean
-  isRTLContentLang: boolean
 }
 
 export const textToItemId = text => text?.match(/^say #!(.*)$/)?.[1]
@@ -49,7 +49,6 @@ class ActionItem extends Component<Props> {
   }
 
   render() {
-    const { isRTLContentLang } = this.props
     const action = this.props.text
     const isAction = typeof action !== 'string' || !action.startsWith('say ')
 
@@ -128,7 +127,14 @@ class ActionItem extends Component<Props> {
     }
 
     return (
-      <div className={classnames(this.props.className, style['action-item'], style.msg, isRTLContentLang ? style.rtl : null)}>
+      <div
+        className={classnames(
+          this.props.className,
+          style['action-item'],
+          style.msg,
+          isRTLLocale(this.props.contentLang) ? style.rtl : null
+        )}
+      >
         <span className={style.icon}>💬</span>
         <span className={className} dangerouslySetInnerHTML={html} />
         {this.props.children}
@@ -137,10 +143,7 @@ class ActionItem extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({
-  items: state.content.itemsById,
-  isRTLContentLang: state.language.isRTLContentLang
-})
+const mapStateToProps = state => ({ items: state.content.itemsById })
 const mapDispatchToProps = { fetchContentItem, refreshFlowsLinks }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withLanguage(ActionItem))
