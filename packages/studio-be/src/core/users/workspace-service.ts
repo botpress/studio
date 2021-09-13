@@ -98,8 +98,9 @@ export class WorkspaceService {
 
     if (!workspace.bots.includes(botId)) {
       workspace.bots.push(botId)
+
+      return this.save(workspaces)
     }
-    return this.save(workspaces)
   }
 
   async findRole(roleId: string, workspaceId: string): Promise<AuthRole> {

@@ -1,5 +1,5 @@
 import { ContentElement } from 'botpress/sdk'
-import { LibraryElement } from 'common/typings'
+import { Categories, LibraryElement, ParsedContentType } from 'common/typings'
 import { DefaultSearchParams } from 'core/cms'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
@@ -22,10 +22,19 @@ export class CMSRouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const types = await this.cmsService.getAllContentTypes(botId)
+        const categories: Categories = {
+          registered: [],
+          unregistered: types.disabled.map(x => ({
+            id: x,
+            title: x
+          }))
+        }
 
-        const response = await Promise.map(types, async type => {
+        for (let i = 0; i < types.enabled.length; i++) {
+          const type = types.enabled[i]
           const count = await this.cmsService.countContentElementsForContentType(botId, type.id)
-          return {
+
+          categories.registered.push({
             id: type.id,
             count,
             title: type.title,
@@ -36,10 +45,10 @@ export class CMSRouter extends CustomStudioRouter {
               title: type.title,
               renderer: type.id
             }
-          }
-        })
+          })
+        }
 
-        res.send(response)
+        res.send(categories)
       })
     )
 
@@ -146,7 +155,7 @@ export class CMSRouter extends CustomStudioRouter {
         const ids = await ghost.readFileAsObject<string[]>(CONTENT_FOLDER, LIBRARY_FILE)
 
         const elements = await this.cmsService.listContentElements(botId, undefined, { ids, from: 0, count: -1 }, lang)
-        const contentTypes = (await this.cmsService.getAllContentTypes(botId)).reduce((acc, curr) => {
+        const contentTypes = (await this.cmsService.getAllContentTypes(botId)).enabled.reduce((acc, curr) => {
           return { ...acc, [curr.id]: curr.title }
         }, {})
 

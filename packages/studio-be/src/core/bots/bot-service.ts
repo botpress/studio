@@ -241,7 +241,7 @@ export class BotService {
     await this.mountBot(destBotId)
   }
 
-  async getBotTemplates(): Promise<any[]> {
+  async getBotTemplates(): Promise<BotTemplate[]> {
     const builtinPath = getBuiltinPath('bot-templates')
     const templates = await fse.readdir(builtinPath)
 
@@ -252,7 +252,7 @@ export class BotService {
       } catch (err) {}
     })
 
-    return detailed.filter(x => x !== undefined)
+    return detailed.filter(x => x !== undefined) as BotTemplate[]
   }
 
   async makeBotId(botId: string, workspaceId: string) {

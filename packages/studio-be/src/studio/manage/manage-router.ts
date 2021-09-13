@@ -55,7 +55,7 @@ class ManageRouter extends CustomStudioRouter {
           await this.workspaceService.addBotRef(bot.id, req.workspace!)
         }
 
-        res.sendStatus(200)
+        res.send({ botId: bot.id })
       })
     )
   }
