@@ -295,18 +295,20 @@ export class CMSService implements IDisposeOnExit {
   async getAllContentTypes(botId?: string): Promise<{ enabled: ContentType[]; disabled: string[] }> {
     const contentTypes: { enabled: ContentType[]; disabled: string[] } = { enabled: [], disabled: [] }
 
-    if (botId) {
-      const botConfig = await this.configProvider.getBotConfig(botId)
-      const enabledTypes = botConfig.imports.contentTypes || []
+    if (!botId) {
+      return { enabled: this.contentTypes, disabled: [] }
+    }
 
-      for (const type of enabledTypes) {
-        try {
-          contentTypes.enabled.push(this.getContentType(type))
-        } catch (err) {
-          this.logger.warn(err)
+    const botConfig = await this.configProvider.getBotConfig(botId)
+    const enabledTypes = botConfig.imports.contentTypes || []
 
-          contentTypes.disabled.push(type)
-        }
+    for (const type of enabledTypes) {
+      try {
+        contentTypes.enabled.push(this.getContentType(type))
+      } catch (err) {
+        this.logger.warn(err)
+
+        contentTypes.disabled.push(type)
       }
     }
 
