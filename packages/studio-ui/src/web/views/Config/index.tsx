@@ -464,6 +464,7 @@ class ConfigView extends Component<Props, State> {
               <Button
                 text={lang.tr('saveChanges')}
                 intent="primary"
+                id="btn-submit"
                 icon="floppy-disk"
                 disabled={this.state.isSaving}
                 onClick={this.saveChanges}
