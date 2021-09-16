@@ -1,3 +1,13 @@
+## [0.0.37](https://github.com/botpress/studio/compare/v0.0.36...v0.0.37) (2021-09-16)
+
+
+### Bug Fixes
+
+* **studio:** fix session storage with storage utils ([#22](https://github.com/botpress/studio/issues/22)) ([b292015](https://github.com/botpress/studio/commit/b2920157aacc9ef2ac1d386fb7c67656e0c3e78a))
+* **studio:** retry set studio ready call ([#105](https://github.com/botpress/studio/issues/105)) ([8ff62bb](https://github.com/botpress/studio/commit/8ff62bbf21f891cca959d48be2cc3e5c8830f2d7))
+
+
+
 ## [0.0.36](https://github.com/botpress/studio/compare/v0.0.35...v0.0.36) (2021-09-13)
 
 
