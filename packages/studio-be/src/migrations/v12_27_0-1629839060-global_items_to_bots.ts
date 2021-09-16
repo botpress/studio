@@ -10,17 +10,6 @@ const CONTENT_DIR = 'content-types'
 const ACTIONS_DIR = 'actions'
 const HOOKS_DIR = 'hooks'
 const IGNORED_ACTION = ['say']
-const BOT_HOOKS = [
-  'after_bot_mount',
-  'after_bot_unmount',
-  'before_incoming_middleware',
-  'after_incoming_middleware',
-  'before_outgoing_middleware',
-  'after_event_processed',
-  'before_session_timeout',
-  'before_suggestions_election',
-  'on_bot_error'
-]
 const BP_MODULES = ['builtin', 'basic-skills', 'channel-web', 'internal-users']
 
 const migration: Migration = {
@@ -66,11 +55,7 @@ const migration: Migration = {
      * Scan each flows and extract actions, then if the bot doesn't have it locally, fetch it from builtin or global.
      * We prefer builtin first because we had to make slight adjustments to some actions (module config was moved to bot config)
      */
-    const globalActions = await ghostService.global().directoryListing('actions', '*.*')
     const builtinActions = await listDir(getBuiltinPath('actions'))
-
-    // We ignore actions of custom modules for now, since they may require their custom node_modules folder
-    const globalWithoutCustomModules = globalActions.filter(fileName => path.dirname(fileName) === '.')
 
     const updateBotActions = async (botId: string) => {
       const botActions = await ghostService.forBot(botId).directoryListing(ACTIONS_DIR, '*.*')
@@ -82,59 +67,93 @@ const migration: Migration = {
           continue
         }
 
-        let content
         if (builtinActions.find(x => x.relativePath === actionFile)) {
-          content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
-        } else if (globalWithoutCustomModules.find(x => x === actionFile)) {
-          content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
-        }
-
-        if (content) {
+          const content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
           await ghostService.forBot(botId).upsertFile(ACTIONS_DIR, actionFile, content)
+
           hasChanges = true
         }
       }
     }
 
     /**
-     * Take all global hooks, ignore our own modules and those which are not related to bots.
-     * Then we copy all any remaining global hook locally, and we add builtin ones.
+     * We copy builtin hooks to the bot, other global hooks are untouched
      */
-    const globalHooks = await ghostService.global().directoryListing(HOOKS_DIR, '*.*')
     const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
-
-    // Ignore hooks of custom modules, since they may need their node_modules. We copy other global hooks locally
-    const globalBotHooks = globalHooks.filter(path => {
-      const [hookType, _moduleName, fileName] = path.split('/')
-      return BOT_HOOKS.includes(hookType) && !fileName
-    })
-
-    const globalWithBuiltin = [...globalBotHooks, ...builtinHooks.map(x => x.relativePath)]
-
     const updateBotHooks = async (botId: string) => {
       const botHooks = await ghostService.forBot(botId).directoryListing(HOOKS_DIR, '*.*')
 
-      for (const hookFile of globalWithBuiltin) {
+      for (const hookFile of builtinHooks.map(x => x.relativePath)) {
         if (botHooks.find(x => x === hookFile)) {
           continue
         }
 
-        let content
-        if (globalHooks.find(x => x === hookFile)) {
-          content = await ghostService.global().readFileAsBuffer(HOOKS_DIR, hookFile)
-        } else if (builtinHooks.find(x => x.relativePath === hookFile)) {
-          content = await fse.readFile(path.join(getBuiltinPath(HOOKS_DIR), hookFile))
-        }
+        const content = await fse.readFile(path.join(getBuiltinPath(HOOKS_DIR), hookFile))
+        await ghostService.forBot(botId).upsertFile(HOOKS_DIR, hookFile, content)
 
-        if (content) {
-          await ghostService.forBot(botId).upsertFile(HOOKS_DIR, hookFile, content)
+        hasChanges = true
+      }
+    }
+
+    const updateBot = async (botId: string, botConfig: sdk.BotConfig) => {
+      await updateBotContentTypes(botId, botConfig!)
+      await updateBotActions(botId)
+      await updateBotHooks(botId)
+    }
+
+    if (metadata.botId) {
+      const botConfig = await botService.findBotById(metadata.botId)
+      await updateBot(metadata.botId, botConfig!)
+    } else {
+      const bots = await botService.getBots()
+      for (const [botId, botConfig] of bots) {
+        await updateBot(botId, botConfig)
+      }
+    }
+
+    return {
+      success: true,
+      message: `[${metadata.botId}] ${hasChanges ? 'Content updated successfully' : 'No migration required'}`
+    }
+  },
+  down: async ({ botService, ghostService, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    let hasChanges = false
+
+    const updateBotContentTypes = async (botId: string) => {
+      const botTypes = await ghostService.forBot(botId).directoryListing(CONTENT_DIR, '*.*')
+
+      for (const type of botTypes) {
+        await ghostService.forBot(botId).deleteFile(CONTENT_DIR, type)
+        hasChanges = true
+      }
+    }
+
+    const builtinActions = await listDir(getBuiltinPath('actions'))
+    const updateBotActions = async (botId: string) => {
+      const botActions = await ghostService.forBot(botId).directoryListing(ACTIONS_DIR, '*.*')
+
+      for (const actionFile of builtinActions.map(x => x.relativePath)) {
+        if (botActions.find(x => x === actionFile)) {
+          await ghostService.forBot(botId).deleteFile(ACTIONS_DIR, actionFile)
+          hasChanges = true
+        }
+      }
+    }
+
+    const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
+    const updateBotHooks = async (botId: string) => {
+      const botHooks = await ghostService.forBot(botId).directoryListing(HOOKS_DIR, '*.*')
+
+      for (const hookFile of builtinHooks.map(x => x.relativePath)) {
+        if (botHooks.find(x => x === hookFile)) {
+          await ghostService.forBot(botId).deleteFile(HOOKS_DIR, hookFile)
           hasChanges = true
         }
       }
     }
 
     const updateBot = async (botId: string, botConfig: sdk.BotConfig) => {
-      await updateBotContentTypes(botId, botConfig!)
+      await updateBotContentTypes(botId)
       await updateBotActions(botId)
       await updateBotHooks(botId)
     }
