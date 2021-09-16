@@ -8,6 +8,10 @@
     "moment": "^2.29.1",
     "nanoid": "^2.0.3"
   },
+  "devDependencies": {
+    "@types/js-cookie": "^2.2.7",
+    "@types/nanoid": "^3.0.0"
+  },
   "resolutions": {
     "fstream": ">=1.0.12",
     "lodash": ">=4.17.21"
