@@ -1,19 +1,22 @@
 import cx from 'classnames'
 import React, { FC } from 'react'
-import { connect } from 'react-redux'
-import { RootReducer } from '~/reducers'
+import store from '~/store'
+import { isRTLLocale } from '~/translations'
 import ConditionItem from '~/views/FlowBuilder/common/condition'
 import ActionItem from '../../../common/action'
 import { StandardPortWidget } from '../../nodes/Ports'
 import { BlockProps } from '../Block'
 import style from '../Components/style.scss'
+
 import localStyle from './style.scss'
 
-type StateProps = ReturnType<typeof mapStateToProps>
-type Props = StateProps & Pick<BlockProps, 'node'>
+type Props = Pick<BlockProps, 'node'>
 
-const StandardContents: FC<Props> = ({ node, isRTLContentLang }) => {
+const StandardContents: FC<Props> = ({ node }) => {
   const isWaiting = node.waitOnReceive
+  const {
+    language: { contentLang }
+  } = store.getState()
 
   return (
     <div className={cx(style.contentsWrapper, style.standard)}>
@@ -42,9 +45,12 @@ const StandardContents: FC<Props> = ({ node, isRTLContentLang }) => {
       {node.next?.map((item, i) => {
         const outputPortName = `out${i}`
         return (
-          <div key={`${i}.${item}`} className={cx(style.contentWrapper, style.small, {
-            [style.rtl]: isRTLContentLang
-          })}>
+          <div
+            key={`${i}.${item}`}
+            className={cx(style.contentWrapper, style.small, {
+              [style.rtl]: isRTLLocale(contentLang)
+            })}
+          >
             <div className={cx(style.content, style.readOnly)}>
               <ConditionItem condition={item} position={i} />
               <StandardPortWidget name={outputPortName} node={node} className={style.outRouting} />
@@ -55,9 +61,4 @@ const StandardContents: FC<Props> = ({ node, isRTLContentLang }) => {
     </div>
   )
 }
-
-const mapStateToProps = (state: RootReducer) => ({
-  isRTLContentLang: state.language.isRTLContentLang
-})
-
-export default connect(mapStateToProps)(StandardContents)
+export default StandardContents

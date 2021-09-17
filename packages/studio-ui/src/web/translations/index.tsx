@@ -33,21 +33,20 @@ const rtlLocales = [
   'yi' /* 'ייִדיש', Yiddish */
 ]
 
-// 'en-US' becomes ['en', '-us'] 'en' becomes ['en']
-const localeRegex = /^([a-zA-Z]*)([_\-a-zA-Z]*)$/
+const localeRegex = /^[a-z]{2,3}$/
 
 const isRTLLocale = (locale: string | undefined | null): boolean => {
   if (!locale) {
     return false
   }
-  locale = locale.toLowerCase()
-  const matches = localeRegex.exec(locale)
+
+  const matches = localeRegex.exec(locale.toLowerCase())
 
   if (!matches) {
     return false
   }
 
-  return rtlLocales.includes(matches[1])
+  return rtlLocales.includes(matches[0])
 }
 
 export { initializeTranslations, isRTLLocale }

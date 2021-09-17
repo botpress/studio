@@ -28,7 +28,15 @@ export const coreActions = {
     await coreClient?.post('/onBotCreation', { botId })
   },
   setStudioReady: async () => {
-    await coreClient?.post('/setStudioReady')
+    const tryRequest = async () => {
+      try {
+        await coreClient?.post('/setStudioReady')
+      } catch {
+        setTimeout(tryRequest, 250)
+      }
+    }
+
+    await tryRequest()
   },
   checkForDirtyModels: async (botId: string) => {
     await coreClient?.post('/checkForDirtyModels', { botId })
