@@ -18,14 +18,10 @@ jobs:
         with:
           python-version: '3.x'
           architecture: 'x64'
+
       - name: Install Tools
         run: |
           pip install awscli
-
-      - name: Extract Branch Name
-        id: extract_branch
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
 
       - name: Git Unshallow
         run: git fetch --prune --unshallow
@@ -43,6 +39,10 @@ jobs:
       - name: Package Binaries
         run: yarn package
 
+      - name: Extract Informations
+        id: info
+        uses: botpress/gh-actions/extract_info@master
+
       - name: Rename Binary Files
         uses: botpress/gh-actions/rename_binaries@master
 
@@ -51,4 +51,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 sync bin s3://botpress-dev-bins/studio/${{ steps.extract_branch.outputs.branch }}
+          aws s3 sync bin s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
