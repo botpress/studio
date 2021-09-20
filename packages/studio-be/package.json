@@ -14,6 +14,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "@botpress/native-extensions": "0.0.1",
+    "@botpress/nlu-client": "../nlu/packages/nlu-client",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "bluebird-global": "^1.0.1",
@@ -57,6 +58,7 @@
     "reflect-metadata": "^0.1.13",
     "replace-in-file": "^4.1.1",
     "rimraf": "^3.0.2",
+    "socket.io-redis": "^5.2.0",
     "tar": "^6.1.0",
     "tmp": "^0.2.1",
     "typescript": "^4.2.4",

@@ -2,9 +2,11 @@ import { Logger } from 'botpress/sdk'
 import { Botpress } from 'core/app/botpress'
 import { HTTPServer } from 'core/app/server'
 import { ConfigProvider } from 'core/config'
+import { CEMonitoringService, MonitoringService } from 'core/health'
 import { LoggerFilePersister, LoggerProvider, PersistedConsoleLogger } from 'core/logger'
 import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { ModuleLoader } from 'core/modules'
+import { RealtimeService } from 'core/realtime'
 import { WorkspaceService } from 'core/users'
 import { Container } from 'inversify'
 import path from 'path'
@@ -72,6 +74,16 @@ container
 container
   .bind<ConfigProvider>(TYPES.ConfigProvider)
   .to(ConfigProvider)
+  .inSingletonScope()
+
+container
+  .bind<RealtimeService>(TYPES.RealtimeService)
+  .to(RealtimeService)
+  .inSingletonScope()
+
+container
+  .bind<MonitoringService>(TYPES.MonitoringService)
+  .to(CEMonitoringService)
   .inSingletonScope()
 
 container
