@@ -19,6 +19,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import path from 'path'
 import plur from 'plur'
+import { NLUService } from 'studio/nlu'
 
 import { setDebugScopes } from '../../debug'
 import { HTTPServer } from './server'
@@ -48,6 +49,7 @@ export class Botpress {
     @inject(TYPES.ModuleLoader) private moduleLoader: ModuleLoader,
     @inject(TYPES.HintsService) private hintsService: HintsService,
     @inject(TYPES.CMSService) private cmsService: CMSService,
+    @inject(TYPES.NLUService) private nluService: NLUService,
     @inject(TYPES.LoggerProvider) private loggerProvider: LoggerProvider,
     @inject(TYPES.LoggerDbPersister) private loggerDbPersister: LoggerDbPersister,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
@@ -147,6 +149,7 @@ export class Botpress {
 
     await this.loggerFilePersister.initialize(this.config!, await this.loggerProvider('LogFilePersister'))
     await this.cmsService.initialize()
+    await this.nluService.initialize()
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.hintsService.refreshAll()

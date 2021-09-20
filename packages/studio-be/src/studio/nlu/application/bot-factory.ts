@@ -1,3 +1,4 @@
+import { AxiosRequestConfig } from 'axios'
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
 import { Bot } from './bot'
@@ -20,9 +21,12 @@ export class BotFactory {
   public makeBot = async (botConfig: BotConfig): Promise<Bot> => {
     const { id: botId } = botConfig
 
-    const botURL = `${process.ROOT_PATH}/api/v1/bots/${botId}`
-    const baseURL = `${botURL}/nlu-server`
-    const nluClient = new NLUClient({ baseURL, headers: {} })
+    const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
+    const config: AxiosRequestConfig = {
+      headers: { authorization: INTERNAL_PASSWORD },
+      baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/v1/bots/${botId}/nlu-server`
+    }
+    const nluClient = new NLUClient(config)
 
     const { defaultLanguage } = botConfig
     const { languages: engineLanguages } = await nluClient.getInfo()

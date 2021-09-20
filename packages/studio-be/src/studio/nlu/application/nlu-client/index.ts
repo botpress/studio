@@ -1,5 +1,5 @@
 import { Client, Health, Specifications, TrainingState } from '@botpress/nlu-client'
-import * as sdk from 'botpress/sdk'
+import { AxiosRequestConfig } from 'axios'
 import _ from 'lodash'
 import { TrainingSet } from '../typings'
 import { mapTrainSet } from './api-mapper'
@@ -13,7 +13,7 @@ const TRAIN_POLLING_MS = 500
 export class NLUClient {
   private _client: Client
 
-  constructor(axiosConfig: sdk.AxiosBotConfig) {
+  constructor(axiosConfig: AxiosRequestConfig) {
     this._client = new Client(axiosConfig)
   }
 

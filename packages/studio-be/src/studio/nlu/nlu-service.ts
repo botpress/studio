@@ -1,10 +1,13 @@
-import { AxiosBotConfig, Logger, NLU } from 'botpress/sdk'
+import { AxiosRequestConfig } from 'axios'
+import { Logger, NLU } from 'botpress/sdk'
+import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
 import Database from 'core/database'
 import { RealTimePayload, RealtimeService } from 'core/realtime'
 import { TYPES } from 'core/types'
-import { inject, injectable, postConstruct, tagged } from 'inversify'
+import { inject, injectable, tagged } from 'inversify'
+import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import yn from 'yn'
 import { NLUApplication } from './application'
@@ -45,7 +48,6 @@ export class NLUService {
     this.intents = new IntentRepository(this.ghostService, this)
   }
 
-  @postConstruct()
   public async initialize() {
     const { nlu: nluConfig } = await this.configProvider.getBotpressConfig()
     const { queueTrainingOnBotMount, legacyElection } = nluConfig
@@ -57,9 +59,13 @@ export class NLUService {
       )
     }
 
-    const nluEndpoint = `${process.LOCAL_URL}/api/v1/nlu-server`
-    const axiosConfig: AxiosBotConfig = { baseURL: nluEndpoint, headers: {} }
-    const nluClient = new NLUClient(axiosConfig)
+    const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
+    const config: AxiosRequestConfig = {
+      headers: { authorization: INTERNAL_PASSWORD },
+      baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/v1/nlu-server`
+    }
+    this.logger.warn(`nlu router config: ${JSON.stringify(config)}`)
+    const nluClient = new NLUClient(config)
 
     const socket = this.getWebsocket()
 
@@ -89,6 +95,25 @@ export class NLUService {
     application.initialize()
 
     this.app = application
+  }
+
+  public async mountBot(botId: string) {
+    await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
+    this.logger.info(`NLU Mouting bot "${botId}"`)
+    if (!this.app) {
+      throw new Error("Can't mount bot in nlu as app is not initialized yet.")
+    }
+    const config = await this.configProvider.getBotConfig(botId)
+    return this.app.mountBot(config)
+  }
+
+  public async unmountBot(botId: string) {
+    await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
+    this.logger.info(`NLU Unmouting bot "${botId}"`)
+    if (!this.app) {
+      throw new Error("Can't unmount bot in nlu as app is not initialized yet.")
+    }
+    return this.app.unmountBot(botId)
   }
 
   private getWebsocket = () => {

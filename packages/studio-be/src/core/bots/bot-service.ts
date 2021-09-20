@@ -13,6 +13,7 @@ import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
 import _ from 'lodash'
 import path from 'path'
+import { NLUService } from 'studio/nlu'
 
 const BOT_CONFIG_FILENAME = 'bot.config.json'
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
@@ -26,7 +27,6 @@ export class BotService {
 
   private _botIds: string[] | undefined
   private static _mountedBots: Map<string, boolean> = new Map()
-  private _trainWatchers: { [botId: string]: ListenHandle } = {}
 
   constructor(
     @inject(TYPES.Logger)
@@ -36,7 +36,8 @@ export class BotService {
     @inject(TYPES.CMSService) private cms: CMSService,
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.JobService) private jobService: JobService,
-    @inject(TYPES.MigrationService) private migrationService: MigrationService
+    @inject(TYPES.MigrationService) private migrationService: MigrationService,
+    @inject(TYPES.NLUService) private nluService: NLUService
   ) {
     this._botIds = undefined
   }
@@ -250,20 +251,10 @@ export class BotService {
       await this.migrateBotContent(botId)
 
       await this.cms.loadElementsForBot(botId)
+      await this.nluService.mountBot(botId)
 
       BotService._mountedBots.set(botId, true)
       this._invalidateBotIds()
-
-      // Call the BP client to check if bots must be trained, until the logic is moved on the studio
-      this._trainWatchers[botId] = this.ghostService.forBot(botId).onFileChanged(async filePath => {
-        const hasPotentialNLUChange = filePath.includes('/intents/') || filePath.includes('/entities/')
-        if (!hasPotentialNLUChange) {
-          return
-        }
-
-        await coreActions.checkForDirtyModels(botId)
-      })
-
       return true
     } catch (err) {
       this.logger
@@ -285,11 +276,11 @@ export class BotService {
     }
 
     await this.cms.clearElementsFromCache(botId)
+    await this.nluService.unmountBot(botId)
 
     BotService._mountedBots.set(botId, false)
 
     this._invalidateBotIds()
-    this._trainWatchers[botId]?.remove()
     debug.forBot(botId, `Unmount took ${Date.now() - startTime}ms`)
   }
 

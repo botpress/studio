@@ -274,53 +274,82 @@ export class NLURouter extends CustomStudioRouter {
       })
     )
 
-    this.router.get('/health', async (req, res) => {
-      // When the health is bad, we'll refresh the status in case it has changed (eg: user added languages)
-      const health = await this.nluService.app?.getHealth()
-      res.send(health)
-    })
+    /**
+     * #######################################
+     * ### Trainings / Models :  Lifecycle ###
+     * #######################################
+     */
+    this.router.get(
+      '/testitos',
+      this.asyncMiddleware(async (req, res) => {
+        res.send('69')
+      })
+    )
 
-    this.router.get('/training/:language', this.needPermissions('read', 'bot.training'), async (req, res) => {
-      const { language: lang, botId } = req.params
+    this.router.get(
+      '/health',
+      this.asyncMiddleware(async (req, res) => {
+        const health = await this.nluService.app?.getHealth()
+        res.send(health)
+      })
+    )
 
-      try {
-        const state = await this.nluService.app?.getBot(botId).getTraining(lang)
-        const ts = state && this.nluService.mapTrainSession({ botId, language: lang, ...state })
-        res.send(ts)
-      } catch (error) {
-        return this._mapError({ botId, lang, error }, res)
-      }
-    })
+    this.router.get(
+      '/training/:language',
+      this.needPermissions('read', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { language: lang, botId } = req.params
 
-    this.router.post(['/predict', '/predict/:lang'], async (req, res) => {
-      return res.status(410).send('Ressource gone')
-    })
-
-    this.router.post('/train/:lang', this.needPermissions('write', 'bot.training'), async (req, res) => {
-      const { botId, lang } = req.params
-      try {
-        const disableTraining = yn(process.env.BP_NLU_DISABLE_TRAINING)
-
-        // to return as fast as possible
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        if (!disableTraining) {
-          await this.nluService.app?.queueTraining(botId, lang)
+        try {
+          const state = await this.nluService.app?.getBot(botId).getTraining(lang)
+          const ts = state && this.nluService.mapTrainSession({ botId, language: lang, ...state })
+          res.send(ts)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
         }
-        res.sendStatus(200)
-      } catch (error) {
-        return this._mapError({ botId, lang, error }, res)
-      }
-    })
+      })
+    )
 
-    this.router.post('/train/:lang/delete', this.needPermissions('write', 'bot.training'), async (req, res) => {
-      const { botId, lang } = req.params
-      try {
-        await this.nluService.app?.getBot(botId).cancelTraining(lang)
-        res.sendStatus(200)
-      } catch (error) {
-        return this._mapError({ botId, lang, error }, res)
-      }
-    })
+    this.router.post(
+      ['/predict', '/predict/:lang'],
+      this.asyncMiddleware(async (req, res) => {
+        return res.status(410).send('Ressource gone')
+      })
+    )
+
+    this.router.post(
+      '/train/:lang',
+      this.needPermissions('write', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { botId, lang } = req.params
+        try {
+          const disableTraining = yn(process.env.BP_NLU_DISABLE_TRAINING)
+
+          // to return as fast as possible
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          if (!disableTraining) {
+            await this.nluService.app?.queueTraining(botId, lang)
+          }
+          res.sendStatus(200)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
+        }
+      })
+    )
+
+    this.router.post(
+      '/train/:lang/delete',
+      this.needPermissions('write', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { botId, lang } = req.params
+        try {
+          await this.nluService.app?.getBot(botId).cancelTraining(lang)
+          res.sendStatus(200)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
+        }
+      })
+    )
   }
 
   private _mapError = (err: { botId: string; lang: string; error: Error }, res: ExpressResponse) => {
