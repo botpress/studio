@@ -100,7 +100,7 @@ export class NLUService {
     }
   }
 
-  private mapTrainSession = (ts: TrainingSession): NLU.TrainingSession => {
+  public mapTrainSession = (ts: TrainingSession): NLU.TrainingSession => {
     const { botId, language, progress, status } = ts
     const key = `training:${botId}:${language}`
     return { key, language, status, progress }
