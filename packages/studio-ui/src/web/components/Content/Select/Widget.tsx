@@ -1,7 +1,7 @@
 import { Button, Classes, ControlGroup, InputGroup } from '@blueprintjs/core'
-import { ContentElement } from 'botpress/sdk'
+import { ContentElement, FormData } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
-import _ from 'lodash'
+import isEqual from 'lodash/isEqual'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { deleteMedia, fetchContentItem, upsertContentItem } from '~/actions'
@@ -16,14 +16,19 @@ import style from './style.scss'
 
 interface DispatchProps {
   deleteMedia: (formData: any) => Promise<void>
-  fetchContentItem: (itemId: string, query?: any) => Promise<void>
+  fetchContentItem: (itemId: string, query?: { force?: boolean; batched?: boolean }) => Promise<void>
   upsertContentItem: (item: any) => Promise<void>
 }
 
 interface StateProps {
-  contentItem: ContentElement
+  contentItem?: ContentElement
   contentType: string
   contentLang: string
+}
+
+interface State {
+  showItemEdit: boolean
+  contentToEdit: FormData
 }
 
 export interface OwnProps {
@@ -38,8 +43,8 @@ export interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps
 
-class ContentPickerWidget extends Component<Props> {
-  state = {
+class ContentPickerWidget extends Component<Props, State> {
+  state: State = {
     showItemEdit: false,
     contentToEdit: null
   }
@@ -48,25 +53,27 @@ class ContentPickerWidget extends Component<Props> {
     await this.props.fetchContentItem(this.props.itemId)
   }
 
-  async componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (!this.props.contentItem && prevProps.itemId !== this.props.itemId) {
-      await this.props.fetchContentItem(this.props.itemId)
+      return this.props.fetchContentItem(this.props.itemId)
     }
   }
 
   editItem = () => {
-    this.setState({ showItemEdit: true, contentToEdit: _.get(this.props, 'contentItem.formData') })
+    this.setState({ showItemEdit: true, contentToEdit: this.props.contentItem.formData })
   }
 
   handleUpdate = async () => {
     const { contentItem, itemId } = this.props
     const { contentType } = contentItem
-    await this.props
-      .upsertContentItem({ modifyId: itemId, contentType, formData: this.state.contentToEdit })
-      .then(() => this.setState({ showItemEdit: false }))
-      .then(() => this.props.fetchContentItem(this.props.itemId, { force: true }))
-      .then(this.props.refresh || (() => {}))
-      .then(this.props.onUpdate || (() => {}))
+
+    await this.props.upsertContentItem({ modifyId: itemId, contentType, formData: this.state.contentToEdit })
+    await this.props.fetchContentItem(this.props.itemId, { force: true })
+
+    this.props.refresh?.()
+    this.props.onUpdate?.()
+
+    this.setState({ showItemEdit: false })
   }
 
   onChange = async (item: ContentElement) => {
@@ -77,7 +84,7 @@ class ContentPickerWidget extends Component<Props> {
   handleClose = async () => {
     if (
       CONTENT_TYPES_MEDIA.includes(this.props.contentItem.contentType) &&
-      !_.isEqual(this.state.contentToEdit, this.props.contentItem.formData)
+      !isEqual(this.state.contentToEdit, this.props.contentItem.formData)
     ) {
       await this.props.deleteMedia(this.state.contentToEdit)
     }
@@ -86,7 +93,7 @@ class ContentPickerWidget extends Component<Props> {
   }
 
   renderModal() {
-    const schema = _.get(this.props, 'contentItem.schema', { json: {}, ui: {} })
+    const schema = this.props.contentItem?.schema || { json: {}, ui: {}, title: '', renderer: '' }
 
     return (
       <CreateOrEditModal
@@ -104,8 +111,9 @@ class ContentPickerWidget extends Component<Props> {
 
   render() {
     const { inputId, contentItem, placeholder } = this.props
-    const contentType = _.get(contentItem, 'contentType', this.props.contentType)
-    const schema = _.get(this.props, 'contentItem.schema', { json: {}, ui: {} })
+    const contentType = contentItem?.contentType || this.props.contentType
+    const schema = contentItem?.schema || { json: {}, ui: {}, title: '', renderer: '' }
+
     const textContent =
       (contentItem && `${lang.tr(schema.title)} | ${contentItem.previews[this.props.contentLang]}`) || ''
     const actionText = (contentItem && 'say #!' + contentItem.id) || 'say '

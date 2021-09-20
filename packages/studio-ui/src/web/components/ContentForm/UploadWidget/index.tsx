@@ -20,7 +20,7 @@ interface IUploadWidgetProps {
 
 const UploadWidget: FC<IUploadWidgetProps> = props => {
   const { value } = props
-  const [error, setError] = useState<string | Error>(null)
+  const [error, setError] = useState<string>(null)
   const [enterUrlManually, setEnterUrlManually] = useState(false)
 
   React.useEffect(() => {
@@ -29,17 +29,13 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
     }
   }, [])
 
-  const onError = (error: string | Error) => {
+  const onError = (error: string) => {
     setError(error)
   }
 
   const onChange = (value: string | null) => {
     props.onChange(value)
     setError(null)
-  }
-
-  const onDelete = () => {
-    props.onChange(null)
   }
 
   const handleToggleManually = () => {
@@ -66,9 +62,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
           />
         )}
 
-        {enterUrlManually && (
-          <UrlUpload value={value} type={subtype} onChange={onChange} onError={onError} onDelete={onDelete} />
-        )}
+        {enterUrlManually && <UrlUpload value={value} type={subtype} onChange={onChange} onError={onError} />}
 
         {!value && (
           <div className={localStyle.fieldContainer}>

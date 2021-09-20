@@ -5,6 +5,7 @@
  * Please let us know in our official Github Repo!
  */
 declare module 'botpress/sdk' {
+  import { ParsedContentType } from 'common/typings'
   import { NextFunction, Request, Response, Router } from 'express'
   import Knex from 'knex'
   export interface KnexExtension {
@@ -1020,7 +1021,7 @@ declare module 'botpress/sdk' {
     /** The Id of the Content Type for which the Element belongs to. */
     contentType: string
     /** The raw form data that contains templating that needs to be interpreted. */
-    formData: object
+    formData: FormData
     /** The computed form data that contains the interpreted data. */
     computedData: object
     /** The textual representation of the Content Element, for each supported languages  */
@@ -1028,6 +1029,7 @@ declare module 'botpress/sdk' {
     createdOn: Date
     modifiedOn: Date
     createdBy: string
+    schema?: ParsedContentType['schema']
   }
 
   /**
