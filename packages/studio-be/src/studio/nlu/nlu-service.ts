@@ -4,7 +4,6 @@ import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
 import Database from 'core/database'
-import { RealTimePayload, RealtimeService } from 'core/realtime'
 import { TYPES } from 'core/types'
 import { inject, injectable, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
@@ -21,7 +20,7 @@ import { NLUClient } from './application/nlu-client'
 import { ConfigResolver, TrainingSession } from './application/typings'
 import { NonBlockingNluApplication } from './non-blocking-app'
 
-interface NLUProgressEvent {
+export interface NLUProgressEvent {
   type: 'nlu'
   botId: string
   trainSession: NLU.TrainingSession
@@ -41,8 +40,7 @@ export class NLUService {
     private ghostService: GhostService,
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.Database) private database: Database,
-    @inject(TYPES.GhostService) private ghost: GhostService,
-    @inject(TYPES.RealtimeService) private realtimeService: RealtimeService
+    @inject(TYPES.GhostService) private ghost: GhostService
   ) {
     this.entities = new EntityRepository(this.ghostService, this)
     this.intents = new IntentRepository(this.ghostService, this)
@@ -64,7 +62,6 @@ export class NLUService {
       headers: { authorization: INTERNAL_PASSWORD },
       baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/v1/nlu-server`
     }
-    this.logger.warn(`nlu router config: ${JSON.stringify(config)}`)
     const nluClient = new NLUClient(config)
 
     const socket = this.getWebsocket()
@@ -99,7 +96,6 @@ export class NLUService {
 
   public async mountBot(botId: string) {
     await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
-    this.logger.info(`NLU Mouting bot "${botId}"`)
     if (!this.app) {
       throw new Error("Can't mount bot in nlu as app is not initialized yet.")
     }
@@ -109,7 +105,6 @@ export class NLUService {
 
   public async unmountBot(botId: string) {
     await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
-    this.logger.info(`NLU Unmouting bot "${botId}"`)
     if (!this.app) {
       throw new Error("Can't unmount bot in nlu as app is not initialized yet.")
     }
@@ -121,7 +116,7 @@ export class NLUService {
       const { botId } = ts
       const trainSession = this.mapTrainSession(ts)
       const ev: NLUProgressEvent = { type: 'nlu', botId, trainSession }
-      this.realtimeService.sendToSocket(RealTimePayload.forAdmins('statusbar.event', ev))
+      return coreActions.notifyTrainUpdate(ev)
     }
   }
 

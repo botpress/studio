@@ -280,13 +280,6 @@ export class NLURouter extends CustomStudioRouter {
      * #######################################
      */
     this.router.get(
-      '/testitos',
-      this.asyncMiddleware(async (req, res) => {
-        res.send('69')
-      })
-    )
-
-    this.router.get(
       '/health',
       this.asyncMiddleware(async (req, res) => {
         const health = await this.nluService.app?.getHealth()
