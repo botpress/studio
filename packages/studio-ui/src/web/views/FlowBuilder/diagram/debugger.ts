@@ -24,8 +24,6 @@ export const prepareEventForDiagram = (event: sdk.IO.IncomingEvent, flows: FlowV
     return { nodeInfos: [], highlightedNodes }
   }
 
-  const { context, __stacktrace } = event.state
-
   const getNode = (workflow: string, node: string): NodeDebugInfo => {
     workflow = workflow.replace('.flow.json', '')
 
@@ -40,8 +38,12 @@ export const prepareEventForDiagram = (event: sdk.IO.IncomingEvent, flows: FlowV
   }
 
   try {
-    highlightedNodes = processStackTrace(__stacktrace, context, getNode)
-    processErrors(event, getNode)
+    if (event.state) {
+      const { context, __stacktrace } = event.state
+
+      highlightedNodes = processStackTrace(__stacktrace, context, getNode)
+      processErrors(event, getNode)
+    }
   } catch (err) {
     console.error(`Error processing event: ${err}`)
   }
