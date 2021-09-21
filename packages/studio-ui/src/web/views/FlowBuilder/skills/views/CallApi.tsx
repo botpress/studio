@@ -59,8 +59,8 @@ export class CallAPI extends React.Component<any, any> {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps === this.props) {
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState === this.state) {
       return
     }
 
