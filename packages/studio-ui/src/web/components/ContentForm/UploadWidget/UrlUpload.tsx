@@ -11,6 +11,7 @@ interface IUrlUploadProps {
   type: UploadFieldProps['type']
   onChange(value: string | null): void
   onError(value: string): void
+  onDelete(): void
 }
 
 const UrlUpload: FC<IUrlUploadProps> = props => {
@@ -28,7 +29,7 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
 
   const onDelete = () => {
     setUrl(null)
-    props.onChange(null)
+    props.onDelete()
   }
 
   const saveUrl = () => {

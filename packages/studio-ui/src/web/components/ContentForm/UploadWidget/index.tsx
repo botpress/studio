@@ -29,13 +29,28 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
     }
   }, [])
 
+  const validate = (value: string | null): Error | undefined => {
+    if (!value || !value.trim()) {
+      return new Error('Value must not be empty')
+    }
+  }
+
   const onError = (error: string) => {
     setError(error)
   }
 
   const onChange = (value: string | null) => {
+    const error = validate(value)
+    if (error) {
+      return setError(error.message)
+    }
+
     props.onChange(value)
     setError(null)
+  }
+
+  const onDelete = () => {
+    props.onChange(null)
   }
 
   const handleToggleManually = () => {
@@ -62,7 +77,9 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
           />
         )}
 
-        {enterUrlManually && <UrlUpload value={value} type={subtype} onChange={onChange} onError={onError} />}
+        {enterUrlManually && (
+          <UrlUpload value={value} type={subtype} onChange={onChange} onDelete={onDelete} onError={onError} />
+        )}
 
         {!value && (
           <div className={localStyle.fieldContainer}>
