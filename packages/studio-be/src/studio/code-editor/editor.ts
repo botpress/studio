@@ -145,7 +145,7 @@ export class Editor {
 
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },
-      { name: 'botpress.d.ts', location: path.join(__dirname, '/../../sdk/botpress.d.js') },
+      { name: 'botpress.d.ts', location: path.join(__dirname, '/../../sdk/botpress.d.txt') },
       // Required so array.includes() can be used without displaying an error
       { name: 'es6include.d.ts', location: path.join(__dirname, '/../../typings/es6include.txt') }
     ]
