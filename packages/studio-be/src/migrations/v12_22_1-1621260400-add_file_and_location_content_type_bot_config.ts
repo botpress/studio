@@ -13,11 +13,11 @@ const migration: Migration = {
 
     const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
       const newTypes = ['builtin_file', 'builtin_location']
-      const { contentTypes } = botConfig.imports
+      const contentTypes = botConfig.imports.contentTypes || []
 
       const hasMissingTypes = !newTypes.every(type => contentTypes.find(x => x === type))
 
-      if (hasMissingTypes) {
+      if (contentTypes.length && hasMissingTypes) {
         hasChanges = true
         botConfig.imports.contentTypes = _.uniq([...contentTypes, ...newTypes])
 

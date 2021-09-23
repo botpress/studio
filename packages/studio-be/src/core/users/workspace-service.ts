@@ -1,11 +1,4 @@
-import {
-  GetWorkspaceUsersOptions,
-  Logger,
-  RolloutStrategy,
-  StrategyUser,
-  WorkspaceUser,
-  WorkspaceUserWithAttributes
-} from 'botpress/sdk'
+import { Logger } from 'botpress/sdk'
 import { AuthRole, Pipeline, Workspace } from 'common/typings'
 import { TYPES } from 'core/app/types'
 import { GhostService } from 'core/bpfs'
@@ -73,6 +66,13 @@ export class WorkspaceService {
     return workspace
   }
 
+  async getPipeline(workspaceId: string): Promise<Pipeline | undefined> {
+    const workspaces = await this.getWorkspaces()
+    const workspace = workspaces.find(x => x.id === workspaceId)
+
+    return workspace?.pipeline
+  }
+
   async findWorkspaceName(workspaceId: string): Promise<string> {
     const all = await this.getWorkspaces()
     const workspace = all.find(x => x.id === workspaceId)
@@ -82,6 +82,25 @@ export class WorkspaceService {
   async findUser(email: string, strategy: string, workspace: string) {
     const list = await this.workspaceRepo.getUserWorkspaces(email, strategy)
     return list.find(x => x.workspace === workspace)
+  }
+
+  async save(workspaces: Workspace[]): Promise<void> {
+    return this.ghost.global().upsertFile('/', 'workspaces.json', JSON.stringify(workspaces, undefined, 2))
+  }
+
+  async addBotRef(botId: string, workspaceId: string): Promise<void> {
+    const workspaces = await this.getWorkspaces()
+    const workspace = workspaces.find(x => x.id === workspaceId)
+
+    if (!workspace) {
+      throw new Error(`Specified workspace "${workspaceId}" doesn't exist`)
+    }
+
+    if (!workspace.bots.includes(botId)) {
+      workspace.bots.push(botId)
+
+      return this.save(workspaces)
+    }
   }
 
   async findRole(roleId: string, workspaceId: string): Promise<AuthRole> {

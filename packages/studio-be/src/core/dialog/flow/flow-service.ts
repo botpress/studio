@@ -1,4 +1,5 @@
 import { Flow, Logger } from 'botpress/sdk'
+import { parseActionInstruction } from 'common/action'
 import { ArrayCache } from 'common/array-cache'
 import { ObjectCache } from 'common/object-cache'
 import { TreeSearch, PATH_SEPARATOR } from 'common/treeSearch'
@@ -72,6 +73,7 @@ export class FlowService {
     @inject(TYPES.NLUService) private nluService: NLUService
   ) {
     this._listenForCacheInvalidation()
+    this.botService.flowService = this
   }
 
   @postConstruct()
@@ -180,6 +182,27 @@ export class ScopedFlowService {
         this.expectedSavesCache.set(flowPath, expectedSaves - 1)
       }
     }
+  }
+
+  public async getAllFlowActions() {
+    const allFlows = await this.loadAll()
+    const actions = await Promise.map(allFlows, this._getFlowActions)
+
+    return _.uniq(_.flatMap(actions))
+  }
+
+  private _getFlowActions(flow: FlowView) {
+    const actions = flow.nodes
+      .map(node => [...((node.onEnter as string[]) ?? []), ...((node.onReceive as string[]) ?? [])])
+      .reduce((acc, cur) => [...acc, ...cur], [])
+      .map(parseActionInstruction)
+
+    return actions.map(x => x.actionName)
+  }
+
+  private async _addMissingBotActions(flow: FlowView) {
+    const flowActions = _.uniq(this._getFlowActions(flow))
+    await this.botService.addLocalBotActions(this.botId, flowActions)
   }
 
   private setExpectedSaves(flowName: string, amount: number) {
@@ -344,6 +367,8 @@ export class ScopedFlowService {
       this.ghost.upsertFile(FLOW_DIR, flowPath!, JSON.stringify(flowContent, undefined, 2)),
       this.ghost.upsertFile(FLOW_DIR, uiPath, JSON.stringify(uiContent, undefined, 2))
     ])
+
+    await this._addMissingBotActions(flow)
   }
 
   async deleteFlow(flowName: string, userEmail: string) {

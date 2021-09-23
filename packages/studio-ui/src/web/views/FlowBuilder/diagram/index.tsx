@@ -391,7 +391,7 @@ class Diagram extends Component<Props> {
 
         <MenuItem
           tagName="button"
-          text={lang.tr('skills')}
+          text={lang.tr('skills.label')}
           icon="add"
           onClick={e => {
             e.stopPropagation()

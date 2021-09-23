@@ -1,0 +1,14 @@
+{
+  "name": "info-source",
+  "version": "1.0.0",
+  "packageType": "component",
+  "description": "An example component using translations",
+  "author": "Botpress, Inc.",
+  "license": "AGPL-3.0-only",
+  "private": true,
+  "scripts": {
+    "build": "node ../../builder/bin/entry build",
+    "package": "node ../../builder/bin/entry package"
+  },
+  "dependencies": {}
+}
