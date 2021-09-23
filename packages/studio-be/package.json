@@ -85,7 +85,7 @@
     "@types/jest-environment-puppeteer": "^4.3.1",
     "@types/joi": "^13.4.5",
     "@types/lodash": "4.14.123",
-    "@types/node": "^12.13.1",
+    "@types/node": "^12.18.1",
     "@types/proper-lockfile": "^4.1.2",
     "@types/verror": "^1.10.3"
   }
