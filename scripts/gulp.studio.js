@@ -7,6 +7,8 @@ const file = require('gulp-file')
 const fse = require('fs-extra')
 const { execute } = require('./utils/exec')
 
+const studioRoot = './packages/studio-be'
+
 const start = cb => {
   console.info(`
   The studio is not meant to be run as a standalone just yet.
@@ -53,7 +55,10 @@ const buildNativeExtensions = async () => {
 }
 
 const copyBuiltin = async () => {
-  await fse.copy('./packages/studio-be/src/builtin', './packages/studio-be/out/builtin')
+  await fse.copy(`${studioRoot}/src/builtin`, `${studioRoot}/out/builtin`)
+  await fse.copy(`${studioRoot}/src/typings/node.d.txt`, `${studioRoot}/out/typings/node.d.txt`)
+  await fse.copy(`${studioRoot}/src/typings/es6include.txt`, `${studioRoot}/out/typings/es6include.txt`)
+  await fse.copy(`${studioRoot}/src/sdk/botpress.d.ts`, `${studioRoot}/out/sdk/botpress.d.js`)
 }
 
 const package = async () => {

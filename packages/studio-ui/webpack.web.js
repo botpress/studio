@@ -8,6 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const isProduction = process.env.NODE_ENV === 'production'
 const moment = require('moment')
@@ -68,6 +69,7 @@ const webConfig = {
     new HtmlWebpackPlugin({
       inject: true,
       hash: true,
+      chunksSortMode: 'none',
       template: './src/web/index.html',
       filename: '../index.html',
       chunks: ['commons', 'web']
@@ -91,7 +93,39 @@ const webConfig = {
         to: path.resolve(__dirname, './public/external')
       }
     ]),
-    new CleanWebpackPlugin(['public'])
+    new CleanWebpackPlugin(['public']),
+    new MonacoWebpackPlugin({
+      languages: ['json', 'javascript', 'typescript'],
+      features: [
+        'bracketMatching',
+        'colorDetector',
+        'comment',
+        'codelens',
+        'contextmenu',
+        'coreCommands',
+        'clipboard',
+        'dnd',
+        'find',
+        'folding',
+        'format',
+        'goToDefinitionCommands',
+        'goToDefinitionMouse',
+        'gotoLine',
+        'hover',
+        'inPlaceReplace',
+        'links',
+        'onTypeRename',
+        'parameterHints',
+        'quickCommand',
+        'quickOutline',
+        'rename',
+        'smartSelect',
+        'suggest',
+        'wordHighlighter',
+        'wordOperations',
+        'wordPartOperations'
+      ]
+    })
   ],
 
   module: {
