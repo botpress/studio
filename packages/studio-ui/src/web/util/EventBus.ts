@@ -86,6 +86,7 @@ class EventBus extends EventEmitter2 {
     this.guestSocket.on('connect', this.updateVisitorSocketId.bind(this))
     this.guestSocket.on('event', this.dispatchSocketEvent)
 
+    // TODO fix url
     this.studioSocket = io(`http://localhost:${window.STUDIO_PORT}/studio`, {
       query,
       transports,
