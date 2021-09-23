@@ -214,7 +214,7 @@ const QnA: FC<Props> = props => {
             </span>
           </div>
         </Button>
-        <MoreOptions show={showOption} onToggle={() => setShowOption(!showOption)} items={moreOptionsItems} />
+        <MoreOptions show={showOption} onToggle={() => setShowOption(!showOption)} items={moreOptionsItems} wrapInDiv />
       </div>
       {expanded && (
         <div key={contentLang} className={style.collapsibleWrapper}>

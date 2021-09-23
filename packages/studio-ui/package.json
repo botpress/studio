@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "Botpress",
   "engines": {
-    "node": ">=8.9"
+    "node": "12.18.1"
   },
   "license": "AGPL-3.0-only",
   "main": "lib/index.js",
@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "@types/bluebird-global": "^3.5.12",
-    "@types/node": "^12.13.1",
+    "@types/node": "^12.18.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "@types/axios": "^0.14.0",
