@@ -1,13 +1,18 @@
 // @ts-nocheck
 import { IconName } from '@blueprintjs/icons'
 
-export interface MoreOptionsProps {
+export interface MoreOptionsProps extends MoreOptionsMenuProps {
   show: boolean
   onToggle: (value: boolean) => void
   children?: any
-  className?: string
   element?: JSX.Element
+  wrapInDiv?:boolean
+}
+
+export interface MoreOptionsMenuProps {
   items: MoreOptionsItems[]
+  onToggle: (value: boolean) => void
+  className?: string
 }
 
 export interface MoreOptionsItems {
