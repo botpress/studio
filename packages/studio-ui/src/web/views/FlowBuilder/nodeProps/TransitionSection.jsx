@@ -87,7 +87,7 @@ export default class TransitionSection extends Component {
         <div>
           {items.map((item, i) => (
             <Fragment key={`${i}.${item.node || '-'}`}>
-              <ConditionItem className={style.item} condition={item} position={i} key={`${i}.${item.node || '-'}`}>
+              <ConditionItem className={style.item} condition={item} position={i}>
                 {renderType(item)}
               </ConditionItem>
               {!readOnly && (

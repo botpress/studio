@@ -119,7 +119,7 @@ export default class ActionSection extends Component {
               position={PopoverPosition.BOTTOM}
               key={`${i}.${item}`}
             >
-              <ActionItem className={style.item} text={item} key={`${i}.${item}`}></ActionItem>
+              <ActionItem className={style.item} text={item}></ActionItem>
               {!readOnly && (
                 <div className={style.actions}>
                   <a className="btn-edit" onClick={() => this.onEdit(i)}>

@@ -43,6 +43,8 @@ export interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps
 
+const DEFAULT_SCHEMA: ContentElement['schema'] = { json: {}, ui: {}, title: '', renderer: '' }
+
 class ContentPickerWidget extends Component<Props, State> {
   state: State = {
     showItemEdit: false,
@@ -60,7 +62,7 @@ class ContentPickerWidget extends Component<Props, State> {
   }
 
   editItem = () => {
-    this.setState({ showItemEdit: true, contentToEdit: this.props.contentItem.formData })
+    this.setState({ showItemEdit: true, contentToEdit: this.props.contentItem?.formData })
   }
 
   handleUpdate = async () => {
@@ -93,7 +95,7 @@ class ContentPickerWidget extends Component<Props, State> {
   }
 
   renderModal() {
-    const schema = this.props.contentItem?.schema || { json: {}, ui: {}, title: '', renderer: '' }
+    const schema = this.props.contentItem?.schema || DEFAULT_SCHEMA
 
     return (
       <CreateOrEditModal
@@ -112,7 +114,7 @@ class ContentPickerWidget extends Component<Props, State> {
   render() {
     const { inputId, contentItem, placeholder } = this.props
     const contentType = contentItem?.contentType || this.props.contentType
-    const schema = contentItem?.schema || { json: {}, ui: {}, title: '', renderer: '' }
+    const schema = contentItem?.schema || DEFAULT_SCHEMA
 
     const textContent =
       (contentItem && `${lang.tr(schema.title)} | ${contentItem.previews[this.props.contentLang]}`) || ''

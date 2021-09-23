@@ -5,7 +5,6 @@
  * Please let us know in our official Github Repo!
  */
 declare module 'botpress/sdk' {
-  import { ParsedContentType } from 'common/typings'
   import { NextFunction, Request, Response, Router } from 'express'
   import Knex from 'knex'
   export interface KnexExtension {
@@ -1010,6 +1009,19 @@ declare module 'botpress/sdk' {
      * @default 250
      */
     bufferDelayMs: number
+  }
+
+  export interface ParsedContentType {
+    id: ContentType['id']
+    count: number
+    title: ContentType['title']
+    hidden: ContentType['hidden']
+    schema: {
+      json: ContentType['jsonSchema']
+      ui: ContentType['uiSchema']
+      title: ContentType['title']
+      renderer: ContentType['id']
+    }
   }
 
   /**
