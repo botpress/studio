@@ -44,6 +44,7 @@
     "jsonlint-mod": "^1.7.6",
     "jsonwebtoken": "^8.5.1",
     "knex": "0.20.1",
+    "lock": "^1.1.0",
     "lodash": "^4.17.21",
     "lodash-decorators": "^6.0.1",
     "moment": "^2.29.1",

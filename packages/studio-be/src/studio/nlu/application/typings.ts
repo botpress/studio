@@ -1,4 +1,4 @@
-import { NLU as SDKNLU } from 'botpress/sdk'
+import { CloudConfig, NLU as SDKNLU } from 'botpress/sdk'
 
 export interface BotConfig {
   id: string
@@ -6,6 +6,7 @@ export interface BotConfig {
   languages: string[]
   nluSeed?: number
   nluModels?: { [lang: string]: string }
+  cloud?: CloudConfig
 }
 
 export interface BotDefinition {

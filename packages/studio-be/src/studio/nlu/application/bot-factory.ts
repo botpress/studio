@@ -15,18 +15,14 @@ export class BotFactory {
     private _logger: sdk.Logger,
     private _defRepo: DefinitionsRepository,
     private _modelStateService: ModelStateService,
-    private _webSocket: (ts: TrainingSession) => void
+    private _webSocket: (ts: TrainingSession) => void,
+    private _nluEndpoint: string
   ) {}
 
   public makeBot = async (botConfig: BotConfig): Promise<Bot> => {
     const { id: botId } = botConfig
 
-    const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
-    const config: AxiosRequestConfig = {
-      headers: { authorization: INTERNAL_PASSWORD },
-      baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/v1/bots/${botId}/nlu-server`
-    }
-    const nluClient = new NLUClient(config)
+    const nluClient = new NLUClient({ baseURL: this._nluEndpoint, cloud: botConfig.cloud })
 
     const { defaultLanguage } = botConfig
     const { languages: engineLanguages } = await nluClient.getInfo()

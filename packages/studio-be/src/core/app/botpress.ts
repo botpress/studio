@@ -78,6 +78,7 @@ export class Botpress {
 
     await this.restoreDebugScope()
     await this.checkJwtSecret()
+    await this.checkNLUEndpoint()
     await this.loadModules(options.modules)
     await this.initializeServices()
     await this.deployAssets()
@@ -100,6 +101,10 @@ export class Botpress {
 
   async checkJwtSecret() {
     process.APP_SECRET = process.env.APP_SECRET || this.config?.appSecret!
+  }
+
+  async checkNLUEndpoint() {
+    process.NLU_ENDPOINT = process.env.NLU_ENDPOINT
   }
 
   async deployAssets() {

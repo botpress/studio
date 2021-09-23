@@ -47,6 +47,11 @@ export class NLUService {
   }
 
   public async initialize() {
+    if (!process.NLU_ENDPOINT) {
+      // TODO: make this optional and make sure studio still runs without NLU-Server
+      throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
+    }
+
     const { nlu: nluConfig } = await this.configProvider.getBotpressConfig()
     const { queueTrainingOnBotMount, legacyElection } = nluConfig
     const trainingEnabled = !yn(process.env.BP_NLU_DISABLE_TRAINING)
@@ -57,12 +62,9 @@ export class NLUService {
       )
     }
 
-    const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
-    const config: AxiosRequestConfig = {
-      headers: { authorization: INTERNAL_PASSWORD },
-      baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/v1/nlu-server`
-    }
-    const nluClient = new NLUClient(config)
+    const nluClient = new NLUClient({
+      baseURL: process.NLU_ENDPOINT
+    })
 
     const socket = this.getWebsocket()
 
@@ -77,7 +79,14 @@ export class NLUService {
       mergeBotConfig: this.configProvider.mergeBotConfig.bind(this.configProvider)
     }
 
-    const botFactory = new BotFactory(configResolver, this.logger, defRepo, modelStateService, socket)
+    const botFactory = new BotFactory(
+      configResolver,
+      this.logger,
+      defRepo,
+      modelStateService,
+      socket,
+      process.NLU_ENDPOINT
+    )
     const application = new NonBlockingNluApplication(
       nluClient,
       botFactory,
