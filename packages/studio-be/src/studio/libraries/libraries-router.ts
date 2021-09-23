@@ -17,6 +17,7 @@ export class LibrariesRouter extends CustomStudioRouter {
     const router = this.router
     router.get(
       '/list',
+      this.needPermissions('read', 'module.code-editor'),
       this.asyncMiddleware(async (req: any, res: any) => {
         if (!(await this.libService.isInitialized(req.params.botId))) {
           return []
@@ -30,6 +31,7 @@ export class LibrariesRouter extends CustomStudioRouter {
 
     router.post(
       '/executeNpm',
+      this.needPermissions('read', 'module.code-editor'),
       this.asyncMiddleware(async (req: any, res: any) => {
         const { botId } = req.params
         const { command } = req.body
@@ -64,6 +66,7 @@ export class LibrariesRouter extends CustomStudioRouter {
 
     router.post(
       '/sync',
+      this.needPermissions('read', 'module.code-editor'),
       this.asyncMiddleware(async (req: any, res: any) => {
         const { botId } = req.params
 
@@ -77,6 +80,7 @@ export class LibrariesRouter extends CustomStudioRouter {
 
     router.post(
       '/add',
+      this.needPermissions('read', 'module.code-editor'),
       this.asyncMiddleware(async (req: any, res: any) => {
         const { botId } = req.params
         const { name, version } = validateNameVersion(req.body)
@@ -96,6 +100,7 @@ export class LibrariesRouter extends CustomStudioRouter {
 
     router.post(
       '/delete',
+      this.needPermissions('read', 'module.code-editor'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
         const { name } = validateNameVersion(req.body)
