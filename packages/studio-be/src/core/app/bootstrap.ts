@@ -99,7 +99,7 @@ async function start() {
   const modules = _.uniqBy(globalConfig.modules, x => x.location)
   const enabledModules = modules.filter(m => m.enabled)
 
-  const logger = await getLogger(app.logger, '[Studio] Launcher')
+  const logger = await getLogger(app.logger, 'Launcher')
   const resolver = new ModuleResolver(logger)
 
   const { loadedModules, erroredModules } = await resolveModules(enabledModules, resolver)

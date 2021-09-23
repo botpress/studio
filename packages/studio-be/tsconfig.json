@@ -16,8 +16,7 @@
     "paths": {
       "botpress/sdk": ["./sdk/botpress.d.ts"]
     },
-    "types": ["reflect-metadata", "jest"],
-    "skipLibCheck": true
+    "types": ["reflect-metadata", "jest"]
   },
   "include": ["src/**/*.ts", "src/*.ts"],
   "exclude": ["e2e/**", "out/**", "**/node_modules/**/*.(ts|js)", "**/static/**/*.(js|ts)"]
