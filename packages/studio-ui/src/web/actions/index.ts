@@ -486,7 +486,7 @@ export const getQnaCountByTopic = () => dispatch => {
 export const receiveModuleTranslations = createAction('LANG/TRANSLATIONS')
 export const getModuleTranslations = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/translations`).then(({ data }) => {
+  axios.get(`${window.API_PATH}/studio/modules/translations?botId=${window.BOT_ID}`).then(({ data }) => {
     dispatch(receiveModuleTranslations(data))
   })
 }

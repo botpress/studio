@@ -52,6 +52,10 @@ const buildNativeExtensions = async () => {
   await execute('yarn && yarn build', { cwd: './packages/native-extensions' })
 }
 
+const copyBuiltin = async () => {
+  await fse.copy('./packages/studio-be/src/builtin', './packages/studio-be/out/builtin')
+}
+
 const package = async () => {
   const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
 
@@ -96,6 +100,7 @@ module.exports = {
   clean,
   cleanAssets,
   copy,
+  copyBuiltin,
   writeMetadata,
   buildNativeExtensions
 }

@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "declaration": false,
+    "sourceMap": false,
+    "strict": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "target": "es2019",
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "baseUrl": "./",
+    "outDir": "./bin",
+    "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
+    "types": ["reflect-metadata"]
+  },
+  "include": ["src/**/*.ts", "src/*.ts"],
+  "exclude": ["e2e/**", "out/**", "**/node_modules/**/*.(ts|js)", "**/static/**/*.(js|ts)"]
+}

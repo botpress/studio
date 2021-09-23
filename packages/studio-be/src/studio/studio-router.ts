@@ -7,10 +7,10 @@ import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig } from 'core/config'
 import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService } from 'core/dialog'
+import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { CustomRouter } from 'core/routers/customRouter'
-import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility } from 'core/security'
+import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility, needPermissions } from 'core/security'
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import express, { RequestHandler, Router } from 'express'
@@ -24,6 +24,7 @@ import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
 import { LibrariesRouter } from './libraries/libraries-router'
+import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
 import { QNARouter, QNAService } from './qna'
@@ -42,6 +43,7 @@ export interface StudioServices {
   actionService: ActionService
   actionServersService: ActionServersService
   hintsService: HintsService
+  skillService: SkillService
   bpfs: GhostService
   objectCache: MemoryObjectCache
   nluService: NLUService
@@ -63,6 +65,7 @@ export class StudioRouter extends CustomRouter {
   private libsRouter: LibrariesRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
+  private manageRouter: ManageRouter
 
   constructor(
     logger: Logger,
@@ -80,6 +83,7 @@ export class StudioRouter extends CustomRouter {
     objectCache: MemoryObjectCache,
     nluService: NLUService,
     qnaService: QNAService,
+    skillService: SkillService,
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -100,7 +104,8 @@ export class StudioRouter extends CustomRouter {
       hintsService,
       objectCache,
       nluService,
-      qnaService
+      qnaService,
+      skillService
     }
 
     this.cmsRouter = new CMSRouter(studioServices)
@@ -114,6 +119,7 @@ export class StudioRouter extends CustomRouter {
     this.libsRouter = new LibrariesRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
+    this.manageRouter = new ManageRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -129,7 +135,9 @@ export class StudioRouter extends CustomRouter {
     this.libsRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
+    this.manageRouter.setupRoutes()
 
+    app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
     app.use('/api/internal', this.internalRouter.router)
 
     app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))

@@ -98,7 +98,7 @@ declare module 'botpress/sdk' {
 
   export interface Logger {
     forBot(botId: string): this
-    attachError(error: Error): this
+    attachError(error: unknown): this
     /**
      * Attaching an event to the log entry will display the associated logs in the Processing tab on the debugger
      */
@@ -926,6 +926,32 @@ declare module 'botpress/sdk' {
     locked: boolean
     pipeline_status: BotPipelineStatus
     oneflow?: boolean
+    qna: {
+      disabled: boolean
+    }
+    skillChoice: {
+      /**
+       * @default true
+       */
+      matchNumbers: boolean
+      /**
+       * @default true
+       */
+      matchNLU: boolean
+    }
+    skillSendEmail: {
+      /**
+       * Nodemailer2 transport connection string.
+       * @see https://www.npmjs.com/package/nodemailer2
+       *
+       * Alternatively, you can pass an object with any required parameters
+       * @see https://nodemailer.com/smtp/#examples
+       *
+       * @example smtps://user%40gmail.com:pass@smtp.gmail.com
+       * @default <<change me>>
+       */
+      transportConnectionString: string
+    }
 
     /**
      * constant number used to seed nlu random number generators
@@ -1043,16 +1069,17 @@ declare module 'botpress/sdk' {
    * They can describe anything and everything – they most often are domain-specific to your bot. They also
    * tells botpress how to display the content on various channels
    */
-  export interface ContentType {
+   export interface ContentType {
     id: string
     title: string
-    description: string
+    group?: string
+    description?: string
     /**
      * Hiding content types prevents users from adding these kind of elements via the Flow Editor.
      * They are still visible in the Content Manager, and it's still possible to use these elements by specifying
      * their name as a property "contentType" to ContentPickerWidget.
      */
-    hidden: boolean
+     hidden?: boolean
     /**
      * The jsonSchema used to validate the form data of the Content Elements.
      */
@@ -1067,12 +1094,17 @@ declare module 'botpress/sdk' {
      * @param channel The channel used to communicate, e.g. channel-web, messenger, twilio, etc.
      * @returns Return an array of rendered Content Elements
      */
-    renderElement: (data: object, channel: string) => object[]
+     renderElement: (data: object, channel: string) => object[] | object
     /**
      * Function that computes the visual representation of the text.
      * This function resides in the javascript definition of the Content Type.
      */
-    computePreviewText?: (formData: object) => string
+    computePreviewText?: (formData: any) => string
+  }
+
+  export type CustomContentType = Omit<Partial<ContentType>, 'id'> & {
+    /** A custom component must extend a builtin type */
+    extends: string
   }
 
   /**

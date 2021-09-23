@@ -7,6 +7,7 @@ interface CssExports {
   'moreBtnDots': string;
   'moreMenu': string;
   'moreMenuItem': string;
+  'moreOptionsWrapper': string;
   'noHover': string;
 }
 declare var cssExports: CssExports;
