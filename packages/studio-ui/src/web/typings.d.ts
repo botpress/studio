@@ -22,6 +22,7 @@ declare global {
     BP_BASE_PATH: string
     SEND_USAGE_STATS: boolean
     IS_STANDALONE: boolean
+    STUDIO_PORT: number
     IS_BOT_MOUNTED: boolean
     BOT_LOCKED: boolean
     WORKSPACE_ID: string

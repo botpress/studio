@@ -57,6 +57,9 @@
     "reflect-metadata": "^0.1.13",
     "replace-in-file": "^4.1.1",
     "rimraf": "^3.0.2",
+    "socket.io": "2.2.0",
+    "socket.io-redis": "5.2.0",
+    "socketio-jwt": "4.5.0",
     "tar": "^6.1.0",
     "tmp": "^0.2.1",
     "typescript": "^4.2.4",
@@ -84,6 +87,8 @@
     "@types/lodash": "4.14.123",
     "@types/node": "^12.13.1",
     "@types/proper-lockfile": "^4.1.2",
-    "@types/verror": "^1.10.3"
+    "@types/verror": "^1.10.3",
+    "@types/socket.io": "2.1.2",
+    "@types/socket.io-client": "1.4.36"
   }
 }

@@ -6,6 +6,7 @@ import { authEvents } from '~/util/Auth'
 class EventBus extends EventEmitter2 {
   private adminSocket: SocketIOClient.Socket
   private guestSocket: SocketIOClient.Socket
+  private studioSocket: SocketIOClient.Socket
   static default
 
   constructor() {
@@ -56,16 +57,19 @@ class EventBus extends EventEmitter2 {
       Object.assign(query, { token })
     }
 
-    if (this.adminSocket) {
-      this.adminSocket.off('event', this.dispatchSocketEvent)
-      this.adminSocket.disconnect()
+    const closeSocket = (socket: SocketIOClient.Socket) => {
+      if (!socket) {
+        return
+      }
+
+      socket.off('event', this.dispatchSocketEvent)
+      socket.off('connect', this.updateVisitorSocketId)
+      socket.disconnect()
     }
 
-    if (this.guestSocket) {
-      this.guestSocket.off('event', this.dispatchSocketEvent)
-      this.guestSocket.off('connect', this.updateVisitorSocketId)
-      this.guestSocket.disconnect()
-    }
+    closeSocket(this.adminSocket)
+    closeSocket(this.guestSocket)
+    closeSocket(this.studioSocket)
 
     const socketUrl = window['BP_SOCKET_URL'] || window.location.origin
     const transports = window.SOCKET_TRANSPORTS
@@ -81,6 +85,13 @@ class EventBus extends EventEmitter2 {
 
     this.guestSocket.on('connect', this.updateVisitorSocketId.bind(this))
     this.guestSocket.on('event', this.dispatchSocketEvent)
+
+    this.studioSocket = io(`http://localhost:${window.STUDIO_PORT}/studio`, {
+      query,
+      transports,
+      path: `${window['ROOT_PATH']}/socket.io`
+    })
+    this.studioSocket.on('event', this.dispatchSocketEvent)
   }
 }
 
