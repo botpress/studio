@@ -421,7 +421,7 @@ export const refreshActions = () => dispatch => {
 export const intentsReceived = createAction('INTENTS/RECEIVED')
 export const refreshIntents = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/nlu/intents`).then(({ data }) => {
+  axios.get(`${window.STUDIO_API_PATH}/nlu/intents`).then(({ data }) => {
     dispatch(intentsReceived(data))
   })
 }

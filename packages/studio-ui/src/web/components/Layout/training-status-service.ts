@@ -7,7 +7,7 @@ export class TrainingStatusService {
 
   public fetchTrainingStatus = async () => {
     try {
-      const { data: session } = await axios.get(`${window.BOT_API_PATH}/mod/nlu/training/${this.language}`)
+      const { data: session } = await axios.get(`${window.STUDIO_API_PATH}/nlu/training/${this.language}`)
       this.callback(session)
     } catch (err) {}
   }

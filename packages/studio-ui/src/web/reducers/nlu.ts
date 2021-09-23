@@ -16,7 +16,7 @@ const defaultState: NLUReducer = {
 export default handleActions(
   {
     [trainSessionReceived]: (state, { payload }) => {
-      const trainSession: NLU.TrainingSession = payload
+      const trainSession: NLU.TrainingSession = payload as any
       return {
         ...state,
         trainSessions: {

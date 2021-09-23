@@ -54,7 +54,8 @@ declare namespace NodeJS {
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
     /** This property is set when the binary is built in a branch other than master */
-    DEV_BRANCH?: string
+    DEV_BRANCH?: string,
+    NLU_ENDPOINT?: string
   }
 }
 
