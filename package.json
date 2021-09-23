@@ -3,6 +3,9 @@
   "version": "0.0.37",
   "description": "Create your virtual assistants",
   "main": "index.js",
+  "engines": {
+    "node": "12.18.1"
+  },
   "bin": "./packages/studio-be/out/index.js",
   "repository": "https://github.com/botpress/studio.git",
   "author": "Botpress, Inc.",

@@ -5,6 +5,9 @@
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "private": true,
+  "engines": {
+    "node": "12.18.1"
+  },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
     "build": "yarn clean && yarn tsc",
