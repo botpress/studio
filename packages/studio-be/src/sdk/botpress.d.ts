@@ -1028,6 +1028,7 @@ declare module 'botpress/sdk' {
     createdOn: Date
     modifiedOn: Date
     createdBy: string
+    botId?: string
   }
 
   /**
