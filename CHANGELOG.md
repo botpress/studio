@@ -1,3 +1,18 @@
+## [0.0.38](https://github.com/botpress/studio/compare/v0.0.37...v0.0.38) (2021-09-28)
+
+
+### Bug Fixes
+
+* edit translated caroussel data ([#122](https://github.com/botpress/studio/issues/122)) ([feaaafd](https://github.com/botpress/studio/commit/feaaafdcecefcd58810715920772e5f93d1b6f98))
+* **flow:** fix editing content elements using action modal ([#109](https://github.com/botpress/studio/issues/109)) ([c021286](https://github.com/botpress/studio/commit/c021286a5453c14abe3bc007a432099291afce91))
+* **qna:** fix language dropdown overlay issue  ([#115](https://github.com/botpress/studio/issues/115)) ([056686b](https://github.com/botpress/studio/commit/056686b8e71d94723108eb4136fda2e0e335679a))
+* **studio:** allow changing conent-type when editing node content-element ([#121](https://github.com/botpress/studio/issues/121)) ([4bf2ae2](https://github.com/botpress/studio/commit/4bf2ae21b7a7aa69520aceade8e9c71189b1c564))
+* **studio:** error when state missing in debugger ([#111](https://github.com/botpress/studio/issues/111)) ([31af69f](https://github.com/botpress/studio/commit/31af69fe18b7f2c0e34ca5fd18aaee8a7fcc6f74))
+* **studio:** fix permissions for libraries ([#119](https://github.com/botpress/studio/issues/119)) ([86e53ad](https://github.com/botpress/studio/commit/86e53adcff929b6b68ec9089af6b69e61462790b))
+* **studio:** prevent creating empty actions ([#118](https://github.com/botpress/studio/issues/118)) ([fed7ac6](https://github.com/botpress/studio/commit/fed7ac66da61b6ac3a5cc0d43ca1106806934e7c))
+
+
+
 ## [0.0.37](https://github.com/botpress/studio/compare/v0.0.36...v0.0.37) (2021-09-16)
 
 
