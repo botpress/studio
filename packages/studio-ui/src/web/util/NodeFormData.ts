@@ -1,6 +1,16 @@
 import _ from 'lodash'
 
-export const getFormData = (node: any, contentLang: string, defaultLanguage: string, defaultValue: any = {}): any => {
+interface NodeData {
+  formData?: any
+  contentType?: any
+}
+
+export const getFormData = (
+  node: NodeData,
+  contentLang: string,
+  defaultLanguage: string,
+  defaultValue: any = {}
+): any => {
   if (!node?.formData) {
     return defaultValue
   }
@@ -21,8 +31,11 @@ const consideredEmtpyValue = (value: any) => {
   return !value || _.isBoolean(value) || isArrayOfEmptyObject
 }
 
-const getFormDataForLang = (contentItem: any, language: string) => {
+const getFormDataForLang = (contentItem: NodeData, language: string) => {
   const { formData, contentType } = contentItem
+  // Note Sept 28th 2021
+  // I have tested a few scenarios and contentType is never defined.
+  // I left this check there in case there is a reason for it
   const returnedContentType = contentType ? { contentType } : {}
 
   const languageKeys = Object.keys(formData).filter(x => x.includes('$' + language))
