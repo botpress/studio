@@ -15,9 +15,13 @@ export const Wrapper: FC<DialogProps> = props => {
     width = 900
   }
 
-  const onSubmit = e => {
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    props.onSubmit!()
+
+    const target = e.target as HTMLFormElement
+    if (!props.id || props.id === target.id) {
+      props.onSubmit!()
+    }
   }
 
   return (
@@ -31,7 +35,7 @@ export const Wrapper: FC<DialogProps> = props => {
       {...props}
     >
       {props.onSubmit ? (
-        <form onSubmit={onSubmit}>
+        <form id={props.id} onSubmit={onSubmit}>
           {props.children}
         </form>
       ) : (

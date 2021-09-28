@@ -1,5 +1,5 @@
 import { ContentElement } from 'botpress/sdk'
-import { Categories, LibraryElement, ParsedContentType } from 'common/typings'
+import { Categories, LibraryElement } from 'common/typings'
 import { DefaultSearchParams } from 'core/cms'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
