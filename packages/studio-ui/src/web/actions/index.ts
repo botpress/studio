@@ -242,7 +242,12 @@ export const fetchContentCategories = () => dispatch =>
   })
 
 export const receiveContentItems = createAction('CONTENT/ITEMS/RECEIVE')
-export const fetchContentItems = ({ contentType, ...query }) => dispatch => {
+export const fetchContentItems = ({
+  contentType,
+  ...query
+}: {
+  contentType: string
+} & sdk.SearchParams) => dispatch => {
   const type = contentType && contentType !== 'all' ? `${contentType}/` : ''
 
   return axios
@@ -284,11 +289,15 @@ export const fetchContentItemsCount = (contentType = 'all') => dispatch =>
     .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
     .then(data => dispatch(receiveContentItemsCount(data)))
 
-export const upsertContentItem = ({ contentType, formData, modifyId }) => () =>
+export const upsertContentItem = ({
+  contentType,
+  formData,
+  modifyId
+}: Pick<sdk.ContentElement, 'contentType' | 'formData'> & { modifyId: string }) => () =>
   axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
 
 export const deleteContentItems = data => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
-export const deleteMedia = data => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
+export const deleteMedia = (data: sdk.FormData) => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
 
 // UI
 export const viewModeChanged = createAction('UI/VIEW_MODE_CHANGED')
