@@ -1042,6 +1042,7 @@ declare module 'botpress/sdk' {
     modifiedOn: Date
     createdBy: string
     schema?: ParsedContentType['schema']
+    botId?: string
   }
 
   /**
