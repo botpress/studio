@@ -6,4 +6,5 @@ export interface DialogProps extends IDialogProps {
   isOpen?: boolean
   height?: number
   size?: 'sm' | 'md' | 'lg'
+  id?: string
 }

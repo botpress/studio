@@ -1011,6 +1011,19 @@ declare module 'botpress/sdk' {
     bufferDelayMs: number
   }
 
+  export interface ParsedContentType {
+    id: ContentType['id']
+    count: number
+    title: ContentType['title']
+    hidden: ContentType['hidden']
+    schema: {
+      json: ContentType['jsonSchema']
+      ui: ContentType['uiSchema']
+      title: ContentType['title']
+      renderer: ContentType['id']
+    }
+  }
+
   /**
    * A Content Element is a single item of a particular Content Type @see ContentType.
    * Content Types contains many Elements. An Element belongs to a single Content Type.
@@ -1020,7 +1033,7 @@ declare module 'botpress/sdk' {
     /** The Id of the Content Type for which the Element belongs to. */
     contentType: string
     /** The raw form data that contains templating that needs to be interpreted. */
-    formData: object
+    formData: FormData
     /** The computed form data that contains the interpreted data. */
     computedData: object
     /** The textual representation of the Content Element, for each supported languages  */
@@ -1028,6 +1041,7 @@ declare module 'botpress/sdk' {
     createdOn: Date
     modifiedOn: Date
     createdBy: string
+    schema?: ParsedContentType['schema']
     botId?: string
   }
 

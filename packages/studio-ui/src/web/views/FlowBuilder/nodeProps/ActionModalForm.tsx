@@ -244,6 +244,7 @@ class ActionModalForm extends Component<Props, State> {
   }
 
   render() {
+    const formId = 'action-modal-form'
     return (
       <Dialog.Wrapper
         size="md"
@@ -251,6 +252,7 @@ class ActionModalForm extends Component<Props, State> {
         isOpen={this.props.show}
         onClose={this.onClose}
         onSubmit={this.onSubmit}
+        id={formId}
       >
         <Dialog.Body>
           {!this.props.layoutv2 ? (
@@ -271,10 +273,10 @@ class ActionModalForm extends Component<Props, State> {
           )}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button id="btn-cancel-action" onClick={this.onClose}>
+          <Button id="btn-cancel-action" onClick={this.onClose} form={formId}>
             {lang.tr('cancel')}
           </Button>
-          <Button id="btn-submit-action" type="submit" bsStyle="primary" disabled={!this.isValid()}>
+          <Button id="btn-submit-action" type="submit" bsStyle="primary" form={formId} disabled={!this.isValid()}>
             {this.state.isEdit
               ? lang.tr('studio.flow.node.finishUpdateAction')
               : lang.tr('studio.flow.node.finishAddAction')}{' '}
