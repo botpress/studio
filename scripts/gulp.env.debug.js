@@ -21,7 +21,7 @@ const createEmptyEnvFileForDebugging = cb => {
   if (!location) {
     return cb(
       new Error(
-        'Creating empty env file for debugging requires a the desired file location as 1st positional parameter.'
+        'Creating empty env file for debugging requires the desired file location as 1st positional parameter.'
       )
     )
   }
