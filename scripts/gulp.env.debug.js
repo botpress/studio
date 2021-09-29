@@ -1,6 +1,7 @@
 const fs = require('fs')
 const minimist = require('minimist')
 
+const DEFAULT_INTERNAL_PASSWORD = '$YOUR_INTERNAL_PASSWORD'
 const DEFAULT_BP_PATH = '$YOUR_BP_PATH'
 const DEFAULT_ENV_VALUE = `
 # use this env file to modify env variables for debug purposes (see launch.json for more details)
@@ -9,6 +10,10 @@ BP_DATA_FOLDER=${DEFAULT_BP_PATH}/packages/bp/dist/data
 BP_MODULES_PATH=${DEFAULT_BP_PATH}/modules
 NLU_ENDPOINT=http://localhost:3200
 STUDIO_PORT=4000
+
+CORE_PORT=3000
+ROOT_PATH=''
+INTERNAL_PASSWORD=${DEFAULT_INTERNAL_PASSWORD}
 `
 
 const createEmptyEnvFileForDebugging = cb => {
