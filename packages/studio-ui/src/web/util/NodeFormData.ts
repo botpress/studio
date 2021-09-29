@@ -1,40 +1,41 @@
 import _ from 'lodash'
 
-export const getFormData = (node: any, contentLang: string, defaultLanguage: string, defaultValue: any = {}): any => {
-  let data = defaultValue
+interface NodeData {
+  formData?: any
+  contentType?: any
+}
 
-  if (node?.formData) {
-    data = getFormDataForLang(node, contentLang)
-
-    if (isFormEmpty(data)) {
-      data = getFormDataForLang(node, defaultLanguage)
-    }
+export const getFormData = (
+  node: NodeData,
+  contentLang: string,
+  defaultLanguage: string,
+  defaultValue: any = {}
+): any => {
+  if (!node?.formData) {
+    return defaultValue
   }
 
-  return data
+  const translatedData = getFormDataForLang(node, contentLang)
+  if (isFormEmpty(translatedData)) {
+    return getFormDataForLang(node, defaultLanguage)
+  }
+
+  return translatedData
 }
 
-export const isFormEmpty = formData => {
-  return _.every(
-    Object.keys(formData).map(x => {
-      // Ignore undefined and booleans, since they are set by default
-      if (!formData[x] || _.isBoolean(formData[x])) {
-        return
-      }
+export const isFormEmpty = formData => Object.values(formData).every(consideredEmtpyValue)
 
-      // Ignore array with empty objects (eg: skill choice)
-      if (_.isArray(formData[x]) && !formData[x].filter(_.isEmpty).length) {
-        return
-      }
-
-      return formData[x]
-    }),
-    _.isEmpty
-  )
+const consideredEmtpyValue = (value: any) => {
+  // Undefined, booleans and array of empty obj are considered empty
+  const isArrayOfEmptyObject = _.isArray(value) && value.every(_.isEmpty)
+  return !value || _.isBoolean(value) || isArrayOfEmptyObject
 }
 
-const getFormDataForLang = (contentItem: any, language: string) => {
+const getFormDataForLang = (contentItem: NodeData, language: string) => {
   const { formData, contentType } = contentItem
+  // Note Sept 28th 2021
+  // I have tested a few scenarios and contentType is never defined.
+  // I left this check there in case there is a reason for it
   const returnedContentType = contentType ? { contentType } : {}
 
   const languageKeys = Object.keys(formData).filter(x => x.includes('$' + language))

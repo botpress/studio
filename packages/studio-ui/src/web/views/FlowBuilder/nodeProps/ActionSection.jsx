@@ -1,8 +1,4 @@
-import {
-  Popover,
-  PopoverInteractionKind,
-  PopoverPosition
-} from '@blueprintjs/core'
+import { Popover, PopoverInteractionKind, PopoverPosition } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
 import _ from 'lodash'
@@ -118,9 +114,12 @@ export default class ActionSection extends Component {
         <div className={style.actionList}>
           {this.renderWait()}
           {items.map((item, i) => (
-            <Popover interactionKind={PopoverInteractionKind.HOVER} position={PopoverPosition.BOTTOM}>
-              <ActionItem className={style.item} text={item} key={`${i}.${item}`}>
-              </ActionItem>
+            <Popover
+              interactionKind={PopoverInteractionKind.HOVER}
+              position={PopoverPosition.BOTTOM}
+              key={`${i}.${item}`}
+            >
+              <ActionItem className={style.item} text={item}></ActionItem>
               {!readOnly && (
                 <div className={style.actions}>
                   <a className="btn-edit" onClick={() => this.onEdit(i)}>

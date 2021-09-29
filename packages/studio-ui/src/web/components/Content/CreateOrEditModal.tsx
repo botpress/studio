@@ -46,7 +46,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
     this.props.changeContentLanguage(this.props.defaultLanguage)
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.formData !== this.props.formData || this.props.contentLang !== prevProps.contentLang) {
       this.setState({ mustChangeLang: !this.props.isEditing && this.props.contentLang !== this.props.defaultLanguage })
     }
@@ -82,6 +82,8 @@ class CreateOrEditModal extends React.Component<Props, State> {
       {}
     )
 
+    const formId = 'content-form'
+
     return (
       <div>
         <ContentForm
@@ -91,9 +93,11 @@ class CreateOrEditModal extends React.Component<Props, State> {
           isEditing={this.props.isEditing}
           onChange={this.handleEdit}
           onSubmit={this.handleSave}
+          id={formId}
         >
           <div className={style.formBtns}>
             <button
+              form={formId}
               className={classnames('bp-button', 'bp-button-danger')}
               onClick={this.props.handleClose}
               type="button"
@@ -101,6 +105,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
               {lang.tr('cancel')}
             </button>
             <button
+              form={formId}
               className={classnames('bp-button')}
               type="submit"
               disabled={isMissingCurlyBraceClosure(formData?.text)}

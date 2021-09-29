@@ -1,4 +1,5 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
+import { ContentElement, FormData, SearchParams } from 'botpress/sdk'
 import { Dialog, lang } from 'botpress/shared'
 import classnames from 'classnames'
 import { ParsedContentType } from 'common/typings'
@@ -18,49 +19,48 @@ import style from './style.scss'
 
 const SEARCH_RESULTS_LIMIT = 10
 
-const formSteps = {
-  INITIAL: 0,
-  PICK_CATEGORY: 1,
-  MAIN: 2
+enum FormSteps {
+  INITIAL,
+  PICK_CATEGORY,
+  MAIN
 }
 
+// TODO: use react-redux.ConnectedProps for typings
 interface Props {
-  fetchContentCategories: Function
-  container: any
-  deleteMedia: Function
-  fetchContentItems: Function
-  contentItems: any
+  fetchContentCategories: () => Promise<void>
+  container: HTMLElement
+  deleteMedia: (data: FormData) => Promise<void>
+  fetchContentItems: ({ contentType, ...query }: { contentType: string } & SearchParams) => Promise<void>
+  contentItems: ContentElement[]
   categories: ParsedContentType[]
-  upsertContentItem: Function
-  onSelect: any
-  onClose: any
-  contentType: any
-  contentLang: any
+  upsertContentItem: (item: Partial<ContentElement>) => Promise<AxiosResponse<{ id: string }>>
+  onSelect?: (contentItem: ContentElement) => void
+  onClose?: () => void
+  contentType: string | null
+  contentLang: string
 }
 
 interface State {
-  activeItemIndex: any
-  step: any
-  newItemCategory: any
-  searchTerm: any
-  contentType: any
-  newItemData: any
+  activeItemIndex: number
+  step: FormSteps
+  newItemCategory: ParsedContentType | null
+  searchTerm: string
+  contentType: string | null
+  newItemData: FormData | null
   show: boolean
-  hideCategoryInfo: boolean
 }
 
 class SelectContent extends Component<Props, State> {
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
 
-    const { contentType = null } = props
+    const { contentType } = props
 
     this.state = {
       show: true,
       contentType,
-      hideCategoryInfo: !!contentType,
       activeItemIndex: 0,
-      step: contentType ? formSteps.MAIN : formSteps.INITIAL,
+      step: contentType ? FormSteps.MAIN : FormSteps.INITIAL,
       newItemCategory: null,
       searchTerm: '',
       newItemData: null
@@ -68,7 +68,9 @@ class SelectContent extends Component<Props, State> {
   }
 
   componentDidMount() {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.searchContentItems()
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.props.fetchContentCategories()
 
     this.props.container.addEventListener('keyup', this.handleChangeActiveItem)
@@ -78,14 +80,14 @@ class SelectContent extends Component<Props, State> {
     this.props.container.removeEventListener('keyup', this.handleChangeActiveItem)
   }
 
-  UNSAFE_componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps: Props) {
     const { categories } = newProps
-    if (!categories || this.state.step !== formSteps.INITIAL || this.state.contentType) {
+    if (!categories || this.state.step !== FormSteps.INITIAL || this.state.contentType) {
       return
     }
 
     this.setState({
-      step: categories.length > 1 ? formSteps.PICK_CATEGORY : formSteps.MAIN
+      step: categories.length > 1 ? FormSteps.PICK_CATEGORY : FormSteps.MAIN
     })
   }
 
@@ -94,11 +96,12 @@ class SelectContent extends Component<Props, State> {
       count: SEARCH_RESULTS_LIMIT,
       searchTerm: this.state.searchTerm,
       contentType: this.state.contentType || 'all',
-      sortOrder: [{ column: 'createdOn', desc: true }]
+      sortOrder: [{ column: 'createdOn', desc: true }],
+      from: 0
     })
   }
 
-  handleChangeActiveItem = e => {
+  handleChangeActiveItem = (e: KeyboardEvent) => {
     const index = this.state.activeItemIndex
     if (e.key === 'ArrowUp') {
       this.setState({ activeItemIndex: index > 0 ? index - 1 : index })
@@ -106,25 +109,26 @@ class SelectContent extends Component<Props, State> {
       const { contentItems } = this.props
       const itemsCount = contentItems?.length ?? 0
       this.setState({ activeItemIndex: index < itemsCount - 1 ? index + 1 : index })
-    } else if (e.key === 'Enter' && this.state.step === formSteps.PICK_CATEGORY) {
+    } else if (e.key === 'Enter' && this.state.step === FormSteps.PICK_CATEGORY) {
       this.setCurrentCategory(this.props.categories.filter(cat => !cat.hidden)[this.state.activeItemIndex].id)
     } else if (e.key === 'Enter' && !this.state.newItemCategory) {
       this.handlePick(this.props.contentItems[this.state.activeItemIndex])
     }
   }
 
-  onSearchChange = event => {
-    const newSearchTerm = event.target.value
+  onSearchChange = (event: React.ChangeEvent) => {
+    const newSearchTerm = (event.target as HTMLInputElement).value
     const { searchTerm } = this.state
     if (newSearchTerm === searchTerm) {
       return
     }
-    this.setState({ searchTerm: newSearchTerm }, () => {
-      this.searchContentItems().then(() => this.setState({ activeItemIndex: 0 }))
+    this.setState({ searchTerm: newSearchTerm }, async () => {
+      await this.searchContentItems().then(() => this.setState({ activeItemIndex: 0 }))
     })
   }
 
   handleCreate = () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.props
       .upsertContentItem({
         contentType: this.state.newItemCategory.id,
@@ -134,19 +138,20 @@ class SelectContent extends Component<Props, State> {
       .then(() => this.searchContentItems())
   }
 
-  handlePick(item) {
+  handlePick(item: ContentElement) {
     this.props.onSelect?.(item)
     this.onClose()
   }
 
-  handleFormEdited = data => {
+  handleFormEdited = (data: FormData) => {
     this.setState({ newItemData: data })
   }
 
-  resetCreateContent = (resetSearch = false) => response => {
+  resetCreateContent = (resetSearch = false) => (response: AxiosResponse<{ id: string }>) => {
     const { data: id } = response || {}
 
     if (!id && CONTENT_TYPES_MEDIA.includes(this.state.newItemCategory.id)) {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.props.deleteMedia(this.state.newItemData)
     }
 
@@ -185,10 +190,10 @@ class SelectContent extends Component<Props, State> {
     return contentType ? categories.filter(({ id }) => id === contentType) : categories.filter(cat => !cat.hidden)
   }
 
-  setCurrentCategory(contentType) {
+  setCurrentCategory(contentType: string | null) {
     this.setState({ contentType }, () => {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.searchContentItems().then(() => this.setState({ step: formSteps.MAIN }))
+      this.searchContentItems().then(() => this.setState({ step: FormSteps.MAIN }))
     })
   }
 
@@ -220,13 +225,12 @@ class SelectContent extends Component<Props, State> {
   }
 
   resetCurrentCategory = () => {
-    this.setState({ contentType: null, step: formSteps.PICK_CATEGORY })
+    this.setState({ contentType: null, step: FormSteps.PICK_CATEGORY })
   }
 
   renderCurrentCategoryInfo() {
     const { categories } = this.props
-    const { hideCategoryInfo } = this.state
-    if (hideCategoryInfo || !categories || categories.length < 2) {
+    if (!categories || categories.length < 2) {
       return null
     }
 
@@ -251,7 +255,7 @@ class SelectContent extends Component<Props, State> {
     return `${lang.tr('search')} ${lang.tr(title)} (${this.props.contentItems?.length})`
   }
 
-  openNewEditor = category => {
+  openNewEditor = (category?: ParsedContentType) => {
     let newItemData = null
 
     if (category?.id === 'builtin_text') {
@@ -261,7 +265,7 @@ class SelectContent extends Component<Props, State> {
     this.setState({ newItemCategory: category, newItemData })
   }
 
-  onKeyDown = event => {
+  onKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === 'Enter') {
       // open first active search
       if (this.props.contentItems.length > 0) {
@@ -353,9 +357,9 @@ class SelectContent extends Component<Props, State> {
   }
 
   renderBody() {
-    if (this.state.step === formSteps.INITIAL) {
+    if (this.state.step === FormSteps.INITIAL) {
       return <Loading />
-    } else if (this.state.step === formSteps.PICK_CATEGORY) {
+    } else if (this.state.step === FormSteps.PICK_CATEGORY) {
       return this.renderCategoryPicker()
     }
     return this.renderMainBody()
