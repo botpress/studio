@@ -27,12 +27,12 @@ export class NLUApplication {
     }
   }
 
-  public async getHealth(opt: { reportError: boolean } = { reportError: true }) {
+  public async getHealth() {
     try {
       const { health } = await this._nluClient.getInfo()
       return health
     } catch (err) {
-      opt.reportError && this._logger.attachError(err).error('An error occured when fetch info from NLU Server.')
+      this._logger.attachError(err).error('An error occured when fetch info from NLU Server.')
       return
     }
   }

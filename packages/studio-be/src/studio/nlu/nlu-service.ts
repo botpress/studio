@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios'
 import { Logger, NLU } from 'botpress/sdk'
 import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
@@ -18,7 +17,6 @@ import { ModelStateService } from './application/model-state'
 import { DbModelStateRepository } from './application/model-state/model-state-repo'
 import { NLUClient } from './application/nlu-client'
 import { ConfigResolver, TrainingSession } from './application/typings'
-import { NonBlockingNluApplication } from './non-blocking-app'
 
 export interface NLUProgressEvent {
   type: 'nlu'
@@ -87,7 +85,8 @@ export class NLUService {
       socket,
       process.NLU_ENDPOINT
     )
-    const application = new NonBlockingNluApplication(
+
+    const application = new NLUApplication(
       nluClient,
       botFactory,
       {
@@ -95,10 +94,6 @@ export class NLUService {
       },
       this.logger
     )
-
-    // don't block entire server startup
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    application.initialize()
 
     this.app = application
   }
