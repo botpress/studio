@@ -16,13 +16,11 @@ ROOT_PATH=''
 INTERNAL_PASSWORD=${DEFAULT_INTERNAL_PASSWORD}
 `
 
-const createEmptyEnvFileForDebugging = cb => {
+const createDefaultEnvFileForDebugging = cb => {
   const { location } = minimist(process.argv.slice(2))
   if (!location) {
     return cb(
-      new Error(
-        'Creating empty env file for debugging requires the desired file location as 1st positional parameter.'
-      )
+      new Error('Creating empty env file for debugging requires the desired file location as 1st positional parameter.')
     )
   }
 
@@ -35,5 +33,5 @@ const createEmptyEnvFileForDebugging = cb => {
 }
 
 module.exports = {
-  createEmptyEnvFileForDebugging
+  createDefaultEnvFileForDebugging
 }

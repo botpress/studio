@@ -15,4 +15,4 @@ gulp.task('build:studio-ui', gulp.series([studio.buildUi, studio.clean, studio.c
 
 gulp.task('build', gulp.series([studio.buildNativeExtensions, 'build:studio-be', 'build:shared', 'build:studio-ui']))
 
-gulp.task('create:env.debug', gulp.series([envDebug.createEmptyEnvFileForDebugging]))
+gulp.task('create:env.debug', gulp.series([envDebug.createDefaultEnvFileForDebugging]))
