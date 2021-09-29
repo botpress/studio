@@ -52,7 +52,8 @@ export class DbModelStateRepository implements IModelStateRepository {
   }
 
   public async upsert(model: ModelStateRow) {
-    const exists = await this.has(model)
+    const key = this._keepPrimaryKey(model)
+    const exists = await this.has(key)
     if (exists) {
       return this.update(model)
     }
@@ -88,5 +89,10 @@ export class DbModelStateRepository implements IModelStateRepository {
       .table<ModelStateRow>(this._tableName)
       .where(query)
       .select('*')
+  }
+
+  private _keepPrimaryKey = (row: ModelStateRow): ModelStatePrimaryKey => {
+    const { botId, language, status_type } = row
+    return { botId, language, status_type }
   }
 }
