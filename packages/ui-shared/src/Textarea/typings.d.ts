@@ -10,5 +10,6 @@ export interface TextareaProps {
   onKeyDown?: (e?: SyntheticEvent) => void
   onPaste?: (e?: SyntheticEvent) => void
   refValue?: string
+  direction?: 'ltr' | 'rtl'
   value: string
 }
