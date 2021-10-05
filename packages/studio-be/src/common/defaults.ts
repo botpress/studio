@@ -16,7 +16,6 @@ export const BUILTIN_MODULES = [
   'history',
   'hitl',
   'misunderstood',
-  'ndu',
   'nlu',
   'qna',
   'testing',

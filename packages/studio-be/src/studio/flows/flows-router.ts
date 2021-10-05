@@ -58,7 +58,7 @@ export class FlowsRouter extends CustomStudioRouter {
         }
 
         try {
-          const metadata: any = { botId: req.query.botId, isOneFlow: yn(req.query.isOneFlow) }
+          const metadata: any = { botId: req.query.botId }
           res.send(this.skillService.finalizeFlow(await flowGenerator(req.body, metadata)))
         } catch (err) {
           throw new UnexpectedError('Could not generate flow', err)

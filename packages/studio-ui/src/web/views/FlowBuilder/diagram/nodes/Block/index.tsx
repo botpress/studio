@@ -18,7 +18,6 @@ import RouterContents from '../RouterContents'
 import SaySomethingContents from '../SaySomethingContents'
 import SkillCallContents, { SkillDefinition } from '../SkillCallContents'
 import StandardContents from '../StandardContents'
-import TriggerContents from '../TriggerContents'
 
 export interface BlockProps {
   node: BlockModel
@@ -29,7 +28,6 @@ export interface BlockProps {
   editTriggers: (node: BlockModel) => void
   disconnectNode: (node: BlockModel) => void
   selectedNodeItem: () => { node: BlockModel; index: number }
-  getConditions: () => DecisionTriggerCondition & { label: string; id: string }[]
   switchFlowNode: (id: string) => void
   getLanguage?: () => { currentLang: string; defaultLang: string }
   getExpandedNodes: () => string[]
@@ -58,7 +56,6 @@ const BlockWidget: FC<BlockProps> = ({
   deleteSelectedElements,
   copySelectedElement,
   selectedNodeItem,
-  getConditions,
   switchFlowNode,
   updateFlowNode,
   getCurrentFlow,
@@ -168,17 +165,7 @@ const BlockWidget: FC<BlockProps> = ({
             currentLang={currentLang}
           />
         )
-      case 'trigger':
-        return (
-          <TriggerContents
-            node={node}
-            defaultLang={defaultLang}
-            editNodeItem={editNodeItem}
-            selectedNodeItem={selectedNodeItem}
-            getConditions={getConditions}
-            currentLang={currentLang}
-          />
-        )
+
       case 'skill-call':
         return <SkillCallContents node={node} />
       default:
@@ -295,7 +282,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
   private selectedNodeItem: BlockProps['selectedNodeItem']
   private deleteSelectedElements: BlockProps['deleteSelectedElements']
   private copySelectedElement: BlockProps['copySelectedElement']
-  private getConditions: BlockProps['getConditions']
   private getCurrentFlow: BlockProps['getCurrentFlow']
   private switchFlowNode: BlockProps['switchFlowNode']
   private getLanguage: BlockProps['getLanguage']
@@ -317,7 +303,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
     this.deleteSelectedElements = methods.deleteSelectedElements
     this.copySelectedElement = methods.copySelectedElement
     this.getCurrentFlow = methods.getCurrentFlow
-    this.getConditions = methods.getConditions
     this.switchFlowNode = methods.switchFlowNode
     this.getLanguage = methods.getLanguage
     this.getExpandedNodes = methods.getExpandedNodes
@@ -341,7 +326,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
         deleteSelectedElements={this.deleteSelectedElements}
         copySelectedElement={this.copySelectedElement}
         selectedNodeItem={this.selectedNodeItem}
-        getConditions={this.getConditions}
         switchFlowNode={this.switchFlowNode}
         updateFlowNode={this.updateFlowNode}
         getExpandedNodes={this.getExpandedNodes}

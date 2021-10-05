@@ -28,7 +28,6 @@ import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
 import { QNARouter, QNAService } from './qna'
-import { TopicsRouter } from './topics/topics-router'
 import { fixStudioMappingMw } from './utils/api-mapper'
 
 export interface StudioServices {
@@ -58,7 +57,6 @@ export class StudioRouter extends CustomRouter {
   private mediaRouter: MediaRouter
   private actionsRouter: ActionsRouter
   private flowsRouter: FlowsRouter
-  private topicsRouter: TopicsRouter
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
   private internalRouter: InternalRouter
@@ -112,7 +110,6 @@ export class StudioRouter extends CustomRouter {
     this.actionsRouter = new ActionsRouter(studioServices)
     this.flowsRouter = new FlowsRouter(studioServices)
     this.mediaRouter = new MediaRouter(studioServices)
-    this.topicsRouter = new TopicsRouter(studioServices)
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
     this.internalRouter = new InternalRouter(studioServices)
@@ -128,7 +125,6 @@ export class StudioRouter extends CustomRouter {
     this.actionsRouter.setupRoutes()
     this.flowsRouter.setupRoutes()
     await this.mediaRouter.setupRoutes(this.botpressConfig)
-    this.topicsRouter.setupRoutes()
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.internalRouter.setupRoutes()
@@ -166,7 +162,6 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
-    this.router.use('/topics', this.checkTokenHeader, this.topicsRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
     this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
 
@@ -209,7 +204,6 @@ export class StudioRouter extends CustomRouter {
               window.APP_FAVICON = "${branding.favicon}";
               window.APP_CUSTOM_CSS = "${branding.customCss}";
               window.BOT_LOCKED = ${!!bot.locked};
-              window.USE_ONEFLOW = ${!!bot['oneflow']};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
             })(typeof window != 'undefined' ? window : {})

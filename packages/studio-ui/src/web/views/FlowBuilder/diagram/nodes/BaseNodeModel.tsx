@@ -30,9 +30,7 @@ export class BaseNodeModel extends NodeModel {
   }
 
   setData({ name, onEnter = [], onReceive = [], next = [], isStartNode, isHighlighted }) {
-    const deprecatedFeature = window.USE_ONEFLOW // TODO: remove in 13+
-
-    this.isStartNode = !deprecatedFeature && isStartNode
+    this.isStartNode = isStartNode
     this.isHighlighted = isHighlighted
     const inNodeType = isStartNode ? 'start' : 'normal'
     const waitOnReceive = !_.isNil(onReceive)

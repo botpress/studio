@@ -17,7 +17,6 @@ export interface IntentParams {
 
 interface Props {
   contentLang: string
-  forceSave: boolean
   topicName: string
   params: IntentParams
   updateParams: (params: IntentParams) => void
@@ -34,14 +33,6 @@ export const LiteEditor: FC<Props> = props => {
   const [currentIntent, setCurrentIntent] = useState(props.params.intentName)
   const [isModalOpen, setModalOpen] = useState(false)
   const [dirtyIntents, setDirtyIntents] = useState([])
-
-  useEffect(() => {
-    // Ensure the current topic is in the intent's contexts
-    if (props.forceSave && dirtyIntents.length) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      api.syncIntentTopics()
-    }
-  }, [props.forceSave])
 
   const api = makeNLUClient()
 

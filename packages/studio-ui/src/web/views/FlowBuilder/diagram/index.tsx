@@ -43,7 +43,6 @@ import { BlockModel, BlockProps, BlockWidgetFactory } from './nodes/Block'
 import { DeletableLinkFactory } from './nodes/LinkWidget'
 import NodeToolbar from './NodeToolbar'
 import style from './style.scss'
-import TriggerEditor from './TriggerEditor'
 import WorkflowToolbar from './WorkflowToolbar'
 import ZoomToolbar from './ZoomToolbar'
 
@@ -51,8 +50,6 @@ interface OwnProps {
   childRef: (el: any) => void
   readOnly: boolean
   canPasteNode: boolean
-  selectedTopic: string
-  selectedWorkflow: string
   highlightFilter: string
   showSearch: boolean
   hideSearch: () => void
@@ -116,7 +113,6 @@ class Diagram extends Component<Props> {
         currentLang: this.getPropsProperty('currentLang'),
         defaultLang: this.getPropsProperty('defaultLang')
       }),
-      getConditions: () => this.getPropsProperty('conditions'),
       getExpandedNodes: () => this.getStateProperty('expandedNodes'),
       setExpandedNodes: this.updateExpandedNodes.bind(this),
       editTriggers: this.editTriggers.bind(this),
@@ -372,15 +368,8 @@ class Diagram extends Component<Props> {
           onClick={wrap(this.add.flowNode, point)}
           icon="chat"
         />
-        {(window.USE_ONEFLOW || window.EXPERIMENTAL) && (
+        {window.EXPERIMENTAL && (
           <Fragment>
-            {!originatesFromOutPort && window.USE_ONEFLOW && (
-              <MenuItem
-                text={lang.tr('studio.flow.nodeType.trigger')}
-                onClick={wrap(this.add.triggerNode, point)}
-                icon="send-to-graph"
-              />
-            )}
             <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Icons.Say />} />
             <MenuItem text={lang.tr('execute')} onClick={wrap(this.add.executeNode, point)} icon="code" />
             <MenuItem text={lang.tr('listen')} onClick={wrap(this.add.listenNode, point)} icon="hand" />
@@ -746,12 +735,6 @@ class Diagram extends Component<Props> {
           />
           <ZoomToolbar />
           {canAdd && <NodeToolbar />}
-          <TriggerEditor
-            node={this.state.currentTriggerNode}
-            isOpen={this.state.isTriggerEditOpen}
-            diagramEngine={this.diagramEngine}
-            toggle={() => this.setState({ isTriggerEditOpen: !this.state.isTriggerEditOpen })}
-          />
         </div>
       </MainLayout.Wrapper>
     )
@@ -767,7 +750,6 @@ const mapStateToProps = (state: RootReducer) => ({
   emulatorOpen: state.ui.emulatorOpen,
   debuggerEvent: state.flows.debuggerEvent,
   zoomLevel: state.ui.zoomLevel,
-  conditions: state.ndu.conditions,
   skills: state.skills.installed
 })
 

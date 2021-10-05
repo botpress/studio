@@ -104,9 +104,7 @@ const SkillsBuilder = (props: Props) => {
       baseUrl = `${window.STUDIO_API_PATH}/flows/skill/${skill.id}/`
     }
 
-    return axios
-      .post(`${baseUrl}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`, data)
-      .then(({ data }) => data)
+    return axios.post(`${baseUrl}/generateFlow?botId=${window.BOT_ID}`, data).then(({ data }) => data)
   }
 
   const findInstalledSkill = () => {

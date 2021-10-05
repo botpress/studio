@@ -16,7 +16,7 @@ export const generateFlow = async (
 }
 
 const createNodes = data => {
-  const nodes: sdk.SkillFlowNode[] = [
+  const nodes: sdk.FlowNode[] = [
     {
       name: 'entry',
       onEnter: [

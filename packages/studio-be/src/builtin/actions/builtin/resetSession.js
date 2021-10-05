@@ -8,7 +8,7 @@
  * @author Botpress, Inc.
  */
 const _ = require('lodash')
-const PROPERTIES_TO_KEEP = ['lastMessages', 'nluContexts', 'workflows']
+const PROPERTIES_TO_KEEP = ['lastMessages', 'nluContexts']
 
 async function resetSession() {
   bp.logger.debug('inside reset')
