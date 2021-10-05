@@ -452,7 +452,7 @@ export class ScopedFlowService {
     }
 
     const flowContent = {
-      ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData',  'label', 'description']),
+      ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description']),
       nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
     }
 
