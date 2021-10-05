@@ -344,7 +344,13 @@ class ConfigView extends Component<Props, State> {
                   </div>
                 </FormGroup>
                 <FormGroup label={lang.tr('name')} labelFor="name">
-                  <InputGroup id="name" name="name" value={this.state.name} onChange={this.handleInputChanged} />
+                  <InputGroup
+                    id="name"
+                    name="name"
+                    value={this.state.name}
+                    maxLength={50}
+                    onChange={this.handleInputChanged}
+                  />
                 </FormGroup>
                 <FormGroup label={lang.tr('status')} labelFor="status">
                   <Select
