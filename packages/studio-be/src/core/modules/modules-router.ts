@@ -67,14 +67,5 @@ export class ModulesRouter extends CustomRouter {
         res.send(_.merge({}, moduleTranslations, botTranslations))
       })
     )
-
-    this.router.get(
-      '/dialogConditions',
-      this.checkTokenHeader,
-      this.asyncMiddleware(async (req, res) => {
-        const conditions = await this.moduleLoader.getDialogConditions()
-        res.send(conditions)
-      })
-    )
   }
 }

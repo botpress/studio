@@ -1,5 +1,5 @@
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
-import { DecisionTriggerCondition, Flow, FormData } from 'botpress/sdk'
+import { Flow, FormData } from 'botpress/sdk'
 import { contextMenu, lang, sharedStyle, ShortcutLabel, toast, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import React, { FC } from 'react'
@@ -25,7 +25,6 @@ export interface BlockProps {
   deleteSelectedElements: () => void
   copySelectedElement: (nodeId: string) => void
   editNodeItem: (node: BlockModel, index: number) => void
-  editTriggers: (node: BlockModel) => void
   disconnectNode: (node: BlockModel) => void
   selectedNodeItem: () => { node: BlockModel; index: number }
   switchFlowNode: (id: string) => void
@@ -42,12 +41,9 @@ export interface BlockProps {
 const defaultLabels = {
   action: 'studio.flow.node.chatbotExecutes',
   execute: 'studio.flow.node.chatbotExecutes',
-  failure: 'studio.flow.node.workflowFails',
   router: 'if',
   listen: 'listen',
-  say_something: 'studio.flow.node.chatbotSays',
-  success: 'studio.flow.node.workflowSucceeds',
-  trigger: 'studio.flow.node.triggeredBy'
+  say_something: 'studio.flow.node.chatbotSays'
 }
 
 const BlockWidget: FC<BlockProps> = ({
@@ -64,7 +60,6 @@ const BlockWidget: FC<BlockProps> = ({
   getExpandedNodes,
   setExpandedNodes,
   getDebugInfo,
-  editTriggers,
   disconnectNode,
   getSkills
 }) => {
@@ -106,7 +101,6 @@ const BlockWidget: FC<BlockProps> = ({
           onClick={() => copySelectedElement(node.id)}
         />
         <MenuDivider />
-        {nodeType === 'trigger' && <MenuItem icon="edit" text={lang.tr('edit')} onClick={() => editTriggers(node)} />}
         <MenuItem
           icon="star"
           text={lang.tr('studio.flow.setAsStart')}
@@ -133,10 +127,8 @@ const BlockWidget: FC<BlockProps> = ({
     )
   }
 
-  const inputPortInHeader = !['trigger'].includes(nodeType)
-  const outPortInHeader = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
-  const canCollapse = !['failure', 'router', 'success', 'listen', 'standard', 'skill-call'].includes(nodeType)
-  const hasContextMenu = !['failure', 'success'].includes(nodeType)
+  const outPortInHeader = !['router', 'standard', 'skill-call'].includes(nodeType)
+  const canCollapse = !['router', 'listen', 'standard', 'skill-call'].includes(nodeType)
 
   const debugInfo = getDebugInfo(node.name)
 
@@ -200,12 +192,12 @@ const BlockWidget: FC<BlockProps> = ({
         className={style[nodeType]}
         setExpanded={canCollapse && handleExpanded}
         expanded={canCollapse && expanded}
-        handleContextMenu={!node.isReadOnly && hasContextMenu && handleContextMenu}
+        handleContextMenu={!node.isReadOnly && handleContextMenu}
         defaultLabel={label}
         debugInfo={debugInfo}
         nodeType={nodeType}
       >
-        <StandardPortWidget hidden={!inputPortInHeader} name="in" node={node} className={style.in} />
+        <StandardPortWidget name="in" node={node} className={style.in} />
         {outPortInHeader && <StandardPortWidget name="out0" node={node} className={style.out} />}
       </NodeHeader>
       {(!canCollapse || expanded) && renderContents()}
@@ -214,7 +206,6 @@ const BlockWidget: FC<BlockProps> = ({
 }
 
 export class BlockModel extends BaseNodeModel {
-  public conditions: DecisionTriggerCondition[] = []
   public activeWorkflow: boolean
   public isNew: boolean
   public isReadOnly: boolean
@@ -234,7 +225,6 @@ export class BlockModel extends BaseNodeModel {
     content,
     onEnter = [],
     next = [],
-    conditions = [],
     activeWorkflow = false,
     isNew = false,
     isStartNode = false,
@@ -253,7 +243,6 @@ export class BlockModel extends BaseNodeModel {
       skill,
       isStartNode,
       isHighlighted,
-      conditions,
       activeWorkflow,
       isNew,
       isReadOnly
@@ -263,10 +252,9 @@ export class BlockModel extends BaseNodeModel {
     this.y = this.oldY = y
   }
 
-  setData({ conditions = [], activeWorkflow = false, isNew = false, ...data }) {
+  setData({ activeWorkflow = false, isNew = false, ...data }) {
     super.setData(data as any)
 
-    this.conditions = conditions
     this.activeWorkflow = activeWorkflow
     this.isNew = isNew
     this.nodeType = data.type || 'standard'
@@ -290,7 +278,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
   private getDebugInfo: BlockProps['getDebugInfo']
   private getFlows: BlockProps['getFlows']
   private updateFlowNode: BlockProps['updateFlowNode']
-  private editTriggers: BlockProps['editTriggers']
   private disconnectNode: BlockProps['disconnectNode']
   private updateFlow: BlockProps['updateFlow']
   private getSkills: BlockProps['getSkills']
@@ -310,7 +297,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
     this.getDebugInfo = methods.getDebugInfo
     this.getFlows = methods.getFlows
     this.updateFlowNode = methods.updateFlowNode
-    this.editTriggers = methods.editTriggers
     this.disconnectNode = methods.disconnectNode
     this.updateFlow = methods.updateFlow
     this.getSkills = methods.getSkills
@@ -332,7 +318,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
         setExpandedNodes={this.setExpandedNodes}
         getDebugInfo={this.getDebugInfo}
         getFlows={this.getFlows}
-        editTriggers={this.editTriggers}
         disconnectNode={this.disconnectNode}
         updateFlow={this.updateFlow}
         getSkills={this.getSkills}

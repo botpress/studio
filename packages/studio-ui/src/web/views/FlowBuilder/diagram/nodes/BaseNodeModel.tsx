@@ -35,8 +35,7 @@ export class BaseNodeModel extends NodeModel {
     const inNodeType = isStartNode ? 'start' : 'normal'
     const waitOnReceive = !_.isNil(onReceive)
 
-    if (!this.ports['in'] && this.type !== 'trigger') {
-      // TODO: refactor this for Trigger
+    if (!this.ports['in']) {
       this.addPort(new StandardIncomingPortModel('in', inNodeType))
     }
 
