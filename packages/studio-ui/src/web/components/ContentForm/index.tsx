@@ -93,9 +93,17 @@ const widgets: Widgets = {
   CheckboxWidget: CustomCheckboxWidget
 }
 
-// TODO: Remove this once the location content-type is supported on multiple channels
+// TODO: Remove this once audio, video, file and location content-types are
+// support on roughly half the channels
 const CustomDescriptionField = ({ description, id, formContext }: FieldProps) => {
-  if (id === 'root__description' && formContext.subtype === 'location') {
+  const mapping = {
+    audio: ['channel-web', 'channel-vonage'],
+    video: ['channel-web', 'channel-vonage'],
+    file: ['channel-web', 'channel-vonage'],
+    location: ['channel-vonage']
+  }
+
+  if (id === 'root__description' && Object.keys(mapping).includes(formContext.subtype)) {
     const capitalize = (str: string) => {
       return str.charAt(0).toUpperCase() + str.slice(1)
     }
@@ -105,7 +113,8 @@ const CustomDescriptionField = ({ description, id, formContext }: FieldProps) =>
         <div>
           <span className={localStyle.warning}>
             <Icon icon="warning-sign" />
-            &nbsp;{capitalize(formContext.subtype)} content-type is currently only supported by channel-vonage
+            &nbsp;Please note that {capitalize(formContext.subtype)} content-type is only supported in{' '}
+            {mapping[formContext.subtype].join(' and ')}
           </span>
         </div>
         <br />
