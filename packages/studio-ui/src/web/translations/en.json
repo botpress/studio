@@ -320,7 +320,8 @@
       "usageModal": {
         "contentUsage": "Content Usage",
         "node": "Node"
-      }
+      },
+      "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
     },
     "flow": {
       "addNode": "Add Node",
