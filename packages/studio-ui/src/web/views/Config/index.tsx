@@ -111,6 +111,7 @@ class ConfigView extends Component<Props, State> {
   async componentDidMount() {
     const languages = await this.fetchLanguages()
     const licensing = await this.fetchLicensing()
+
     const statuses = statusList.map<SelectItem>(x => ({
       label: lang.tr(`status.${x}`),
       value: x
@@ -150,7 +151,7 @@ class ConfigView extends Component<Props, State> {
   async fetchLanguages(): Promise<SelectItem[]> {
     const { data } = await axios.get('admin/management/languages/available', axiosConfig)
     return _.sortBy(data.languages, 'name').map(language => ({
-      label: lang.tr(`language.${language.name.toLowerCase()}`),
+      label: lang.tr(`isoLangs.${language.code}.name`),
       value: language.code
     }))
   }
