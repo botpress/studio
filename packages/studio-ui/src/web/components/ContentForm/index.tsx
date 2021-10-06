@@ -104,17 +104,15 @@ const CustomDescriptionField = ({ description, id, formContext }: FieldProps) =>
   }
 
   if (id === 'root__description' && Object.keys(mapping).includes(formContext.subtype)) {
-    const capitalize = (str: string) => {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
-
     return (
       <div id={id} style={{ lineHeight: 'normal' }}>
         <div>
           <span className={localStyle.warning}>
             <Icon icon="warning-sign" />
-            &nbsp;Please note that {capitalize(formContext.subtype)} content-type is only supported in{' '}
-            {mapping[formContext.subtype].join(' and ')}
+            &nbsp;{' '}
+            {lang.tr('studio.content.contentTypeWarning', {
+              channels: mapping[formContext.subtype].join(', ')
+            })}
           </span>
         </div>
         <br />

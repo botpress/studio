@@ -316,7 +316,8 @@
       "usageModal": {
         "contentUsage": "Utilisation du contenu",
         "node": "Node"
-      }
+      },
+      "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
       "addNode": "Ajouter une node",
