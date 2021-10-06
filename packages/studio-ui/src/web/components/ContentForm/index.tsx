@@ -93,9 +93,9 @@ const widgets: Widgets = {
   CheckboxWidget: CustomCheckboxWidget
 }
 
-// TODO: Remove this once audio and video content-types are support on multiple channels
+// TODO: Remove this once the location content-type is supported on multiple channels
 const CustomDescriptionField = ({ description, id, formContext }: FieldProps) => {
-  if (id === 'root__description' && ['audio', 'video', 'location', 'file'].includes(formContext.subtype)) {
+  if (id === 'root__description' && formContext.subtype === 'location') {
     const capitalize = (str: string) => {
       return str.charAt(0).toUpperCase() + str.slice(1)
     }
