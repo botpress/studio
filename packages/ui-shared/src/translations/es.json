@@ -140,6 +140,10 @@
     "es": {
       "name": "Español",
       "nativeName": "Español"
+    },
+    "zh": {
+      "name": "Chinese",
+      "nativeName": "中文"
     }
   },
   "label": "Etiqueta",
