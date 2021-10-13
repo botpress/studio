@@ -46,6 +46,7 @@ const DEFAULT_BOT_CONFIGS = {
 const BotCreationSchema = Joi.object().keys({
   id: Joi.string()
     .regex(BOTID_REGEX)
+    .max(50)
     .required(),
   name: Joi.string()
     .max(50)
