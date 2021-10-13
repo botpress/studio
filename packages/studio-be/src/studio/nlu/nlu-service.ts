@@ -46,19 +46,12 @@ export class NLUService {
 
   public async initialize() {
     if (!process.NLU_ENDPOINT) {
-      // TODO: make this optional and make sure studio still runs without NLU-Server
       throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
     }
 
     const { nlu: nluConfig } = await this.configProvider.getBotpressConfig()
-    const { queueTrainingOnBotMount, legacyElection } = nluConfig
+    const { queueTrainingOnBotMount } = nluConfig
     const trainingEnabled = !yn(process.env.BP_NLU_DISABLE_TRAINING)
-
-    if (legacyElection) {
-      this.logger.warn(
-        'You are still using legacy election which is deprecated. Set { legacyElection: false } in your global nlu config to use the new election pipeline.'
-      )
-    }
 
     const nluClient = new NLUClient({
       baseURL: process.NLU_ENDPOINT
