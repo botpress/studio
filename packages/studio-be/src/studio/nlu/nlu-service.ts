@@ -108,6 +108,13 @@ export class NLUService {
     return this.app.unmountBot(botId)
   }
 
+  public async getLanguages(): Promise<string[]> {
+    if (!this.app) {
+      throw new Error("Can't get languages as app is not initialized yet.")
+    }
+    return this.app.getLanguages()
+  }
+
   private getWebsocket = () => {
     return async (ts: TrainingSession) => {
       const { botId } = ts

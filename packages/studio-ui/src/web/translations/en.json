@@ -353,18 +353,18 @@
     "search": "Search question"
   },
   "language": {
-    "arabic": "Arabic",
-    "dutch": "Dutch",
-    "english": "English",
-    "french": "French",
-    "german": "German",
-    "hebrew": "Hebrew",
-    "italian": "Italian",
-    "japanese": "Japanese",
-    "polish": "Polish",
-    "portuguese": "Portugese",
-    "russian": "Russian",
-    "spanish": "Spanish"
+    "ar": "Arabic",
+    "nl": "Dutch",
+    "en": "English",
+    "fr": "French",
+    "de": "German",
+    "he": "Hebrew",
+    "it": "Italian",
+    "ja": "Japanese",
+    "pl": "Polish",
+    "pt": "Portugese",
+    "ru": "Russian",
+    "es": "Spanish"
   },
   "status": {
     "disabled": "Unmounted",

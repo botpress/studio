@@ -109,18 +109,19 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const languages = await this.fetchLanguages()
+    if (!this.props.bot) {
+      this.props.fetchBotInformation()
+    }
+
+    const bot = this.props.bot
+
+    const languages = await this.fetchLanguages(bot.id)
     const licensing = await this.fetchLicensing()
     const statuses = statusList.map<SelectItem>(x => ({
       label: lang.tr(`status.${x}`),
       value: x
     }))
 
-    if (!this.props.bot) {
-      this.props.fetchBotInformation()
-    }
-
-    const bot = this.props.bot
     const status = bot.disabled ? 'disabled' : bot.private ? 'private' : 'public'
 
     this.initialFormState = {
@@ -147,11 +148,12 @@ class ConfigView extends Component<Props, State> {
     })
   }
 
-  async fetchLanguages(): Promise<SelectItem[]> {
-    const { data } = await axios.get('admin/management/languages/available', axiosConfig)
-    return _.sortBy(data.languages, 'name').map(language => ({
-      label: lang.tr(`language.${language.name.toLowerCase()}`),
-      value: language.code
+  async fetchLanguages(botId: string): Promise<SelectItem[]> {
+    const languagePath = `studio/${botId}/nlu/languages`
+    const { data: languages } = await axios.get(languagePath, axiosConfig)
+    return (languages as string[]).map(language => ({
+      label: lang.tr(`language.${language.toLowerCase()}`),
+      value: language
     }))
   }
 
