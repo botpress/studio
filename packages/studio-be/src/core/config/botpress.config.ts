@@ -256,8 +256,7 @@ export interface BotpressConfig {
      * @optional
      */
     queueTrainingOnBotMount?: boolean
-
-    nluServer: NLUServerConfig
+    nluServer?: Partial<NLUServerConfig>
   }
 }
 
