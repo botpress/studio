@@ -1,3 +1,12 @@
+## [0.0.40](https://github.com/botpress/studio/compare/v0.0.39...v0.0.40) (2021-10-18)
+
+
+### Bug Fixes
+
+* always display search bar on qna ([#136](https://github.com/botpress/studio/issues/136)) ([0220da2](https://github.com/botpress/studio/commit/0220da24965daa3b1e35a4599e7d14e82229a4dc))
+
+
+
 ## [0.0.39](https://github.com/botpress/studio/compare/v0.0.28...v0.0.39) (2021-10-07)
 
 
