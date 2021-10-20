@@ -275,14 +275,8 @@ export class BotService {
       throw new InvalidOperationError(`An error occurred while creating the bot: ${error.message}`)
     }
 
-    const mergedConfigs = await this._createBotFromTemplate(bot, botTemplate)
-    if (mergedConfigs) {
-      if (!mergedConfigs.disabled) {
-        await coreActions.onBotCreation(bot.id)
-      }
-
-      this._invalidateBotIds()
-    }
+    await this._createBotFromTemplate(bot, botTemplate)
+    this._invalidateBotIds()
   }
 
   private addChecksum = (fileContent: string) => {
