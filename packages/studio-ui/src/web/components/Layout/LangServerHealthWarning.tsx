@@ -6,7 +6,7 @@ import React, { useEffect } from 'react'
 export default () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    axios.get(`${window.BOT_API_PATH}/mod/nlu/health`).then(({ data }) => {
+    axios.get(`${window.STUDIO_API_PATH}/nlu/health`).then(({ data }) => {
       if (data.isEnabled) {
         return
       }

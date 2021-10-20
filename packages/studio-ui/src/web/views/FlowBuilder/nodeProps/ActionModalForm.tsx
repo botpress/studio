@@ -20,7 +20,7 @@ interface Action {
   metadata: LocalActionDefinition
 }
 interface Item {
-  type: string
+  type: ActionType
   functionName?: string
   message?: string
   parameters: Parameter
@@ -35,11 +35,12 @@ interface OwnProps {
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
-
 type Props = StateProps & OwnProps
 
+type ActionType = 'code' | 'message'
+
 interface State {
-  actionType: string
+  actionType: ActionType
   avActions: Action[]
   actionMetadata?: LocalActionDefinition
   functionInputValue?: Action
@@ -108,7 +109,7 @@ class ActionModalForm extends Component<Props, State> {
     })
   }
 
-  onChangeType = (type: string) => () => {
+  onChangeType = (type: ActionType) => () => {
     this.setState({ actionType: type })
   }
 
@@ -218,21 +219,32 @@ class ActionModalForm extends Component<Props, State> {
 
   onSubmit = () => {
     this.resetForm()
-    this.props.onSubmit &&
-      this.props.onSubmit({
-        type: this.state.actionType,
-        functionName: this.state.functionInputValue?.value,
-        message: this.state.messageValue,
-        parameters: this.state.functionParams
-      })
+    this.props.onSubmit?.({
+      type: this.state.actionType,
+      functionName: this.state.functionInputValue?.value,
+      message: this.state.messageValue,
+      parameters: this.state.functionParams
+    })
   }
 
   onClose = () => {
     this.resetForm()
-    this.props.onClose && this.props.onClose()
+    this.props.onClose?.()
+  }
+
+  isValid = () => {
+    switch (this.state.actionType) {
+      case 'code':
+        return this.state.functionInputValue?.value.length
+      case 'message':
+        return this.state.messageValue.length
+      default:
+        return false
+    }
   }
 
   render() {
+    const formId = 'action-modal-form'
     return (
       <Dialog.Wrapper
         size="md"
@@ -240,6 +252,7 @@ class ActionModalForm extends Component<Props, State> {
         isOpen={this.props.show}
         onClose={this.onClose}
         onSubmit={this.onSubmit}
+        id={formId}
       >
         <Dialog.Body>
           {!this.props.layoutv2 ? (
@@ -260,10 +273,10 @@ class ActionModalForm extends Component<Props, State> {
           )}
         </Dialog.Body>
         <Dialog.Footer>
-          <Button id="btn-cancel-action" onClick={this.onClose}>
+          <Button id="btn-cancel-action" onClick={this.onClose} form={formId}>
             {lang.tr('cancel')}
           </Button>
-          <Button id="btn-submit-action" type="submit" bsStyle="primary">
+          <Button id="btn-submit-action" type="submit" bsStyle="primary" form={formId} disabled={!this.isValid()}>
             {this.state.isEdit
               ? lang.tr('studio.flow.node.finishUpdateAction')
               : lang.tr('studio.flow.node.finishAddAction')}{' '}

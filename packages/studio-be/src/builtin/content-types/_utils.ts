@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import path from 'path'
 import url from 'url'
 
@@ -20,10 +19,19 @@ export default {
     }
   },
   extractPayload: (type, data) => {
-    return {
+    const payload = {
       type,
-      ..._.pickBy(_.omit(data, 'event', 'temp', 'user', 'session', 'bot', 'BOT_URL'), v => v !== undefined)
+      ...data
     }
+
+    delete payload.event
+    delete payload.temp
+    delete payload.user
+    delete payload.session
+    delete payload.bot
+    delete payload.BOT_URL
+
+    return payload
   },
   extractFileName: file => {
     let fileName = path.basename(file)

@@ -5,6 +5,9 @@
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "private": true,
+  "engines": {
+    "node": "12.18.1"
+  },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
     "build": "yarn clean && yarn tsc",
@@ -14,6 +17,7 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
     "@botpress/native-extensions": "0.0.1",
+    "@botpress/nlu-client": "1.0.0-rc.2",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "bluebird-global": "^1.0.1",
@@ -43,6 +47,7 @@
     "jsonlint-mod": "^1.7.6",
     "jsonwebtoken": "^8.5.1",
     "knex": "0.20.1",
+    "lock": "^1.1.0",
     "lodash": "^4.17.21",
     "lodash-decorators": "^6.0.1",
     "moment": "^2.29.1",
@@ -84,7 +89,7 @@
     "@types/jest-environment-puppeteer": "^4.3.1",
     "@types/joi": "^13.4.5",
     "@types/lodash": "4.14.123",
-    "@types/node": "^12.13.1",
+    "@types/node": "^12.18.1",
     "@types/proper-lockfile": "^4.1.2",
     "@types/verror": "^1.10.3"
   }

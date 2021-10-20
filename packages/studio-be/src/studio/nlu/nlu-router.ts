@@ -1,10 +1,12 @@
 import * as sdk from 'botpress/sdk'
 import { EntityDefCreateSchema, IntentDefCreateSchema } from 'common/validation'
+import { Response as ExpressResponse } from 'express'
 import { validate } from 'joi'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import yn from 'yn'
+import { BotDoesntSpeakLanguageError, BotNotMountedError } from './application/errors'
 
 const removeSlotsFromUtterances = (utterances: { [key: string]: any }, slotNames: string[]) =>
   _.fromPairs(
@@ -271,5 +273,94 @@ export class NLURouter extends CustomStudioRouter {
         }
       })
     )
+
+    /**
+     * #######################################
+     * ### Trainings / Models :  Lifecycle ###
+     * #######################################
+     */
+    this.router.get(
+      '/health',
+      this.asyncMiddleware(async (req, res) => {
+        const health = await this.nluService.app?.getHealth()
+        res.send(health)
+      })
+    )
+
+    this.router.get(
+      '/training/:language',
+      this.needPermissions('read', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { language: lang, botId } = req.params
+
+        try {
+          const state = await this.nluService.app?.getBot(botId).getTraining(lang)
+          const ts = state && this.nluService.mapTrainSession({ botId, language: lang, ...state })
+          res.send(ts)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
+        }
+      })
+    )
+
+    this.router.post(
+      ['/predict', '/predict/:lang'],
+      this.asyncMiddleware(async (req, res) => {
+        return res.status(410).send('Ressource gone')
+      })
+    )
+
+    this.router.post(
+      '/train/:lang',
+      this.needPermissions('write', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { botId, lang } = req.params
+        try {
+          const disableTraining = yn(process.env.BP_NLU_DISABLE_TRAINING)
+
+          // to return as fast as possible
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          if (!disableTraining) {
+            await this.nluService.app?.queueTraining(botId, lang)
+          }
+          res.sendStatus(200)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
+        }
+      })
+    )
+
+    this.router.post(
+      '/train/:lang/delete',
+      this.needPermissions('write', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { botId, lang } = req.params
+        try {
+          await this.nluService.app?.getBot(botId).cancelTraining(lang)
+          res.sendStatus(200)
+        } catch (error) {
+          return this._mapError({ botId, lang, error }, res)
+        }
+      })
+    )
+  }
+
+  private _mapError = (err: { botId: string; lang: string; error: Error }, res: ExpressResponse) => {
+    const { error, botId, lang } = err
+
+    if (error instanceof BotNotMountedError) {
+      return res.status(404).send(`Bot "${botId}" doesn't exist`)
+    }
+
+    if (error instanceof BotDoesntSpeakLanguageError) {
+      return res.status(422).send(`Language "${lang}" is either not supported by bot or by language server`)
+    }
+
+    const msg = 'An unexpected error occured.'
+    this.logger
+      .forBot(botId)
+      .attachError(error)
+      .error(msg)
+    return res.status(500).send(msg)
   }
 }

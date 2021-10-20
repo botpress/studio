@@ -136,7 +136,7 @@ const FlowBuilder = (props: Props) => {
     },
     save: e => {
       e.preventDefault()
-      toastInfo(lang.tr('studio.nowSaveAuto'), Timeout.LONG)
+      toastInfo(lang.tr('studio.flow.nowSaveAuto'), Timeout.LONG)
     },
     delete: e => {
       if (!utils.isInputFocused()) {
@@ -199,9 +199,7 @@ const FlowBuilder = (props: Props) => {
             }}
           />
         </div>
-        {!window.USE_ONEFLOW &&
-        <SidePanelInspector />
-        }
+        {!window.USE_ONEFLOW && <SidePanelInspector />}
       </div>
 
       <SkillsBuilder />

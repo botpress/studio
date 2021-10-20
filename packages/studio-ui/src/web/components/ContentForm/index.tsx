@@ -23,11 +23,13 @@ import UploadWidget from './UploadWidget'
 interface Props {
   contentLang: string
   onChange: any
+  onSubmit: any
   formData: FormData
   customKey: string
   schema: Schema
   uiSchema: UiSchema
   defaultLanguage: string
+  id: string
 }
 
 const CustomBaseInput = (props: WidgetProps) => {

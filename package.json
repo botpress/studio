@@ -1,8 +1,11 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.37",
+  "version": "0.0.38",
   "description": "Create your virtual assistants",
   "main": "index.js",
+  "engines": {
+    "node": "12.18.1"
+  },
   "bin": "./packages/studio-be/out/index.js",
   "repository": "https://github.com/botpress/studio.git",
   "author": "Botpress, Inc.",
@@ -28,6 +31,7 @@
     "outputPath": "./bin"
   },
   "scripts": {
+    "postinstall": "yarn cmd create:env.debug --location ./.env.debug",
     "cmd": "yarn run gulp",
     "build": "yarn cmd build",
     "package": "yarn cmd package:studio",
@@ -38,7 +42,7 @@
     "eslint": "cross-env eslint packages/ --ext .ts,.tsx"
   },
   "devDependencies": {
-    "@types/node": "^12.13.1",
+    "@types/node": "^12.18.1",
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "conventional-changelog": "^3.1.24",
@@ -52,6 +56,7 @@
     "gulp-cli": "^2.3.0",
     "gulp-file": "^0.4.0",
     "gulp-rimraf": "^1.0.0",
+    "minimist": "^1.2.5",
     "pkg": "^4.3.7",
     "prettier": "^1.19.1",
     "semver": "^7.3.5",

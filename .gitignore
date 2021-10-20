@@ -9,3 +9,4 @@ metadata.json
 *.node.bak
 .idea/
 .idea
+.env.debug

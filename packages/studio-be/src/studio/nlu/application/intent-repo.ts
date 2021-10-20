@@ -4,11 +4,11 @@ import { GhostService } from 'core/bpfs'
 import { sanitizeFileName } from 'core/misc/utils'
 import _ from 'lodash'
 
-import { NLUService } from './nlu-service'
+import { NLUService } from '../nlu-service'
 
 const INTENTS_DIR = './intents'
 
-export class IntentService {
+export class IntentRepository {
   constructor(private ghostService: GhostService, private nluService: NLUService) {}
 
   private async intentExists(botId: string, intentName: string): Promise<boolean> {

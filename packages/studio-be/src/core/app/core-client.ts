@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
+import { NLUProgressEvent } from 'studio/nlu'
 
 const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
 
@@ -38,10 +39,10 @@ export const coreActions = {
 
     await tryRequest()
   },
-  checkForDirtyModels: async (botId: string) => {
-    await coreClient?.post('/checkForDirtyModels', { botId })
-  },
   syncBotLibs: async (botId: string) => {
     await coreClient?.post('/syncBotLibs', { botId, serverId: process.env.SERVER_ID })
+  },
+  notifyTrainUpdate: async (ts: NLUProgressEvent) => {
+    return coreClient?.post('/notifyTrainUpdate', ts)
   }
 }

@@ -48,7 +48,7 @@ const BASIC_MENU_ITEMS = [
     id: 'libraries',
     name: lang.tr('libraries.fullName'),
     path: '/libraries',
-    rule: { res: 'bot.nlu', op: 'read' },
+    rule: { res: 'module.code-editor', op: 'read' },
     icon: 'book'
   },
   {
