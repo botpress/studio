@@ -54,7 +54,7 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
       updateLocalItem(index, localItems[index] + '\n')
     }
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
       e.preventDefault()
       addItem()
     }
