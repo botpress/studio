@@ -5,6 +5,8 @@ import ReactGA from 'react-ga'
 import { Router, Switch } from 'react-router-dom'
 import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
+import injectSegment from '~/util/injectSegment'
+import { connect } from 'react-redux'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
@@ -33,8 +35,10 @@ const logPageView = () => {
   ReactGA.pageview(page)
 }
 
-export default () => {
+const RoutesRouter = (props) => {
   if (window.SEND_USAGE_STATS) {
+    injectSegment(props.user)
+
     ReactGA.initialize(window.ANALYTICS_ID, {
       gaOptions: {
         userId: window.UUID
@@ -51,3 +55,12 @@ export default () => {
     </Router>
   )
 }
+
+// export default RoutesRouter
+const mapStateToProps = state => ({
+  user:state.user
+})
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoutesRouter)

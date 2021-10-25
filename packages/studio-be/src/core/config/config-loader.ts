@@ -10,6 +10,7 @@ import { inject, injectable } from 'inversify'
 import defaultJsonBuilder from 'json-schema-defaults'
 import _, { PartialDeep } from 'lodash'
 import path from 'path'
+import crypto from 'crypto'
 
 import { BotpressConfig } from './botpress.config'
 import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './config-utils'
@@ -159,5 +160,22 @@ export class ConfigProvider {
       favicon: favicon || '',
       customCss: customCss || ''
     }
+  }
+
+  public async getSafeLicenseHash() {
+    const config = await this.getBotpressConfig()
+
+    const { licenseKey } = config.pro
+
+    // just for peace of mind, let's use the 500 first characters only
+    const firstFiveHundred = licenseKey.slice(0, 500)
+    const saltedString = 'botpressLicense' + firstFiveHundred
+
+    const safeHash = crypto
+      .createHash('sha512')
+      .update(saltedString)
+      .digest('hex')
+
+    return safeHash
   }
 }

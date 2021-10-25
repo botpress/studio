@@ -180,10 +180,13 @@ export class StudioRouter extends CustomRouter {
         if (!bot) {
           return res.sendStatus(404)
         }
-
+        
         const branding = await this.configProvider.getBrandingConfig('studio')
         const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
         const commonEnv = await this.httpServer.getCommonEnv()
+
+        // This is for grouping users under anonymous account for analytics.
+        const licenseSafeHash = await this.configProvider.getSafeLicenseHash()
 
         const totalEnv = `
           (function(window) {
@@ -204,6 +207,7 @@ export class StudioRouter extends CustomRouter {
               window.USE_ONEFLOW = ${!!bot['oneflow']};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
+              window.SAFE_LICENSE_HASH = "${licenseSafeHash}";
             })(typeof window != 'undefined' ? window : {})
           `
 
