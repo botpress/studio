@@ -14,7 +14,7 @@ import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
 
-import { assertValidFilename, buildRestrictedProcessVars, getFileLocation } from './utils'
+import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
 
 export const FILENAME_REGEX = /^[0-9a-zA-Z_\-.]+$/
 
@@ -29,13 +29,13 @@ export class Editor {
     return this
   }
 
-  async getAllFiles(permissions: FilePermissions): Promise<FilesDS> {
+  async getAllFiles(permissions: FilePermissions, listBuiltin?: boolean): Promise<FilesDS> {
     const files: FilesDS = {}
 
     await Promise.mapSeries(Object.keys(permissions), async type => {
       const userPermissions = permissions[type]
       if (userPermissions.read) {
-        files[type] = await this.loadFiles(userPermissions.type, this._botId)
+        files[type] = await this.loadFiles(userPermissions.type, this._botId, listBuiltin)
       }
     })
 
@@ -75,7 +75,8 @@ export class Editor {
       fileExt = def.isJSON ? '*.json' : '*.js'
     }
 
-    const excluded = [...(dirListingExcluded ?? [])]
+    const baseExcluded = listBuiltin ? [] : getBuiltinExclusion()
+    const excluded = [...baseExcluded, ...(dirListingExcluded ?? [])]
 
     const files = def.filenames
       ? def.filenames
@@ -122,8 +123,8 @@ export class Editor {
       const typings = fs.readFileSync(filePath, 'utf-8')
 
       fileContent = typings.toString()
-      if (name === 'botpress.d.ts') {
-        fileContent = fileContent.replace("'botpress/sdk'", 'sdk')
+      if (name === 'botpress.d.ts' || name === 'botpress.runtime.d.ts') {
+        fileContent = fileContent.replace("'botpress/sdk'", 'sdk').replace("'botpress/runtime-sdk'", 'sdk')
       }
     } catch (err) {
       this.logger.warn(`Couldn't load file ${filePath} `)
@@ -146,6 +147,7 @@ export class Editor {
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },
       { name: 'botpress.d.ts', location: path.join(__dirname, '/../../sdk/botpress.d.txt') },
+      { name: 'botpress.runtime.d.ts', location: path.join(__dirname, '/../../sdk/botpress.runtime.d.txt') },
       // Required so array.includes() can be used without displaying an error
       { name: 'es6include.d.ts', location: path.join(__dirname, '/../../typings/es6include.txt') }
     ]

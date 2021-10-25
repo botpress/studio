@@ -47,16 +47,13 @@ export class CodeEditorRouter extends CustomStudioRouter {
       '/files',
       loadPermsMw,
       this.asyncMiddleware(async (req: any, res) => {
-        // BPRequest & RequestWithPerms
         if (!req.params.botId || req.params.botId === ALL_BOTS) {
-          return
+          return res.send([])
         }
 
         const includeBuiltin = req.query.includeBuiltin === 'true'
 
-        let permissions = req.permissions
-
-        res.send(await editor.forBot(req.params.botId).getAllFiles(permissions))
+        res.send(await editor.forBot(req.params.botId).getAllFiles(req.permissions, includeBuiltin))
       })
     )
 
@@ -155,8 +152,8 @@ export class CodeEditorRouter extends CustomStudioRouter {
 
     router.get(
       '/typings',
-      this.asyncMiddleware(async (_req, res) => {
-        res.send(await editor.loadTypings())
+      this.asyncMiddleware(async (req, res) => {
+        res.send(await editor.forBot(req.params.botId).loadTypings())
       })
     )
   }

@@ -217,6 +217,7 @@ export class StudioRouter extends CustomRouter {
               window.USE_ONEFLOW = ${!!bot['oneflow']};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
+              window.IS_CLOUD_BOT = ${!bot.standalone}
             })(typeof window != 'undefined' ? window : {})
           `
 

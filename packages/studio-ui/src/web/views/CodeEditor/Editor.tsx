@@ -1,6 +1,7 @@
 import { Icon, Position, Tooltip, AnchorButton } from '@blueprintjs/core'
 import { confirmDialog, lang, toast } from 'botpress/shared'
 import cx from 'classnames'
+import { EditableFile } from 'common/code-editor'
 import _ from 'lodash'
 import { observe } from 'mobx'
 import { inject, observer } from 'mobx-react'
@@ -8,14 +9,13 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import babylon from 'prettier/parser-babylon'
 import prettier from 'prettier/standalone'
 import React from 'react'
-import { EditableFile } from 'common/code-editor'
 
 import SplashScreen from './components/SplashScreen'
 import { RootStore, StoreDef } from './store'
 import CodeEditorApi from './store/api'
 import { EditorStore } from './store/editor'
 import style from './style.scss'
-import { wrapper } from './utils/wrapper'
+import { getContentZone, wrapper } from './utils/wrapper'
 
 export type FileWithMetadata = EditableFile & {
   uri: monaco.Uri
@@ -34,11 +34,17 @@ class Editor extends React.Component<Props> {
     this.setupEditor()
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.loadTypings()
+
     observe(this.props.editor, 'currentTab', this.tabChanged, true)
   }
 
   componentWillUnmount() {
-    this.editor && this.editor.dispose()
+    this.editor?.dispose()
+  }
+
+  getEditableZone() {
+    const lines = this.editor.getValue().split('\n')
+    return getContentZone(lines)
   }
 
   setupEditor() {
@@ -51,7 +57,7 @@ class Editor extends React.Component<Props> {
     })
 
     monaco.languages.registerDocumentFormattingEditProvider('typescript', {
-      async provideDocumentFormattingEdits(model, options, token) {
+      async provideDocumentFormattingEdits(model, _options, _token) {
         const text = prettier.format(model.getValue(), {
           parser: 'babel',
           plugins: [babylon],
@@ -73,13 +79,62 @@ class Editor extends React.Component<Props> {
     })
 
     this.editor = monaco.editor.create(this.editorContainer, { theme: 'vs-light', automaticLayout: true })
+
+    const preventBackspace = this.editor.createContextKey('preventBackspace', false)
+    const preventDelete = this.editor.createContextKey('preventDelete', false)
+
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => this.saveChanges())
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_N, this.props.createNewAction)
     this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KEY_P, () =>
       this.editor.trigger('', 'editor.action.quickCommand', '')
     )
 
-    this.editor.onDidChangeModelContent(this.handleContentChanged)
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_A, () => {
+      const { startLine, endLine } = this.getEditableZone()
+      this.editor.setSelection({ startLineNumber: startLine, startColumn: 0, endLineNumber: endLine, endColumn: 1000 })
+    })
+
+    this.editor.addCommand(monaco.KeyCode.Delete, () => {}, 'preventDelete')
+    this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Delete, () => {}, 'preventDelete')
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Delete, () => {}, 'preventDelete')
+
+    this.editor.addCommand(monaco.KeyCode.Backspace, () => {}, 'preventBackspace')
+    this.editor.addCommand(monaco.KeyMod.Shift | monaco.KeyCode.Backspace, () => {}, 'preventBackspace')
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Backspace, () => {}, 'preventBackspace')
+
+    this.editor.onDidPaste(({ range }) => {
+      const content = this.editor.getModel().getValueInRange(range)
+      const unwrapped = wrapper.remove(content, 'execute')
+
+      this.editor.executeEdits('paste', [{ range, text: unwrapped }])
+    })
+
+    const updateReadonlyZone = () => {
+      const { startLineNumber: lineNumber, startColumn: column } = this.editor.getSelection()
+      const lineLastColumn = this.editor.getModel().getLineMaxColumn(lineNumber)
+      const { startLine, endLine } = this.getEditableZone()
+
+      preventBackspace.set(lineNumber === startLine && column === 1)
+      preventDelete.set(lineNumber === endLine && column === lineLastColumn)
+    }
+
+    this.editor.onDidChangeCursorPosition(e => {
+      const { lineNumber } = e.position
+      const { startLine, endLine } = this.getEditableZone()
+
+      if (lineNumber < startLine) {
+        this.editor.setPosition({ lineNumber: startLine, column: 1 })
+        updateReadonlyZone()
+      } else if (lineNumber > endLine) {
+        this.editor.setPosition({ lineNumber: endLine, column: 1 })
+        updateReadonlyZone()
+      }
+    })
+
+    this.editor.onDidChangeModelContent(() => {
+      updateReadonlyZone()
+      this.handleContentChanged()
+    })
     this.editor.onDidChangeModelDecorations(this.handleDecorationChanged)
 
     this.props.store.editor.setMonacoEditor(this.editor)
@@ -90,8 +145,10 @@ class Editor extends React.Component<Props> {
     if (!file) {
       return
     }
+
     const { uri, readOnly, content, location } = file
     const fileType = location.endsWith('.json') ? 'json' : 'typescript'
+
     const model = monaco.editor.getModel(uri)
     if (!model) {
       this.editor.setModel(monaco.editor.createModel(wrapper.add(file, content), fileType, uri))
@@ -99,8 +156,12 @@ class Editor extends React.Component<Props> {
       this.editor.setModel(model)
       this.editor.restoreViewState(file.state)
     }
+
     this.editor.updateOptions({ readOnly: readOnly || !this.props.editor.canSaveFile })
     this.editor.focus()
+
+    const { startLine } = this.getEditableZone()
+    this.editor.setPosition(new monaco.Position(startLine, 1))
   }
 
   saveChanges = async (uri?: monaco.Uri) => {
@@ -137,6 +198,10 @@ class Editor extends React.Component<Props> {
   loadTypings = async () => {
     const typings = await this.props.fetchTypings()
 
+    if (window.IS_CLOUD_BOT && typings['botpress.runtime.d.ts']) {
+      delete typings['botpress.d.ts']
+    }
+
     this.setSchemas(typings)
 
     _.forEach(typings, (content, name) => {
@@ -148,7 +213,7 @@ class Editor extends React.Component<Props> {
 
   setSchemas = (typings: any) => {
     const schemas = _.reduce(
-      _.pickBy(typings, (content, name) => name.includes('.schema.')),
+      _.pickBy(typings, (_content, name) => name.includes('.schema.')),
       (result, content, name) => {
         result.push({
           uri: 'bp://types/' + name,

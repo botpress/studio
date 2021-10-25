@@ -11,6 +11,7 @@ export const BUILTIN_MODULES = [
   'channel-telegram',
   'channel-web',
   'code-editor',
+  'internal-users',
   'examples',
   'extensions',
   'history',
