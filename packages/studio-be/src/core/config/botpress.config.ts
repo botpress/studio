@@ -166,10 +166,6 @@ export interface BotpressConfig {
   modules: Array<ModuleConfigEntry>
   pro: {
     /**
-     * licenseKey used for bot
-     */
-    licenseKey: string 
-    /**
      * Configure the branding of the admin panel and the studio. A valid license is required
      */
     branding: {

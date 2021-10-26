@@ -2,11 +2,11 @@ import { createBrowserHistory } from 'history'
 import queryString from 'query-string'
 import React from 'react'
 import ReactGA from 'react-ga'
+import { connect } from 'react-redux'
 import { Router, Switch } from 'react-router-dom'
 import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
 import injectSegment from '~/util/injectSegment'
-import { connect } from 'react-redux'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
