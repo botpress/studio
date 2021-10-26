@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Router, Switch } from 'react-router-dom'
 import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
-import injectSegment from '~/util/injectSegment'
+import injectSegment from '~/util/InjectSegment'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
