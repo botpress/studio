@@ -4,11 +4,12 @@ import { confirmDialog, lang, MoreOptions, MoreOptionsItems, toast, utils } from
 import cx from 'classnames'
 import { QnaItem } from 'common/typings'
 import _uniqueId from 'lodash/uniqueId'
-import React, { FC, Fragment, useState } from 'react'
+import React, { FC, Fragment, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Select from 'react-select'
 
 import { getFlowLabel } from '~/components/Shared/Utils'
+import { isRTLLocale } from '~/translations'
 import style from '../style.scss'
 import { NEW_QNA_PREFIX } from '../utils/qnaList.utils'
 import ContextSelector from './ContextSelector'
@@ -54,6 +55,7 @@ const QnA: FC<Props> = props => {
   let answers = data.answers[contentLang]
   const refQuestions = contentLang !== defaultLanguage && data.questions[defaultLanguage]
   const refAnswers = contentLang !== defaultLanguage && data.answers[defaultLanguage]
+  const contentDirection = useMemo(() => (isRTLLocale(contentLang) ? 'rtl' : 'ltr'), [contentLang])
 
   if (refQuestions?.length > questions?.length || (!questions?.length && refQuestions?.length)) {
     questions = [...(questions || []), ...Array(refQuestions.length - (questions?.length || 0)).fill('')]
@@ -246,6 +248,7 @@ const QnA: FC<Props> = props => {
             itemListValidator={validateItemsList}
             placeholder={index => getPlaceholder('question', index)}
             label={lang.tr('qna.question')}
+            contentDirection={contentDirection}
             addItemLabel={lang.tr('qna.form.addQuestionAlternative')}
           />
           <TextAreaList
@@ -253,6 +256,7 @@ const QnA: FC<Props> = props => {
             items={answers || ['']}
             duplicateMsg={lang.tr('qna.form.duplicateAnswer')}
             itemListValidator={validateItemsList}
+            contentDirection={contentDirection}
             updateItems={items =>
               updateQnA({
                 id,

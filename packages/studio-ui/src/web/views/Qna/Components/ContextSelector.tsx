@@ -100,7 +100,7 @@ const ContextSelector: FC<Props> = props => {
         }}
         popoverProps={{ minimal: true, fill: true, usePortal: false }}
         selectedItems={contexts}
-        createNewItemRenderer={!props.isSearch && createNewItemRenderer}
+        createNewItemRenderer={props.isSearch ? undefined : createNewItemRenderer}
         createNewItemFromQuery={q => q}
       />
     </div>

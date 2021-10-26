@@ -117,6 +117,7 @@ class ConfigView extends Component<Props, State> {
 
     const languages = await this.fetchLanguages(bot.id)
     const licensing = await this.fetchLicensing()
+
     const statuses = statusList.map<SelectItem>(x => ({
       label: lang.tr(`status.${x}`),
       value: x
@@ -152,7 +153,7 @@ class ConfigView extends Component<Props, State> {
     const languagePath = `studio/${botId}/nlu/languages`
     const { data: languages } = await axios.get(languagePath, axiosConfig)
     return (languages as string[]).map(language => ({
-      label: lang.tr(`language.${language.toLowerCase()}`),
+      label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
       value: language
     }))
   }

@@ -245,7 +245,7 @@ const QnAList: FC<Props> = props => {
         tabChange={setCurrentTab}
         tabs={tabs}
         buttons={buttons}
-        rightContent={items.length > 1 ? toolBarRightContent : null}
+        rightContent={toolBarRightContent}
       />
       <div className={cx(style.content, { [style.empty]: !items.length && !highlighted })}>
         {highlighted && (
@@ -266,7 +266,6 @@ const QnAList: FC<Props> = props => {
               defaultLanguage={defaultLanguage}
               deleteQnA={() => {
                 dispatch({ type: 'deleteQnA', data: { index: 'highlighted', bp } })
-
                 window.history.pushState(
                   window.history.state,
                   '',
