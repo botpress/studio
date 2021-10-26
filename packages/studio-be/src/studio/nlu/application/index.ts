@@ -37,6 +37,11 @@ export class NLUApplication {
     }
   }
 
+  public async getLanguages() {
+    const { languages } = await this._nluClient.getInfo()
+    return languages
+  }
+
   public hasBot(botId: string) {
     return !!this._bots[botId]
   }
