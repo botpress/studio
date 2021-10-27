@@ -1,22 +1,21 @@
 import segmentPlugin from '@analytics/segment'
 import Analytics from 'analytics'
 import hash from 'hash.js'
+import { UserReducer } from '~/reducers/user'
 
-// segment app name and write key
-const APP_NAME = 'STUDIO_ANALYTICS'
-const WRITE_KEY = '7lxeXxbGysS04TvDNDOROQsFlrls9NoY'
+const APP_NAME = 'STUDIO_ANALYTICS' // for reference, in case of second account
+const WRITE_KEY = '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // taken from Segment UI
 
-const extractUserHashFromUser = user => {
-  if (!user || !user.email) {
-    return false
+const extractUserHashFromUser = (user: UserReducer): string | undefined => {
+  if (user?.email) {
+    return hash
+      .sha256()
+      .update('botpressUserEmail' + user.email)
+      .digest('hex')
   }
-  return hash
-    .sha256()
-    .update('botpressUserEmail' + user.email)
-    .digest('hex')
 }
 
-const intializeAnalytics = () => {
+const initSegmentAnalytics = () => {
   const analytics = Analytics({
     app: APP_NAME,
     plugins: [
@@ -31,16 +30,13 @@ const intializeAnalytics = () => {
   return analytics
 }
 
-export default user => {
+export default (user: UserReducer): void => {
   const userEmailHash = extractUserHashFromUser(user)
   if (!userEmailHash) {
-    return false
+    return
   }
 
-  // this is the Segment integration
-  const analytics = intializeAnalytics()
-
-  const machineUUID = window.UUID
+  const analytics = initSegmentAnalytics()
 
   /**
    * The aim of the identify function is to get an idea of how many people are
@@ -49,6 +45,6 @@ export default user => {
    */
   void analytics.identify(null, {
     userEmailHash,
-    machineUUID
+    machineUUID: window.UUID
   })
 }

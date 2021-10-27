@@ -35,7 +35,7 @@ const logPageView = () => {
   ReactGA.pageview(page)
 }
 
-const RoutesRouter = (props) => {
+const RoutesRouter = props => {
   if (window.SEND_USAGE_STATS) {
     injectSegment(props.user)
 
@@ -56,9 +56,8 @@ const RoutesRouter = (props) => {
   )
 }
 
-// export default RoutesRouter
 const mapStateToProps = state => ({
-  user:state.user
+  user: state.user
 })
 
 const mapDispatchToProps = {}
