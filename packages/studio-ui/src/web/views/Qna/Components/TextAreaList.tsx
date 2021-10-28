@@ -1,4 +1,5 @@
 import { Button, Icon, Position, Tooltip } from '@blueprintjs/core'
+import { props } from 'bluebird'
 import { lang, ShortcutLabel, Textarea, utils } from 'botpress/shared'
 import cx from 'classnames'
 import _uniqueId from 'lodash/uniqueId'
@@ -17,13 +18,14 @@ interface Props {
   label: string
   refItems: string[]
   keyPrefix: string
+  contentDirection?: 'ltr' | 'rtl'
   showPicker?: boolean
   initialFocus?: string
   duplicateMsg?: string
   canAddContent?: boolean
 }
 
-const TextAreaList: FC<Props> = props => {
+const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
   const [showPicker, setShowPicker] = useState(false)
   const [localItems, setLocalItems] = useState(props.items)
   // Generating unique keys so we don't need to rerender all the list as soon as we add or delete one element
@@ -99,6 +101,7 @@ const TextAreaList: FC<Props> = props => {
                 onBlur={() => updateItems(localItems)}
                 onKeyDown={e => onKeyDown(e, index)}
                 value={item}
+                direction={contentDirection}
               />
               {errors[index] && (
                 <div className={style.errorIcon}>

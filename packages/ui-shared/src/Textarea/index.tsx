@@ -17,7 +17,8 @@ const Textarea: FC<TextareaProps> = ({
   placeholder,
   onPaste,
   onBlur,
-  onKeyDown
+  onKeyDown,
+  direction = 'ltr'
 }) => {
   const [forceUpdate, setForceUpdate] = useState(false)
   const inputRef = useRef<HTMLTextAreaElement>(null)
@@ -64,7 +65,7 @@ const Textarea: FC<TextareaProps> = ({
     <Fragment>
       <textarea
         onPaste={onPaste}
-        style={{ height: `${height.current}px` }}
+        style={{ height: `${height.current}px`, direction }}
         ref={inputRef}
         className={cx(style.textarea, className)}
         value={value || refValue}

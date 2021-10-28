@@ -93,19 +93,26 @@ const widgets: Widgets = {
   CheckboxWidget: CustomCheckboxWidget
 }
 
-// TODO: Remove this once audio and video content-types are support on multiple channels
+// TODO: Remove this once audio, video, file and location content-types are
+// support on roughly half the channels
 const CustomDescriptionField = ({ description, id, formContext }: FieldProps) => {
-  if (id === 'root__description' && ['audio', 'video', 'location', 'file'].includes(formContext.subtype)) {
-    const capitalize = (str: string) => {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
+  const mapping = {
+    audio: ['channel-web', 'channel-vonage'],
+    video: ['channel-web', 'channel-vonage'],
+    file: ['channel-web', 'channel-vonage'],
+    location: ['channel-vonage']
+  }
 
+  if (id === 'root__description' && Object.keys(mapping).includes(formContext.subtype)) {
     return (
       <div id={id} style={{ lineHeight: 'normal' }}>
         <div>
           <span className={localStyle.warning}>
             <Icon icon="warning-sign" />
-            &nbsp;{capitalize(formContext.subtype)} content-type is currently only supported by channel-vonage
+            &nbsp;{' '}
+            {lang.tr('studio.content.contentTypeWarning', {
+              channels: mapping[formContext.subtype].join(', ')
+            })}
           </span>
         </div>
         <br />

@@ -444,20 +444,6 @@
     "redirectsAssociated": "There are redirects associated to this questions, you can view them in the edit form",
     "search": "Search question"
   },
-  "language": {
-    "arabic": "Arabic",
-    "dutch": "Dutch",
-    "english": "English",
-    "french": "French",
-    "german": "German",
-    "hebrew": "Hebrew",
-    "italian": "Italian",
-    "japanese": "Japanese",
-    "polish": "Polish",
-    "portuguese": "Portugese",
-    "russian": "Russian",
-    "spanish": "Spanish"
-  },
   "status": {
     "disabled": "Unmounted",
     "private": "Collaborators Only",
@@ -518,7 +504,8 @@
       "usageModal": {
         "contentUsage": "Content Usage",
         "node": "Node"
-      }
+      },
+      "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
     },
     "flow": {
       "addNode": "Add Node",

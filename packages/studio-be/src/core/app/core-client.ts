@@ -7,6 +7,7 @@ let coreClient: AxiosInstance
 
 if (INTERNAL_PASSWORD) {
   coreClient = axios.create({
+    proxy: false,
     headers: { authorization: INTERNAL_PASSWORD },
     baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/internal`
   })
@@ -24,9 +25,6 @@ export const coreActions = {
   },
   invalidateCmsForBot: async (botId: string) => {
     await coreClient?.post('/invalidateCmsForBot', { botId })
-  },
-  onBotCreation: async (botId: string) => {
-    await coreClient?.post('/onBotCreation', { botId })
   },
   setStudioReady: async () => {
     const tryRequest = async () => {

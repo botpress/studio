@@ -399,20 +399,6 @@
     "redirectsAssociated": "Hay redirecciones asociadas con estas preguntas, se pueden ver en el formulario de edición",
     "search": "Buscar una pregunta"
   },
-  "language": {
-    "arabic": "Arabic",
-    "dutch": "Dutch",
-    "english": "English",
-    "french": "French",
-    "german": "German",
-    "hebrew": "Hebrew",
-    "italian": "Italian",
-    "japanese": "Japanese",
-    "polish": "Polish",
-    "portuguese": "Portugese",
-    "russian": "Russian",
-    "spanish": "Español"
-  },
   "status": {
     "disabled": "Desmontado",
     "private": "Solo para colaboradores",
@@ -473,7 +459,8 @@
       "usageModal": {
         "contentUsage": "Uso de contenido",
         "node": "Nodo"
-      }
+      },
+      "contentTypeWarning": "Tenga en cuenta que este tipo de contenido solo es compatible con {channels}"
     },
     "flow": {
       "addNode": "Añadir nodo",

@@ -422,20 +422,6 @@
     "redirectsAssociated": "Il existe des redirections associées à ces questions, vous pouvez les visualiser dans le formulaire d'édition",
     "search": "Chercher une question"
   },
-  "language": {
-    "arabic": "Arabe",
-    "dutch": "Néerlandais",
-    "english": "Anglais",
-    "french": "Français",
-    "german": "Allemand",
-    "hebrew": "Hébreu",
-    "italian": "Italien",
-    "japanese": "Japonais",
-    "polish": "Polonais",
-    "portuguese": "Portugais",
-    "russian": "Russe",
-    "spanish": "Espagnol"
-  },
   "status": {
     "disabled": "Démonté",
     "private": "Collaborateurs uniquement",
@@ -495,7 +481,8 @@
       "usageModal": {
         "contentUsage": "Utilisation du contenu",
         "node": "Node"
-      }
+      },
+      "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
       "addNode": "Ajouter une node",
