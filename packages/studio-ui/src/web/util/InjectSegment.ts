@@ -1,10 +1,12 @@
 import segmentPlugin from '@analytics/segment'
-import Analytics from 'analytics'
+import Analytics, { AnalyticsInstance, PageData } from 'analytics'
 import hash from 'hash.js'
 import { UserReducer } from '~/reducers/user'
 
 const APP_NAME = 'STUDIO_ANALYTICS' // for reference, in case of second account
 const WRITE_KEY = '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // taken from Segment UI
+
+let analytics: AnalyticsInstance
 
 const extractUserHashFromUser = (user: UserReducer): string | undefined => {
   if (user?.email) {
@@ -16,7 +18,7 @@ const extractUserHashFromUser = (user: UserReducer): string | undefined => {
 }
 
 const initSegmentAnalytics = () => {
-  const analytics = Analytics({
+  analytics = Analytics({
     app: APP_NAME,
     plugins: [
       segmentPlugin({
@@ -26,8 +28,6 @@ const initSegmentAnalytics = () => {
   })
 
   void analytics.page()
-
-  return analytics
 }
 
 export default (user: UserReducer): void => {
@@ -36,7 +36,7 @@ export default (user: UserReducer): void => {
     return
   }
 
-  const analytics = initSegmentAnalytics()
+  initSegmentAnalytics()
 
   /**
    * The aim of the identify function is to get an idea of how many people are
@@ -48,3 +48,19 @@ export default (user: UserReducer): void => {
     machineUUID: window.UUID
   })
 }
+
+function trackEvent(eventName: string, payload?: any, options?: any, callback?: (...params: any[]) => any) {
+  if (analytics) {
+    // analytics only defined if window.SEND_USAGE_STATS is true
+    return analytics.track(eventName, payload, options, callback)
+  }
+}
+
+function trackPage(data?: PageData, options?: any, callback?: (...params: any[]) => any) {
+  if (analytics) {
+    // analytics only defined if window.SEND_USAGE_STATS is true
+    return analytics.page(data, options, callback)
+  }
+}
+
+export { trackEvent, trackPage }
