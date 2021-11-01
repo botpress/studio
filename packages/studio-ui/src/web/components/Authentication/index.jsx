@@ -1,3 +1,4 @@
+import { Classes, H5, Intent, Position, Toaster } from '@blueprintjs/core'
 import axios from 'axios'
 import { auth } from 'botpress/shared'
 import _ from 'lodash'
@@ -23,11 +24,47 @@ const ensureAuthenticated = WrappedComponent => {
     componentDidMount() {
       authEvents.on('logout', this.promptLogin)
       this.setupAuth()
+      this.interceptUnauthorized = axios.interceptors.response.use(
+        response => {
+          return response
+        },
+        error => {
+          if (error.response.status !== 401) {
+            return Promise.reject(error)
+          }
+          if (error.response.config.url !== `${window.API_PATH}/admin/ping`) {
+            this.checkAuth() // just to make sure 
+          }
+          return Promise.reject(error)
+        }
+      )
     }
 
     componentWillUnmount() {
       authEvents.off('logout', this.promptLogin)
       clearInterval(this.checkInterval)
+      axios.interceptors.response.eject(this.interceptUnauthorized)
+    }
+
+    explainAndLogUserOut = () => {
+      const toastContent = (
+        <div>
+          <div>
+            <H5 className={Classes.DARK}>You have been logged out</H5>
+            <p>
+              For security reasons, we have logged you out. Log back in to continue working.
+            </p>
+          </div>
+        </div>
+      )
+      Toaster.create({ position: Position.TOP_RIGHT }).show({
+        message: toastContent,
+        intent: Intent.DANGER,
+        timeout: 3000,
+        onDismiss:()=>{
+          this.promptLogin()
+        }
+      })
     }
 
     promptLogin = () => {
@@ -76,7 +113,7 @@ const ensureAuthenticated = WrappedComponent => {
     checkAuth = () => {
       axios.get(`${window.API_PATH}/admin/ping`).catch(err => {
         if (err.response.status === 401) {
-          this.promptLogin()
+          this.explainAndLogUserOut()
         }
       })
     }
