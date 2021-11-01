@@ -12,7 +12,7 @@ const style = require('./style.scss')
 
 export default class StandardNodePropertiesPanel extends Component {
   renameNode = text => {
-    if (text) {
+    if (text !== this.props.node.name) {
       const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
       if (alreadyExists) {
         toast.failure(lang.tr('studio.flow.node.cantRenameNode'))
