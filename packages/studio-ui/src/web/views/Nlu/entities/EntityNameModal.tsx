@@ -41,7 +41,7 @@ export const EntityNameModal: FC<Props> = props => {
     props.action === 'rename' ? setName(props.originalEntity.name) : setName('')
   }, [props.isOpen])
 
-  const submit = async e => {
+  const submit: React.FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault()
 
     if (props.action === 'create') {
@@ -56,7 +56,7 @@ export const EntityNameModal: FC<Props> = props => {
   }
 
   const onCreateEntity = async () => {
-    const entity = {
+    const entity: NLU.EntityDefinition = {
       id: getEntityId(name),
       name: name.trim(),
       type: type as NLU.EntityType,
