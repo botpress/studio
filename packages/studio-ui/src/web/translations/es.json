@@ -338,6 +338,7 @@
         "add": "Añadir",
         "addAction": "Añadir nueva acción",
         "cantSeeActions": "No puedes ver tu acción?",
+        "cantRenameNode": "No puedo cambiar el nodo (Nombre ya existe)",
         "confirmOverwriteParameters": "¿Desea sobrescribir los parámetros existentes?",
         "contentPaste": "content_paste",
         "couldNotRetrieveActionServer": "No se pudieron recuperar servidores de acción",

@@ -1,4 +1,4 @@
-import { Dropdown, lang, MoreOptions, MoreOptionsItems } from 'botpress/shared'
+import { Dropdown, lang, MoreOptions, MoreOptionsItems, toast } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
@@ -55,8 +55,9 @@ const SaySomethingForm: FC<Props> = props => {
   const renameNode = text => {
     if (text) {
       const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
-
-      if (!alreadyExists) {
+      if (alreadyExists) {
+        toast.failure(lang.tr('studio.flow.node.cantRenameNode'))
+      } else {
         props.updateNode({ name: text })
       }
     }

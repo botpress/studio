@@ -1,4 +1,4 @@
-import { lang } from 'botpress/shared'
+import { lang, toast } from 'botpress/shared'
 import React, { Component, Fragment } from 'react'
 
 import { Tabs, Tab, Badge, Panel } from 'react-bootstrap'
@@ -14,7 +14,9 @@ export default class StandardNodePropertiesPanel extends Component {
   renameNode = text => {
     if (text) {
       const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
-      if (!alreadyExists) {
+      if (alreadyExists) {
+        toast.failure(lang.tr('studio.flow.node.cantRenameNode'))
+      } else {
         this.props.updateNode({ name: text })
       }
     }

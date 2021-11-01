@@ -360,6 +360,7 @@
         "add": "ajouter",
         "addAction": "Ajouter une nouvelle action",
         "cantSeeActions": "Vous ne voyez pas votre action?",
+        "cantRenameNode": "Impossible de renommer la node (Ce nom existe déjà)",
         "chatbotExecutes": "L'assistant virtuel exécute",
         "chatbotSays": "L'assistant virtuel dit",
         "triggeredBy": "Le workflow est is déclenché par",
