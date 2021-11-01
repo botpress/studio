@@ -310,6 +310,7 @@
       "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
     },
     "flow": {
+      "flowProperties": "Flow properties",
       "addNode": "Add Node",
       "addToLibrary": "Add to library",
       "cantDeleteFailure": "You can't delete the failure node.",
@@ -353,6 +354,7 @@
         "tryingToLoad": "It seems like you are trying to load a module that has not been registered. Please make sure the module is registered then restart the bot."
       },
       "node": {
+        "nodeProperties": "Node Properties",
         "actionParameters": "Action Parameters",
         "actionServer": "Action Server",
         "actionServerTooltip": "This is the action server on which the action will be executed",
