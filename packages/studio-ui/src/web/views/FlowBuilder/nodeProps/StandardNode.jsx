@@ -11,14 +11,18 @@ import TransitionSection from './TransitionSection'
 const style = require('./style.scss')
 
 export default class StandardNodePropertiesPanel extends Component {
-  renameNode = text => {
-    if (text && text !== this.props.node.name) {
-      const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
-      if (alreadyExists) {
-        toast.failure(lang.tr('studio.flow.node.cantRenameNode'))
-      } else {
-        this.props.updateNode({ name: text })
+  onChange = text => {
+    if (text) {
+      if (text !== this.props.node.name) {
+        const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
+        if (alreadyExists) {
+          toast.failure(lang.tr('studio.flow.node.nameAlreadyExists'))
+        } else {
+          this.props.updateNode({ name: text })
+        }
       }
+    } else {
+      toast.failure(lang.tr('studio.flow.node.emptyName'))
     }
   }
 
@@ -40,7 +44,7 @@ export default class StandardNodePropertiesPanel extends Component {
             readOnly={readOnly}
             value={node.name}
             className={style.name}
-            onChanged={this.renameNode}
+            onChanged={this.onChange}
             transform={this.transformText}
           />
         </Panel>

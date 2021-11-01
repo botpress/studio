@@ -52,14 +52,18 @@ const SaySomethingForm: FC<Props> = props => {
     }
   }, [props.currentFlowNode.id])
 
-  const renameNode = text => {
+  const onChange = text => {
     if (text) {
-      const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
-      if (alreadyExists) {
-        toast.failure(lang.tr('studio.flow.node.cantRenameNode'))
-      } else {
-        props.updateNode({ name: text })
+      if (text !== props.currentFlowNode.nodeName) {
+        const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
+        if (alreadyExists) {
+          toast.failure(lang.tr('studio.flow.node.nameAlreadyExists'))
+        } else {
+          props.updateNode({ name: text })
+        }
       }
+    } else {
+      toast.failure(lang.tr('studio.flow.node.emptyName'))
     }
   }
 
@@ -159,7 +163,7 @@ const SaySomethingForm: FC<Props> = props => {
           readOnly={readOnly}
           value={currentFlowNode.name}
           className={style.textInput}
-          onChanged={renameNode}
+          onChanged={onChange}
           transform={transformText}
         />
       </label>
