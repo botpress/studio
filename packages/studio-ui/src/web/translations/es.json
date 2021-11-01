@@ -338,6 +338,8 @@
         "add": "Añadir",
         "addAction": "Añadir nueva acción",
         "cantSeeActions": "No puedes ver tu acción?",
+        "nameAlreadyExists": "No puedo cambiar el nodo (Nombre ya existe)",
+        "emptyName": "Nodo nombre no puede estar vacío",
         "confirmOverwriteParameters": "¿Desea sobrescribir los parámetros existentes?",
         "contentPaste": "content_paste",
         "couldNotRetrieveActionServer": "No se pudieron recuperar servidores de acción",

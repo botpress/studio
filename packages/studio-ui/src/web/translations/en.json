@@ -366,6 +366,8 @@
         "add": "add",
         "addAction": "Add new action",
         "cantSeeActions": "Can't see your action?",
+        "nameAlreadyExists": "Can't rename node (this name already exists)",
+        "emptyName": "Node name cannot be empty",
         "confirmOverwriteParameters": "Do you want to overwrite existing parameters?",
         "contentPaste": "content_paste",
         "couldNotRetrieveActionServer": "Could not retrieve action servers",
