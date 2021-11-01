@@ -13,6 +13,7 @@ import {
   viewModeChanged,
   zoomIn,
   zoomOut,
+  zoomToFit,
   zoomToLevel
 } from '~/actions'
 
@@ -90,6 +91,12 @@ const reducer = handleActions(
       return {
         ...state,
         zoomLevel: state.zoomLevel + 25
+      }
+    },
+    [zoomToFit]: (state, {}) => {
+      return {
+        ...state,
+        zoomLevel: -1
       }
     },
     [zoomToLevel]: (state, { payload }) => {

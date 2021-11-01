@@ -2,7 +2,7 @@ import { Button } from '@blueprintjs/core'
 import { lang, ToolTip } from 'botpress/shared'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
-import { zoomIn, zoomOut, zoomToLevel } from '~/actions'
+import { zoomIn, zoomOut, zoomToLevel, zoomToFit } from '~/actions'
 
 import { RootReducer } from '../../../../reducers'
 
@@ -13,7 +13,7 @@ type DispatchProps = typeof mapDispatchToProps
 
 type Props = DispatchProps & StateProps
 
-const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel }) => (
+const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel, zoomToFit }) => (
   <div className={style.zoomWrapper}>
     <ToolTip content={lang.tr('studio.zoomOut')}>
       <Button icon="zoom-out" disabled={zoomLevel <= 10} onClick={zoomOut} />
@@ -32,6 +32,9 @@ const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel }) => 
     <ToolTip content={lang.tr('studio.zoomIn')}>
       <Button icon="zoom-in" onClick={zoomIn} />
     </ToolTip>
+    <ToolTip content={lang.tr('studio.zoomToFit')}>
+      <Button icon="zoom-to-fit" onClick={zoomToFit} />
+    </ToolTip>
   </div>
 )
 
@@ -42,6 +45,7 @@ const mapStateToProps = (state: RootReducer) => ({
 const mapDispatchToProps = {
   zoomIn,
   zoomOut,
+  zoomToFit,
   zoomToLevel
 }
 
