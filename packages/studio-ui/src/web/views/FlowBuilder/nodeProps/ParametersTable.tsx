@@ -138,7 +138,7 @@ export default class ParametersTable extends Component<Props, State> {
       const keyClass = classnames(style.key, { [style.invalid]: !isKeyValid, [style.mandatory]: definition.required })
 
       return (
-        <tr key={id}>
+        <tr key={`${id}_${paramValue}`}>
           <td className={keyClass}>
             {help}
             <input type="text" disabled={!!definition.required} value={paramName} onChange={editKey} />
