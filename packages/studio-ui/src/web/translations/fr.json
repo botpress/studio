@@ -306,6 +306,7 @@
       "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
+      "flowProperties": "Propriétés de flow",
       "addNode": "Ajouter une node",
       "addToLibrary": "Ajouter dans la librairie",
       "cantDeleteFailure": "Vous ne pouvez pas supprimer le nœud d'échec.",
@@ -349,6 +350,7 @@
         "tryingToLoad": "Il semble que vous essayez de charger un module qui n'a pas été enregistré. Veuillez vous assurer que le module est enregistré puis redémarrez le bot."
       },
       "node": {
+        "nodeProperties": "Propriétés de node",
         "actionParameters": "Paramètres d'action",
         "actionServer": "Serveur d'action",
         "actionServerTooltip": "Il s'agit du serveur d'action sur lequel l'action sera exécutée",
