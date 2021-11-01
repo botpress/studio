@@ -22,8 +22,17 @@ const SYSTEM_ENTITIES = [
   'volume'
 ]
 
+const getEntityId = (entityName: string) =>
+  entityName
+    .trim()
+    .toLowerCase()
+    .replace(/[\t\s]/g, '-')
+
 const getSystemEntities = (): sdk.NLU.EntityDefinition[] => {
-  return [...SYSTEM_ENTITIES, 'any'].map(name => ({ name, type: 'system' })) as sdk.NLU.EntityDefinition[]
+  return [...SYSTEM_ENTITIES, 'any'].map(name => {
+    const entityDef: sdk.NLU.EntityDefinition = { name, type: 'system', id: getEntityId(name) }
+    return entityDef
+  })
 }
 
 export class EntityService {
@@ -38,7 +47,7 @@ export class EntityService {
     return Promise.mapSeries(intentNames, n => this.getEntity(botId, n))
   }
 
-  public async getEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
+  public async listEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
     return [...getSystemEntities(), ...(await this.getCustomEntities(botId))]
   }
 
