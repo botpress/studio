@@ -155,7 +155,7 @@ class ActionModalForm extends Component<Props, State> {
             id="select-action"
             value={this.state.functionInputValue || ''}
             options={avActions}
-            onChange={val => {
+            onChange={async val => {
               const fn = avActions.find(fn => fn.value === (val && val.value))
               const paramsDefinition = (_.get(fn, 'metadata.params') || []) as ActionParameterDefinition[]
               this.setState({
@@ -164,19 +164,24 @@ class ActionModalForm extends Component<Props, State> {
                 actionMetadata: fn.metadata || undefined
               })
 
+              const newFunctionParams = _.fromPairs(paramsDefinition.map(param => [param.name, param.default || '']))
+              let functionParams = Object.keys(newFunctionParams).reduce((data, name) => {
+                data[name] = this.state.functionParams[name] || newFunctionParams[name]
+                return data
+              }, {})
+
               // TODO Detect if default or custom arguments
-              if (
-                Object.keys(this.state.functionParams || {}).length > 0 &&
-                !confirmDialog(lang.tr('studio.flow.node.confirmOverwriteParameters'), {
+              if (Object.keys(this.state.functionParams || {}).length > 0) {
+                const confirmed = await confirmDialog(lang.tr('studio.flow.node.confirmOverwriteParameters'), {
                   acceptLabel: lang.tr('overwrite')
                 })
-              ) {
-                return
+
+                if (confirmed) {
+                  functionParams = newFunctionParams
+                }
               }
 
-              this.setState({
-                functionParams: _.fromPairs(paramsDefinition.map(param => [param.name, param.default || '']))
-              })
+              this.setState({ functionParams })
             }}
           />
           {this.state.actionMetadata?.title && <h4>{this.state.actionMetadata.title}</h4>}
@@ -218,7 +223,6 @@ class ActionModalForm extends Component<Props, State> {
   }
 
   onSubmit = () => {
-    this.resetForm()
     this.props.onSubmit?.({
       type: this.state.actionType,
       functionName: this.state.functionInputValue?.value,
