@@ -310,6 +310,8 @@
       "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
     },
     "flow": {
+      "invalidName": "Invalid name",
+      "invalidCharacters": "The name contains reserved or invalid characters.",
       "addNode": "Add Node",
       "addToLibrary": "Add to library",
       "cantDeleteFailure": "You can't delete the failure node.",
