@@ -5,6 +5,7 @@ import { sanitizeFileName } from 'core/misc/utils'
 import _ from 'lodash'
 
 import { NLUService } from './nlu-service'
+import { trimUtterances } from './utils'
 
 const INTENTS_DIR = './intents'
 
@@ -48,6 +49,8 @@ export class IntentService {
           throw Error(`"${entity}" is neither a system entity nor a custom entity`)
         }
       })
+
+    trimUtterances(intent)
 
     await this.ghostService.forBot(botId).upsertFile(INTENTS_DIR, `${name}.json`, JSON.stringify(intent, undefined, 2))
     return intent
