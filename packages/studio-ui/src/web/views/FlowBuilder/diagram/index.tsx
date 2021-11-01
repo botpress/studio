@@ -38,6 +38,7 @@ import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/
 
 import { prepareEventForDiagram } from './debugger'
 import DiagramToolbar from './DiagramToolbar'
+import LayoutToolbar from './LayoutToolbar'
 import { defaultTransition, DiagramManager, DIAGRAM_PADDING, nodeTypes, Point } from './manager'
 import { BlockModel, BlockProps, BlockWidgetFactory } from './nodes/Block'
 import { DeletableLinkFactory } from './nodes/LinkWidget'
@@ -140,6 +141,8 @@ class Diagram extends Component<Props> {
       openFlowNodeProps: this.props.openFlowNodeProps,
       zoomToLevel: this.props.zoomToLevel
     })
+
+    setInterval(() => this.props.refreshFlowsLinks(), 1000)
 
     if (this.props.highlightFilter) {
       this.manager.setHighlightFilter(this.props.highlightFilter)
@@ -745,6 +748,7 @@ class Diagram extends Component<Props> {
             inverseZoom
           />
           <ZoomToolbar />
+          <LayoutToolbar />
           {canAdd && <NodeToolbar />}
           <TriggerEditor
             node={this.state.currentTriggerNode}

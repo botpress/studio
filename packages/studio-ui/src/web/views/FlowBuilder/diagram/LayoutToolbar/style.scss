@@ -1,0 +1,23 @@
+.layoutWrapper {
+  background: #fff;
+  position: absolute;
+  border-radius: 5px;
+  bottom: var(--spacing-medium);
+  right: var(--spacing-large);
+  padding: var(--spacing-small) var(--spacing-medium);
+
+  button {
+    background: var(--bg) !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 5px;
+
+    &:disabled {
+      opacity: 0.4;
+    }
+
+    svg {
+      fill: var(--shark) !important;
+    }
+  }
+}
