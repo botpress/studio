@@ -30,7 +30,7 @@ const Text: FC<Props> = props => {
       <div className={style.innerWrapper}>
         <SmartInput
           key={key.current}
-          singleLine={false}
+          singleLine={uiSchema.$subtype !== 'textarea'}
           value={formData}
           onChange={onChange}
           className={style.textarea}
