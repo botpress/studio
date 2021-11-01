@@ -1,9 +1,10 @@
-import { Button, Intent, Position, Tooltip } from '@blueprintjs/core'
+import { Button, Icon, Intent, Position, Tooltip } from '@blueprintjs/core'
 import { lang, FileDisplay, UploadFieldProps } from 'botpress/shared'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import SmartInput from '~/components/SmartInput'
 import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
+import parentStyle from '../style.scss'
 import localStyle from './style.scss'
 
 interface IUrlUploadProps {
@@ -42,6 +43,8 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
     return re.test(str)
   }
 
+  const urlHasDoubleBraces = new RegExp('(^|[^{]){{[^{]', 'g').test(url)
+
   return (
     <div className={style.fieldWrapper}>
       {value && isUrlOrRelativePath(value) && <FileDisplay url={value} type={type} onDelete={onDelete} deletable />}
@@ -66,6 +69,15 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
               {lang.tr('ok')}
             </Button>
           </div>
+          {urlHasDoubleBraces && (
+            <div>
+              <span className={parentStyle.warning}>
+                <Icon icon="warning-sign" />
+
+                {lang.tr('studio.content.tripleBracesWarning')}
+              </span>
+            </div>
+          )}
         </Fragment>
       )}
     </div>
