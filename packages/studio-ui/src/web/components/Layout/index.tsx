@@ -189,6 +189,15 @@ const Layout: FC<Props> = (props: Props) => {
   const bottomPanelHeight = props.bottomPanelExpanded ? EXPANDED_PANEL_HEIGHT : lastSize
   const bottomBarSize = props.bottomPanel ? bottomPanelHeight : '100%'
 
+  const squashSize = size => {
+    if (typeof size === 'string') return size
+    const maxSize = 100
+    const minSize = window.innerHeight - 100
+    size = Math.max(maxSize, size)
+    size = Math.min(minSize, size)
+    return size
+  }
+
   return (
     <Fragment>
       <HotKeys handlers={keyHandlers} id="mainLayout" className={layout.mainLayout}>
@@ -202,9 +211,9 @@ const Layout: FC<Props> = (props: Props) => {
           />
           <SplitPane
             split={'horizontal'}
-            defaultSize={lastSize}
-            onChange={size => size > 100 && localStorage.setItem(splitPanelLastSizeKey, size.toString())}
-            size={bottomBarSize}
+            defaultSize={squashSize(lastSize)}
+            onChange={size => size > 100 && localStorage.setItem(splitPanelLastSizeKey, squashSize(size).toString())}
+            size={squashSize(bottomBarSize)}
             maxSize={-100}
             className={cx(layout.mainSplitPaneWToolbar, {
               'emulator-open': props.emulatorOpen
