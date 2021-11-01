@@ -63,7 +63,7 @@ const Layout: FC<Props> = (props: Props) => {
         return // event is not coming from emulator
       }
 
-      if (message.data.name === 'webchatLoaded' && utils.storage.get(WEBCHAT_PANEL_STATUS) === 'opened') {
+      if (message.data.name === 'webchatLoaded' && utils.storage.get(WEBCHAT_PANEL_STATUS) !== 'closed') {
         toggleEmulator()
       }
 
