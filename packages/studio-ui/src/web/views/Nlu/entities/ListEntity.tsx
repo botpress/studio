@@ -3,6 +3,7 @@ import { NLU } from 'botpress/sdk'
 import { lang, toast, utils } from 'botpress/shared'
 import _ from 'lodash'
 import React, { useEffect, useState, useReducer } from 'react'
+import { getEntityId } from './entity-id'
 
 import { Occurrence } from './ListEntityOccurrence'
 import style from './style.scss'
@@ -60,15 +61,9 @@ export const ListEntityEditor: React.FC<Props> = props => {
     }
   }, [state])
 
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
-
   const isNewOccurrenceEmpty = () => newOccurrence.trim().length === 0
 
-  const isUniqueInEntity = newElement =>
+  const isUniqueInEntity = (newElement: string) =>
     !props.entities
       .filter(entity => entity.type === 'list')
       .filter(entity => entity.id === props.entity.id)

@@ -14,6 +14,7 @@ import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { getEntityId } from './entity-id'
 
 import style from './style.scss'
 
@@ -36,12 +37,6 @@ export const PatternEntityEditor: React.FC<Props> = props => {
     setPattern(props.entity.pattern)
     setExampleStr((props.entity.examples || []).join('\n'))
   }, [props.entity])
-
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
 
   const validateExamples = _.debounce(() => {
     let p = pattern

@@ -5,6 +5,7 @@ import _ from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
 
 import { NluClient } from '../client'
+import { getEntityId } from './entity-id'
 
 const AVAILABLE_TYPES = [
   {
@@ -17,15 +18,17 @@ const AVAILABLE_TYPES = [
   }
 ]
 
+export type EntityModalAction = 'create' | 'rename' | 'duplicate'
+
 interface Props {
   api: NluClient
   // Used for actions rename and duplicate
   originalEntity?: NLU.EntityDefinition
-  action: 'create' | 'rename' | 'duplicate'
+  action: EntityModalAction
   entityIDs: string[]
   isOpen: boolean
   closeModal: () => void
-  onEntityModified: (ent: any) => void
+  onEntityModified: (ent: NLU.EntityDefinition) => void
 }
 
 export const EntityNameModal: FC<Props> = props => {
@@ -73,12 +76,6 @@ export const EntityNameModal: FC<Props> = props => {
     await props.api.updateEntity(getEntityId(props.originalEntity.name), entity)
     props.onEntityModified(entity)
   }
-
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
 
   const onDuplicateEntity = async () => {
     const clone = _.cloneDeep(props.originalEntity)
