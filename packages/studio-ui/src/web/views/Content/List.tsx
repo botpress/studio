@@ -235,7 +235,7 @@ class ListView extends Component<Props, State> {
         filterable: false,
         Cell: x => {
           const preview = x.original.previews?.[this.props.contentLang]
-          const className = cx({ [style.missingTranslation]: preview.startsWith('(missing translation) ') })
+          const className = cx({ [style.missingTranslation]: !preview || preview.startsWith('(missing translation) ') })
           return (
             <React.Fragment>
               <span className={className}>
