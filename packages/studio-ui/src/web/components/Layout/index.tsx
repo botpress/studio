@@ -190,7 +190,10 @@ const Layout: FC<Props> = (props: Props) => {
   const bottomBarSize = props.bottomPanel ? bottomPanelHeight : '100%'
 
   const squashSize = size => {
-    if (typeof size === 'string') return size
+    if (typeof size === 'string') {
+      return size
+    }
+
     const maxSize = 100
     const minSize = window.innerHeight - 100
     size = Math.max(maxSize, size)
