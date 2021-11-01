@@ -17,6 +17,7 @@ import { Memoize } from 'lodash-decorators'
 import LRUCache from 'lru-cache'
 import moment from 'moment'
 import ms from 'ms'
+import { BOTPRESS_EVENTS } from 'process'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 
@@ -79,6 +80,10 @@ export class FlowService {
     await AppLifecycle.waitFor(AppLifecycleEvents.CONFIGURATION_LOADED)
 
     this.invalidateFlow = <any>await this.jobService.broadcast<void>(this._localInvalidateFlow.bind(this))
+
+    BOTPRESS_EVENTS.on('unmountBot', ({ botId }) => {
+      delete this.scopes[botId]
+    })
   }
 
   private _localInvalidateFlow(botId: string, key: string, flow?: FlowView, newKey?: string) {
