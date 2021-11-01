@@ -307,7 +307,8 @@
         "contentUsage": "Content Usage",
         "node": "Node"
       },
-      "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
+      "contentTypeWarning": "Please note that this content-type is only supported in {channels}",
+      "tripleBracesWarning": "To add unescaped / raw text here, use {{{...}}} instead of {{...}}"
     },
     "flow": {
       "addNode": "Add Node",
