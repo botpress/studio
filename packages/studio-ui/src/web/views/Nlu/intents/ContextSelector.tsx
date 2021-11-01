@@ -54,7 +54,7 @@ export const ContextSelector: FC<Props> = props => {
   const createNewItemRenderer = (query: string, active: boolean, handleClick) => (
     <MenuItem
       icon="plus"
-      text={lang.tr('nlu.intents.contextSelectorCreateMissing')}
+      text={lang.tr('nlu.intents.contextSelectorCreateMissing', { query })}
       active={active}
       onClick={handleClick}
       shouldDismissPopover={false}
