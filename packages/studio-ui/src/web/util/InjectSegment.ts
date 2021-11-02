@@ -4,7 +4,6 @@ import hash from 'hash.js'
 import { UserReducer } from '~/reducers/user'
 
 const APP_NAME = 'STUDIO_ANALYTICS' // for reference, in case of second account
-const WRITE_KEY = '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // taken from Segment UI
 
 let analytics: AnalyticsInstance
 
@@ -22,7 +21,7 @@ const initSegmentAnalytics = () => {
     app: APP_NAME,
     plugins: [
       segmentPlugin({
-        writeKey: WRITE_KEY
+        writeKey: window.SEGMENT_WRITE_KEY
       })
     ]
   })
