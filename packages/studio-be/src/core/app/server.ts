@@ -154,7 +154,8 @@ export class HTTPServer {
     window.SHOW_POWERED_BY = ${!!config.showPoweredBy};
     window.UUID = "${this.machineId}"
     window.BP_SERVER_URL = "${process.env.BP_SERVER_URL || ''}"
-    window.IS_STANDALONE = ${process.IS_STANDALONE}`
+    window.IS_STANDALONE = ${process.IS_STANDALONE}
+    window.STUDIO_PORT = ${process.PORT}`
   }
 
   async setupCoreProxy() {

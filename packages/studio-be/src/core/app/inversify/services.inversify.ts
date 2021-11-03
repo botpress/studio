@@ -7,6 +7,7 @@ import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
 import { KeyValueStore } from 'core/kvs'
 import { MediaServiceProvider } from 'core/media'
 import { MigrationService } from 'core/migration'
+import { RealtimeService } from 'core/realtime'
 import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
 import { ContainerModule, interfaces } from 'inversify'
@@ -72,6 +73,10 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
 
   bind<QNAService>(TYPES.QnaService)
     .to(QNAService)
+    .inSingletonScope()
+
+  bind<RealtimeService>(TYPES.RealtimeService)
+    .to(RealtimeService)
     .inSingletonScope()
 })
 

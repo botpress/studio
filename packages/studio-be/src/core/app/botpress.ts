@@ -9,6 +9,7 @@ import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
 import { ModuleLoader } from 'core/modules'
+import { RealtimeService } from 'core/realtime'
 import { HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
@@ -55,7 +56,8 @@ export class Botpress {
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
-    @inject(TYPES.MigrationService) private migrationService: MigrationService
+    @inject(TYPES.MigrationService) private migrationService: MigrationService,
+    @inject(TYPES.RealtimeService) private realtimeService: RealtimeService
   ) {
     this.botpressPath = path.join(process.cwd(), 'dist')
     this.configLocation = path.join(this.botpressPath, '/config')
@@ -83,6 +85,7 @@ export class Botpress {
     await this.initializeServices()
     await this.deployAssets()
     await this.startServer()
+    await this.startRealtime()
     await this.discoverBots()
 
     AppLifecycle.setDone(AppLifecycleEvents.BOTPRESS_READY)
@@ -160,6 +163,10 @@ export class Botpress {
     this.hintsService.refreshAll()
 
     AppLifecycle.setDone(AppLifecycleEvents.SERVICES_READY)
+  }
+
+  private async startRealtime() {
+    await this.realtimeService.installOnHttpServer(this.httpServer.httpServer)
   }
 
   private async loadModules(modules: sdk.ModuleEntryPoint[]): Promise<void> {
