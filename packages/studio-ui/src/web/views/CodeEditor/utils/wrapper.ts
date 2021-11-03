@@ -35,9 +35,6 @@ const wrapper = {
     if (type === 'bot_config') {
       return content.replace('bp://types/bot.config.schema.json', '../../bot.config.schema.json')
     }
-    if (type === 'main_config') {
-      return content.replace('bp://types/botpress.config.schema.json', '../botpress.config.schema.json')
-    }
     if (type === 'module_config') {
       return content.replace(/"bp:\/\/types\/(.*?config\.schema\.json")/, '"../../assets/$1')
     }

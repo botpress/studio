@@ -119,11 +119,10 @@ export class NLUService {
   }
 
   public async getLanguages(): Promise<string[]> {
-    return []
-    // if (!this.app) {
-    //   throw new Error("Can't get languages as app is not initialized yet.")
-    // }
-    // return this.app.getLanguages()
+    if (!this.app) {
+      throw new Error("Can't get languages as app is not initialized yet.")
+    }
+    return this.app.getLanguages()
   }
 
   private getWebsocket = () => {

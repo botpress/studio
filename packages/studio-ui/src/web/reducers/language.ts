@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { botInfoReceived, changeContentLanguage, receiveModuleTranslations } from '~/actions'
+import { botInfoReceived, changeContentLanguage, receiveTranslations } from '~/actions'
 import { isRTLLocale } from '~/translations'
 
 export interface LanguageReducer {
@@ -25,7 +25,8 @@ const reducer = handleActions(
       ...state,
       contentLang: payload.defaultLanguage,
       isRTLContentLang: isRTLLocale(payload.defaultLanguage)
-    })
+    }),
+    [receiveTranslations]: (state, { payload }) => ({ ...state, translations: payload })
   },
   defaultState
 )

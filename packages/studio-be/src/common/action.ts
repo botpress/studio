@@ -33,25 +33,3 @@ export const parseActionInstruction = (actionInstruction: string): ActionInstruc
     actionServerId
   }
 }
-
-export const extractEventCommonArgs = (
-  event: IO.Event | IO.IncomingEvent,
-  args?: { [property: string]: any }
-): EventCommonArgs | OutgoingEventCommonArgs => {
-  if (event.direction === 'outgoing') {
-    return {
-      ...(args ?? {}),
-      event
-    }
-  }
-  const incomingEvent = event as IO.IncomingEvent
-
-  return {
-    ...(args ?? {}),
-    event: incomingEvent,
-    user: incomingEvent.state.user ?? {},
-    session: incomingEvent.state.session ?? ({} as IO.CurrentSession),
-    temp: incomingEvent.state.temp ?? {},
-    bot: incomingEvent.state.bot ?? {}
-  }
-}

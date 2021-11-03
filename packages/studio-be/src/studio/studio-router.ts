@@ -5,7 +5,7 @@ import { resolveStudioAsset, resolveIndexPaths } from 'core/app/server-utils'
 import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
-import { BotpressConfig } from 'core/config'
+import { StudioConfig } from 'core/config'
 import { ConfigProvider } from 'core/config/config-loader'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
@@ -46,7 +46,7 @@ export interface StudioServices {
 }
 
 export class StudioRouter extends CustomRouter {
-  private botpressConfig?: BotpressConfig
+  private botpressConfig?: StudioConfig
   private cmsRouter: CMSRouter
   private mediaRouter: MediaRouter
   private actionsRouter: ActionsRouter
@@ -158,6 +158,14 @@ export class StudioRouter extends CustomRouter {
           'Content-Length': tarball.length
         })
         res.end(tarball)
+      })
+    )
+
+    this.router.get(
+      '/translations',
+      this.asyncMiddleware(async (req, res, _next) => {
+        const botTranslations = await this.botService.getBotTranslations(process.BOT_ID)
+        res.send(botTranslations)
       })
     )
 

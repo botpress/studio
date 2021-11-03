@@ -63,13 +63,12 @@ export class ComponentService {
   }
 
   private async _importCustomComponent(botId: string, componentName: string, srcFolder: string) {
-    // Temporary comment, the core handles that part at the moment
-    // const destFolder = path.join(process.DATA_LOCATION, '/assets/bots/', botId, 'component', componentName)
+    const destFolder = path.join(process.TEMP_LOCATION, '/assets/bots/', botId, 'component', componentName)
 
-    // await mkdirp(destFolder)
-    // await fse.move(path.join(srcFolder, 'dist/ui'), path.join(destFolder), {
-    //   overwrite: true
-    // })
+    await mkdirp(destFolder)
+    await fse.move(path.join(srcFolder, 'dist/ui'), path.join(destFolder), {
+      overwrite: true
+    })
 
     const fileContent = await fse.readFile(path.join(srcFolder, 'dist/backend/schema.js'), 'utf-8')
     await this.cms.addBotContentType(botId, componentName, fileContent.toString())

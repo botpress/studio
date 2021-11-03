@@ -1,38 +1,31 @@
 import bodyParser from 'body-parser'
 import { Logger } from 'botpress/sdk'
-import { CSRF_TOKEN_HEADER_LC } from 'common/auth'
 import { machineUUID } from 'common/stats'
 import compression from 'compression'
 import { TYPES } from 'core/app/types'
 import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
-import { BotpressConfig, ConfigProvider } from 'core/config'
+import { StudioConfig, ConfigProvider } from 'core/config'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { monitoringMiddleware } from 'core/routers'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
-import cors from 'cors'
 import errorHandler from 'errorhandler'
 import express from 'express'
-import rateLimit from 'express-rate-limit'
 import { createServer, Server } from 'http'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
-import ms from 'ms'
 import portFinder from 'portfinder'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioRouter } from 'studio/studio-router'
 import { URL } from 'url'
-import yn from 'yn'
 
 import { debugRequestMw, resolveStudioAsset } from './server-utils'
 
-const BASE_API_PATH = '/api/v1'
-
-const getSocketTransports = (config: BotpressConfig): string[] => {
+const getSocketTransports = (config: StudioConfig): string[] => {
   const transports = _.filter(config.httpServer.socketTransports, t => ['websocket', 'polling'].includes(t))
   return transports && transports.length ? transports : ['websocket', 'polling']
 }
@@ -140,25 +133,10 @@ export class HTTPServer {
     const botpressConfig = await this.configProvider.getBotpressConfig()
     const config = botpressConfig.httpServer
 
-    /**
-     * The loading of language models can take some time, access to Botpress is disabled until it is completed
-     * During this time, internal calls between modules can be made
-     */
     this.app.use((req, res, next) => {
       res.removeHeader('X-Powered-By') // Removes the default X-Powered-By: Express
       res.set(config.headers)
-      if (!this.isBotpressReady) {
-        if (
-          !(req.headers['user-agent'] || '').includes('axios') ||
-          (!req.headers.authorization && !req.headers[CSRF_TOKEN_HEADER_LC])
-        ) {
-          return res
-            .status(503)
-            .send(
-              '<html><head><meta http-equiv="refresh" content="2"> </head><body>Botpress is loading. Please try again in a minute.</body></html>'
-            )
-        }
-      }
+
       next()
     })
 
@@ -166,20 +144,6 @@ export class HTTPServer {
 
     this.app.use(bodyParser.json({ limit: config.bodyLimit }))
     this.app.use(bodyParser.urlencoded({ extended: true }))
-
-    if (config.cors?.enabled) {
-      this.app.use(cors(config.cors))
-    }
-
-    if (config.rateLimit?.enabled) {
-      this.app.use(
-        rateLimit({
-          windowMs: ms(config.rateLimit.limitWindow),
-          max: config.rateLimit.limit,
-          message: 'Too many requests, please slow down.'
-        })
-      )
-    }
 
     this.app.use('/assets/studio/ui', express.static(resolveStudioAsset('')))
 

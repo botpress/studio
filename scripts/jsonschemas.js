@@ -25,6 +25,6 @@ module.exports = () => {
     fs.writeFileSync(fileToWrite, json)
   }
 
-  writeSchema('BotpressConfig', 'botpress.config.schema.json')
+  writeSchema('StudioConfig', 'studio.config.schema.json')
   writeSchema('BotConfig', 'bot.config.schema.json')
 }

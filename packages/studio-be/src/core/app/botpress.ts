@@ -2,7 +2,7 @@ import * as sdk from 'botpress/sdk'
 import { BotService } from 'core/bots'
 import { GhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
-import { BotpressConfig, ConfigProvider } from 'core/config'
+import { StudioConfig, ConfigProvider } from 'core/config'
 import { LoggerFilePersister, LoggerProvider } from 'core/logger'
 import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
@@ -30,7 +30,7 @@ export class Botpress {
   botpressPath: string
   configLocation: string
   modulesConfig: any
-  config!: BotpressConfig | undefined
+  config!: StudioConfig | undefined
   api!: typeof sdk
   _heartbeatTimer?: NodeJS.Timeout
 
@@ -70,7 +70,6 @@ export class Botpress {
     AppLifecycle.setDone(AppLifecycleEvents.CONFIGURATION_LOADED)
 
     await this.restoreDebugScope()
-    await this.checkJwtSecret()
     await this.checkNLUEndpoint()
     await this.initializeServices()
     await this.deployAssets()
@@ -90,10 +89,6 @@ export class Botpress {
         this.logger.attachError(err).error("Couldn't load debug scopes. Check the syntax of debug.json")
       }
     }
-  }
-
-  async checkJwtSecret() {
-    process.APP_SECRET = process.env.APP_SECRET || this.config?.appSecret!
   }
 
   async checkNLUEndpoint() {

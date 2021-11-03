@@ -17,17 +17,6 @@ if (process.pkg) {
   lookupPaths.push(path.dirname(process.execPath) + '/../modules')
 }
 
-const { BP_MODULES_PATH, BP_PATH } = process.env
-
-if (BP_MODULES_PATH) {
-  // The studio receives absolute paths to modules, but : is used on windows, so we need a little hack
-  lookupPaths.push(...BP_MODULES_PATH.split(BP_MODULES_PATH.includes('::') ? '::' : ':'))
-}
-
-if (BP_PATH) {
-  lookupPaths.push(BP_PATH + '/modules')
-}
-
 // Check env variables (are we developing? BP_PATH different)
 
 /** Makes path with forward slashes work on all OS */

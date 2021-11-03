@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { fetchBotInformation, refreshHints } from '~/actions'
+import { fetchBotInformation, refreshHints, getTranslations } from '~/actions'
 import EventBus from '~/util/EventBus'
 
 import routes, { history } from '../Routes'
@@ -8,11 +8,13 @@ import routes, { history } from '../Routes'
 interface Props {
   refreshHints: () => void
   fetchBotInformation: () => void
+  getTranslations: () => void
 }
 
 class App extends Component<Props> {
   fetchData = () => {
     this.props.fetchBotInformation()
+    this.props.getTranslations()
 
     if (window.IS_BOT_MOUNTED) {
       this.props.refreshHints()
@@ -71,7 +73,8 @@ class App extends Component<Props> {
 
 const mapDispatchToProps = {
   fetchBotInformation,
-  refreshHints
+  refreshHints,
+  getTranslations
 }
 
 export default connect(undefined, mapDispatchToProps)(App)

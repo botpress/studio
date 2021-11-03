@@ -73,11 +73,6 @@ try {
   require('dotenv').config({ path: path.resolve(process.PROJECT_LOCATION, '.env') })
   process.core_env = process.env as BotpressEnvironmentVariables
 
-  let defaultVerbosity = process.IS_PRODUCTION ? 0 : 2
-  if (!isNaN(Number(process.env.VERBOSITY_LEVEL))) {
-    defaultVerbosity = Number(process.env.VERBOSITY_LEVEL)
-  }
-
   process.STUDIO_VERSION = metadata.version
   process.DEV_BRANCH = metadata['devBranch']
   process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
@@ -87,11 +82,6 @@ try {
       ['serve', '$0'],
       'Start the studio. If the bot doesnt exist, it will be created',
       {
-        dataFolder: {
-          alias: ['d', 'data'],
-          description: 'Starts Botpress in standalone mode on that specific data folder',
-          type: 'string'
-        },
         template: {
           description: 'If bot doesnt exist, it will use this template',
           type: 'string'
@@ -100,23 +90,22 @@ try {
       async argv => {
         const botId = argv._?.[0]
 
+        if (!botId) {
+          console.error("Please provide the path to a bot folder 'studio.exe /path/to/data'.  ")
+          process.exit(1)
+        }
+
         process.BOT_LOCATION = path.resolve(botId)
         process.TEMP_LOCATION = path.resolve(process.BOT_LOCATION, '.state')
         process.BOT_ID = path.basename(botId)
         process.TEMPLATE_ID = argv.template || 'empty-bot'
 
-        // console.error(
-        //   "Data folder must be provided. Either set the environment variable 'BP_DATA_FOLDER' or start the binary with 'studio.exe -d /path/to/data' "
-        // )
-        // process.exit(1)
-
-        process.VERBOSITY_LEVEL = defaultVerbosity
+        process.VERBOSITY_LEVEL = 2
         process.distro = await getos()
 
         require('./core/app/bootstrap')
       }
     )
-
     .help().argv
 } catch (err) {
   global.printErrorDefault(err)

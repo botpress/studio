@@ -17,7 +17,6 @@ declare namespace NodeJS {
   export interface Process {
     VERBOSITY_LEVEL: number
     IS_PRODUCTION: boolean // TODO: look to remove this
-    APP_SECRET: string
     /**
      * Path to the global APP DATA folder, shared across all installations of Botpress Server
      * Use this folder to store stuff you'd like to cache, like NLU language models etc

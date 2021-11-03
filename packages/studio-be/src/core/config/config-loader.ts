@@ -1,31 +1,20 @@
 import { BotConfig, Logger } from 'botpress/sdk'
 import { ObjectCache } from 'common/object-cache'
 import { GhostService } from 'core/bpfs'
-import { calculateHash, stringify } from 'core/misc/utils'
-import { ModuleResolver } from 'core/modules'
+import { stringify } from 'core/misc/utils'
 import { TYPES } from 'core/types'
 import { FatalError } from 'errors'
-import fs from 'fs'
+import fse from 'fs-extra'
 import { inject, injectable } from 'inversify'
 import defaultJsonBuilder from 'json-schema-defaults'
 import _, { PartialDeep } from 'lodash'
 import path from 'path'
-import fse from 'fs-extra'
 
-import { BotpressConfig } from './botpress.config'
-import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './config-utils'
-
-/**
- * These properties should not be considered when calculating the config hash
- * They are always read from the configuration file and can be dynamically changed
- */
-const removeDynamicProps = config => _.omit(config, ['superAdmins'])
+import { StudioConfig } from './studio.config'
 
 @injectable()
 export class ConfigProvider {
-  public onBotpressConfigChanged: ((initialHash: string, newHash: string) => Promise<void>) | undefined
-
-  private _botpressConfigCache: BotpressConfig | undefined
+  private _studioConfigCache: StudioConfig | undefined
   public initialConfigHash: string | undefined
   public currentConfigHash!: string
 
@@ -33,73 +22,41 @@ export class ConfigProvider {
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.ObjectCache) private cache: ObjectCache
-  ) {
-    this.cache.events.on('invalidation', async key => {
-      if (key === 'object::data/global/botpress.config.json' || key === 'file::data/global/botpress.config.json') {
-        this._botpressConfigCache = undefined
-        const config = await this.getBotpressConfig()
-
-        this.currentConfigHash = calculateHash(JSON.stringify(removeDynamicProps(config)))
-        this.onBotpressConfigChanged && this.onBotpressConfigChanged(this.initialConfigHash!, this.currentConfigHash)
-      }
-    })
-  }
+  ) {}
 
   public async createDefaultConfigIfMissing() {
-    const fileLocation = path.join(process.TEMP_LOCATION, 'botpress.config.json')
-    if (!(await fse.pathExists(fileLocation))) {
-      const botpressConfigSchema = await fse.readJSON(path.join(__dirname, 'schemas', 'botpress.config.schema.json'))
+    const fileLocation = path.join(process.TEMP_LOCATION, 'studio.config.json')
 
-      const defaultConfig: BotpressConfig = defaultJsonBuilder(botpressConfigSchema)
+    if (!(await fse.pathExists(fileLocation))) {
+      const botpressConfigSchema = await fse.readJSON(path.join(__dirname, 'schemas', 'studio.config.schema.json'))
+      const defaultConfig: StudioConfig = defaultJsonBuilder(botpressConfigSchema)
 
       const config = {
-        $schema: '../botpress.config.schema.json',
+        $schema: '../studio.config.schema.json',
         ...defaultConfig,
-        version: process.BOTPRESS_VERSION
+        version: process.STUDIO_VERSION
       }
 
       await fse.writeJson(fileLocation, config, { spaces: 2 })
-      // await this.ghostService.global().upsertFile('/', 'botpress.config.json', stringify(config))
     }
   }
 
-  async getBotpressConfig(): Promise<BotpressConfig> {
-    if (this._botpressConfigCache) {
-      return this._botpressConfigCache
+  async getBotpressConfig(): Promise<StudioConfig> {
+    if (this._studioConfigCache) {
+      return this._studioConfigCache
     }
 
     await this.createDefaultConfigIfMissing()
 
-    const config = await this.getConfig<BotpressConfig>('botpress.config.json')
-    // _.merge(config, await this._loadBotpressConfigFromEnv(config))
+    const config = await this.getConfig<StudioConfig>('studio.config.json')
 
-    // deprecated notice
     const envPort = process.env.BP_PORT || process.env.PORT
     config.httpServer.port = envPort ? parseInt(envPort) : config.httpServer.port
     config.httpServer.host = process.env.BP_HOST || config.httpServer.host
 
-    this._botpressConfigCache = config
+    this._studioConfigCache = config
 
     return config
-  }
-
-  private _makeBPConfigEnvKey(option: string): string {
-    return `BP_CONFIG_${option.split('.').join('_')}`.toUpperCase()
-  }
-
-  private async _loadBotpressConfigFromEnv(currentConfig: BotpressConfig): Promise<PartialDeep<BotpressConfig>> {
-    const configOverrides: PartialDeep<BotpressConfig> = {}
-    const weakSchema = await this._getBotpressConfigSchema()
-    const options = await getValidJsonSchemaProperties(weakSchema as SchemaNode, currentConfig)
-    for (const option of options) {
-      const envKey = this._makeBPConfigEnvKey(option)
-      const value = getValueFromEnvKey(envKey)
-      if (value !== undefined) {
-        _.set(configOverrides, option, value)
-      }
-    }
-
-    return configOverrides
   }
 
   async getBotConfig(botId: string): Promise<BotConfig> {
@@ -117,10 +74,6 @@ export class ConfigProvider {
     return config
   }
 
-  private async _getBotpressConfigSchema(): Promise<object> {
-    return this.ghostService.root().readFileAsObject<any>('/', 'botpress.config.schema.json')
-  }
-
   private async getConfig<T>(fileName: string, botId?: string): Promise<T> {
     try {
       let content: string
@@ -132,10 +85,6 @@ export class ConfigProvider {
           .catch(_err => this.ghostService.forBot(botId).readFileAsString('/', fileName))
       } else {
         content = (await fse.readFile(path.resolve(process.TEMP_LOCATION, fileName))).toString()
-        // content = await this.ghostService
-        //   .global()
-        //   .readFileAsString('/', fileName)
-        //   .catch(_err => this.ghostService.global().readFileAsString('/', fileName))
       }
 
       if (!content) {
@@ -155,19 +104,6 @@ export class ConfigProvider {
   }
 
   public async getBrandingConfig(appName: 'admin' | 'studio') {
-    const defaultConfig = {
-      admin: {
-        title: 'Botpress Admin Panel',
-        favicon: 'assets/admin/ui/public/favicon.ico',
-        customCss: ''
-      },
-      studio: {
-        title: 'Botpress Studio',
-        favicon: 'assets/studio/ui/public/img/favicon.png',
-        customCss: ''
-      }
-    }
-
     const config = await this.getBotpressConfig()
     const { title, favicon, customCss } = config.pro?.branding?.[appName] ?? {}
 

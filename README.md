@@ -24,6 +24,12 @@ There are various endpoints that must be configured to get every features workin
 
 - `RUNTIME_ENDPOINT` will add a button on the UI which is a shortcut to update the bot archive on the remote runtime.
 
+### Discussion points
+
+- There are still some configurations related to the studio which had to be put somewhere, for now they are in the bot's "internal"
+- How white label will be implemented?
+- We have realtime between studio backend/frontend, but the bottom panel is kind of useless (no logs, cant change debug, no debugger)
+
 ## Release workflow
 
 1. Type `yarn release <type>` where type can be major, minor or patch

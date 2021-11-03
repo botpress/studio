@@ -53,29 +53,19 @@ export default class Database {
       }
     }
 
-    if (databaseType === 'postgres') {
-      const searchPath = (process.env.DATABASE_PG_SEARCH_PATH || 'public').split(',')
-      Object.assign(config, {
-        client: 'pg',
-        connection: databaseUrl,
-        pool: poolOptions,
-        searchPath
-      })
-    } else {
-      const dbLocation = databaseUrl ? databaseUrl : `${process.TEMP_LOCATION}/storage/core.sqlite`
-      mkdirpSync(path.dirname(dbLocation))
+    const dbLocation = databaseUrl ? databaseUrl : `${process.TEMP_LOCATION}/storage/core.sqlite`
+    mkdirpSync(path.dirname(dbLocation))
 
-      Object.assign(config, {
-        client: 'sqlite3',
-        connection: { filename: dbLocation },
-        pool: {
-          afterCreate: (conn, cb) => {
-            conn.run('PRAGMA foreign_keys = ON', cb)
-          },
-          ...poolOptions
-        }
-      })
-    }
+    Object.assign(config, {
+      client: 'sqlite3',
+      connection: { filename: dbLocation },
+      pool: {
+        afterCreate: (conn, cb) => {
+          conn.run('PRAGMA foreign_keys = ON', cb)
+        },
+        ...poolOptions
+      }
+    })
 
     this.knex = patchKnex(Knex(config))
   }

@@ -45,10 +45,6 @@ export class ActionService {
     }
 
     const service = new Promise<ScopedActionService>(async cb => {
-      if (!(await this.botService.botExists(botId, true))) {
-        throw new NotFoundError('This bot does not exist')
-      }
-
       cb(new ScopedActionService(this.ghost, this.logger, botId, this.cache))
     })
 

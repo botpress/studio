@@ -1,7 +1,6 @@
 import { auth } from 'botpress/shared'
 import { EventEmitter2 } from 'eventemitter2'
 import io from 'socket.io-client'
-import { authEvents } from '~/util/Auth'
 
 class EventBus extends EventEmitter2 {
   private studioSocket: SocketIOClient.Socket
@@ -14,7 +13,6 @@ class EventBus extends EventEmitter2 {
     })
 
     this.onAny(this.dispatchClientEvent)
-    authEvents.on('new_token', this.setup)
   }
 
   dispatchSocketEvent = event => {

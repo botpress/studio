@@ -1,6 +1,6 @@
 import { Logger } from 'botpress/sdk'
 import { TYPES } from 'core/app/types'
-import { BotpressConfig, ConfigProvider } from 'core/config'
+import { StudioConfig, ConfigProvider } from 'core/config'
 import { PersistedConsoleLogger } from 'core/logger'
 import { EventEmitter2 } from 'eventemitter2'
 import { Server } from 'http'
@@ -11,7 +11,7 @@ import { RealTimePayload } from './payload-sdk-impl'
 
 const debug = DEBUG('realtime')
 
-export const getSocketTransports = (config: BotpressConfig): string[] => {
+export const getSocketTransports = (config: StudioConfig): string[] => {
   // Just to be sure there is at least one valid transport configured
   const transports = _.filter(config.httpServer.socketTransports, t => ['websocket', 'polling'].includes(t))
   return transports && transports.length ? transports : ['websocket', 'polling']

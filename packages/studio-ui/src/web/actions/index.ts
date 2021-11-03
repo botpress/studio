@@ -403,3 +403,11 @@ export const getQNAContentElementUsage = () => dispatch => {
     dispatch(receiveQNAContentElement(data))
   })
 }
+
+export const receiveTranslations = createAction('LANG/TRANSLATIONS')
+export const getTranslations = () => dispatch => {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  axios.get(`${window.STUDIO_API_PATH}/translations`).then(({ data }) => {
+    dispatch(receiveTranslations(data))
+  })
+}

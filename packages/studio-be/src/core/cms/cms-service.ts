@@ -2,7 +2,6 @@ import { ContentElement, ContentType, CustomContentType, IO, KnexExtended, Logge
 import { IDisposeOnExit } from 'common/typings'
 import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
-import { JobService } from 'core/distributed/job-service'
 import { LoggerProvider } from 'core/logger'
 import { MediaServiceProvider } from 'core/media'
 import { TYPES } from 'core/types'
@@ -36,11 +35,6 @@ const extractPayload = (type: string, data) => {
 
 @injectable()
 export class CMSService implements IDisposeOnExit {
-  broadcastAddElement: Function = this.local__addElementToCache
-  broadcastUpdateElement: Function = this.local__updateElementFromCache
-  broadcastRemoveElements: Function = this.local__removeElementsFromCache
-  broadcastInvalidateForBot: Function = this.local__invalidateForBot
-
   private readonly contentTable = 'content_elements'
   private readonly typesDir = 'content-types'
   private readonly elementsDir = 'content-elements'
@@ -57,7 +51,6 @@ export class CMSService implements IDisposeOnExit {
     @inject(TYPES.GhostService) private ghost: GhostService,
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.InMemoryDatabase) private memDb: KnexExtended,
-    @inject(TYPES.JobService) private jobService: JobService,
     @inject(TYPES.MediaServiceProvider) private mediaServiceProvider: MediaServiceProvider
   ) {}
 
@@ -66,13 +59,6 @@ export class CMSService implements IDisposeOnExit {
   }
 
   async initialize() {
-    this.broadcastAddElement = await this.jobService.broadcast<void>(this.local__addElementToCache.bind(this))
-    this.broadcastRemoveElements = await this.jobService.broadcast<void>(this.local__removeElementsFromCache.bind(this))
-    this.broadcastUpdateElement = await this.jobService.broadcast<ContentElement>(
-      this.local__updateElementFromCache.bind(this)
-    )
-    this.broadcastInvalidateForBot = await this.jobService.broadcast<string>(this.local__invalidateForBot.bind(this))
-
     await this.prepareDb()
   }
 
@@ -639,24 +625,14 @@ export class CMSService implements IDisposeOnExit {
     return { BOT_URL: process.EXTERNAL_URL }
   }
 
-  /**
-   * Important! Do not use directly. Needs to be broadcasted.
-   */
-  private async local__removeElementsFromCache(botId: string, elementIds: string[]): Promise<void> {
+  async broadcastRemoveElements(botId: string, elementIds: string[]): Promise<void> {
     await this.memDb(this.contentTable)
       .where({ botId })
       .whereIn('id', elementIds)
       .del()
   }
 
-  /**
-   * Important! Do not use directly. Needs to be broadcasted.
-   */
-  private async local__updateElementFromCache(
-    botId: string,
-    body: object,
-    contentElementId: string
-  ): Promise<ContentElement> {
+  async broadcastUpdateElement(botId: string, body: object, contentElementId: string): Promise<ContentElement> {
     await this.memDb(this.contentTable)
       .update({ ...body, modifiedOn: this.memDb.date.now() })
       .where({ id: contentElementId, botId })
@@ -664,15 +640,7 @@ export class CMSService implements IDisposeOnExit {
     return this.getContentElement(botId, contentElementId)
   }
 
-  /**
-   * Important! Do not use directly. Needs to be broadcasted.
-   */
-  private async local__addElementToCache(
-    botId: string,
-    body: object,
-    elementId: string,
-    contentTypeId: string
-  ): Promise<void> {
+  async broadcastAddElement(botId: string, body: object, elementId: string, contentTypeId: string): Promise<void> {
     await this.memDb(this.contentTable).insert({
       ...body,
       createdBy: 'admin',
@@ -681,13 +649,5 @@ export class CMSService implements IDisposeOnExit {
       id: elementId,
       contentType: contentTypeId
     })
-  }
-
-  /**
-   * Important! Do not use directly. Needs to be broadcasted.
-   */
-  private async local__invalidateForBot(botId: string): Promise<void> {
-    await this.clearElementsFromCache(botId)
-    await this.loadElementsForBot(botId)
   }
 }

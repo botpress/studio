@@ -145,11 +145,9 @@ export class Editor {
     }
 
     const botConfigSchema = await loadSchema('bot.config.schema.json')
-    const botpressConfigSchema = await loadSchema('botpress.config.schema.json')
+    const studioConfigSchema = await loadSchema('studio.config.schema.json')
 
     const moduleTypings = await this.getModuleTypings()
-
-    //  const builtinPath = path.resolve(getBuiltinPath('actions'), actionName)
 
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },
@@ -165,7 +163,7 @@ export class Editor {
     this._typings = {
       'process.d.ts': buildRestrictedProcessVars(),
       'bot.config.schema.json': botConfigSchema,
-      'botpress.config.schema.json': botpressConfigSchema,
+      'studio.config.schema.json': studioConfigSchema,
       ...localTypings,
       ...moduleTypings
     }

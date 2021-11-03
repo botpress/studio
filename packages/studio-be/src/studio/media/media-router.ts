@@ -1,4 +1,4 @@
-import { BotpressConfig } from 'core/config'
+import { StudioConfig } from 'core/config'
 import { fileUploadMulter } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
@@ -14,12 +14,12 @@ class MediaRouter extends CustomStudioRouter {
     super('User', services)
   }
 
-  async setupRoutes(botpressConfig: BotpressConfig) {
+  async setupRoutes(studioConfig: StudioConfig) {
     const router = this.router
 
     const mediaUploadMulter = fileUploadMulter(
-      botpressConfig.fileUpload.allowedMimeTypes ?? DEFAULT_ALLOWED_MIME_TYPES,
-      botpressConfig.fileUpload.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
+      studioConfig.fileUpload.allowedMimeTypes ?? DEFAULT_ALLOWED_MIME_TYPES,
+      studioConfig.fileUpload.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
     )
 
     router.post(

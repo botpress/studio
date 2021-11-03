@@ -6,7 +6,6 @@ import { FlowView, NodeView } from 'common/typings'
 import { TYPES } from 'core/app/types'
 import { BotService } from 'core/bots'
 import { GhostService, ScopedGhostService } from 'core/bpfs'
-import { JobService } from 'core/distributed/job-service'
 import { RealTimePayload, RealtimeService } from 'core/realtime'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
@@ -53,8 +52,6 @@ export class MutexError extends Error {
 @injectable()
 export class FlowService {
   private scopes: { [botId: string]: ScopedFlowService } = {}
-  private invalidateFlow: (botId: string, key: string, flow?: FlowView, newKey?: string) => void = this
-    ._localInvalidateFlow
 
   constructor(
     @inject(TYPES.Logger)
@@ -63,7 +60,6 @@ export class FlowService {
     @inject(TYPES.GhostService) private ghost: GhostService,
     @inject(TYPES.ObjectCache) private cache: ObjectCache,
     @inject(TYPES.BotService) private botService: BotService,
-    @inject(TYPES.JobService) private jobService: JobService,
     @inject(TYPES.QnaService) private qnaService: QNAService,
     @inject(TYPES.NLUService) private nluService: NLUService,
     @inject(TYPES.RealtimeService) private realtime: RealtimeService
@@ -75,11 +71,9 @@ export class FlowService {
   @postConstruct()
   async init() {
     await AppLifecycle.waitFor(AppLifecycleEvents.CONFIGURATION_LOADED)
-
-    this.invalidateFlow = <any>await this.jobService.broadcast<void>(this._localInvalidateFlow.bind(this))
   }
 
-  private _localInvalidateFlow(botId: string, key: string, flow?: FlowView, newKey?: string) {
+  public invalidateFlow(botId: string, key: string, flow?: FlowView, newKey?: string) {
     this.forBot(botId).localInvalidateFlow(key, flow, newKey)
   }
 

@@ -1,5 +1,5 @@
 import { Logger, LoggerEntry } from 'botpress/sdk'
-import { BotpressConfig } from 'core/config/botpress.config'
+import { StudioConfig } from 'core/config/studio.config'
 import fs from 'fs'
 import { injectable } from 'inversify'
 import _ from 'lodash'
@@ -21,8 +21,8 @@ export class LoggerFilePersister {
 
   constructor() {}
 
-  async initialize(botpressConfig: BotpressConfig, logger: Logger) {
-    const logsConfig = _.get(botpressConfig, 'logs.fileOutput', {})
+  async initialize(config: StudioConfig, logger: Logger) {
+    const logsConfig = _.get(config, 'logs.fileOutput', {})
     if (!logsConfig.enabled) {
       return
     }
