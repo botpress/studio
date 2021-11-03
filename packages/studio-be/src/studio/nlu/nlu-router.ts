@@ -110,47 +110,6 @@ export class NLURouter extends CustomStudioRouter {
       })
     )
 
-    this.router.post(
-      '/condition/intentChanged',
-      this.needPermissions('write', 'bot.content'),
-      this.asyncMiddleware(async (req, res) => {
-        const { botId } = req.params
-        const { action } = req.body
-        const condition = req.body.condition as sdk.DecisionTriggerCondition
-
-        if (action === 'delete' || action === 'create') {
-          try {
-            await this.nluService.intents.updateContextsFromTopics(botId, [condition!.params!.intentName])
-            return res.sendStatus(200)
-          } catch (err) {
-            return res.status(400).send(err.message)
-          }
-        }
-
-        res.sendStatus(200)
-      })
-    )
-
-    this.router.post(
-      '/sync/intents/topics',
-      this.needPermissions('write', 'bot.content'),
-      this.asyncMiddleware(async (req, res) => {
-        const { botId } = req.params
-        const { intentNames } = req.body
-
-        try {
-          await this.nluService.intents.updateContextsFromTopics(botId, intentNames)
-          res.sendStatus(200)
-        } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not update intent topics')
-          res.status(400).send(err.message)
-        }
-      })
-    )
-
     this.router.get(
       '/contexts',
       this.needPermissions('read', 'bot.content'),

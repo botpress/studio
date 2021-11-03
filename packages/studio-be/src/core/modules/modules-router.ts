@@ -48,8 +48,7 @@ export class ModulesRouter extends CustomRouter {
 
         try {
           const metadata: FlowGeneratorMetadata = {
-            botId: req.query.botId?.toString() || '',
-            isOneFlow: yn(req.query.isOneFlow) || false
+            botId: req.query.botId?.toString() || ''
           }
           res.send(this.skillService.finalizeFlow(await flowGenerator(req.body, metadata)))
         } catch (err) {
@@ -66,15 +65,6 @@ export class ModulesRouter extends CustomRouter {
         const botTranslations = await this.botService.getBotTranslations(req.query.botId as string)
 
         res.send(_.merge({}, moduleTranslations, botTranslations))
-      })
-    )
-
-    this.router.get(
-      '/dialogConditions',
-      this.checkTokenHeader,
-      this.asyncMiddleware(async (req, res) => {
-        const conditions = await this.moduleLoader.getDialogConditions()
-        res.send(conditions)
       })
     )
   }

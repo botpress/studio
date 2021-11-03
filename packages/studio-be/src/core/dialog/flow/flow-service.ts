@@ -156,14 +156,6 @@ export class ScopedFlowService {
     } else if (this.cache.get(key)) {
       this.cache.remove(key)
     }
-
-    // parent flows are only used by the NDU
-    if (this._isOneFlow()) {
-      const flows = this.cache.values()
-      const flowsWithParents = this.addParentsToFlows(flows)
-
-      this.cache.initialize(flowsWithParents)
-    }
   }
 
   public async handleInvalidatedCache(flowName: string, isFromFile: boolean) {
@@ -223,17 +215,9 @@ export class ScopedFlowService {
         return this.parseFlow(flowPath)
       })
 
-      // parent flows are only used by the NDU
-      if (this._isOneFlow()) {
-        const flowsWithParents = this.addParentsToFlows(flows)
-        this.cache.initialize(flowsWithParents)
+      this.cache.initialize(flows)
 
-        return flowsWithParents
-      } else {
-        this.cache.initialize(flows)
-
-        return flows
-      }
+      return flows
     } catch (err) {
       this.logger
         .forBot(this.botId)
@@ -243,34 +227,9 @@ export class ScopedFlowService {
     }
   }
 
-  @Memoize()
-  private async _isOneFlow(): Promise<boolean> {
-    const botConfig = await this.botService.findBotById(this.botId)
-    return !!botConfig?.oneflow
-  }
-
-  private addParentsToFlows(flows: FlowView[]): FlowView[] {
-    const tree = new TreeSearch(PATH_SEPARATOR)
-
-    flows.forEach(f => {
-      const filename = f.name.replace('.flow.json', '')
-      // the value we are looking for is the parent filename
-      tree.insert(filename, filename)
-    })
-
-    return flows.map(f => {
-      const filename = f.name.replace('.flow.json', '')
-
-      return {
-        ...f,
-        parent: tree.getParent(filename)
-      }
-    })
-  }
-
   private async parseFlow(flowPath: string): Promise<FlowView> {
     const flow = await this.ghost.readFileAsObject<Flow>(FLOW_DIR, flowPath)
-    const schemaError = validateFlowSchema(flow, await this._isOneFlow())
+    const schemaError = validateFlowSchema(flow)
 
     if (!flow || schemaError) {
       throw new Error(`Invalid schema for "${flowPath}". ${schemaError} `)
@@ -477,7 +436,7 @@ export class ScopedFlowService {
   }
 
   private async prepareSaveFlow(flow: FlowView, isNew: boolean) {
-    const schemaError = validateFlowSchema(flow, await this._isOneFlow())
+    const schemaError = validateFlowSchema(flow)
     if (schemaError) {
       throw new Error(schemaError)
     }
@@ -493,8 +452,7 @@ export class ScopedFlowService {
     }
 
     const flowContent = {
-      // TODO: NDU Remove triggers
-      ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'triggers', 'label', 'description']),
+      ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description']),
       nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
     }
 
@@ -508,61 +466,5 @@ export class ScopedFlowService {
 
   private toFlowPath(uiPath: string) {
     return uiPath.replace(/\.ui\.json$/i, '.flow.json')
-  }
-
-  public async getTopics(): Promise<Topic[]> {
-    if (await this.ghost.fileExists('ndu', 'topics.json')) {
-      const topics: any = this.ghost.readFileAsObject('ndu', 'topics.json')
-      return topics
-    }
-    return []
-  }
-
-  public async deleteTopic(topicName: string) {
-    let topics = await this.getTopics()
-    topics = topics.filter(x => x.name !== topicName)
-
-    await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
-
-    const topicChanged = { botId: this.botId, oldName: topicName, newName: undefined }
-    await this.qnaService.onTopicChanged(topicChanged)
-    await this.nluService.onTopicChanged(topicChanged)
-
-    // TODO remove eventually
-    await coreActions.onModuleEvent('onTopicChanged', topicChanged)
-  }
-
-  public async createTopic(topic: Topic) {
-    let topics = await this.getTopics()
-    topics = _.uniqBy([...topics, topic], x => x.name)
-
-    await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
-
-    const topicChanged = { botId: this.botId, oldName: undefined, newName: topic.name }
-    await this.qnaService.onTopicChanged(topicChanged)
-    await this.nluService.onTopicChanged(topicChanged)
-
-    // TODO remove eventually
-    await coreActions.onModuleEvent('onTopicChanged', topicChanged)
-  }
-
-  public async updateTopic(topic: Topic, topicName: string) {
-    let topics = await this.getTopics()
-    topics = _.uniqBy([...topics.filter(x => x.name !== topicName), topic], x => x.name)
-
-    await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
-
-    if (topicName !== topic.name) {
-      const topicChanged = { botId: this.botId, oldName: topicName, newName: topic.name }
-      await this.nluService.onTopicChanged(topicChanged)
-      await this.qnaService.onTopicChanged(topicChanged)
-      await coreActions.onModuleEvent('onTopicChanged', topicChanged)
-
-      const flows = await this.loadAll()
-
-      for (const flow of flows.filter(f => f.name.startsWith(`${topicName}/`))) {
-        await this.renameFlow(flow.name, flow.name.replace(`${topicName}/`, `${topic.name}/`), 'server')
-      }
-    }
   }
 }

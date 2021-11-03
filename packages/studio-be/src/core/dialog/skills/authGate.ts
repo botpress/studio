@@ -23,7 +23,7 @@ export const generateFlow = async (
 }
 
 const createNodes = (data: AuthGateData) => {
-  const nodes: sdk.SkillFlowNode[] = [
+  const nodes: sdk.FlowNode[] = [
     {
       name: 'entry',
       onEnter: [

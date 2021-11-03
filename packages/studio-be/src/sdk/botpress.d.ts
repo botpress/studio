@@ -138,8 +138,6 @@ declare module 'botpress/sdk' {
     /** An array of available bot templates when creating a new bot */
     botTemplates?: BotTemplate[]
     translations?: { [lang: string]: object }
-    /** List of new conditions that the module can register */
-    dialogConditions?: Condition[]
     /** Called once the core is initialized. Usually for middlewares / database init */
     onServerStarted?: (bp: typeof import('botpress/sdk')) => Promise<void>
     /** This is called once all modules are initialized, usually for routing and logic */
@@ -256,7 +254,6 @@ declare module 'botpress/sdk' {
 
   export interface FlowGeneratorMetadata {
     botId: string
-    isOneFlow?: boolean
   }
 
   export interface ModulePluginEntry {
@@ -391,57 +388,6 @@ declare module 'botpress/sdk' {
     }
   }
 
-  export namespace NDU {
-    interface GenericTrigger {
-      conditions: DecisionTriggerCondition[]
-    }
-
-    export interface WorkflowTrigger extends GenericTrigger {
-      type: 'workflow'
-      workflowId: string
-      nodeId: string
-      /** When true, the user must be inside the specified workflow for the trigger to be active */
-      activeWorkflow?: boolean
-    }
-
-    export interface FaqTrigger extends GenericTrigger {
-      type: 'faq'
-      faqId: string
-      topicName: string
-    }
-
-    export interface NodeTrigger extends GenericTrigger {
-      type: 'node'
-      workflowId: string
-      nodeId: string
-    }
-
-    export type Trigger = NodeTrigger | FaqTrigger | WorkflowTrigger
-
-    export interface DialogUnderstanding {
-      triggers: {
-        [triggerId: string]: {
-          result: Dic<number>
-          trigger: Trigger
-        }
-      }
-      actions: Actions[]
-      predictions: { [key: string]: { triggerId: string; confidence: number } }
-    }
-
-    export interface Actions {
-      action: 'send' | 'startWorkflow' | 'redirect' | 'continue' | 'goToNode'
-      data?: SendContent | FlowRedirect
-    }
-
-    export interface FlowRedirect {
-      flow: string
-      node: string
-    }
-
-    export type SendContent = Pick<IO.Suggestion, 'confidence' | 'payloads' | 'source' | 'sourceDetails'>
-  }
-
   export namespace IO {
     export type EventDirection = 'incoming' | 'outgoing'
     export namespace WellKnownFlags {
@@ -472,6 +418,7 @@ declare module 'botpress/sdk' {
       nlu?: Partial<EventUnderstanding>
       incomingEventId?: string
       debugger?: boolean
+      messageId?: string
     }
 
     /**
@@ -482,6 +429,8 @@ declare module 'botpress/sdk' {
     export type Event = EventDestination & {
       /** A sortable unique identifier for that event (time-based) */
       readonly id: string
+      /** Id of the corresponding message in the messaging server */
+      messageId?: string
       /** The type of the event, i.e. image, text, timeout, etc */
       readonly type: string
       /** Is it (in)coming from the user to the bot or (out)going from the bot to the user? */
@@ -580,7 +529,6 @@ declare module 'botpress/sdk' {
       readonly decision?: Suggestion
       /* HITL module has possibility to pause conversation */
       readonly isPause?: boolean
-      readonly ndu?: NDU.DialogUnderstanding
     }
 
     export interface OutgoingEvent extends Event {
@@ -623,8 +571,6 @@ declare module 'botpress/sdk' {
       bot: any
       /** Used internally by Botpress to keep the user's current location and upcoming instructions */
       context?: DialogContext
-      /** This variable points to the currently active workflow */
-      workflow: WorkflowHistory
       /**
        * EXPERIMENTAL
        * This includes all the flow/nodes which were traversed for the current event
@@ -678,26 +624,14 @@ declare module 'botpress/sdk' {
     export interface CurrentSession {
       lastMessages: DialogTurnHistory[]
       nluContexts?: NluContext[]
-      nduContext?: NduContext
-      workflows: {
-        [name: string]: WorkflowHistory
-      }
-      currentWorkflow?: string
       // Prevent warnings when using the code editor with custom properties
       [anyKey: string]: any
-    }
-
-    export interface WorkflowHistory {
-      eventId: string
-      parent?: string
-      /** Only one workflow can be active at a time, when a child workflow is active, the parent will be pending */
-      status: 'active' | 'pending' | 'completed'
-      success?: boolean
     }
 
     export type StoredEvent = {
       /** This ID is automatically generated when inserted in the DB  */
       readonly id: string
+      readonly messageId?: string
       direction: EventDirection
       /** Outgoing events will have the incoming event ID, if they were triggered by one */
       incomingEventId?: string
@@ -722,14 +656,6 @@ declare module 'botpress/sdk' {
       context: string
       /** Represent the number of turns before the context is removed from the session */
       ttl: number
-    }
-
-    export interface NduContext {
-      last_turn_action_name: string
-      last_turn_highest_ranking_trigger_id: string
-      last_turn_node_id: string
-      last_turn_ts: number
-      last_topic: string
     }
 
     export interface DialogTurnHistory {
@@ -918,6 +844,7 @@ declare module 'botpress/sdk' {
       /** Defines the list of content types supported by the bot */
       contentTypes: string[]
     }
+    messaging?: MessagingConfig
     converse?: ConverseConfig
     dialog?: BotDialogConfig
     logs?: BotLogsConfig
@@ -925,7 +852,6 @@ declare module 'botpress/sdk' {
     languages: string[]
     locked: boolean
     pipeline_status: BotPipelineStatus
-    oneflow?: boolean
     qna: {
       disabled: boolean
     }
@@ -958,6 +884,9 @@ declare module 'botpress/sdk' {
      * if not set, seed is computed from botId
      */
     nluSeed?: number
+    nluModels?: {
+      [lang: string]: string
+    }
 
     cloud?: CloudConfig
   }
@@ -1024,6 +953,22 @@ declare module 'botpress/sdk' {
     sessionTimeoutInterval: string
   }
 
+  export interface MessagingConfig {
+    /**
+     * Client id used to identify the bot on the messaging server
+     */
+    id: string
+    /**
+     * Client token used to authenticate requests made to the messaging server
+     */
+    token: string
+    /**
+     * Configurations of channels to be sent to the messaging server
+     * You can find more about channel configurations here : https://botpress.com/docs/channels/faq
+     */
+    channels: { [channelName: string]: any }
+  }
+
   /**
    * Configuration file definition for the Converse API
    */
@@ -1043,6 +988,11 @@ declare module 'botpress/sdk' {
      * @default 250
      */
     bufferDelayMs: number
+    /**
+     * Whether or not you want to expose public converse API. See docs here https://botpress.com/docs/channels/converse#public-api
+     * @default ture
+     */
+    enableUnsecuredEndpoint: boolean
   }
 
   export interface ParsedContentType {
@@ -1084,7 +1034,7 @@ declare module 'botpress/sdk' {
    * They can describe anything and everything – they most often are domain-specific to your bot. They also
    * tells botpress how to display the content on various channels
    */
-   export interface ContentType {
+  export interface ContentType {
     id: string
     title: string
     group?: string
@@ -1094,7 +1044,7 @@ declare module 'botpress/sdk' {
      * They are still visible in the Content Manager, and it's still possible to use these elements by specifying
      * their name as a property "contentType" to ContentPickerWidget.
      */
-     hidden?: boolean
+    hidden?: boolean
     /**
      * The jsonSchema used to validate the form data of the Content Elements.
      */
@@ -1109,7 +1059,7 @@ declare module 'botpress/sdk' {
      * @param channel The channel used to communicate, e.g. channel-web, messenger, twilio, etc.
      * @returns Return an array of rendered Content Elements
      */
-     renderElement: (data: object, channel: string) => object[] | object
+    renderElement: (data: object, channel: string) => object[] | object
     /**
      * Function that computes the visual representation of the text.
      * This function resides in the javascript definition of the Content Type.
@@ -1146,68 +1096,9 @@ declare module 'botpress/sdk' {
     timeout?: { name: string; flow: string; node: string }[]
   }
 
-  export interface DecisionTriggerCondition {
-    id: string
-    params?: { [key: string]: any }
-  }
-
-  export interface Condition {
-    id: string
-    /** String displayed in the dropdown */
-    label: string
-    /** The description holds placeholders for param values so they can be displayed in the view */
-    description?: string
-    /** The definition of all parameters used by this condition */
-    params?: { [paramName: string]: ConditionParam }
-    /** In which order the conditions will be displayed in the dropdown menu. 0 is the first item */
-    displayOrder?: number
-    /** This callback url is called when the condition is deleted or pasted in the flow */
-    callback?: string
-    /** The editor will use the LiteEditor component to provide the requested parameters */
-    useLiteEditor?: boolean
-    evaluate: (event: IO.IncomingEvent, params: any) => number
-  }
-
-  export interface ConditionParam {
-    label: string
-    /** Each type provides a different kind of editor */
-    type: 'string' | 'number' | 'boolean' | 'list' | 'radio' | 'array' | 'content'
-    /** Different components can be used to display certain types (eg: boolean/list) */
-    subType?: 'switch' | 'radio'
-    required?: boolean
-    defaultValue?: any
-    /** Number of rows (for types which supports it, ex: string, array) */
-    rows?: number
-    /** When type is list, this variable must be configured */
-    list?: ConditionListOptions
-  }
-
-  export interface ConditionListOptions {
-    /** List of options displayed in the dropdown menu */
-    items?: Option[]
-    /** Alternatively, set an endpoint where the list will be queried (eg: intents) */
-    endpoint?: string
-    /** The path to the list of elements (eg: language.available) */
-    path?: string
-    /** Name of the field which will be used as the value. Default to value */
-    valueField?: string
-    /** Friendly name displayed in the dropdown menu. Default to label */
-    labelField?: string
-  }
-
   export interface Option {
     value: string
     label: string
-  }
-
-  export interface Topic {
-    name: string
-    description: string
-  }
-
-  export interface Library {
-    elementPath: string
-    elementId: string
   }
 
   /**
@@ -1232,17 +1123,7 @@ declare module 'botpress/sdk' {
    */
   export type SkillFlow = Partial<Flow> & Pick<Required<Flow>, 'nodes'>
 
-  export type FlowNodeType =
-    | 'standard'
-    | 'skill-call'
-    | 'listen'
-    | 'say_something'
-    | 'success'
-    | 'failure'
-    | 'trigger'
-    | 'execute'
-    | 'router'
-    | 'action'
+  export type FlowNodeType = 'standard' | 'skill-call' | 'listen' | 'say_something' | 'execute' | 'router' | 'action'
 
   export type FlowNode = {
     id?: string
@@ -1253,17 +1134,6 @@ declare module 'botpress/sdk' {
     /** Used internally by the flow editor */
     readonly lastModified?: Date
   } & NodeActions
-
-  export type TriggerNode = FlowNode & {
-    conditions: DecisionTriggerCondition[]
-    activeWorkflow?: boolean
-  }
-
-  export type ListenNode = FlowNode & {
-    triggers: { conditions: DecisionTriggerCondition[] }[]
-  }
-
-  export type SkillFlowNode = Partial<ListenNode> & Pick<Required<ListenNode>, 'name'> & Partial<TriggerNode>
 
   /**
    * Node Transitions are all the possible outcomes when a user's interaction on a node is completed. The possible destinations
@@ -1446,6 +1316,7 @@ declare module 'botpress/sdk' {
       description: string
       target?: 'core' | 'bot'
       type: 'database' | 'config' | 'content'
+      canDryRun?: boolean
     }
     up: (opts: ModuleMigrationOpts) => Promise<MigrationResult>
     down?: (opts: ModuleMigrationOpts) => Promise<MigrationResult>
@@ -1462,6 +1333,7 @@ declare module 'botpress/sdk' {
   /** These are additional information that Botpress may pass down to migrations (for ex: running bot-specific migration) */
   export interface MigrationMetadata {
     botId?: string
+    isDryRun?: boolean
   }
 
   /**
@@ -1530,55 +1402,6 @@ declare module 'botpress/sdk' {
     asChatUser?: boolean
   }
 
-  export type uuid = string
-
-  export interface ListOptions {
-    limit?: number
-    offset?: number
-  }
-
-  export interface Conversation {
-    id: uuid
-    userId: string
-    botId: string
-    createdOn: Date
-  }
-
-  export interface RecentConversation extends Conversation {
-    lastMessage?: Message
-  }
-
-  export interface ConversationDeleteFilters {
-    id?: uuid
-    userId?: string
-  }
-
-  export interface ConversationListFilters extends ListOptions {
-    userId: string
-  }
-
-  export interface Message {
-    id: uuid
-    conversationId: uuid
-    authorId: string | undefined
-    eventId?: string
-    incomingEventId?: string
-    sentOn: Date
-    payload: any
-  }
-
-  export interface MessageArgs
-    extends Partial<Omit<IO.EventCtorArgs, 'type' | 'direction' | 'payload' | 'target' | 'botId' | 'threadId'>> {}
-
-  export interface MessageDeleteFilters {
-    id?: uuid
-    conversationId?: uuid
-  }
-
-  export interface MessageListFilters extends ListOptions {
-    conversationId: uuid
-  }
-
   export interface RenderPipeline {
     text: typeof experimental.render.text
     image: typeof experimental.render.image
@@ -1640,6 +1463,12 @@ declare module 'botpress/sdk' {
     title?: string | MultiLangText
   }
 
+  export interface FileContentType extends Content {
+    type: 'file'
+    file: string
+    title?: string | MultiLangText
+  }
+
   export enum ButtonAction {
     SaySomething = 'Say something',
     OpenUrl = 'Open URL',
@@ -1671,6 +1500,17 @@ declare module 'botpress/sdk' {
 
   export interface ChoiceOption {
     title: string | MultiLangText
+    value: string
+  }
+
+  export interface DropdownContent extends Content {
+    type: 'dropdown'
+    message: string | MultiLangText
+    options: DropdownOption[]
+  }
+
+  export interface DropdownOption {
+    label: string | MultiLangText
     value: string
   }
 
@@ -1996,11 +1836,6 @@ declare module 'botpress/sdk' {
       flowName: string,
       nodeName?: string
     ): Promise<void>
-
-    /**
-     * Returns the list of conditions that can be used in an NLU Trigger node
-     */
-    export function getConditions(): Condition[]
   }
 
   export namespace config {
@@ -2141,8 +1976,6 @@ declare module 'botpress/sdk' {
       allowOverwrite?: boolean
     ): Promise<void>
 
-    export function getBotTemplate(moduleName: string, templateName: string): Promise<FileContent[]>
-
     /**
      * Allows hook developers to list revisions of a bot
      * @param botId the ID of the target bot
@@ -2244,7 +2077,7 @@ declare module 'botpress/sdk' {
 
     export function deleteContentElements(botId: string, contentElementIds: string[]): Promise<void>
 
-    export function getAllContentTypes(botId?: string): Promise<ContentType[]>
+    export function getAllContentTypes(botId: string): Promise<ContentType[]>
     /**
      * Content Types can produce multiple payloads depending on the channel and the type of message. This method can generate
      * payloads for a specific content element or generate them for a custom payload.
@@ -2322,180 +2155,6 @@ declare module 'botpress/sdk' {
   export namespace experimental {
     export function disableHook(hookName: string, hookType: string, moduleName?: string): Promise<boolean>
     export function enableHook(hookName: string, hookType: string, moduleName?: string): Promise<boolean>
-
-    export namespace conversations {
-      export function forBot(botId: string): BotConversations
-
-      export interface BotConversations {
-        /**
-         * Create a conversation to store in the db
-         * @param userId Id of the user to create a conversation with
-         * @returns The created conversation
-         * @example
-         * const conversation = await bp.conversations.forBot('myBot').create('eEFoneif394')
-         */
-        create(userId: uuid): Promise<Conversation>
-
-        /**
-         * Deletes conversations from the db
-         * @param filters Filters which conversations to delete
-         * @returns The number of deleted rows
-         * @example
-         * // Delete a conversation by id
-         * await bp.conversations.forBot('myBot').delete({ id: '9aa7da7a-9ab1-4a60-bedd-8bdca22beb03' })
-         * // Delete all conversations of a bot user
-         * await bp.conversations.forBot('myBot').delete({ userId: 'eEFoneif394' })
-         */
-        delete(filters: ConversationDeleteFilters): Promise<number>
-
-        /**
-         * Gets one conversation from the db
-         * @param id Id of the conversation to get
-         * @returns The matching conversation or `undefined` if none were found
-         * @example
-         * // Get conversation by id
-         * const converation = await bp.conversations.forBot('myBot').get('9aa7da7a-9ab1-4a60-bedd-8bdca22beb03'})
-         */
-        get(id: uuid): Promise<Conversation | undefined>
-
-        /**
-         * Gets many conversations from the db.
-         * The results are ordered from most recent to least recent
-         * @param filters Filters which conversations to get
-         * @example
-         * // Get the 20 most recent conversations of a bot user
-         * const conversations = await bp.conversations.forBot('myBot').list({ userId: 'eEFoneif394', limit: 20 })
-         */
-        list(filters: ConversationListFilters): Promise<RecentConversation[]>
-
-        /**
-         * Gets the most recent conversation of a user.
-         * If the user has no matching conversation, creates one
-         * @param userId Id of the user
-         * @example
-         * const conversation = await bp.conversations.forBot('myBot').recent('eEFoneif394')
-         */
-        recent(userId: uuid): Promise<Conversation>
-
-        /**
-         * Creates a mapping of ids for a conversation in a given channel
-         * @param channel The channel for which to create the mapping
-         * @param localId The id of the conversation in botpress
-         * @param foreignId The id of the conversation in that channel
-         * @example
-         * // I have been given an conversation id by facebook messenger
-         * const messengerConversationId = 134314
-         * // Let's say I have an already existing botpress conversation somewhere that I want to attach to this conversation
-         * const conversationId = '00001337-ca79-4235-8475-3785e41eb2be'
-         *
-         * // Create the mapping
-         * await bp.conversations.forBot(myBot).createMapping('facebook', conversationId, messengerConversationId)
-         * // Returns 134314
-         * await bp.conversations.forBot(myBot).getForeignId(conversationId)
-         * // Returns '00001337-ca79-4235-8475-3785e41eb2be'
-         * await bp.conversations.forBot(myBot).getLocalId(messengerConversationId)
-         */
-        createMapping(channel: string, localId: uuid, foreignId: string): Promise<void>
-
-        /**
-         * Deletes a conversation mapping
-         * @returns true if a conversation was deleted
-         */
-        deleteMapping(channel: string, localId: uuid, foreignId: string): Promise<boolean>
-
-        /**
-         * Gets a conversations id specific to the given channel from a botpress conversation id
-         */
-        getForeignId(channel: string, localId: uuid): Promise<string | undefined>
-
-        /**
-         * Gets a botpress conversation id from the foreign id of a conversation in a the given channel
-         */
-        getLocalId(channel: string, foreignId: string): Promise<string | undefined>
-      }
-    }
-
-    export namespace messages {
-      export function forBot(botId: string): BotMessages
-
-      export interface BotMessages {
-        /**
-         * Sends a outgoing message (bot message) through the event loop. The message is stored in the database
-         * @param conversationId Id of the conversation to which this message belongs to
-         * @param payload Payload of the message
-         * @param args Additional arguments to pass to the event constructor. Optional
-         * @example
-         * // Inside an action
-         * await bp.messages
-         *   .forBot(event.botId)
-         *   .send(event.threadId, { type: 'text', text: 'hello user!' })
-         */
-        send(conversationId: uuid, payload: any, args?: MessageArgs): Promise<Message>
-
-        /**
-         * Sends a incoming message (user message) through the event loop. The message is stored in the database
-         * @param conversationId Id of the conversation to which this message belongs to
-         * @param payload Payload of the message
-         * @param args Additional arguments to pass to the event constructor. Optional
-         * @example
-         * // Inside an action
-         * await bp.messages
-         *   .forBot(event.botId)
-         *   .receive(event.threadId, { type: 'text', text: 'this is a message from the user!' })
-         */
-        receive(conversationId: uuid, payload: any, args?: MessageArgs): Promise<Message>
-
-        /**
-         * Creates a message to store in the db
-         * @param args Properties of the message
-         * @returns The created message
-         * @example
-         * const message = await bp.messages
-         *   .forBot('myBot')
-         *   .create('9aa7da7a-9ab1-4a60-bedd-8bdca22beb03', { type: 'text', text: 'hello' }, 'user', '32242', '242224')
-         */
-        create(
-          conversationId: uuid,
-          payload: any,
-          authorId?: string,
-          eventId?: string,
-          incomingEventId?: string
-        ): Promise<Message>
-
-        /**
-         * Deletes messages from the db
-         * @param filters Filters which messages to delete
-         * @returns The number of deleted rows
-         * @example
-         * // Delete message by id
-         * await bp.messages.forBot('myBot').delete({ id: '00001337-ca79-4235-8475-3785e41eb2be' })
-         * @example
-         * // Delete all messages of a conversation
-         * await bp.messages.forBot('myBot').delete({ conversationId: '9aa7da7a-9ab1-4a60-bedd-8bdca22beb03' })
-         */
-        delete(filters: MessageDeleteFilters): Promise<number>
-
-        /**
-         * Gets one message from the db
-         * @param id Id of the message to get
-         * @returns The matching message or `undefined` if none were found
-         * @example
-         * // Get message by id
-         * const message = await bp.message.forBot('myBot').get('00001337-ca79-4235-8475-3785e41eb2be')
-         */
-        get(id: uuid): Promise<Message | undefined>
-
-        /**
-         * Gets many messages from the db.
-         * The results are ordered from most recent to least recent
-         * @param filters Filters which messages to get
-         * @example
-         * // Get 20 most recent messages of a conversation
-         * const messages = await bp.messages.forBot('myBot').list({ conversationId: '9aa7da7a-9ab1-4a60-bedd-8bdca22beb03', limit: 20 })
-         */
-        list(filters: MessageListFilters): Promise<Message[]>
-      }
-    }
 
     /**
      * WARNING : these payloads do not produce typing indicators yet!
