@@ -25,7 +25,7 @@ interface ScopedGhostOptions {
   noSanitize?: boolean
 }
 
-const MAX_GHOST_FILE_SIZE = process.core_env.BP_BPFS_MAX_FILE_SIZE || '100mb'
+const MAX_GHOST_FILE_SIZE = '100mb'
 const GLOBAL_GHOST_KEY = '__global__'
 const STUDIO_GHOST_KEY = '__studio__'
 

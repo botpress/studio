@@ -43,7 +43,7 @@ export const resolveIndexPaths = (page: string) => (req, res) => {
 
 export const resolveStudioAsset = (file: string) => {
   if (!process.pkg) {
-    return path.resolve(process.STUDIO_LOCATION, '../../studio-ui/', file)
+    return path.resolve(process.PROJECT_LOCATION, '../../studio-ui/', file)
   }
 
   return path.resolve(process.TEMP_LOCATION, 'assets/studio/ui', file)

@@ -9,11 +9,6 @@ export const getBaseLookupPaths = (fullPath: string, lastPathPart: string) => {
 
   const lookups: string[] = [actionLocation, path.join(process.PROJECT_LOCATION, 'shared_libs')]
 
-  if (parts[0] in process.LOADED_MODULES) {
-    // the hook/action is in a directory by the same name as a module
-    lookups.unshift(process.LOADED_MODULES[parts[0]])
-  }
-
   return lookups
 }
 

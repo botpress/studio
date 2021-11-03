@@ -70,16 +70,9 @@ export class HTTPServer {
       this.app.use(errorHandler())
     }
 
-    if (process.core_env.REVERSE_PROXY) {
-      const boolVal = yn(process.core_env.REVERSE_PROXY)
-      this.app.set('trust proxy', boolVal === null ? process.core_env.REVERSE_PROXY : boolVal)
-    }
-
     this.app.use(debugRequestMw)
 
-    if (!yn(process.core_env.BP_HTTP_DISABLE_GZIP)) {
-      this.app.use(compression())
-    }
+    this.app.use(compression())
 
     this.studioRouter = new StudioRouter(
       logger,
@@ -133,7 +126,6 @@ export class HTTPServer {
 
     return `
     window.SEND_USAGE_STATS = ${config!.sendUsageStats};
-    window.USE_JWT_COOKIES = ${process.USE_JWT_COOKIES};
     window.EXPERIMENTAL = ${config.experimental};
     window.SOCKET_TRANSPORTS = ["${getSocketTransports(config).join('","')}"];
     window.SHOW_POWERED_BY = ${!!config.showPoweredBy};

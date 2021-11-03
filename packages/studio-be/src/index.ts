@@ -46,13 +46,10 @@ if (process.env.APP_DATA_PATH) {
 }
 
 process.IS_FAILSAFE = yn(process.env.BP_FAILSAFE) || false
-process.LOADED_MODULES = {}
 
-process.STUDIO_LOCATION = process.pkg
+process.PROJECT_LOCATION = process.pkg
   ? path.dirname(process.execPath) // We point at the binary path
   : path.resolve(__dirname) // e.g. /dist/..
-
-process.PROJECT_LOCATION = process.env.PROJECT_LOCATION || process.STUDIO_LOCATION
 
 process.stderr.write = stripDeprecationWrite
 
