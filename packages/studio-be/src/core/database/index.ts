@@ -62,7 +62,7 @@ export default class Database {
         searchPath
       })
     } else {
-      const dbLocation = databaseUrl ? databaseUrl : `${process.DATA_LOCATION}/storage/core.sqlite`
+      const dbLocation = databaseUrl ? databaseUrl : `${process.TEMP_LOCATION}/storage/core.sqlite`
       mkdirpSync(path.dirname(dbLocation))
 
       Object.assign(config, {

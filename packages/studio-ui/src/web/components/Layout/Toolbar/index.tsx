@@ -1,9 +1,9 @@
 import { Icon, Tooltip } from '@blueprintjs/core'
 import { lang, ShortcutLabel } from 'botpress/shared'
 import classNames from 'classnames'
-import React, { FC, Fragment } from 'react'
+import React, { FC, Fragment, useState } from 'react'
 import { connect } from 'react-redux'
-import { AccessControl } from '~/components/Shared/Utils'
+import { AccessControl, Downloader } from '~/components/Shared/Utils'
 
 import { RootReducer } from '../../../reducers'
 
@@ -22,10 +22,22 @@ type StateProps = ReturnType<typeof mapStateToProps>
 type Props = StateProps & OwnProps
 
 const Toolbar: FC<Props> = props => {
+  const [archiveUrl, setArchiveUrl] = useState('')
+  const [archiveName, setArchiveName] = useState('')
   const { toggleDocs, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props
+
+  const exportBot = () => {
+    setArchiveUrl(`/api/v1/studio/${window.BOT_ID}/export`)
+    setArchiveName(`bot_${window.BOT_ID}_${Date.now()}.tgz`)
+  }
+
+  const pushRuntime = () => {
+    console.log('run')
+  }
 
   return (
     <header className={style.toolbar}>
+      <Downloader url={archiveUrl} filename={archiveName} />
       <div className={style.list}>
         {!!hasDoc && (
           <Fragment>
@@ -46,6 +58,19 @@ const Toolbar: FC<Props> = props => {
             <span className={style.divider}></span>
           </Fragment>
         )}
+
+        <button className={style.item} id="toggle-bot-archive" onClick={exportBot}>
+          <Icon color="#1a1e22" icon="archive" iconSize={16} />
+          <span className={style.label}>{lang.tr('Export archive')}</span>
+        </button>
+
+        {window.MESSAGING_ENDPOINT && (
+          <button className={style.item} id="toggle-bot-archive" onClick={pushRuntime}>
+            <Icon color="#1a1e22" icon="export" iconSize={16} />
+            <span className={style.label}>{lang.tr('Push to runtime')}</span>
+          </button>
+        )}
+
         <AccessControl resource="bot.logs" operation="read">
           <Tooltip
             content={
@@ -62,7 +87,7 @@ const Toolbar: FC<Props> = props => {
             </button>
           </Tooltip>
         </AccessControl>
-        {window.IS_BOT_MOUNTED && (
+        {window.MESSAGING_ENDPOINT && (
           <Tooltip content={<ShortcutLabel light shortcut="emulator-focus" />}>
             <button
               className={classNames(style.item, style.itemSpacing, { [style.active]: isEmulatorOpen })}

@@ -42,7 +42,6 @@ export class MigrationService {
     @tagged('name', 'Migration')
     @inject(TYPES.Logger)
     private logger: sdk.Logger,
-    @inject(TYPES.Database) private database: Database,
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.GhostService) private bpfs: GhostService
   ) {
@@ -74,7 +73,6 @@ export class MigrationService {
       logger: this.logger,
       botService: this.botService,
       configProvider: this.configProvider,
-      database: this.database,
       inversify: container,
       metadata: metadata || {}
     }
@@ -157,7 +155,6 @@ export interface MigrationOpts {
   logger: sdk.Logger
   botService: BotService
   configProvider: ConfigProvider
-  database: Database
   inversify: Container
   metadata: sdk.MigrationMetadata
 }

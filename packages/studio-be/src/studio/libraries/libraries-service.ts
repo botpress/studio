@@ -1,7 +1,5 @@
 import * as sdk from 'botpress/sdk'
 import { spawn } from 'child_process'
-import { ObjectCache } from 'common/object-cache'
-import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { createArchive } from 'core/misc/archive'
 import fse from 'fs-extra'
@@ -17,7 +15,7 @@ const LIB_FOLDER = 'libraries/'
 
 const sanitizeArg = (text: string) => text.replace(/[^a-zA-Z0-9\/_.@^\-\(\) ]/g, '').replace(/\/\//, '/')
 const getBotLibPath = (botId: string, fileName?: string) =>
-  path.join(process.DATA_LOCATION, `bots/${botId}/${LIB_FOLDER}${fileName ? `/${fileName}` : ''}`)
+  path.join(process.BOT_LOCATION, `${LIB_FOLDER}${fileName ? `/${fileName}` : ''}`)
 
 export class LibrariesService {
   private npmPath?: string
@@ -69,8 +67,6 @@ export class LibrariesService {
 
     const archive = await fse.readFile(archivePath)
     await this.bpfs.forBot(botId).upsertFile('libraries', 'node_modules.tgz', archive)
-
-    await coreActions.syncBotLibs(botId)
   }
 
   prepareArgs = (args: string[]) => {
@@ -104,7 +100,7 @@ export class LibrariesService {
     const cliPath = path.resolve(npmPath!, 'bin/npm-cli.js')
 
     const cleanArgs = this.prepareArgs(args)
-    const cwd = customLibsDir ?? path.resolve(process.DATA_LOCATION, 'bots', botId, LIB_FOLDER)
+    const cwd = customLibsDir ?? path.resolve(process.BOT_LOCATION, LIB_FOLDER)
 
     mkdirp.sync(cwd)
     debug('executing npm', { execPath: process.execPath, cwd, args, cleanArgs })

@@ -9,8 +9,6 @@ export class HintsRouter extends CustomStudioRouter {
   setupRoutes() {
     this.router.get(
       '/',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'), // if you can read content you can get suggestions
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const allHints = this.hintsService.getHintsForBot(botId)

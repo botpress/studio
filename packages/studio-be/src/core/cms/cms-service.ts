@@ -1,6 +1,5 @@
 import { ContentElement, ContentType, CustomContentType, IO, KnexExtended, Logger, SearchParams } from 'botpress/sdk'
 import { IDisposeOnExit } from 'common/typings'
-import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
 import { JobService } from 'core/distributed/job-service'
@@ -299,9 +298,6 @@ export class CMSService implements IDisposeOnExit {
 
   async deleteContentElements(botId: string, ids: string[]): Promise<void> {
     const elements = await this.getContentElements(botId, ids)
-    await Promise.map(elements, el =>
-      coreActions.onModuleEvent('onElementChanged', { botId, action: 'delete', element: el })
-    )
 
     await this.broadcastRemoveElements(botId, ids)
 
@@ -336,6 +332,7 @@ export class CMSService implements IDisposeOnExit {
     const contentTypes: { enabled: ContentType[]; disabled: string[] } = { enabled: [], disabled: [] }
 
     const botConfig = await this.configProvider.getBotConfig(botId)
+
     const enabledTypes = botConfig.imports.contentTypes || this.contentTypesByBot[botId].map(x => x.id)
 
     for (const type of enabledTypes) {
@@ -413,19 +410,6 @@ export class CMSService implements IDisposeOnExit {
 
     if (!(await this.elementIdExists(botId, contentElementId))) {
       await this.broadcastAddElement(botId, body, contentElementId, contentType.id)
-      const created = await this.getContentElement(botId, contentElementId)
-
-      await coreActions.onModuleEvent('onElementChanged', { botId, action: 'create', element: created })
-    } else {
-      const originalElement = await this.getContentElement(botId, contentElementId)
-      const updatedElement = await this.broadcastUpdateElement(botId, body, contentElementId)
-
-      await coreActions.onModuleEvent('onElementChanged', {
-        botId,
-        action: 'update',
-        element: updatedElement,
-        oldElement: originalElement
-      })
     }
 
     await this._writeElementsToFile(botId, contentTypeId)
@@ -474,7 +458,6 @@ export class CMSService implements IDisposeOnExit {
     const content = JSON.stringify(elements, undefined, 2)
 
     await this.ghost.forBot(botId).upsertFile(this.elementsDir, fileName, content)
-    await coreActions.invalidateCmsForBot(botId)
   }
 
   private _translateElement(element: ContentElement, language: string, botId: string) {

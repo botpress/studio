@@ -10,6 +10,7 @@ import { inject, injectable } from 'inversify'
 import defaultJsonBuilder from 'json-schema-defaults'
 import _, { PartialDeep } from 'lodash'
 import path from 'path'
+import fse from 'fs-extra'
 
 import { BotpressConfig } from './botpress.config'
 import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './config-utils'
@@ -44,13 +45,33 @@ export class ConfigProvider {
     })
   }
 
+  public async createDefaultConfigIfMissing() {
+    const fileLocation = path.join(process.TEMP_LOCATION, 'botpress.config.json')
+    if (!(await fse.pathExists(fileLocation))) {
+      const botpressConfigSchema = await fse.readJSON(path.join(__dirname, 'schemas', 'botpress.config.schema.json'))
+
+      const defaultConfig: BotpressConfig = defaultJsonBuilder(botpressConfigSchema)
+
+      const config = {
+        $schema: '../botpress.config.schema.json',
+        ...defaultConfig,
+        version: process.BOTPRESS_VERSION
+      }
+
+      await fse.writeJson(fileLocation, config, { spaces: 2 })
+      // await this.ghostService.global().upsertFile('/', 'botpress.config.json', stringify(config))
+    }
+  }
+
   async getBotpressConfig(): Promise<BotpressConfig> {
     if (this._botpressConfigCache) {
       return this._botpressConfigCache
     }
 
+    await this.createDefaultConfigIfMissing()
+
     const config = await this.getConfig<BotpressConfig>('botpress.config.json')
-    _.merge(config, await this._loadBotpressConfigFromEnv(config))
+    // _.merge(config, await this._loadBotpressConfigFromEnv(config))
 
     // deprecated notice
     const envPort = process.env.BP_PORT || process.env.PORT
@@ -111,10 +132,11 @@ export class ConfigProvider {
           .readFileAsString('/', fileName)
           .catch(_err => this.ghostService.forBot(botId).readFileAsString('/', fileName))
       } else {
-        content = await this.ghostService
-          .global()
-          .readFileAsString('/', fileName)
-          .catch(_err => this.ghostService.global().readFileAsString('/', fileName))
+        content = (await fse.readFile(path.resolve(process.TEMP_LOCATION, fileName))).toString()
+        // content = await this.ghostService
+        //   .global()
+        //   .readFileAsString('/', fileName)
+        //   .catch(_err => this.ghostService.global().readFileAsString('/', fileName))
       }
 
       if (!content) {
@@ -145,10 +167,6 @@ export class ConfigProvider {
         favicon: 'assets/studio/ui/public/img/favicon.png',
         customCss: ''
       }
-    }
-
-    if (!process.IS_PRO_ENABLED) {
-      return defaultConfig[appName]
     }
 
     const config = await this.getBotpressConfig()

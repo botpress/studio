@@ -163,7 +163,6 @@ export interface BotpressConfig {
      */
     headers: { [name: string]: string }
   }
-  modules: Array<ModuleConfigEntry>
   pro: {
     /**
      * Configure the branding of the admin panel and the studio. A valid license is required

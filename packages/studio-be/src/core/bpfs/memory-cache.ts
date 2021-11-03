@@ -1,5 +1,4 @@
 import { ObjectCache } from 'common/object-cache'
-import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
 import { asBytes } from 'core/misc/utils'
 import { EventEmitter } from 'events'
@@ -49,12 +48,6 @@ export class MemoryObjectCache implements ObjectCache {
   async invalidate(key: string, local?: boolean): Promise<void> {
     this.cache.del(key)
     this.events.emit('invalidation', key)
-
-    // Redis and cache invalidator are handled by both process, but database storage requires an update
-    if (!local && !process.CLUSTER_ENABLED && process.BPFS_STORAGE === 'database') {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      coreActions.invalidateFile(key)
-    }
   }
 
   async invalidateStartingWith(prefix: string): Promise<void> {

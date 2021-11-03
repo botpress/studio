@@ -4,7 +4,7 @@ import { CMSService } from 'core/cms'
 import { SkillService } from 'core/dialog'
 import { DialogContainerModule } from 'core/dialog/dialog.inversify'
 import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
-import { KeyValueStore } from 'core/kvs'
+
 import { MediaServiceProvider } from 'core/media'
 import { MigrationService } from 'core/migration'
 import { RealtimeService } from 'core/realtime'
@@ -36,12 +36,6 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<JobService>(TYPES.JobService)
     .to(LocalJobService)
     .inSingletonScope()
-    .when(() => !process.CLUSTER_ENABLED || !process.IS_PRO_ENABLED)
-
-  bind<JobService>(TYPES.JobService)
-    .to(RedisJobService)
-    .inSingletonScope()
-    .when(() => process.CLUSTER_ENABLED && process.IS_PRO_ENABLED)
 
   bind<HintsService>(TYPES.HintsService)
     .to(HintsService)
@@ -49,10 +43,6 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
 
   bind<AuthService>(TYPES.AuthService)
     .to(AuthService)
-    .inSingletonScope()
-
-  bind<KeyValueStore>(TYPES.KeyValueStore)
-    .to(KeyValueStore)
     .inSingletonScope()
 
   bind<SkillService>(TYPES.SkillService)

@@ -51,8 +51,7 @@ export class ActionService {
         throw new NotFoundError('This bot does not exist')
       }
 
-      const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
-      cb(new ScopedActionService(this.ghost, this.logger, botId, this.cache, workspaceId))
+      cb(new ScopedActionService(this.ghost, this.logger, botId, this.cache))
     })
 
     this._scopedActions.set(botId, service)
@@ -66,13 +65,7 @@ export class ScopedActionService {
   private _localActionsCache: LocalActionDefinition[] | undefined
   private _scriptsCache: Map<string, string> = new Map()
 
-  constructor(
-    private ghost: GhostService,
-    private logger: Logger,
-    private botId: string,
-    private cache: ObjectCache,
-    private workspaceId: string
-  ) {
+  constructor(private ghost: GhostService, private logger: Logger, private botId: string, private cache: ObjectCache) {
     this._listenForCacheInvalidation()
   }
 

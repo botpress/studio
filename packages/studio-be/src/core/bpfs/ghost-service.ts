@@ -28,7 +28,7 @@ interface ScopedGhostOptions {
 
 const MAX_GHOST_FILE_SIZE = process.core_env.BP_BPFS_MAX_FILE_SIZE || '100mb'
 const GLOBAL_GHOST_KEY = '__global__'
-const BOTS_GHOST_KEY = '__bots__'
+const STUDIO_GHOST_KEY = '__studio__'
 
 @injectable()
 export class GhostService {
@@ -65,6 +65,23 @@ export class GhostService {
     )
   }
 
+  studio(): ScopedGhostService {
+    if (this._scopedGhosts.has(STUDIO_GHOST_KEY)) {
+      return this._scopedGhosts.get(STUDIO_GHOST_KEY)!
+    }
+
+    const scopedGhost = new ScopedGhostService(
+      process.PROJECT_LOCATION,
+      this.diskDriver,
+      this.dbDriver,
+      this.useDbDriver,
+      this.cache
+    )
+
+    this._scopedGhosts.set(STUDIO_GHOST_KEY, scopedGhost)
+    return scopedGhost
+  }
+
   global(): ScopedGhostService {
     if (this._scopedGhosts.has(GLOBAL_GHOST_KEY)) {
       return this._scopedGhosts.get(GLOBAL_GHOST_KEY)!
@@ -82,27 +99,6 @@ export class GhostService {
     return scopedGhost
   }
 
-  custom(baseDir: string) {
-    return new ScopedGhostService(baseDir, this.diskDriver, this.dbDriver, false, this.cache, { noSanitize: true })
-  }
-
-  bots(): ScopedGhostService {
-    if (this._scopedGhosts.has(BOTS_GHOST_KEY)) {
-      return this._scopedGhosts.get(BOTS_GHOST_KEY)!
-    }
-
-    const scopedGhost = new ScopedGhostService(
-      `${this.baseFolder}bots`,
-      this.diskDriver,
-      this.dbDriver,
-      this.useDbDriver,
-      this.cache
-    )
-
-    this._scopedGhosts.set(BOTS_GHOST_KEY, scopedGhost)
-    return scopedGhost
-  }
-
   forBot(botId: string): ScopedGhostService {
     if (!isValidBotId(botId)) {
       throw new Error(`Invalid botId "${botId}"`)
@@ -113,7 +109,7 @@ export class GhostService {
     }
 
     const scopedGhost = new ScopedGhostService(
-      `${this.baseFolder}bots/${botId}`,
+      `${this.baseFolder}`,
       this.diskDriver,
       this.dbDriver,
       this.useDbDriver,
@@ -270,13 +266,6 @@ export class ScopedGhostService {
       const outPath = path.join(directory, file)
       mkdirp.sync(path.dirname(outPath))
       await fse.writeFile(outPath, content)
-    }
-
-    const dbRevs = await this.dbDriver.listRevisions(this.baseDir)
-
-    await fse.writeFile(path.join(directory, 'revisions.json'), JSON.stringify(dbRevs, undefined, 2))
-    if (!allFiles.includes('revisions.json')) {
-      allFiles.push('revisions.json')
     }
 
     return allFiles

@@ -3,7 +3,6 @@ import { Botpress } from 'core/app/botpress'
 import { HTTPServer } from 'core/app/server'
 import { ConfigProvider } from 'core/config'
 import { LoggerFilePersister, LoggerProvider, PersistedConsoleLogger } from 'core/logger'
-import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { ModuleLoader } from 'core/modules'
 import { WorkspaceService } from 'core/users'
 import { Container } from 'inversify'
@@ -42,11 +41,6 @@ container.bind<LoggerProvider>(TYPES.LoggerProvider).toProvider<Logger>(context 
     return context.container.getTagged<Logger>(TYPES.Logger, 'name', name)
   }
 })
-
-container
-  .bind<LoggerDbPersister>(TYPES.LoggerDbPersister)
-  .to(LoggerDbPersister)
-  .inSingletonScope()
 
 container
   .bind<LoggerFilePersister>(TYPES.LoggerFilePersister)

@@ -5,7 +5,6 @@ import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
 import Database from 'core/database'
 import { LoggerFilePersister, LoggerProvider } from 'core/logger'
-import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
 import { ModuleLoader } from 'core/modules'
@@ -52,7 +51,6 @@ export class Botpress {
     @inject(TYPES.CMSService) private cmsService: CMSService,
     @inject(TYPES.NLUService) private nluService: NLUService,
     @inject(TYPES.LoggerProvider) private loggerProvider: LoggerProvider,
-    @inject(TYPES.LoggerDbPersister) private loggerDbPersister: LoggerDbPersister,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
@@ -63,14 +61,14 @@ export class Botpress {
     this.configLocation = path.join(this.botpressPath, '/config')
   }
 
-  async start(options: StartOptions) {
+  async start() {
     const beforeDt = moment()
-    await this.initialize(options)
+    await this.initialize()
     const bootTime = moment().diff(beforeDt, 'milliseconds')
     this.logger.info(`Started in ${bootTime}ms`)
   }
 
-  private async initialize(options: StartOptions) {
+  private async initialize() {
     this.config = await this.configProvider.getBotpressConfig()
     this.migrationService.botService = this.botService
 
@@ -81,7 +79,6 @@ export class Botpress {
     await this.restoreDebugScope()
     await this.checkJwtSecret()
     await this.checkNLUEndpoint()
-    await this.loadModules(options.modules)
     await this.initializeServices()
     await this.deployAssets()
     await this.startServer()
@@ -112,7 +109,7 @@ export class Botpress {
 
   async deployAssets() {
     try {
-      const assets = path.resolve(process.DATA_LOCATION, 'assets/studio/ui')
+      const assets = path.resolve(process.TEMP_LOCATION, 'assets/studio/ui')
 
       // Avoids overwriting the folder when developing locally on the studio
       if (fse.pathExistsSync(`${assets}/public`)) {
@@ -130,31 +127,17 @@ export class Botpress {
 
   @WrapErrorsWith('Error while discovering bots')
   async discoverBots(): Promise<void> {
-    await AppLifecycle.waitFor(AppLifecycleEvents.MODULES_READY)
+    if (!(await fse.pathExists(path.resolve(process.BOT_LOCATION, 'bot.config.json')))) {
+      const template = process.TEMPLATE_ID
+      this.logger.info(`Bot ${process.BOT_ID} doesn't exist, creating from template "${template}"`)
 
-    const botsRef = await this.workspaceService.getBotRefs()
-    const botsIds = await this.botService.getBotsIds()
-    const deleted = _.difference(botsRef, botsIds)
+      await this.botService.addBot({ id: process.BOT_ID }, { id: template })
+    }
 
-    const bots = await this.botService.getBots()
-
-    const disabledBots = [...bots.values()].filter(b => b.disabled).map(b => b.id)
-    const botsToMount = _.without(botsRef, ...disabledBots, ...deleted)
-
-    this.logger.info(
-      `Discovered ${botsToMount.length} bot${botsToMount.length === 1 ? '' : 's'}${
-        botsToMount.length ? `, mounting ${botsToMount.length === 1 ? 'it' : 'them'}...` : ''
-      }`
-    )
-
-    const maxConcurrentMount = parseInt(process.env.MAX_CONCURRENT_MOUNT || '5')
-    await Promise.map(botsToMount, botId => this.botService.mountBot(botId), { concurrency: maxConcurrentMount })
+    await this.botService.mountBot(process.BOT_ID)
   }
 
   private async initializeServices() {
-    await this.loggerDbPersister.initialize(this.database, await this.loggerProvider('LogDbPersister'))
-    this.loggerDbPersister.start()
-
     await this.loggerFilePersister.initialize(this.config!, await this.loggerProvider('LogFilePersister'))
     await this.cmsService.initialize()
     await this.nluService.initialize()
@@ -167,11 +150,6 @@ export class Botpress {
 
   private async startRealtime() {
     await this.realtimeService.installOnHttpServer(this.httpServer.httpServer)
-  }
-
-  private async loadModules(modules: sdk.ModuleEntryPoint[]): Promise<void> {
-    const loadedModules = await this.moduleLoader.loadModules(modules)
-    this.logger.info(`Loaded ${loadedModules.length} ${plur('module', loadedModules.length)}`)
   }
 
   private async startServer() {

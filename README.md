@@ -12,15 +12,17 @@ Like before, any changes made on the frontend will be available after a simple p
 Since this package MUST be started from the Botpress Server, you need to set a special environment variable on the server so it can load the correct files.
 The variable is named `DEV_STUDIO_PATH` and must point to `packages/studio-be/out`
 
-## As standalone (NOT RECOMMENDED)
+## As standalone
 
-The studio can be executed as a standalone application, but there are still a couple of things that will not work correctly.
+Start the studio by typing `yarn start path-to-bot-folder`. If the bot doesn't exist, it will be created. You can choose a different template by adding `--template template_id` as a CLI argument.
 
-When started as a standalone, these environment variables must be set:
+There are various endpoints that must be configured to get every features working properly:
 
-- BP_MODULES_PATH: Path to the modules folder of a Botpress installation
-- BP_DATA_FOLDER: Path to the data folder (bots/, global/)
-- BP_SERVER_URL: to determine
+- `MESSAGING_ENDPOINT` must be configured to start the emulator and test your bot
+
+- `NLU_ENDPOINT` is necessary to train your bot
+
+- `RUNTIME_ENDPOINT` will add a button on the UI which is a shortcut to update the bot archive on the remote runtime.
 
 ## Release workflow
 

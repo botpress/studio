@@ -1,8 +1,8 @@
 import { Logger, NLU } from 'botpress/sdk'
-import { coreActions } from 'core/app/core-client'
 import { GhostService } from 'core/bpfs'
 import { ConfigProvider } from 'core/config'
 import Database from 'core/database'
+import { RealTimePayload, RealtimeService } from 'core/realtime'
 import { TYPES } from 'core/types'
 import { inject, injectable, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
@@ -38,7 +38,8 @@ export class NLUService {
     private ghostService: GhostService,
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.Database) private database: Database,
-    @inject(TYPES.GhostService) private ghost: GhostService
+    @inject(TYPES.GhostService) private ghost: GhostService,
+    @inject(TYPES.RealtimeService) private realtime: RealtimeService
   ) {
     this.entities = new EntityRepository(this.ghostService, this)
     this.intents = new IntentRepository(this.ghostService, this)
@@ -46,7 +47,8 @@ export class NLUService {
 
   public async initialize() {
     if (!process.NLU_ENDPOINT) {
-      throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
+      this.logger.warn('NLU Service expects variable "NLU_ENDPOINT" to be set.')
+      return
     }
 
     const { nlu: nluConfig } = await this.configProvider.getBotpressConfig()
@@ -92,6 +94,10 @@ export class NLUService {
   }
 
   public async mountBot(botId: string) {
+    if (!process.env.NLU_ENDPOINT) {
+      return
+    }
+
     await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
     if (!this.app) {
       throw new Error("Can't mount bot in nlu as app is not initialized yet.")
@@ -101,6 +107,10 @@ export class NLUService {
   }
 
   public async unmountBot(botId: string) {
+    if (!process.env.NLU_ENDPOINT) {
+      return
+    }
+
     await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
     if (!this.app) {
       throw new Error("Can't unmount bot in nlu as app is not initialized yet.")
@@ -109,10 +119,11 @@ export class NLUService {
   }
 
   public async getLanguages(): Promise<string[]> {
-    if (!this.app) {
-      throw new Error("Can't get languages as app is not initialized yet.")
-    }
-    return this.app.getLanguages()
+    return []
+    // if (!this.app) {
+    //   throw new Error("Can't get languages as app is not initialized yet.")
+    // }
+    // return this.app.getLanguages()
   }
 
   private getWebsocket = () => {
@@ -120,7 +131,7 @@ export class NLUService {
       const { botId } = ts
       const trainSession = this.mapTrainSession(ts)
       const ev: NLUProgressEvent = { type: 'nlu', botId, trainSession }
-      return coreActions.notifyTrainUpdate(ev)
+      this.realtime.sendToSocket(RealTimePayload.forAdmins('statusbar.event', ev))
     }
   }
 

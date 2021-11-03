@@ -76,10 +76,7 @@ export class HintsService {
         }
 
         try {
-          if (filePath.startsWith('global/')) {
-            const [, file] = filePath.match(/global\/(.+)/i)!
-            content = content || (await this.ghost.global().readFileAsString('/', file))
-          } else {
+          if (!filePath.startsWith('global/')) {
             const [, botId, file] = filePath.match(/bots\/(.+?)\/(.+)/i)!
             content = content || (await this.ghost.forBot(botId).readFileAsString('/', file))
           }
@@ -97,10 +94,7 @@ export class HintsService {
     const hints = {}
     hints['global/base'] = BaseProvider
 
-    const files = [
-      ...(await this.ghost.global().directoryListing('/')).map(x => 'global/' + x),
-      ...(await this.ghost.bots().directoryListing('/')).map(x => 'bots/' + x)
-    ]
+    const files = [`bots/${process.BOT_ID}`]
 
     await Promise.mapSeries(files, async file => (hints[file] = await this.indexFile(file)))
 

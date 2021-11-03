@@ -10,7 +10,7 @@ import { ConfigProvider } from 'core/config/config-loader'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { CustomRouter } from 'core/routers/customRouter'
-import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility, needPermissions } from 'core/security'
+import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility } from 'core/security'
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import express, { RequestHandler, Router } from 'express'
@@ -25,7 +25,6 @@ import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
 import { LibrariesRouter } from './libraries/libraries-router'
-import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
 import { QNARouter, QNAService } from './qna'
@@ -64,7 +63,6 @@ export class StudioRouter extends CustomRouter {
   private libsRouter: LibrariesRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
-  private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
 
   constructor(
@@ -118,7 +116,6 @@ export class StudioRouter extends CustomRouter {
     this.libsRouter = new LibrariesRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
-    this.manageRouter = new ManageRouter(studioServices)
     this.codeEditorRouter = new CodeEditorRouter(studioServices)
   }
 
@@ -134,10 +131,8 @@ export class StudioRouter extends CustomRouter {
     this.libsRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
-    this.manageRouter.setupRoutes()
     this.codeEditorRouter.setupRoutes()
 
-    app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
     app.use('/api/internal', this.internalRouter.router)
 
     app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))
@@ -148,27 +143,41 @@ export class StudioRouter extends CustomRouter {
     app.use('/api/v1/studio/:botId', this.router)
 
     // This route must be accessible even when the bot is disabled
-    this.router.use('/config', this.checkTokenHeader, this.configRouter.router)
+    this.router.use('/config', this.configRouter.router)
 
-    this.router.use(checkBotVisibility(this.configProvider, this.checkTokenHeader))
+    this.router.use(checkBotVisibility(this.configProvider))
 
     this.router.get(
       '/workspaceBotsIds',
-      this.checkTokenHeader,
       this.asyncMiddleware(async (req, res) => {
         res.send([])
       })
     )
 
-    this.router.use('/actions', this.checkTokenHeader, this.actionsRouter.router)
-    this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
-    this.router.use('/nlu', this.checkTokenHeader, this.nluRouter.router)
-    this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
-    this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
+    this.router.use('/actions', this.actionsRouter.router)
+    this.router.use('/cms', this.cmsRouter.router)
+    this.router.use('/nlu', this.nluRouter.router)
+    this.router.use('/qna', this.qnaRouter.router)
+    this.router.use('/flows', this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
-    this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
-    this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
-    this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
+    this.router.use('/hints', this.hintsRouter.router)
+    this.router.use('/libraries', this.libsRouter.router)
+    this.router.use('/code-editor', this.codeEditorRouter.router)
+
+    this.router.get(
+      '/export',
+      this.asyncMiddleware(async (req, res) => {
+        const botId = req.params.botId
+        const tarball = await this.botService.exportBot(botId)
+
+        res.writeHead(200, {
+          'Content-Type': 'application/tar+gzip',
+          'Content-Disposition': `attachment; filename=bot_${botId}_${Date.now()}.tgz`,
+          'Content-Length': tarball.length
+        })
+        res.end(tarball)
+      })
+    )
 
     this.setupUnauthenticatedRoutes(app)
     this.setupStaticRoutes(app)
@@ -190,7 +199,6 @@ export class StudioRouter extends CustomRouter {
         }
 
         const branding = await this.configProvider.getBrandingConfig('studio')
-        const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
         const commonEnv = await this.httpServer.getCommonEnv()
 
         const totalEnv = `
@@ -209,7 +217,6 @@ export class StudioRouter extends CustomRouter {
               window.APP_FAVICON = "${branding.favicon}";
               window.APP_CUSTOM_CSS = "${branding.customCss}";
               window.BOT_LOCKED = ${!!bot.locked};
-              window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
               window.IS_CLOUD_BOT = ${!bot.standalone}
             })(typeof window != 'undefined' ? window : {})

@@ -37,6 +37,7 @@ export class WorkspaceService {
   ) {}
 
   async getWorkspaces(): Promise<Workspace[]> {
+    return []
     const workspaces = await this.ghost.global().readFileAsObject<Workspace[]>('/', 'workspaces.json')
     if (!workspaces || !workspaces.length) {
       throw new Error('No workspace found in workspaces.json')

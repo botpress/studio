@@ -92,7 +92,7 @@ export class HTTPServer {
       this.app.use(compression())
     }
 
-    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService, botService)
+    this.modulesRouter = new ModulesRouter(this.logger, moduleLoader, skillService, botService)
 
     this.studioRouter = new StudioRouter(
       logger,
@@ -155,31 +155,14 @@ export class HTTPServer {
     window.UUID = "${this.machineId}"
     window.BP_SERVER_URL = "${process.env.BP_SERVER_URL || ''}"
     window.IS_STANDALONE = ${process.IS_STANDALONE}
-    window.STUDIO_PORT = ${process.PORT}`
-  }
-
-  async setupCoreProxy() {
-    // If none is set, this means there's no server available for some requests
-    if (!process.env.BP_SERVER_URL && !process.core_env.CORE_PORT) {
-      return
-    }
-
-    const target = process.env.BP_SERVER_URL || `http://localhost:${process.core_env.CORE_PORT}`
-    this.app.use(
-      createProxyMiddleware({
-        target,
-        changeOrigin: true,
-        logLevel: 'silent',
-        onProxyReq: fixRequestBody
-      })
-    )
+    window.STUDIO_PORT = ${process.PORT}
+    window.MESSAGING_ENDPOINT = "${process.env.MESSAGING_ENDPOINT || ''}"
+    window.RUNTIME_ENDPOINT = "${process.env.RUNTIME_ENDPOINT || ''}"`
   }
 
   async start() {
     const botpressConfig = await this.configProvider.getBotpressConfig()
     const config = botpressConfig.httpServer
-
-    process.USE_JWT_COOKIES = yn(botpressConfig.jwtToken.useCookieStorage) || false
 
     /**
      * The loading of language models can take some time, access to Botpress is disabled until it is completed
@@ -205,22 +188,6 @@ export class HTTPServer {
 
     this.app.use(monitoringMiddleware)
 
-    if (config.session && config.session.enabled) {
-      this.app.use(
-        session({
-          secret: process.APP_SECRET,
-          secure: true,
-          httpOnly: true,
-          domain: config.externalUrl,
-          maxAge: ms(config.session.maxAge)
-        })
-      )
-    }
-
-    if (process.USE_JWT_COOKIES) {
-      this.app.use(cookieParser())
-    }
-
     this.app.use(bodyParser.json({ limit: config.bodyLimit }))
     this.app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -238,7 +205,7 @@ export class HTTPServer {
       )
     }
 
-    this.app.use('/assets/studio/ui', this.guardWhiteLabel(), express.static(resolveStudioAsset('')))
+    this.app.use('/assets/studio/ui', express.static(resolveStudioAsset('')))
     this.app.use(`${BASE_API_PATH}/studio/modules`, this.modulesRouter.router)
 
     await this.studioRouter.setupRoutes(this.app)
@@ -278,22 +245,10 @@ export class HTTPServer {
       this.httpServer.listen(process.PORT, undefined, config.backlog, () => callback(undefined))
     })
 
-    await this.setupCoreProxy()
-
     this.app.use('/', (req, res) => {
-      res.sendStatus(200)
-      // res.redirect(`${process.EXTERNAL_URL}`)
+      res.redirect(`/studio/${process.BOT_ID}`)
     })
 
     return this.app
-  }
-
-  private guardWhiteLabel() {
-    return (req, res, next) => {
-      if (path.normalize(req.path) === '/custom-theme.css' && (!process.IS_PRO_ENABLED || !process.IS_LICENSED)) {
-        return res.sendStatus(404)
-      }
-      next()
-    }
   }
 }

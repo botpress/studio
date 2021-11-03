@@ -24,6 +24,8 @@ declare global {
     IS_STANDALONE: boolean
     STUDIO_PORT: number
     IS_BOT_MOUNTED: boolean
+    MESSAGING_ENDPOINT?: string
+    RUNTIME_ENDPOINT?: string
     BOT_LOCKED: boolean
     WORKSPACE_ID: string
     SOCKET_TRANSPORTS: string[]

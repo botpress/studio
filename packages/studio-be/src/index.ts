@@ -1,6 +1,7 @@
 global['NativePromise'] = global.Promise
 
 import fs from 'fs'
+import fse from 'fs-extra'
 import path from 'path'
 import yn from 'yn'
 
@@ -52,7 +53,6 @@ process.STUDIO_LOCATION = process.pkg
   : path.resolve(__dirname) // e.g. /dist/..
 
 process.PROJECT_LOCATION = process.env.PROJECT_LOCATION || process.STUDIO_LOCATION
-process.DATA_LOCATION = path.resolve(process.PROJECT_LOCATION, './data')
 
 process.stderr.write = stripDeprecationWrite
 
@@ -81,11 +81,8 @@ try {
     defaultVerbosity = Number(process.env.VERBOSITY_LEVEL)
   }
 
-  process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
-
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
-  process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
   process.STUDIO_VERSION = metadata.version
   process.DEV_BRANCH = metadata['devBranch']
   process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
@@ -93,32 +90,31 @@ try {
   require('yargs')
     .command(
       ['serve', '$0'],
-      'Start your botpress server',
+      'Start the studio. If the bot doesnt exist, it will be created',
       {
         dataFolder: {
           alias: ['d', 'data'],
           description: 'Starts Botpress in standalone mode on that specific data folder',
           type: 'string'
+        },
+        template: {
+          description: 'If bot doesnt exist, it will use this template',
+          type: 'string'
         }
       },
       async argv => {
-        if (process.env.BP_DATA_FOLDER) {
-          process.DATA_LOCATION = process.env.BP_DATA_FOLDER
-          process.IS_STANDALONE = yn(process.env.IS_STANDALONE) || false
-        } else if (argv.dataFolder) {
-          process.IS_STANDALONE = true
-          process.IS_PRO_ENABLED = false
-          process.BPFS_STORAGE = 'disk'
-          process.IS_PRODUCTION = false
-          process.CLUSTER_ENABLED = false
+        const botId = argv._?.[0]
 
-          process.DATA_LOCATION = path.resolve(argv.dataFolder)
-        } else {
-          console.error(
-            "Data folder must be provided. Either set the environment variable 'BP_DATA_FOLDER' or start the binary with 'studio.exe -d /path/to/data' "
-          )
-          process.exit(1)
-        }
+        process.BOT_LOCATION = path.resolve(botId)
+        process.TEMP_LOCATION = path.resolve(process.BOT_LOCATION, '.state')
+        process.BOT_ID = path.basename(botId)
+        process.IS_STANDALONE = true
+        process.TEMPLATE_ID = argv.template || 'empty-bot'
+
+        // console.error(
+        //   "Data folder must be provided. Either set the environment variable 'BP_DATA_FOLDER' or start the binary with 'studio.exe -d /path/to/data' "
+        // )
+        // process.exit(1)
 
         process.VERBOSITY_LEVEL = defaultVerbosity
         process.distro = await getos()
@@ -126,6 +122,7 @@ try {
         require('./core/app/bootstrap')
       }
     )
+
     .help().argv
 } catch (err) {
   global.printErrorDefault(err)

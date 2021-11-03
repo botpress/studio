@@ -4,8 +4,6 @@ import io from 'socket.io-client'
 import { authEvents } from '~/util/Auth'
 
 class EventBus extends EventEmitter2 {
-  private adminSocket: SocketIOClient.Socket
-  private guestSocket: SocketIOClient.Socket
   private studioSocket: SocketIOClient.Socket
   static default
 
@@ -29,8 +27,7 @@ class EventBus extends EventEmitter2 {
       return
     }
 
-    const socket = name.startsWith('guest.') ? this.guestSocket : this.adminSocket
-    socket && socket.emit('event', { name, data })
+    this.studioSocket.emit('event', { name, data })
   }
 
   updateVisitorId = (newId: string, userIdScope?: string) => {
@@ -38,7 +35,7 @@ class EventBus extends EventEmitter2 {
   }
 
   private updateVisitorSocketId() {
-    window.__BP_VISITOR_SOCKET_ID = this.guestSocket.id
+    window.__BP_VISITOR_SOCKET_ID = this.studioSocket.id
   }
 
   setup = (userIdScope?: string) => {
@@ -67,27 +64,12 @@ class EventBus extends EventEmitter2 {
       socket.disconnect()
     }
 
-    closeSocket(this.adminSocket)
-    closeSocket(this.guestSocket)
     closeSocket(this.studioSocket)
 
     const socketUrl = window['BP_SOCKET_URL'] || window.location.origin
     const transports = window.SOCKET_TRANSPORTS
 
-    this.adminSocket = io(`${socketUrl}/admin`, {
-      query,
-      transports,
-      path: `${window['ROOT_PATH']}/socket.io`
-    })
-    this.adminSocket.on('event', this.dispatchSocketEvent)
-
-    this.guestSocket = io(`${socketUrl}/guest`, { query, transports, path: `${window['ROOT_PATH']}/socket.io` })
-
-    this.guestSocket.on('connect', this.updateVisitorSocketId.bind(this))
-    this.guestSocket.on('event', this.dispatchSocketEvent)
-
-    // TODO fix url
-    this.studioSocket = io(`http://localhost:${window.STUDIO_PORT}/studio`, {
+    this.studioSocket = io(`${socketUrl}/studio`, {
       query,
       transports,
       path: `${window['ROOT_PATH']}/socket.io`

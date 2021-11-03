@@ -2,21 +2,17 @@ import { Flow, Logger } from 'botpress/sdk'
 import { parseActionInstruction } from 'common/action'
 import { ArrayCache } from 'common/array-cache'
 import { ObjectCache } from 'common/object-cache'
-import { TreeSearch, PATH_SEPARATOR } from 'common/treeSearch'
-import { FlowMutex, FlowView, NodeView } from 'common/typings'
-import { coreActions } from 'core/app/core-client'
+import { FlowView, NodeView } from 'common/typings'
 import { TYPES } from 'core/app/types'
 import { BotService } from 'core/bots'
 import { GhostService, ScopedGhostService } from 'core/bpfs'
 import { JobService } from 'core/distributed/job-service'
-import { KeyValueStore, KvsService } from 'core/kvs'
+import { RealTimePayload, RealtimeService } from 'core/realtime'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
-import { Memoize } from 'lodash-decorators'
 import LRUCache from 'lru-cache'
-import moment from 'moment'
 import ms from 'ms'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
@@ -66,11 +62,11 @@ export class FlowService {
     private logger: Logger,
     @inject(TYPES.GhostService) private ghost: GhostService,
     @inject(TYPES.ObjectCache) private cache: ObjectCache,
-    @inject(TYPES.KeyValueStore) private kvs: KeyValueStore,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.JobService) private jobService: JobService,
     @inject(TYPES.QnaService) private qnaService: QNAService,
-    @inject(TYPES.NLUService) private nluService: NLUService
+    @inject(TYPES.NLUService) private nluService: NLUService,
+    @inject(TYPES.RealtimeService) private realtime: RealtimeService
   ) {
     this._listenForCacheInvalidation()
     this.botService.flowService = this
@@ -110,11 +106,11 @@ export class FlowService {
       scope = new ScopedFlowService(
         botId,
         this.ghost.forBot(botId),
-        this.kvs.forBot(botId),
         this.logger,
         this.botService,
         this.qnaService,
         this.nluService,
+        this.realtime,
         (key, flow, newKey) => this.invalidateFlow(botId, key, flow, newKey)
       )
       this.scopes[botId] = scope
@@ -130,11 +126,11 @@ export class ScopedFlowService {
   constructor(
     private botId: string,
     private ghost: ScopedGhostService,
-    private kvs: KvsService,
     private logger: Logger,
     private botService: BotService,
     private qnaService: QNAService,
     private nluService: NLUService,
+    private realtime: RealtimeService,
     private invalidateFlow: (key: string, flow?: FlowView, newKey?: string) => void
   ) {
     this.cache = new ArrayCache<string, FlowView>(
@@ -248,26 +244,14 @@ export class ScopedFlowService {
       }
     })
 
-    const key = this._buildFlowMutexKey(flowPath)
-    const currentMutex = (await this.kvs.get(key)) as FlowMutex
-    if (currentMutex) {
-      currentMutex.remainingSeconds = this._getRemainingSeconds(currentMutex.lastModifiedAt)
-    }
-
     return {
       name: flowPath,
       location: flowPath,
       nodes: nodeViews,
       links: uiEq.links,
-      currentMutex,
+
       ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description'])
     }
-  }
-
-  private _getRemainingSeconds(lastModifiedAt: Date): number {
-    const now = moment()
-    const freeTime = moment(lastModifiedAt).add(MUTEX_LOCK_DELAY_SECONDS, 'seconds')
-    return Math.ceil(Math.max(0, freeTime.diff(now, 'seconds')))
   }
 
   async insertFlow(flow: FlowView, userEmail: string) {
@@ -279,30 +263,21 @@ export class ScopedFlowService {
 
     await this._upsertFlow(flow)
 
-    const currentMutex = await this._testAndLockMutex(userEmail, flow.location || flow.name)
-    const mutexFlow: FlowView = { ...flow, currentMutex }
-
     await this.notifyChanges({
       botId: this.botId,
       name: flow.name,
       modification: 'create',
-      payload: mutexFlow,
       userEmail
     })
   }
 
   async updateFlow(flow: FlowView, userEmail: string) {
-    const currentMutex = await this._testAndLockMutex(userEmail, flow.location || flow.name)
-
     await this._upsertFlow(flow)
-
-    const mutexFlow: FlowView = { ...flow, currentMutex }
 
     await this.notifyChanges({
       name: flow.name,
       botId: this.botId,
       modification: 'update',
-      payload: mutexFlow,
       userEmail
     })
   }
@@ -377,12 +352,6 @@ export class ScopedFlowService {
       nextFlowName: newName
     })
 
-    await coreActions.onModuleEvent('onFlowRenamed', {
-      botId: this.botId,
-      previousFlowName: previousName,
-      nextFlowName: newName
-    })
-
     await this.notifyChanges({
       name: previousName,
       botId: this.botId,
@@ -393,47 +362,33 @@ export class ScopedFlowService {
   }
 
   private notifyChanges = async (modification: FlowModification) => {
-    await coreActions.notifyFlowChanges(modification)
+    const payload = RealTimePayload.forAdmins('flow.changes', modification)
+    this.realtime.sendToSocket(payload)
   }
 
-  private _buildFlowMutexKey(flowLocation: string): string {
-    return `FLOWMUTEX: ${flowLocation}`
-  }
+  // private async _testAndLockMutex(currentFlowEditor: string, flowLocation: string): Promise<FlowMutex> {
+  //   const key = this._buildFlowMutexKey(flowLocation)
 
-  private async _testAndLockMutex(currentFlowEditor: string, flowLocation: string): Promise<FlowMutex> {
-    const key = this._buildFlowMutexKey(flowLocation)
+  //   const currentMutex = ((await this.kvs.get(key)) || {}) as FlowMutex
+  //   const { lastModifiedBy: flowOwner, lastModifiedAt } = currentMutex
 
-    const currentMutex = ((await this.kvs.get(key)) || {}) as FlowMutex
-    const { lastModifiedBy: flowOwner, lastModifiedAt } = currentMutex
+  //   const now = new Date()
+  //   const remainingSeconds = this._getRemainingSeconds(now)
 
-    const now = new Date()
-    const remainingSeconds = this._getRemainingSeconds(now)
+  //   const isMutexExpired = !this._getRemainingSeconds(lastModifiedAt)
+  //   if (!flowOwner || isMutexExpired) {
+  //     const mutex: FlowMutex = {
+  //       lastModifiedBy: currentFlowEditor,
+  //       lastModifiedAt: now
+  //     }
+  //     await this.kvs.set(key, mutex)
 
-    if (currentFlowEditor === flowOwner) {
-      const mutex: FlowMutex = {
-        lastModifiedBy: flowOwner,
-        lastModifiedAt: now
-      }
-      await this.kvs.set(key, mutex)
+  //     mutex.remainingSeconds = remainingSeconds
+  //     return mutex
+  //   }
 
-      mutex.remainingSeconds = remainingSeconds
-      return mutex
-    }
-
-    const isMutexExpired = !this._getRemainingSeconds(lastModifiedAt)
-    if (!flowOwner || isMutexExpired) {
-      const mutex: FlowMutex = {
-        lastModifiedBy: currentFlowEditor,
-        lastModifiedAt: now
-      }
-      await this.kvs.set(key, mutex)
-
-      mutex.remainingSeconds = remainingSeconds
-      return mutex
-    }
-
-    throw new MutexError('Flow is currently locked by someone else')
-  }
+  //   throw new MutexError('Flow is currently locked by someone else')
+  //}
 
   private async prepareSaveFlow(flow: FlowView, isNew: boolean) {
     const schemaError = validateFlowSchema(flow)
@@ -443,7 +398,6 @@ export class ScopedFlowService {
 
     if (!isNew) {
       await this.qnaService.onFlowChanged({ botId: this.botId, flow })
-      await coreActions.onModuleEvent('onFlowChanged', { botId: this.botId, flow })
     }
 
     const uiContent = {

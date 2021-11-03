@@ -17,12 +17,6 @@ export const GhostContainerModule = new ContainerModule((bind: interfaces.Bind) 
   bind<ObjectCache>(TYPES.ObjectCache)
     .to(MemoryObjectCache)
     .inSingletonScope()
-    .when(() => !process.CLUSTER_ENABLED || !process.IS_PRO_ENABLED)
-
-  bind<ObjectCache>(TYPES.ObjectCache)
-    .to(RedisObjectCache)
-    .inSingletonScope()
-    .when(() => process.CLUSTER_ENABLED && process.IS_PRO_ENABLED)
 
   bind<DiskStorageDriver>(TYPES.DiskStorageDriver)
     .to(DiskStorageDriver)

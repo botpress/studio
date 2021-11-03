@@ -6,6 +6,7 @@ const { exec } = require('child_process')
 const file = require('gulp-file')
 const fse = require('fs-extra')
 const { execute } = require('./utils/exec')
+const buildJsonSchemas = require('./jsonschemas')
 
 const studioRoot = './packages/studio-be'
 
@@ -19,6 +20,11 @@ const start = cb => {
 
 const buildBackend = async () => {
   await execute('yarn && yarn build', { cwd: 'packages/studio-be' })
+}
+
+const buildSchemas = cb => {
+  buildJsonSchemas()
+  cb()
 }
 
 const buildUi = async cb => {
@@ -105,6 +111,7 @@ module.exports = {
   buildUi,
   clean,
   cleanAssets,
+  buildSchemas,
   copy,
   copyBuiltin,
   writeMetadata,

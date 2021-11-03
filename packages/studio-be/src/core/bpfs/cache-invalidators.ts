@@ -46,7 +46,7 @@ export namespace CacheInvalidators {
     install(objectCache: ObjectCache) {
       this.cache = objectCache
 
-      const foldersToWatch = [path.join(process.DATA_LOCATION, 'bots'), path.join(process.DATA_LOCATION, 'global')]
+      const foldersToWatch = [process.BOT_LOCATION]
 
       const watcher = chokidar.watch(foldersToWatch, {
         ignoreInitial: true,
@@ -69,7 +69,7 @@ export namespace CacheInvalidators {
         return
       }
 
-      const relativePath = forceForwardSlashes(path.relative(process.DATA_LOCATION, file))
+      const relativePath = forceForwardSlashes(path.relative(process.BOT_LOCATION, file))
       await this.cache.invalidateStartingWith(path.dirname(relativePath))
       this.cache.events.emit('invalidation', `file::${relativePath}`)
     }

@@ -25,7 +25,6 @@ export const getSocketTransports = (config: BotpressConfig): string[] => {
 @injectable()
 export class RealtimeService {
   private readonly ee: EventEmitter2
-  private useRedis: boolean
 
   constructor(
     @inject(TYPES.Logger)
@@ -35,8 +34,6 @@ export class RealtimeService {
     @inject(TYPES.AuthService) private authService: AuthService
   ) {
     this.ee = new EventEmitter2({ wildcard: true, maxListeners: 100 })
-
-    this.useRedis = process.CLUSTER_ENABLED && Boolean(process.env.REDIS_URL) && process.IS_PRO_ENABLED
 
     PersistedConsoleLogger.LogStreamEmitter.onAny((type, level, message, args) => {
       this.sendToSocket(RealTimePayload.forAdmins(type as string, { level, message, args }))
@@ -57,10 +54,6 @@ export class RealtimeService {
       origins: '*:*',
       serveClient: false
     })
-
-    if (this.useRedis) {
-      io.adapter(redisAdapter({ pubClient: redisFactory('commands'), subClient: redisFactory('socket') }))
-    }
 
     const studio = io.of('/studio')
     this.setupStudioSocket(studio)
@@ -100,12 +93,6 @@ export class RealtimeService {
   }
 
   setupStudioSocket(studio: socketio.Namespace): void {
-    if (process.USE_JWT_COOKIES) {
-      studio.use(this.checkCookieToken)
-    } else {
-      studio.use(socketioJwt.authorize({ secret: process.APP_SECRET, handshake: true }))
-    }
-
     studio.on('connection', socket => {
       const visitorId = _.get(socket, 'handshake.query.visitorId')
 

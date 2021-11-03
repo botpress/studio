@@ -13,8 +13,10 @@ import { GhostService } from 'core/bpfs'
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
+import fse from 'fs-extra'
 
 import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
+import { getBuiltinPath } from 'core/misc/list-dir'
 
 export const FILENAME_REGEX = /^[0-9a-zA-Z_\-.]+$/
 
@@ -120,7 +122,7 @@ export class Editor {
   async readFile(name: string, filePath: string) {
     let fileContent = ''
     try {
-      const typings = fs.readFileSync(filePath, 'utf-8')
+      const typings = await fse.readFile(filePath, 'utf-8')
 
       fileContent = typings.toString()
       if (name === 'botpress.d.ts' || name === 'botpress.runtime.d.ts') {
@@ -138,11 +140,17 @@ export class Editor {
       return this._typings
     }
 
-    const ghost = this.bpfs.root()
-    const botConfigSchema = await ghost.readFileAsString('/', 'bot.config.schema.json')
-    const botpressConfigSchema = await ghost.readFileAsString('/', 'botpress.config.schema.json')
+    const loadSchema = async fileName => {
+      const content = await fse.readFile(path.join(__dirname, '../../core/config/schemas', fileName))
+      return content.toString()
+    }
+
+    const botConfigSchema = await loadSchema('bot.config.schema.json')
+    const botpressConfigSchema = await loadSchema('botpress.config.schema.json')
 
     const moduleTypings = await this.getModuleTypings()
+
+    //  const builtinPath = path.resolve(getBuiltinPath('actions'), actionName)
 
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },

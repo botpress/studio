@@ -14,7 +14,7 @@ import { BPError, FileRevision, StorageDriver } from '../'
 
 @injectable()
 export class DiskStorageDriver implements StorageDriver {
-  resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
+  resolvePath = (p: string) => path.resolve(process.BOT_LOCATION, p)
 
   private readonly lockfilePath = this.resolvePath('locks')
   private lockOptions = (file: string): lockfile.LockOptions => ({

@@ -46,5 +46,5 @@ export const resolveStudioAsset = (file: string) => {
     return path.resolve(process.STUDIO_LOCATION, '../../studio-ui/', file)
   }
 
-  return path.resolve(process.DATA_LOCATION, 'assets/studio/ui', file)
+  return path.resolve(process.TEMP_LOCATION, 'assets/studio/ui', file)
 }

@@ -36,8 +36,14 @@ declare namespace NodeJS {
     STUDIO_LOCATION: string
     /** Either equal to studio location, or to the botpress source code file */
     PROJECT_LOCATION: string
-    /** Location of the bots/, global/ and storage/ folders à */
-    DATA_LOCATION: string
+    /** Path to the bot folder */
+    BOT_LOCATION: string
+    BOT_ID: string
+    /** Path to the temporary location where files like assets are stored */
+    TEMP_LOCATION: string
+    /** ID of the template (empty if none) */
+    TEMPLATE_ID?: string
+
     LOADED_MODULES: { [module: string]: string }
     pkg: any
     IS_LICENSED?: boolean
@@ -54,7 +60,7 @@ declare namespace NodeJS {
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
     /** This property is set when the binary is built in a branch other than master */
-    DEV_BRANCH?: string,
+    DEV_BRANCH?: string
     NLU_ENDPOINT?: string
   }
 }

@@ -1,6 +1,5 @@
 import { BotConfig, Logger, ListenHandle, BotTemplate } from 'botpress/sdk'
 import { BotEditSchema } from 'common/validation'
-import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
 import { FileContent, GhostService, ReplaceContent, ScopedGhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
@@ -144,11 +143,12 @@ export class BotService {
   }
 
   async getBotsIds(ignoreCache?: boolean): Promise<string[]> {
-    if (!this._botIds || ignoreCache) {
-      this._botIds = (await this.ghostService.bots().directoryListing('/', BOT_CONFIG_FILENAME)).map(path.dirname)
-    }
+    return [process.BOT_ID]
+    // if (!this._botIds || ignoreCache) {
+    //   this._botIds = (await this.ghostService.bots().directoryListing('/', BOT_CONFIG_FILENAME)).map(path.dirname)
+    // }
 
-    return this._botIds
+    // return this._botIds
   }
 
   async updateBot(botId: string, updatedBot: Partial<BotConfig>): Promise<void> {
@@ -159,10 +159,6 @@ export class BotService {
 
     if (!(await this.botExists(botId))) {
       throw new Error(`Bot "${botId}" doesn't exist`)
-    }
-
-    if (!process.IS_PRO_ENABLED && !process.IS_STANDALONE && updatedBot.languages && updatedBot.languages.length > 1) {
-      throw new Error('A single language is allowed on community edition.')
     }
 
     const actualBot = await this.configProvider.getBotConfig(botId)
@@ -223,7 +219,7 @@ export class BotService {
       to: [BOT_ID_PLACEHOLDER]
     }
 
-    return this.ghostService.forBot(botId).exportToArchiveBuffer('models/**/*', replaceContent)
+    return this.ghostService.forBot(botId).exportToArchiveBuffer('.state/**', replaceContent)
   }
 
   async duplicateBot(sourceBotId: string, destBotId: string, overwriteDest: boolean = false) {
@@ -265,12 +261,7 @@ export class BotService {
     return detailed.filter(x => x !== undefined) as BotTemplate[]
   }
 
-  async makeBotId(botId: string, workspaceId: string) {
-    const workspace = await this.workspaceService.findWorkspace(workspaceId)
-    return workspace?.botPrefix ? `${workspace.botPrefix}__${botId}` : botId
-  }
-
-  async addBot(bot: BotConfig, botTemplate: BotTemplate): Promise<void> {
+  async addBot(bot: Partial<BotConfig>, botTemplate: Partial<BotTemplate>): Promise<void> {
     const { error } = Joi.validate(bot, BotCreationSchema)
     if (error) {
       throw new InvalidOperationError(`An error occurred while creating the bot: ${error.message}`)
@@ -311,16 +302,20 @@ export class BotService {
     return hooks.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
   }
 
-  private async _createBotFromTemplate(botConfig: BotConfig, template: BotTemplate): Promise<BotConfig | undefined> {
-    const templatePath = path.resolve(getBuiltinPath('bot-templates'), template.id)
+  private async _createBotFromTemplate(
+    botConfig: Partial<BotConfig>,
+    template: Partial<BotTemplate>
+  ): Promise<BotConfig | undefined> {
+    const templatePath = path.resolve(getBuiltinPath('bot-templates'), template.id!)
     const templateConfigPath = path.resolve(templatePath, BOT_CONFIG_FILENAME)
 
     try {
-      const scopedGhost = this.ghostService.forBot(botConfig.id)
+      const scopedGhost = this.ghostService.forBot(botConfig.id!)
       const files = await this._loadBotTemplateFiles(templatePath)
 
       if (!(await fse.pathExists(templateConfigPath))) {
-        throw new Error("Bot template doesn't exist")
+        this.logger.error("Bot template doesn't exist. Please provide a valid template")
+        process.exit(1)
       }
 
       const templateConfig = JSON.parse(await fse.readFile(templateConfigPath, 'utf-8'))
@@ -341,13 +336,13 @@ export class BotService {
       await this.addContentTypes(scopedGhost)
       await this.addHooks(scopedGhost)
 
-      const flowActions = await this.flowService.forBot(botConfig.id).getAllFlowActions()
-      await this.addLocalBotActions(botConfig.id, flowActions)
+      const flowActions = await this.flowService.forBot(botConfig.id!).getAllFlowActions()
+      await this.addLocalBotActions(botConfig.id!, flowActions)
 
       return mergedConfigs
     } catch (err) {
       this.logger
-        .forBot(botConfig.id)
+        .forBot(botConfig.id!)
         .attachError(err)
         .error(`Error creating bot ${botConfig.id} from template "${template.name}"`)
     }
@@ -371,11 +366,6 @@ export class BotService {
       const config = await this.configProvider.getBotConfig(botId)
       return this.migrationService.botMigration.executeMissingBotMigrations(botId, config.version)
     }
-
-    for (const bot of await this.getBotsIds()) {
-      const config = await this.configProvider.getBotConfig(bot)
-      await this.migrationService.botMigration.executeMissingBotMigrations(bot, config.version)
-    }
   }
 
   async addLocalBotActions(botId: string, flowActions: string[]) {
@@ -394,8 +384,6 @@ export class BotService {
 
       if (await fse.pathExists(builtinActionsPath)) {
         content = await fse.readFile(builtinActionsPath)
-      } else if (await this.ghostService.global().fileExists('actions', actionName)) {
-        content = await this.ghostService.global().readFileAsBuffer('actions', actionName)
       }
 
       if (content) {
@@ -405,7 +393,8 @@ export class BotService {
   }
 
   public async botExists(botId: string, ignoreCache?: boolean): Promise<boolean> {
-    return (await this.getBotsIds(ignoreCache)).includes(botId)
+    return true
+    // return (await this.getBotsIds(ignoreCache)).includes(botId)
   }
 
   @WrapErrorsWith(args => `Could not delete bot '${args[0]}'`, { hideStackTrace: true })

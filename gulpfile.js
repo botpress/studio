@@ -13,7 +13,10 @@ gulp.task('package:studio', gulp.series([studio.package]))
 
 gulp.task('component:create', gulp.series([component.create]))
 
-gulp.task('build:studio-be', gulp.series([studio.writeMetadata, studio.buildBackend, studio.copyBuiltin]))
+gulp.task(
+  'build:studio-be',
+  gulp.series([studio.writeMetadata, studio.buildBackend, studio.copyBuiltin, studio.buildSchemas])
+)
 gulp.task('build:studio-ui', gulp.series([studio.buildUi, studio.clean, studio.cleanAssets, studio.copy]))
 
 gulp.task('build', gulp.series([studio.buildNativeExtensions, 'build:studio-be', 'build:shared', 'build:studio-ui']))

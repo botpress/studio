@@ -11,7 +11,6 @@ import { ModuleLoader, ModuleResolver } from 'core/modules'
 import fs from 'fs'
 import _ from 'lodash'
 import { showBanner } from './banner'
-import { coreActions } from './core-client'
 
 async function setupEnv(app: BotpressApp) {
   await app.database.initialize()
@@ -95,18 +94,7 @@ async function start() {
   await setupDebugLogger(app.logger)
   await setupEnv(app)
 
-  const globalConfig = await app.config.getBotpressConfig()
-  const modules = _.uniqBy(globalConfig.modules, x => x.location)
-  const enabledModules = modules.filter(m => m.enabled)
-
   const logger = await getLogger(app.logger, 'Launcher')
-  const resolver = new ModuleResolver(logger)
-
-  const { loadedModules, erroredModules } = await resolveModules(enabledModules, resolver)
-
-  for (const loadedModule of loadedModules) {
-    process.LOADED_MODULES[loadedModule.entryPoint.definition.name] = loadedModule.moduleLocation
-  }
 
   showBanner({ title: 'Botpress Studio', version: process.STUDIO_VERSION, logScopeLength: 9, bannerWidth: 75, logger })
 
@@ -126,15 +114,7 @@ This is a fatal error, process will exit.`
     }
   }
 
-  for (const { entry, err, message } of erroredModules) {
-    if (err) {
-      logger.attachError(err).error(`Error while loading module ${entry.location}`)
-    } else {
-      logger.error(`Error while loading module ${entry.location}: ${message}`)
-    }
-  }
-
-  await app.botpress.start({ modules: loadedModules.map(m => m.entryPoint) }).catch(err => {
+  await app.botpress.start().catch(err => {
     logger.attachError(err).error('Error starting Botpress Studio')
 
     if (!process.IS_FAILSAFE) {
@@ -143,7 +123,6 @@ This is a fatal error, process will exit.`
   })
 
   logger.info(chalk.gray(`Studio is listening at: ${process.LOCAL_URL}`))
-  await coreActions.setStudioReady()
 }
 
 start().catch(global.printErrorDefault)
