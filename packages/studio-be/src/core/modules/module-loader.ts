@@ -1,4 +1,4 @@
-import { Condition, Logger, ModuleDefinition, ModuleEntryPoint, Skill } from 'botpress/sdk'
+import { Logger, ModuleDefinition, ModuleEntryPoint, Skill } from 'botpress/sdk'
 import { TYPES } from 'core/types'
 import { inject, injectable, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
@@ -49,16 +49,6 @@ export class ModuleLoader {
     }
 
     return true
-  }
-
-  public getDialogConditions(): Condition[] {
-    const modules = Array.from(this.entryPoints.values())
-    const conditions = _.flatMap(
-      modules.filter(module => module.dialogConditions),
-      x => x.dialogConditions
-    ) as Condition[]
-
-    return _.orderBy(conditions, x => x?.displayOrder)
   }
 
   public getLoadedModules(): ModuleDefinition[] {

@@ -35,7 +35,7 @@ const CommandPalette: FC<Props> = props => {
         label: lang.tr('flows'),
         type: 'goto',
         category: 'studio',
-        url: `/${window.USE_ONEFLOW ? 'flows' : 'flows/main'}`
+        url: '/flows/main'
       },
       { label: lang.tr('content'), type: 'goto', category: 'studio', url: '/content' },
       {

@@ -90,10 +90,6 @@ const CatchAll = props => {
   const nbNext = _.get(props.currentFlow, 'catchAll.next.length', 0)
   const nbReceive = _.get(props.currentFlow, 'catchAll.onReceive.length', 0)
 
-  if (window.USE_ONEFLOW) {
-    return null
-  }
-
   return (
     <Fragment>
       <Button onClick={props.handleFlowWideClicked} minimal>
