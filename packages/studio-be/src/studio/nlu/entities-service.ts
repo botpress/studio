@@ -1,4 +1,5 @@
 import * as sdk from 'botpress/sdk'
+import { getEntityId } from 'common/entity-id'
 import { GhostService } from 'core/bpfs'
 import { sanitizeFileName } from 'core/misc/utils'
 import * as CacheManager from './cache-manager'
@@ -21,12 +22,6 @@ const SYSTEM_ENTITIES = [
   'url',
   'volume'
 ]
-
-const getEntityId = (entityName: string) =>
-  entityName
-    .trim()
-    .toLowerCase()
-    .replace(/[\t\s]/g, '-')
 
 const getSystemEntities = (): sdk.NLU.EntityDefinition[] => {
   return [...SYSTEM_ENTITIES, 'any'].map(name => {

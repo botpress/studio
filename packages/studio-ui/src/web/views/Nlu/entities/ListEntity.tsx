@@ -1,9 +1,9 @@
 import { Button, Colors, FormGroup, Icon, InputGroup, Position, Radio, RadioGroup, Tooltip } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang, toast, utils } from 'botpress/shared'
+import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState, useReducer } from 'react'
-import { getEntityId } from './entity-id'
 
 import { Occurrence } from './ListEntityOccurrence'
 import style from './style.scss'

@@ -1,11 +1,11 @@
 import { Button, Callout, Classes, Dialog, FormGroup, HTMLSelect, Intent } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
+import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
 
 import { NluClient } from '../client'
-import { getEntityId } from './entity-id'
 
 const AVAILABLE_TYPES = [
   {

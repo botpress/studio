@@ -36,8 +36,6 @@ const emptySlotNode = (slot: ParsedSlot): TextJSON => ({
   marks: []
 })
 
-// Unit tests are available for this function but somehow not working on our CI
-// uncomment when editing this function
 export const textNodesFromUtterance = (
   allSlots: NLU.SlotDefinition[],
   rawUtterance: string,
@@ -51,7 +49,7 @@ export const textNodesFromUtterance = (
       const from = previousSlot?.cleanPosition.start ?? 0
       const to = pslot.cleanPosition.start
 
-      const slotExists = allSlots.map(s => s.name).includes(pslot.name)
+      const slotExists = allSlots.some(s => s.name === pslot.name)
       const pslotNode = slotExists ? slotNode(pslot, idx) : emptySlotNode(pslot)
 
       return [textNode(utterance, from, to), pslotNode]
