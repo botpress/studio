@@ -10,10 +10,8 @@ import { ConfigProvider } from 'core/config/config-loader'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { CustomRouter } from 'core/routers/customRouter'
-import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility } from 'core/security'
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
-import { WorkspaceService } from 'core/users'
-import express, { RequestHandler, Router } from 'express'
+import express, { Router } from 'express'
 import rewrite from 'express-urlrewrite'
 import _ from 'lodash'
 
@@ -23,7 +21,7 @@ import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
-import { InternalRouter } from './internal-router'
+
 import { LibrariesRouter } from './libraries/libraries-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
@@ -32,8 +30,6 @@ import { fixStudioMappingMw } from './utils/api-mapper'
 
 export interface StudioServices {
   logger: Logger
-  authService: AuthService
-  workspaceService: WorkspaceService
   botService: BotService
   configProvider: ConfigProvider
   cmsService: CMSService
@@ -50,8 +46,6 @@ export interface StudioServices {
 }
 
 export class StudioRouter extends CustomRouter {
-  private checkTokenHeader: RequestHandler
-
   private botpressConfig?: BotpressConfig
   private cmsRouter: CMSRouter
   private mediaRouter: MediaRouter
@@ -59,7 +53,6 @@ export class StudioRouter extends CustomRouter {
   private flowsRouter: FlowsRouter
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
-  private internalRouter: InternalRouter
   private libsRouter: LibrariesRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
@@ -67,8 +60,6 @@ export class StudioRouter extends CustomRouter {
 
   constructor(
     logger: Logger,
-    private authService: AuthService,
-    private workspaceService: WorkspaceService,
     private botService: BotService,
     private configProvider: ConfigProvider,
     actionService: ActionService,
@@ -85,13 +76,10 @@ export class StudioRouter extends CustomRouter {
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
-    this.checkTokenHeader = checkTokenHeader(this.authService, TOKEN_AUDIENCE)
 
     const studioServices: StudioServices = {
       logger,
-      authService: this.authService,
       mediaServiceProvider,
-      workspaceService,
       actionService,
       flowService,
       botService,
@@ -112,7 +100,6 @@ export class StudioRouter extends CustomRouter {
     this.mediaRouter = new MediaRouter(studioServices)
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
-    this.internalRouter = new InternalRouter(studioServices)
     this.libsRouter = new LibrariesRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
@@ -127,13 +114,10 @@ export class StudioRouter extends CustomRouter {
     await this.mediaRouter.setupRoutes(this.botpressConfig)
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
-    this.internalRouter.setupRoutes()
     this.libsRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
     this.codeEditorRouter.setupRoutes()
-
-    app.use('/api/internal', this.internalRouter.router)
 
     app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))
 
@@ -144,8 +128,6 @@ export class StudioRouter extends CustomRouter {
 
     // This route must be accessible even when the bot is disabled
     this.router.use('/config', this.configRouter.router)
-
-    this.router.use(checkBotVisibility(this.configProvider))
 
     this.router.get(
       '/workspaceBotsIds',

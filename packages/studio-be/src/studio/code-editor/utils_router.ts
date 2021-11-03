@@ -3,35 +3,28 @@ import yn from 'yn'
 
 import { validateFilePayload } from './utils'
 
-export const getPermissionsMw =
-  (hasPermission) =>
-  async (req: any, res, next): Promise<void> => {
-    const hasPerms = (req) => async (op: string, res: string) =>
-      hasPermission(req, op, 'module.code-editor.' + res, true)
+export const getPermissionsMw = () => async (req: any, res, next): Promise<void> => {
+  const perms: FilePermissions = {}
+  for (const type of Object.keys(FileTypes)) {
+    const { permission } = FileTypes[type]
 
-    const permissionsChecker = hasPerms(req)
+    const botKey = `bot.${permission}`
 
-    const perms: FilePermissions = {}
-    for (const type of Object.keys(FileTypes)) {
-      const { permission } = FileTypes[type]
+    // if (onlySuperAdmin && !req.tokenUser.isSuperAdmin) {
+    //   continue
+    // }
 
-      const botKey = `bot.${permission}`
-
-      // if (onlySuperAdmin && !req.tokenUser.isSuperAdmin) {
-      //   continue
-      // }
-
-      perms[botKey] = {
-        type,
-        isGlobal: false,
-        write: await permissionsChecker('write', botKey),
-        read: await permissionsChecker('read', botKey)
-      }
+    perms[botKey] = {
+      type,
+      isGlobal: false,
+      write: true,
+      read: true
     }
-
-    req.permissions = perms
-    next()
   }
+
+  req.permissions = perms
+  next()
+}
 
 export const validateFilePayloadMw = (actionType: 'read' | 'write') => async (req, res, next) => {
   if (!req.permissions || !req.body) {

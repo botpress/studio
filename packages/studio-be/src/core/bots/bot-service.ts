@@ -10,7 +10,6 @@ import { MigrationService } from 'core/migration'
 import { getBuiltinPath, listDir } from 'core/misc/list-dir'
 import { calculateHash, stringify } from 'core/misc/utils'
 import { InvalidOperationError } from 'core/routers'
-import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
@@ -85,7 +84,6 @@ export class BotService {
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
     @inject(TYPES.CMSService) private cms: CMSService,
     @inject(TYPES.GhostService) private ghostService: GhostService,
-    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.JobService) private jobService: JobService,
     @inject(TYPES.MigrationService) private migrationService: MigrationService,
     @inject(TYPES.NLUService) private nluService: NLUService

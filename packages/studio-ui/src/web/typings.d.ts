@@ -21,7 +21,6 @@ declare global {
     BOT_ID: string
     BP_BASE_PATH: string
     SEND_USAGE_STATS: boolean
-    IS_STANDALONE: boolean
     STUDIO_PORT: number
     IS_BOT_MOUNTED: boolean
     MESSAGING_ENDPOINT?: string

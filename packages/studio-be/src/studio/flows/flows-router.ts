@@ -24,8 +24,6 @@ export class FlowsRouter extends CustomStudioRouter {
 
     router.get(
       '/',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const flows = await this.flowService.forBot(botId).loadAll()
@@ -35,14 +33,11 @@ export class FlowsRouter extends CustomStudioRouter {
 
     router.post(
       '/',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
         const flow = <FlowView>req.body.flow
-        const userEmail = req.tokenUser!.email
 
-        await this.flowService.forBot(botId).insertFlow(flow, userEmail)
+        await this.flowService.forBot(botId).insertFlow(flow)
 
         res.sendStatus(200)
       })
@@ -50,7 +45,6 @@ export class FlowsRouter extends CustomStudioRouter {
 
     this.router.post(
       '/skill/:skillId/generateFlow',
-      this.checkTokenHeader,
       this.asyncMiddleware(async (req, res) => {
         const flowGenerator = this.skillService.getFlowGenerator(req.params.moduleName, req.params.skillId)
         if (!flowGenerator) {
@@ -68,21 +62,18 @@ export class FlowsRouter extends CustomStudioRouter {
 
     this.router.post(
       '/:flowName',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.flows'),
       parseFlowNameMiddleware,
       this.asyncMiddleware(async (req, res) => {
         const { botId, flowName } = req.params
         const flow = <FlowView>req.body.flow
-        const userEmail = req.tokenUser!.email
 
         if (_.has(flow, 'name') && flowName !== flow.name) {
-          await this.flowService.forBot(botId).renameFlow(flowName, flow.name, userEmail)
+          await this.flowService.forBot(botId).renameFlow(flowName, flow.name)
           return res.sendStatus(200)
         }
 
         try {
-          await this.flowService.forBot(botId).updateFlow(flow, userEmail)
+          await this.flowService.forBot(botId).updateFlow(flow)
           res.sendStatus(200)
         } catch (err) {
           if (err.type && err.type === MutexError.name) {
@@ -96,15 +87,11 @@ export class FlowsRouter extends CustomStudioRouter {
 
     this.router.post(
       '/:flowName/delete',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.flows'),
       parseFlowNameMiddleware,
       this.asyncMiddleware(async (req, res) => {
         const { botId, flowName } = req.params
 
-        const userEmail = req.tokenUser!.email
-
-        await this.flowService.forBot(botId).deleteFlow(flowName as string, userEmail)
+        await this.flowService.forBot(botId).deleteFlow(flowName as string)
 
         res.sendStatus(200)
       })

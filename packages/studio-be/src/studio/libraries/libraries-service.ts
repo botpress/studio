@@ -46,29 +46,6 @@ export class LibrariesService {
     await fse.writeJSON(pkgFileLocation, baseJson)
   }
 
-  publishPackageChanges = async (botId: string) => {
-    // We create an archive of node_modules whenever a change is made (in case a db sync is done in the future)
-    const nodeModules = getBotLibPath(botId, 'node_modules')
-    if (!(await fse.pathExists(nodeModules))) {
-      return
-    }
-
-    const archivePath = await createArchive(`${nodeModules}.tgz`, nodeModules, glob.sync('**/*', { cwd: nodeModules }))
-
-    if (process.BPFS_STORAGE === 'disk') {
-      return
-    }
-
-    const packageContent = await fse.readJSON(getBotLibPath(botId, 'package.json'))
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package.json', packageContent)
-
-    const packageLockContent = await fse.readJSON(getBotLibPath(botId, 'package-lock.json'))
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'package-lock.json', packageLockContent)
-
-    const archive = await fse.readFile(archivePath)
-    await this.bpfs.forBot(botId).upsertFile('libraries', 'node_modules.tgz', archive)
-  }
-
   prepareArgs = (args: string[]) => {
     // if (isOffline) {
     //   args.push('--offline')
@@ -87,9 +64,6 @@ export class LibrariesService {
     if (!(await this.isInitialized(botId))) {
       await this.createDefaultPackage(botId)
       // Ensure we have the latest copy from the database before running operations
-    } else if (process.BPFS_STORAGE === 'database') {
-      await this.copyFileLocally(botId, 'package.json')
-      await this.copyFileLocally(botId, 'package-lock.json')
     }
   }
 
@@ -123,7 +97,6 @@ export class LibrariesService {
     const result = resultBuffer.join('')
 
     if (result.indexOf('ERR!') === -1) {
-      await this.publishPackageChanges(botId)
       this.logger.info(`Command executed successfully: ${result}`)
     } else {
       throw new Error(result)

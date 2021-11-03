@@ -3,8 +3,6 @@ import { Logger } from 'botpress/sdk'
 import { CSRF_TOKEN_HEADER_LC } from 'common/auth'
 import { machineUUID } from 'common/stats'
 import compression from 'compression'
-import cookieParser from 'cookie-parser'
-import session from 'cookie-session'
 import { TYPES } from 'core/app/types'
 import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
@@ -12,22 +10,17 @@ import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
-import { ModuleLoader, ModulesRouter } from 'core/modules'
 import { monitoringMiddleware } from 'core/routers'
-import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
-import { WorkspaceService } from 'core/users'
 import cors from 'cors'
 import errorHandler from 'errorhandler'
 import express from 'express'
 import rateLimit from 'express-rate-limit'
 import { createServer, Server } from 'http'
-import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import ms from 'ms'
-import path from 'path'
 import portFinder from 'portfinder'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
@@ -52,7 +45,6 @@ export class HTTPServer {
   private machineId!: string
 
   private readonly studioRouter!: StudioRouter
-  private readonly modulesRouter: ModulesRouter
 
   constructor(
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
@@ -63,13 +55,10 @@ export class HTTPServer {
     @inject(TYPES.FlowService) flowService: FlowService,
     @inject(TYPES.ActionService) actionService: ActionService,
     @inject(TYPES.ActionServersService) actionServersService: ActionServersService,
-    @inject(TYPES.ModuleLoader) moduleLoader: ModuleLoader,
-    @inject(TYPES.AuthService) private authService: AuthService,
     @inject(TYPES.MediaServiceProvider) mediaServiceProvider: MediaServiceProvider,
     @inject(TYPES.SkillService) skillService: SkillService,
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.HintsService) hintsService: HintsService,
-    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.ObjectCache) private objectCache: MemoryObjectCache,
     @inject(TYPES.NLUService) nluService: NLUService,
@@ -92,12 +81,8 @@ export class HTTPServer {
       this.app.use(compression())
     }
 
-    this.modulesRouter = new ModulesRouter(this.logger, moduleLoader, skillService, botService)
-
     this.studioRouter = new StudioRouter(
       logger,
-      authService,
-      workspaceService,
       botService,
       configProvider,
       actionService,
@@ -154,7 +139,6 @@ export class HTTPServer {
     window.SHOW_POWERED_BY = ${!!config.showPoweredBy};
     window.UUID = "${this.machineId}"
     window.BP_SERVER_URL = "${process.env.BP_SERVER_URL || ''}"
-    window.IS_STANDALONE = ${process.IS_STANDALONE}
     window.STUDIO_PORT = ${process.PORT}
     window.MESSAGING_ENDPOINT = "${process.env.MESSAGING_ENDPOINT || ''}"
     window.RUNTIME_ENDPOINT = "${process.env.RUNTIME_ENDPOINT || ''}"`
@@ -206,7 +190,6 @@ export class HTTPServer {
     }
 
     this.app.use('/assets/studio/ui', express.static(resolveStudioAsset('')))
-    this.app.use(`${BASE_API_PATH}/studio/modules`, this.modulesRouter.router)
 
     await this.studioRouter.setupRoutes(this.app)
 

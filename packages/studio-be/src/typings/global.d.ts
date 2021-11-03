@@ -17,9 +17,7 @@ declare namespace NodeJS {
   export interface Process {
     VERBOSITY_LEVEL: number
     IS_PRODUCTION: boolean // TODO: look to remove this
-    BPFS_STORAGE: 'database' | 'disk'
     APP_SECRET: string
-    IS_STANDALONE: boolean
     /**
      * Path to the global APP DATA folder, shared across all installations of Botpress Server
      * Use this folder to store stuff you'd like to cache, like NLU language models etc
@@ -46,10 +44,6 @@ declare namespace NodeJS {
 
     LOADED_MODULES: { [module: string]: string }
     pkg: any
-    IS_LICENSED?: boolean
-    IS_PRO_AVAILABLE: boolean
-    IS_PRO_ENABLED: boolean
-    CLUSTER_ENABLED: boolean
     STUDIO_VERSION: string
     BOTPRESS_VERSION: string
     TELEMETRY_URL: string
@@ -84,9 +78,6 @@ declare interface BotpressEnvironmentVariables {
 
   /** Replace the path of the NodeJS Native Extensions for external OS-specific libraries such as fastText and CRFSuite */
   readonly NATIVE_EXTENSIONS_DIR?: string
-
-  /** Change the BPFS storage mechanism ("database" or "disk"). Defaults to "disk" */
-  readonly BPFS_STORAGE?: 'database' | 'disk'
 
   /** The URL exposed by Botpress to external users (eg: when displaying links) */
   readonly EXTERNAL_URL?: string

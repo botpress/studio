@@ -20,21 +20,6 @@ export const receiveFlowsModification = createAction('FLOWS/MODIFICATIONS/RECEIV
 const MUTEX_UNLOCK_SECURITY_FACTOR = 1.25
 const mutexHandles: _.Dictionary<number> = {}
 
-export const handleReceiveFlowsModification = modification => (dispatch, getState) => {
-  const dirtyFlows = getDirtyFlows(getState())
-  const amIModifyingTheSameFlow = dirtyFlows.includes(modification.name)
-  if (amIModifyingTheSameFlow) {
-    FlowsAPI.cancelUpdate(modification.name)
-  }
-
-  dispatch(receiveFlowsModification(modification))
-  dispatch(refreshFlowsLinks())
-
-  if (_.has(modification, 'payload.currentMutex') && _.has(modification, 'payload.name')) {
-    dispatch(startMutexCountDown(modification.payload))
-  }
-}
-
 const startMutexCountDown = (flow: FlowView) => dispatch => {
   const { name, currentMutex } = flow
   if (!currentMutex || !currentMutex.remainingSeconds) {
@@ -292,18 +277,6 @@ export const zoomOut = createAction('UI/ZOOM_OUT_DIAGRAM')
 export const zoomToLevel = createAction('UI/ZOOM_TO_LEVEL_DIAGRAM')
 export const setEmulatorOpen = createAction('EMULATOR_OPENED')
 
-// User
-export const userReceived = createAction('USER/RECEIVED')
-export const fetchUser = () => dispatch => {
-  if (window.IS_STANDALONE) {
-    return dispatch(userReceived({ email: 'admin', isSuperAdmin: true }))
-  }
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/admin/user/profile`).then(res => {
-    dispatch(userReceived(res.data?.payload))
-  })
-}
-
 // Bot
 export const botInfoReceived = createAction('BOT/INFO_RECEIVED')
 export const fetchBotInformation = () => dispatch => {
@@ -313,24 +286,8 @@ export const fetchBotInformation = () => dispatch => {
   })
 }
 
-// Modules
-export const modulesReceived = createAction('MODULES/RECEIVED')
-export const fetchModules = () => dispatch => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules`).then(res => {
-    dispatch(modulesReceived(res.data))
-  })
-}
-
 // Skills
 export const skillsReceived = createAction('SKILLS/RECEIVED')
-export const fetchSkills = () => dispatch => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/skills`).then(res => {
-    dispatch(skillsReceived(res.data))
-  })
-}
-
 // Skills
 export const requestInsertNewSkill = createAction('SKILLS/INSERT')
 export const requestInsertNewSkillNode = createAction('SKILLS/INSERT/NODE')
@@ -444,21 +401,5 @@ export const getQNAContentElementUsage = () => dispatch => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.STUDIO_API_PATH}/qna/contentElementUsage`).then(({ data }) => {
     dispatch(receiveQNAContentElement(data))
-  })
-}
-
-export const receiveModuleTranslations = createAction('LANG/TRANSLATIONS')
-export const getModuleTranslations = () => dispatch => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/translations?botId=${window.BOT_ID}`).then(({ data }) => {
-    dispatch(receiveModuleTranslations(data))
-  })
-}
-
-export const botsReceived = createAction('BOTS/RECEIVED')
-export const fetchBotIds = () => dispatch => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/workspaceBotsIds`).then(res => {
-    dispatch(botsReceived(res.data))
   })
 }

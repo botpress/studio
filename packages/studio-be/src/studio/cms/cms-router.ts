@@ -17,8 +17,6 @@ export class CMSRouter extends CustomStudioRouter {
   setupRoutes() {
     this.router.get(
       '/types',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const types = await this.cmsService.getAllContentTypes(botId)
@@ -54,8 +52,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.get(
       '/elements/count',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const count = await this.cmsService.countContentElements(botId)
@@ -65,8 +61,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.post(
       '/:contentType?/elements',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentType } = req.params
         const { count, from, searchTerm, filters, sortOrder, ids } = req.body
@@ -88,8 +82,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.get(
       '/:contentType?/elements/count',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentType } = req.params
         const count = await this.cmsService.countContentElementsForContentType(botId, contentType)
@@ -99,8 +91,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.get(
       '/element/:elementId',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, elementId } = req.params
         const element = await this.cmsService.getContentElement(botId, elementId)
@@ -116,8 +106,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.post(
       '/:contentType/element/:elementId?',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentType, elementId } = req.params
         const element = await this.cmsService.createOrUpdateContentElement(
@@ -132,8 +120,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.post(
       '/elements/bulk_delete',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         await this.cmsService.deleteContentElements(req.params.botId, req.body)
         res.sendStatus(200)
@@ -142,8 +128,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.get(
       '/library/:lang?',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, lang } = req.params
 
@@ -175,8 +159,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.post(
       '/library/:contentId/delete',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentId } = req.params
 
@@ -203,8 +185,6 @@ export class CMSRouter extends CustomStudioRouter {
 
     this.router.post(
       '/library/:contentId',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentId } = req.params
 

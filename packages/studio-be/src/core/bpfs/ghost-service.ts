@@ -17,7 +17,6 @@ import tmp from 'tmp'
 import { VError } from 'verror'
 
 import { FileRevision, PendingRevisions, ReplaceContent, StorageDriver } from '.'
-import { DBStorageDriver } from './drivers/db-driver'
 import { DiskStorageDriver } from './drivers/disk-driver'
 
 interface ScopedGhostOptions {
@@ -33,36 +32,24 @@ const STUDIO_GHOST_KEY = '__studio__'
 @injectable()
 export class GhostService {
   private _scopedGhosts: Map<string, ScopedGhostService> = new Map()
-  public useDbDriver: boolean = false
 
-  // When using BPFS Storage database, the server adds the path /data in the database, while we provide the full data path when using the disk
-  private baseFolder = process.BPFS_STORAGE === 'database' ? './data/' : './'
+  private baseFolder = './'
 
   constructor(
     @inject(TYPES.DiskStorageDriver) private diskDriver: DiskStorageDriver,
-    @inject(TYPES.DBStorageDriver) private dbDriver: DBStorageDriver,
     @inject(TYPES.ObjectCache) private cache: ObjectCache,
     @inject(TYPES.Logger)
     @tagged('name', 'GhostService')
     private logger: Logger
-  ) {
-    this.cache.events.on && this.cache.events.on('syncDbFilesToDisk', this._onSyncReceived)
-  }
+  ) {}
 
-  async initialize(useDbDriver: boolean, ignoreSync?: boolean) {
-    this.useDbDriver = useDbDriver
+  async initialize() {
     this._scopedGhosts.clear()
   }
 
   // Not caching this scope since it's rarely used
-  root(useDbDriver?: boolean): ScopedGhostService {
-    return new ScopedGhostService(
-      this.baseFolder,
-      this.diskDriver,
-      this.dbDriver,
-      useDbDriver ?? this.useDbDriver,
-      this.cache
-    )
+  root(): ScopedGhostService {
+    return new ScopedGhostService(this.baseFolder, this.diskDriver, this.cache)
   }
 
   studio(): ScopedGhostService {
@@ -70,13 +57,7 @@ export class GhostService {
       return this._scopedGhosts.get(STUDIO_GHOST_KEY)!
     }
 
-    const scopedGhost = new ScopedGhostService(
-      process.PROJECT_LOCATION,
-      this.diskDriver,
-      this.dbDriver,
-      this.useDbDriver,
-      this.cache
-    )
+    const scopedGhost = new ScopedGhostService(process.PROJECT_LOCATION, this.diskDriver, this.cache)
 
     this._scopedGhosts.set(STUDIO_GHOST_KEY, scopedGhost)
     return scopedGhost
@@ -87,13 +68,7 @@ export class GhostService {
       return this._scopedGhosts.get(GLOBAL_GHOST_KEY)!
     }
 
-    const scopedGhost = new ScopedGhostService(
-      `${this.baseFolder}global`,
-      this.diskDriver,
-      this.dbDriver,
-      this.useDbDriver,
-      this.cache
-    )
+    const scopedGhost = new ScopedGhostService(`${this.baseFolder}global`, this.diskDriver, this.cache)
 
     this._scopedGhosts.set(GLOBAL_GHOST_KEY, scopedGhost)
     return scopedGhost
@@ -108,30 +83,10 @@ export class GhostService {
       return this._scopedGhosts.get(botId)!
     }
 
-    const scopedGhost = new ScopedGhostService(
-      `${this.baseFolder}`,
-      this.diskDriver,
-      this.dbDriver,
-      this.useDbDriver,
-      this.cache,
-      { botId }
-    )
+    const scopedGhost = new ScopedGhostService(`${this.baseFolder}`, this.diskDriver, this.cache, { botId })
 
     this._scopedGhosts.set(botId, scopedGhost)
     return scopedGhost
-  }
-
-  private _onSyncReceived = async (message: string) => {
-    try {
-      const { rootFolder, botId } = JSON.parse(message)
-      if (botId) {
-        await this.forBot(botId).syncDatabaseFilesToDisk(rootFolder)
-      } else {
-        await this.global().syncDatabaseFilesToDisk(rootFolder)
-      }
-    } catch (err) {
-      this.logger.attachError(err).error('Could not sync files locally.')
-    }
   }
 }
 
@@ -148,8 +103,6 @@ export class ScopedGhostService {
   constructor(
     private baseDir: string,
     private diskDriver: DiskStorageDriver,
-    private dbDriver: DBStorageDriver,
-    private useDbDriver: boolean,
     private cache: ObjectCache,
     private options: ScopedGhostOptions = {
       botId: undefined,
@@ -161,7 +114,7 @@ export class ScopedGhostService {
     }
 
     this.isDirectoryGlob = this.baseDir.endsWith('*')
-    this.primaryDriver = useDbDriver ? dbDriver : diskDriver
+    this.primaryDriver = diskDriver
   }
 
   /**
@@ -206,9 +159,7 @@ export class ScopedGhostService {
   }
 
   async ensureDirs(rootFolder: string, directories: string[]): Promise<void> {
-    if (!this.useDbDriver) {
-      await Promise.mapSeries(directories, d => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
-    }
+    await Promise.mapSeries(directories, d => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
   }
 
   // temporary until we implement a large file storage system
@@ -381,19 +332,6 @@ export class ScopedGhostService {
     await this.primaryDriver.moveFile(fromPath, toPath)
   }
 
-  async syncDatabaseFilesToDisk(rootFolder: string): Promise<void> {
-    if (!this.useDbDriver) {
-      return
-    }
-
-    const remoteFiles = await this.dbDriver.directoryListing(this._normalizeFolderName(rootFolder))
-    const filePath = filename => this._normalizeFileName(rootFolder, filename)
-
-    await Promise.mapSeries(remoteFiles, async file =>
-      this.diskDriver.upsertFile(filePath(file), await this.dbDriver.readFile(filePath(file)))
-    )
-  }
-
   async deleteFolder(folder: string): Promise<void> {
     await this._assertBotUnlocked(folder)
     if (this.isDirectoryGlob) {
@@ -430,33 +368,7 @@ export class ScopedGhostService {
   }
 
   async getPendingChanges(): Promise<PendingRevisions> {
-    if (!this.useDbDriver) {
-      return {}
-    }
-
-    const revisions = await this.dbDriver.listRevisions(this.baseDir)
-    const result: PendingRevisions = {}
-
-    for (const revision of revisions) {
-      const rPath = path.relative(this.baseDir, revision.path)
-      const folder = rPath.includes(path.sep) ? rPath.substr(0, rPath.indexOf(path.sep)) : 'root'
-
-      if (!result[folder]) {
-        result[folder] = []
-      }
-
-      result[folder].push(revision)
-    }
-
-    return result
-  }
-
-  async listDbRevisions(): Promise<FileRevision[]> {
-    return this.dbDriver.listRevisions(this.baseDir)
-  }
-
-  async listDiskRevisions(): Promise<FileRevision[]> {
-    return this.diskDriver.listRevisions(this.baseDir)
+    return {}
   }
 
   onFileChanged(callback: (filePath: string) => void): ListenHandle {

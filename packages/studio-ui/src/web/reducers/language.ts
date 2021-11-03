@@ -25,8 +25,7 @@ const reducer = handleActions(
       ...state,
       contentLang: payload.defaultLanguage,
       isRTLContentLang: isRTLLocale(payload.defaultLanguage)
-    }),
-    [receiveModuleTranslations]: (state, { payload }) => ({ ...state, translations: payload })
+    })
   },
   defaultState
 )

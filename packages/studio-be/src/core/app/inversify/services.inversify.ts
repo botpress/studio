@@ -3,12 +3,10 @@ import { GhostContainerModule } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { SkillService } from 'core/dialog'
 import { DialogContainerModule } from 'core/dialog/dialog.inversify'
-import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
-
+import { LocalJobService, JobService } from 'core/distributed'
 import { MediaServiceProvider } from 'core/media'
 import { MigrationService } from 'core/migration'
 import { RealtimeService } from 'core/realtime'
-import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
 import { ContainerModule, interfaces } from 'inversify'
 import { NLUService } from 'studio/nlu'
@@ -39,10 +37,6 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
 
   bind<HintsService>(TYPES.HintsService)
     .to(HintsService)
-    .inSingletonScope()
-
-  bind<AuthService>(TYPES.AuthService)
-    .to(AuthService)
     .inSingletonScope()
 
   bind<SkillService>(TYPES.SkillService)

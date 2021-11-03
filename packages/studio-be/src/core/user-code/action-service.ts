@@ -6,7 +6,6 @@ import { GhostService } from 'core/bpfs'
 import { getBuiltinPath, listDir } from 'core/misc/list-dir'
 import { NotFoundError } from 'core/routers/errors'
 import { TYPES } from 'core/types'
-import { WorkspaceService } from 'core/users'
 import fse from 'fs-extra'
 import { inject, injectable, tagged } from 'inversify'
 import _ from 'lodash'
@@ -34,7 +33,6 @@ export class ActionService {
   constructor(
     @inject(TYPES.GhostService) private ghost: GhostService,
     @inject(TYPES.ObjectCache) private cache: ObjectCache,
-    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.Logger)
     @tagged('name', 'ActionService')

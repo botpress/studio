@@ -254,7 +254,7 @@ export class ScopedFlowService {
     }
   }
 
-  async insertFlow(flow: FlowView, userEmail: string) {
+  async insertFlow(flow: FlowView) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
     const fileToCreate = flowFiles.find(f => f === flow.name)
     if (fileToCreate) {
@@ -262,24 +262,10 @@ export class ScopedFlowService {
     }
 
     await this._upsertFlow(flow)
-
-    await this.notifyChanges({
-      botId: this.botId,
-      name: flow.name,
-      modification: 'create',
-      userEmail
-    })
   }
 
-  async updateFlow(flow: FlowView, userEmail: string) {
+  async updateFlow(flow: FlowView) {
     await this._upsertFlow(flow)
-
-    await this.notifyChanges({
-      name: flow.name,
-      botId: this.botId,
-      modification: 'update',
-      userEmail
-    })
   }
 
   private async _upsertFlow(flow: FlowView) {
@@ -305,7 +291,7 @@ export class ScopedFlowService {
     await this._addMissingBotActions(flow)
   }
 
-  async deleteFlow(flowName: string, userEmail: string) {
+  async deleteFlow(flowName: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
     const fileToDelete = flowFiles.find(f => f === flowName)
     if (!fileToDelete) {
@@ -319,16 +305,9 @@ export class ScopedFlowService {
     this.setExpectedSaves(flowName, 2)
 
     await Promise.all([this.ghost.deleteFile(FLOW_DIR, fileToDelete!), this.ghost.deleteFile(FLOW_DIR, uiPath)])
-
-    await this.notifyChanges({
-      name: flowName,
-      botId: this.botId,
-      modification: 'delete',
-      userEmail
-    })
   }
 
-  async renameFlow(previousName: string, newName: string, userEmail: string) {
+  async renameFlow(previousName: string, newName: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
     const fileToRename = flowFiles.find(f => f === previousName)
     if (!fileToRename) {
@@ -350,14 +329,6 @@ export class ScopedFlowService {
       botId: this.botId,
       previousFlowName: previousName,
       nextFlowName: newName
-    })
-
-    await this.notifyChanges({
-      name: previousName,
-      botId: this.botId,
-      modification: 'rename',
-      newName,
-      userEmail
     })
   }
 

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
 
-import ConfigStatus from './ConfigStatus'
 import LangSwitcher from './LangSwitcher'
 import style from './style.scss'
 import TrainingStatusComponent from './TrainingStatus'
@@ -24,7 +23,6 @@ const StatusBar: FC<Props> = props => {
         <LangSwitcher toggleLangSwitcher={props.toggleLangSwitcher} langSwitcherOpen={props.langSwitcherOpen} />
       </div>
       <div className={style.item}>
-        {props.user && props.user.isSuperAdmin && <ConfigStatus />}
         <TrainingStatusComponent currentLanguage={props.contentLang} />
       </div>
     </footer>

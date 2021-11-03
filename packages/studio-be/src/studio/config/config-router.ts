@@ -15,7 +15,6 @@ export class ConfigRouter extends CustomStudioRouter {
     const router = this.router
     router.get(
       '/',
-      this.needPermissions('read', 'bot.information'),
       this.asyncMiddleware(async (req, res) => {
         const bot = await this.botService.findBotById(req.params.botId)
         if (!bot) {
@@ -28,7 +27,6 @@ export class ConfigRouter extends CustomStudioRouter {
 
     router.post(
       '/',
-      this.needPermissions('write', 'bot.information'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
         const bot = <BotConfig>req.body

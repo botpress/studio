@@ -39,7 +39,6 @@ interface StateBot {
 }
 
 interface StateVars {
-  licensing: Licensing
   languages: SelectItem[]
   statuses: SelectItem[]
   error: any
@@ -49,10 +48,6 @@ interface StateVars {
 }
 
 type State = StateBot & StateVars
-
-interface Licensing {
-  isPro: boolean
-}
 
 interface SelectItem {
   label: string
@@ -99,7 +94,6 @@ class ConfigView extends Component<Props, State> {
 
   state: State = {
     ...this.initialFormState,
-    licensing: undefined,
     languages: [],
     statuses: [],
     error: undefined,
@@ -116,7 +110,6 @@ class ConfigView extends Component<Props, State> {
     const bot = this.props.bot
 
     const languages = await this.fetchLanguages(bot.id)
-    const licensing = await this.fetchLicensing()
 
     const statuses = statusList.map<SelectItem>(x => ({
       label: lang.tr(`status.${x}`),
@@ -143,7 +136,6 @@ class ConfigView extends Component<Props, State> {
 
     this.setState({
       ...this.initialFormState,
-      licensing,
       languages,
       statuses
     })
@@ -156,11 +148,6 @@ class ConfigView extends Component<Props, State> {
       label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
       value: language
     }))
-  }
-
-  async fetchLicensing(): Promise<Licensing> {
-    const { data } = await axios.get('admin/management/licensing/status', axiosConfig)
-    return data.payload
   }
 
   saveChanges = async () => {
@@ -486,43 +473,29 @@ class ConfigView extends Component<Props, State> {
   }
 
   renderLanguages() {
-    if (this.state.licensing && this.state.licensing.isPro) {
-      return (
-        <div>
-          <FormGroup label={lang.tr('config.defaultLanguage')} labelFor="selected-default-lang">
-            <Select
-              id="selected-default-lang"
-              name="selectedDefaultLang"
-              options={this.state.languages}
-              value={this.state.selectedDefaultLang}
-              onChange={this.handleDefaultLangChanged}
-            />
-          </FormGroup>
-          <FormGroup label={lang.tr('config.supportedLanguages')} labelFor="selected-languages">
-            <Select
-              id="selected-languages"
-              name="selectedLanguages"
-              options={this.state.languages}
-              value={this.state.selectedLanguages}
-              onChange={this.handleLanguagesChanged}
-              isMulti
-            />
-          </FormGroup>
-        </div>
-      )
-    } else {
-      return (
-        <FormGroup label={lang.tr('config.language')} labelFor="selected-default-lang">
+    return (
+      <div>
+        <FormGroup label={lang.tr('config.defaultLanguage')} labelFor="selected-default-lang">
           <Select
             id="selected-default-lang"
             name="selectedDefaultLang"
             options={this.state.languages}
             value={this.state.selectedDefaultLang}
-            onChange={this.handleCommunityLanguageChanged}
+            onChange={this.handleDefaultLangChanged}
           />
         </FormGroup>
-      )
-    }
+        <FormGroup label={lang.tr('config.supportedLanguages')} labelFor="selected-languages">
+          <Select
+            id="selected-languages"
+            name="selectedLanguages"
+            options={this.state.languages}
+            value={this.state.selectedLanguages}
+            onChange={this.handleLanguagesChanged}
+            isMulti
+          />
+        </FormGroup>
+      </div>
+    )
   }
 }
 

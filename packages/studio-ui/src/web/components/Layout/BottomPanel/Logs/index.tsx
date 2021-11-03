@@ -56,7 +56,7 @@ class BottomPanel extends React.Component<Props, State> {
 
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.queryLogs()
+    // this.queryLogs()
     this.setupListener()
   }
 

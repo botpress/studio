@@ -3,7 +3,6 @@ import queryString from 'query-string'
 import React from 'react'
 import ReactGA from 'react-ga'
 import { Router, Switch } from 'react-router-dom'
-import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
 
 // react-router doesn't do query parsing anymore since V4
@@ -41,12 +40,11 @@ export default () => {
       }
     })
   }
-  const AuthenticatedLayout = window.IS_STANDALONE ? Layout : EnsureAuthenticated(Layout)
 
   return (
     <Router history={history}>
       <Switch>
-        <AuthenticatedLayout />
+        <Layout />
       </Switch>
     </Router>
   )

@@ -81,8 +81,6 @@ try {
     defaultVerbosity = Number(process.env.VERBOSITY_LEVEL)
   }
 
-  process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
-  process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.STUDIO_VERSION = metadata.version
   process.DEV_BRANCH = metadata['devBranch']
   process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
@@ -108,7 +106,6 @@ try {
         process.BOT_LOCATION = path.resolve(botId)
         process.TEMP_LOCATION = path.resolve(process.BOT_LOCATION, '.state')
         process.BOT_ID = path.basename(botId)
-        process.IS_STANDALONE = true
         process.TEMPLATE_ID = argv.template || 'empty-bot'
 
         // console.error(

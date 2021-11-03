@@ -12,8 +12,6 @@ export class ActionsRouter extends CustomStudioRouter {
     const router = this.router
     router.get(
       '/',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
 
@@ -25,8 +23,6 @@ export class ActionsRouter extends CustomStudioRouter {
 
     router.get(
       '/actionServers',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 

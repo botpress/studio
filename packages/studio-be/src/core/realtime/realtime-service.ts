@@ -1,17 +1,12 @@
 import { Logger } from 'botpress/sdk'
-import cookie from 'cookie'
 import { TYPES } from 'core/app/types'
 import { BotpressConfig, ConfigProvider } from 'core/config'
-import { getOrCreate as redisFactory } from 'core/distributed'
 import { PersistedConsoleLogger } from 'core/logger'
-import { AuthService } from 'core/security'
 import { EventEmitter2 } from 'eventemitter2'
 import { Server } from 'http'
 import { inject, injectable, tagged } from 'inversify'
 import _ from 'lodash'
 import socketio from 'socket.io'
-import redisAdapter from 'socket.io-redis'
-import socketioJwt from 'socketio-jwt'
 import { RealTimePayload } from './payload-sdk-impl'
 
 const debug = DEBUG('realtime')
@@ -30,8 +25,7 @@ export class RealtimeService {
     @inject(TYPES.Logger)
     @tagged('name', 'Realtime')
     private logger: Logger,
-    @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
-    @inject(TYPES.AuthService) private authService: AuthService
+    @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider
   ) {
     this.ee = new EventEmitter2({ wildcard: true, maxListeners: 100 })
 
@@ -74,22 +68,6 @@ export class RealtimeService {
       // broadcast event to the front-end clients
       studio.emit('event', { name: event, data: payload })
     })
-  }
-
-  checkCookieToken = async (socket: socketio.Socket, fn: (err?) => any) => {
-    try {
-      const csrfToken = socket.handshake.query.token
-      const { jwtToken } = cookie.parse(socket.handshake.headers.cookie)
-
-      if (jwtToken && csrfToken) {
-        await this.authService.checkToken(jwtToken, csrfToken)
-        fn(undefined)
-      }
-
-      fn('Mandatory parameters are missing')
-    } catch (err) {
-      fn(err)
-    }
   }
 
   setupStudioSocket(studio: socketio.Namespace): void {

@@ -45,9 +45,10 @@ class ContentView extends Component<Props, State> {
   initialized = false
 
   init() {
-    if (this.initialized || !this.props.user || this.props.user.email == null) {
+    if (this.initialized) {
       return
     }
+
     this.initialized = true
     this.canRead = isOperationAllowed({ operation: 'read', resource: 'bot.content' })
     this.canEdit = isOperationAllowed({ operation: 'write', resource: 'bot.content' })

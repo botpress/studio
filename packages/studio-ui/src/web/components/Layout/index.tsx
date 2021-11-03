@@ -164,7 +164,7 @@ const Layout: FC<Props> = (props: Props) => {
     }
   }
 
-  if (props.viewMode < 0 || !props.translations) {
+  if (props.viewMode < 0) {
     return null
   }
 
@@ -177,10 +177,8 @@ const Layout: FC<Props> = (props: Props) => {
     'go-flow': () => gotoUrl('/flows'),
     'go-home': goHome,
     'go-content': () => gotoUrl('/content'),
-    'go-module-code': () => gotoUrl('/modules/code-editor'),
-    'go-module-qna': () => gotoUrl('/modules/qna'),
-    'go-module-testing': () => gotoUrl('/modules/testing'),
-    'go-module-analytics': () => gotoUrl('/modules/analytics'),
+    'go-module-code': () => gotoUrl('/code-editor'),
+    'go-module-qna': () => gotoUrl('/qna'),
     'go-understanding': () => gotoUrl('/nlu'),
     'toggle-inspect': props.toggleInspector
   }

@@ -3,12 +3,9 @@ import { Botpress } from 'core/app/botpress'
 import { HTTPServer } from 'core/app/server'
 import { ConfigProvider } from 'core/config'
 import { LoggerFilePersister, LoggerProvider, PersistedConsoleLogger } from 'core/logger'
-import { ModuleLoader } from 'core/modules'
-import { WorkspaceService } from 'core/users'
 import { Container } from 'inversify'
 import { TYPES } from '../types'
 import { DatabaseContainerModules } from './database.inversify'
-import { RepositoriesContainerModules } from './repositories.inversify'
 import { ServicesContainerModules } from './services.inversify'
 import { applyDisposeOnExit, applyInitializeFromConfig } from './utils'
 
@@ -48,11 +45,6 @@ container
   .inSingletonScope()
 
 container
-  .bind<ModuleLoader>(TYPES.ModuleLoader)
-  .to(ModuleLoader)
-  .inSingletonScope()
-
-container
   .bind<Botpress>(TYPES.Botpress)
   .to(Botpress)
   .inSingletonScope()
@@ -67,17 +59,11 @@ container
   .to(ConfigProvider)
   .inSingletonScope()
 
-container
-  .bind<WorkspaceService>(TYPES.WorkspaceService)
-  .to(WorkspaceService)
-  .inSingletonScope()
-
 const isPackaged = !!eval('process.pkg')
 
 container.bind<boolean>(TYPES.IsPackaged).toConstantValue(isPackaged)
 
 container.load(...DatabaseContainerModules)
-container.load(...RepositoriesContainerModules)
 container.load(...ServicesContainerModules)
 
 applyDisposeOnExit(container)

@@ -11,12 +11,11 @@ import {
 } from 'common/code-editor'
 import { GhostService } from 'core/bpfs'
 import fs from 'fs'
+import fse from 'fs-extra'
 import _ from 'lodash'
 import path from 'path'
-import fse from 'fs-extra'
 
 import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
-import { getBuiltinPath } from 'core/misc/list-dir'
 
 export const FILENAME_REGEX = /^[0-9a-zA-Z_\-.]+$/
 

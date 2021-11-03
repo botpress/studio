@@ -1,7 +1,6 @@
 import { BotpressConfig } from 'core/config'
 import { fileUploadMulter } from 'core/routers'
 import _ from 'lodash'
-import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
@@ -25,8 +24,6 @@ class MediaRouter extends CustomStudioRouter {
 
     router.post(
       '/',
-      this.checkTokenHeader,
-      this.needPermissions('write', 'bot.media'),
       this.asyncMiddleware(async (req, res) => {
         mediaUploadMulter(req, res, async err => {
           const email = req.tokenUser!.email
@@ -52,9 +49,6 @@ class MediaRouter extends CustomStudioRouter {
 
     router.post(
       '/delete',
-      this.checkTokenHeader,
-
-      this.needPermissions('write', 'bot.media'),
       this.asyncMiddleware(async (req, res) => {
         const email = req.tokenUser!.email
         const botId = req.params.botId

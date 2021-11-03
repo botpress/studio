@@ -3,14 +3,11 @@ import { BotService } from 'core/bots'
 import { GhostService } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
-import Database from 'core/database'
 import { LoggerFilePersister, LoggerProvider } from 'core/logger'
 import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
-import { ModuleLoader } from 'core/modules'
 import { RealtimeService } from 'core/realtime'
 import { HintsService } from 'core/user-code'
-import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
 import fse from 'fs-extra'
 import { inject, injectable, tagged } from 'inversify'
@@ -18,7 +15,6 @@ import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import moment from 'moment'
 import path from 'path'
-import plur from 'plur'
 import { NLUService } from 'studio/nlu'
 
 import { setDebugScopes } from '../../debug'
@@ -40,20 +36,17 @@ export class Botpress {
 
   constructor(
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
-    @inject(TYPES.Database) private database: Database,
     @inject(TYPES.Logger)
     @tagged('name', 'Server')
     private logger: sdk.Logger,
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.HTTPServer) private httpServer: HTTPServer,
-    @inject(TYPES.ModuleLoader) private moduleLoader: ModuleLoader,
     @inject(TYPES.HintsService) private hintsService: HintsService,
     @inject(TYPES.CMSService) private cmsService: CMSService,
     @inject(TYPES.NLUService) private nluService: NLUService,
     @inject(TYPES.LoggerProvider) private loggerProvider: LoggerProvider,
     @inject(TYPES.LoggerFilePersister) private loggerFilePersister: LoggerFilePersister,
     @inject(TYPES.BotService) private botService: BotService,
-    @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
     @inject(TYPES.MigrationService) private migrationService: MigrationService,
     @inject(TYPES.RealtimeService) private realtimeService: RealtimeService
   ) {

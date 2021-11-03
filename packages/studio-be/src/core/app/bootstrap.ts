@@ -2,12 +2,9 @@ import 'bluebird-global'
 // eslint-disable-next-line import/order
 import '../../sdk/rewire'
 
-import sdk from 'botpress/sdk'
 import chalk from 'chalk'
 import { BotpressApp, createApp } from 'core/app/loader'
-import { ModuleConfigEntry } from 'core/config'
-import { centerText, LoggerProvider, LogLevel } from 'core/logger'
-import { ModuleLoader, ModuleResolver } from 'core/modules'
+import { LoggerProvider, LogLevel } from 'core/logger'
 import fs from 'fs'
 import _ from 'lodash'
 import { showBanner } from './banner'
@@ -15,8 +12,7 @@ import { showBanner } from './banner'
 async function setupEnv(app: BotpressApp) {
   await app.database.initialize()
 
-  const useDbDriver = process.BPFS_STORAGE === 'database'
-  await app.ghost.initialize(useDbDriver)
+  await app.ghost.initialize()
 }
 
 async function getLogger(provider: LoggerProvider, loggerName: string) {
@@ -52,41 +48,6 @@ async function setupDebugLogger(provider: LoggerProvider) {
       .persist(false)
       .debug(message.trim(), rest)
   }
-}
-
-interface LoadedModule {
-  entry: ModuleConfigEntry
-  entryPoint: sdk.ModuleEntryPoint
-  rawEntry: sdk.ModuleEntryPoint
-  moduleLocation: string
-}
-
-interface ErroredModule {
-  entry: ModuleConfigEntry
-  err?: Error
-  message?: string
-}
-
-async function resolveModules(moduleConfigs: ModuleConfigEntry[], resolver: ModuleResolver) {
-  const loadedModules: LoadedModule[] = []
-  const erroredModules: ErroredModule[] = []
-
-  for (const entry of moduleConfigs) {
-    try {
-      const moduleLocation = await resolver.resolve(entry.location)
-      if (moduleLocation) {
-        const rawEntry = resolver.requireModule(moduleLocation)
-        const entryPoint = ModuleLoader.processModuleEntryPoint(rawEntry, entry.location)
-        loadedModules.push({ entry, entryPoint, rawEntry, moduleLocation })
-      } else {
-        erroredModules.push({ entry, message: 'Module not found' })
-      }
-    } catch (e) {
-      erroredModules.push({ entry, err: e })
-    }
-  }
-
-  return { loadedModules, erroredModules }
 }
 
 async function start() {

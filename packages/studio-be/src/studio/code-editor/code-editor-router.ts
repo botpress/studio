@@ -1,6 +1,4 @@
-import { RequestWithPerms } from 'common/code-editor'
 import { ALL_BOTS } from 'common/utils'
-import { hasPermissions } from 'core/security'
 import _ from 'lodash'
 import multer from 'multer'
 import path from 'path'
@@ -10,9 +8,6 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { Editor } from './editor'
 import { getPermissionsMw, validateFilePayloadMw, validateFileUploadMw } from './utils_router'
 
-const debugRead = DEBUG('audit:code-editor:read')
-const debugWrite = DEBUG('audit:code-editor:write')
-
 export class CodeEditorRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('CodeEditor', services)
@@ -21,27 +16,9 @@ export class CodeEditorRouter extends CustomStudioRouter {
 
   setupRoutes() {
     const router = this.router
-    const hasPermission = hasPermissions(this.workspaceService)
-    const loadPermsMw = getPermissionsMw(hasPermission)
+    const loadPermsMw = getPermissionsMw()
 
     const editor = new Editor(this.bpfs, this.logger)
-
-    const audit = (debugMethod: Function, label: string, req: RequestWithPerms, args?: any) => {
-      debugMethod(
-        `${label} %o`,
-        _.merge(
-          {
-            ip: req.ip,
-            user: _.pick(req.tokenUser, ['email', 'strategy', 'isSuperAdmin']),
-            file: {
-              ..._.pick(req.body.file || req.body, ['location', 'botId', 'type', 'hookType']),
-              size: (req.body.file || req.body)?.content?.length
-            }
-          },
-          args
-        )
-      )
-    }
 
     router.get(
       '/files',
@@ -62,8 +39,6 @@ export class CodeEditorRouter extends CustomStudioRouter {
       loadPermsMw,
       validateFilePayloadMw('write'),
       this.asyncMiddleware(async (req: any, res) => {
-        audit(debugWrite, 'saveFile', req)
-
         await editor.forBot(req.params.botId).saveFile(req.body)
         res.sendStatus(200)
       })
@@ -75,8 +50,6 @@ export class CodeEditorRouter extends CustomStudioRouter {
       validateFilePayloadMw('read'),
       this.asyncMiddleware(async (req: any, res) => {
         const fileContent = await editor.forBot(req.params.botId).readFileContent(req.body)
-
-        audit(debugRead, 'readFile', req, { file: { size: fileContent?.length } })
 
         res.send({ fileContent })
       })
@@ -109,8 +82,6 @@ export class CodeEditorRouter extends CustomStudioRouter {
       loadPermsMw,
       validateFilePayloadMw('write'),
       this.asyncMiddleware(async (req: any, res) => {
-        audit(debugWrite, 'renameFile', req, { newName: req.body.newName })
-
         await editor.forBot(req.params.botId).renameFile(req.body.file, req.body.newName)
         res.sendStatus(200)
       })
@@ -121,8 +92,6 @@ export class CodeEditorRouter extends CustomStudioRouter {
       loadPermsMw,
       validateFilePayloadMw('write'),
       this.asyncMiddleware(async (req: any, res, next) => {
-        audit(debugWrite, 'deleteFile', req)
-
         await editor.forBot(req.params.botId).deleteFile(req.body)
         res.sendStatus(200)
       })

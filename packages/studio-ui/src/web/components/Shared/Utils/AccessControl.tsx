@@ -7,29 +7,6 @@ import store from '~/store'
 import { AccessControlProps, PermissionAllowedProps } from './typings'
 
 export const isOperationAllowed = (params: PermissionAllowedProps) => {
-  if (!params.user) {
-    params.user = (store.getState() as RootReducer).user
-  }
-
-  const { user, resource, operation } = params
-  if (user.isSuperAdmin) {
-    return true
-  }
-
-  // If the user is a super admin, then he shouldn't reach this validation
-  if (params.superAdmin) {
-    return false
-  }
-
-  // TODO: Refactor this on v12.1.4
-  if (window.BOT_LOCKED && operation === 'write' && resource.startsWith('bot')) {
-    return false
-  }
-
-  if (!user || (user.permissions && !checkRule(user.permissions, operation, resource))) {
-    return false
-  }
-
   return true
 }
 
