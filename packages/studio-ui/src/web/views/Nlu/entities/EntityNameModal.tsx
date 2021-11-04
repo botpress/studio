@@ -1,6 +1,7 @@
 import { Button, Callout, Classes, Dialog, FormGroup, HTMLSelect, Intent } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
+import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
 
@@ -17,15 +18,17 @@ const AVAILABLE_TYPES = [
   }
 ]
 
+export type EntityModalAction = 'create' | 'rename' | 'duplicate'
+
 interface Props {
   api: NluClient
   // Used for actions rename and duplicate
   originalEntity?: NLU.EntityDefinition
-  action: 'create' | 'rename' | 'duplicate'
+  action: EntityModalAction
   entityIDs: string[]
   isOpen: boolean
   closeModal: () => void
-  onEntityModified: (ent: any) => void
+  onEntityModified: (ent: NLU.EntityDefinition) => void
 }
 
 export const EntityNameModal: FC<Props> = props => {
@@ -41,7 +44,7 @@ export const EntityNameModal: FC<Props> = props => {
     props.action === 'rename' ? setName(props.originalEntity.name) : setName('')
   }, [props.isOpen])
 
-  const submit = async e => {
+  const submit: React.FormEventHandler<HTMLFormElement> = async e => {
     e.preventDefault()
 
     if (props.action === 'create') {
@@ -56,7 +59,7 @@ export const EntityNameModal: FC<Props> = props => {
   }
 
   const onCreateEntity = async () => {
-    const entity = {
+    const entity: NLU.EntityDefinition = {
       id: getEntityId(name),
       name: name.trim(),
       type: type as NLU.EntityType,
@@ -73,12 +76,6 @@ export const EntityNameModal: FC<Props> = props => {
     await props.api.updateEntity(getEntityId(props.originalEntity.name), entity)
     props.onEntityModified(entity)
   }
-
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
 
   const onDuplicateEntity = async () => {
     const clone = _.cloneDeep(props.originalEntity)

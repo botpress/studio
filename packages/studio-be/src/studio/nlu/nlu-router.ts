@@ -162,7 +162,7 @@ export class NLURouter extends CustomStudioRouter {
         const { botId } = req.params
         const { ignoreSystem } = req.query
 
-        const entities = await this.nluService.entities.getEntities(botId)
+        const entities = await this.nluService.entities.listEntities(botId)
         const mapped = entities.map(x => ({ ...x, label: `${x.type}.${x.name}` }))
 
         res.json(yn(ignoreSystem) ? mapped.filter(x => x.type !== 'system') : mapped)

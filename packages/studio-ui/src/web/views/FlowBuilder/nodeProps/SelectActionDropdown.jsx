@@ -39,6 +39,7 @@ export default class SelectActionDropdown extends Component {
         value={this.props.value}
         isClearable={this.props.isClearable}
         formatOptionLabel={this.renderOption}
+        menuPortalTarget={document.getElementById('menuOverlayPortal')}
       />
     )
   }

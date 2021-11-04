@@ -280,6 +280,7 @@ class ConditionModalForm extends Component<Props, State> {
           value={flowToSubflow}
           options={subflowOptions}
           onChange={(flowToSubflow: Option) => this.setState({ flowToSubflow })}
+          menuPortalTarget={document.getElementById('menuOverlayPortal')}
         />
         <label>{lang.tr('studio.flow.node.transition.specificNodeCalled')}:</label>
         <input type="text" value={flowToSubflowNode} onChange={e => updateSubflowNode(e.target.value)} />
@@ -329,6 +330,7 @@ class ConditionModalForm extends Component<Props, State> {
         value={this.state.flowToNode}
         options={this.nodeOptions()}
         onChange={(flowToNode: Option) => this.setState({ flowToNode })}
+        menuPortalTarget={document.getElementById('menuOverlayPortal')}
       />
     )
   }
@@ -384,6 +386,7 @@ class ConditionModalForm extends Component<Props, State> {
         value={this.state.matchIntent}
         options={intents}
         onChange={this.handleMatchIntentChanged}
+        menuPortalTarget={document.getElementById('menuOverlayPortal')}
       />
     )
   }
@@ -396,6 +399,7 @@ class ConditionModalForm extends Component<Props, State> {
           value={this.state.matchPropsType}
           options={availableProps}
           onChange={this.handlePropsTypeChanged}
+          menuPortalTarget={document.getElementById('menuOverlayPortal')}
         />
 
         <FormControl
