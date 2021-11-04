@@ -1,4 +1,5 @@
 import { lang, Dialog } from 'botpress/shared'
+import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { Button, Radio, FormControl, Alert, Form } from 'react-bootstrap'
@@ -6,23 +7,68 @@ import { connect } from 'react-redux'
 import Select from 'react-select'
 import { getFlowLabel, reorderFlows } from '~/components/Shared/Utils'
 import SmartInput from '~/components/SmartInput'
+import { RootReducer } from '~/reducers'
 import { ROUTER_CONDITON_REGEX } from '../utils/general.util'
 import style from './style.scss'
 
-const availableProps = [
+const availableProps: Option[] = [
   { label: 'User Data', value: 'user' },
   { label: 'Current User Session', value: 'session' },
   { label: 'Temporary Dialog Context', value: 'temp' }
 ]
 
-class ConditionModalForm extends Component {
-  state = {
+interface Condition {
+  condition: string
+  conditionType: 'always' | 'intent' | 'raw' | 'props'
+  node: string
+  caption: string
+}
+
+type TransitionType = 'end' | 'return' | 'subflow' | 'node'
+
+interface Option {
+  label: string
+  value: string
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+
+type Props = StateProps & {
+  subflows: string[]
+  item?: Condition
+  currentFlow: FlowView
+  currentNodeName: string
+  show: boolean
+  onClose: () => void
+  onSubmit: (payload: {
+    caption: string
+    condition: string
+    conditionType: Condition['conditionType']
+    node: ''
+  }) => void
+}
+
+interface State {
+  typeOfTransition: TransitionType
+  flowToSubflow?: Option
+  flowToSubflowNode?: string
+  flowToNode?: Option
+  transitionError?: string
+  conditionError?: string
+  conditionType: Condition['conditionType']
+  condition: Condition['condition']
+  matchPropsFieldName: string
+  matchPropsExpression: string
+  isEdit?: boolean
+  subflowOptions?: Option[]
+  matchIntent?: Option
+  returnToNode?: string
+  matchPropsType?: Option
+}
+
+class ConditionModalForm extends Component<Props, State> {
+  state: State = {
     typeOfTransition: 'end',
-    flowToSubflow: null,
-    flowToSubflowNode: null,
-    flowToNode: null,
-    transitionError: null,
-    conditionError: null,
     conditionType: 'always',
     condition: 'true',
     matchPropsFieldName: '',
@@ -32,7 +78,7 @@ class ConditionModalForm extends Component {
   componentDidMount() {
     const subflowNames = this.props.subflows.filter(flow => !flow.startsWith('skills/'))
 
-    const subflowOptions = reorderFlows(subflowNames).map(flow => ({
+    const subflowOptions = reorderFlows(subflowNames).map((flow: string) => ({
       label: getFlowLabel(flow),
       value: flow
     }))
@@ -40,17 +86,17 @@ class ConditionModalForm extends Component {
     this.setState({ subflowOptions })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (this.props === prevProps) {
       return
     }
 
     const { item } = this.props
-    const condition = (item && item.condition) || ''
-    const conditionType = (item && item.conditionType) || this.getConditionType(condition)
+    const condition = item?.condition || ''
+    const conditionType = item?.conditionType || this.getConditionType(condition)
 
-    if (item && item.node) {
-      let typeOfTransition = item.node.indexOf('.') !== -1 ? 'subflow' : 'node'
+    if (item?.node) {
+      let typeOfTransition: TransitionType = item.node.indexOf('.') !== -1 ? 'subflow' : 'node'
       typeOfTransition = item.node === 'END' ? 'end' : typeOfTransition
       typeOfTransition = /^#/.test(item.node) ? 'return' : typeOfTransition
       const options = this.nodeOptions()
@@ -66,10 +112,12 @@ class ConditionModalForm extends Component {
             ? this.state.subflowOptions.find(
                 x => x.value === (hashIndex !== -1 ? item.node.substring(0, hashIndex) : item.node)
               )
-            : null,
+            : undefined,
         flowToSubflowNode:
-          typeOfTransition === 'subflow' && item.node && hashIndex !== -1 ? item.node.substring(hashIndex + 1) : null,
-        flowToNode: typeOfTransition === 'node' ? options.find(x => x.value === item.node) : _.first(options),
+          typeOfTransition === 'subflow' && item.node && hashIndex !== -1
+            ? item.node.substring(hashIndex + 1)
+            : undefined,
+        flowToNode: typeOfTransition === 'node' ? options.find(x => x.value === item.node) : options[0],
         returnToNode: typeOfTransition === 'return' ? item.node.substr(1) : ''
       })
     } else {
@@ -85,41 +133,41 @@ class ConditionModalForm extends Component {
     }
   }
 
-  nodeOptions() {
+  nodeOptions(): Option[] {
     const { currentFlow: flow, currentNodeName } = this.props
-    const nodes = (flow && flow.nodes) || []
+    const nodes = flow?.nodes || []
     const options = nodes
       .filter(({ name }) => name !== currentNodeName)
       .map(({ name }) => ({ label: name, value: name }))
 
-    return [{ label: lang.tr('studio.flow.node.transition.noSpecific'), value: null }, ...options]
+    return [{ label: lang.tr('studio.flow.node.transition.noSpecific'), value: undefined }, ...options]
   }
 
-  getConditionType(condition) {
+  getConditionType(condition: string) {
     condition = condition.trim()
 
     if (condition === 'true') {
       return 'always'
     } else if (condition.includes('event.nlu.intent.name')) {
       return 'intent'
-    } else if (availableProps.some(props => condition.indexOf(props.value + '.') === 0)) {
+    } else if (availableProps.some(props => condition.indexOf(`${props.value}.`) === 0)) {
       return 'props'
     } else {
       return 'raw'
     }
   }
 
-  extractIntent(condition) {
+  extractIntent(condition: string) {
     const intent = condition.match(/'(.*)'/)
     if (intent) {
       this.setState({ matchIntent: { value: intent[1], label: intent[1] } })
     }
   }
 
-  extractProps(condition) {
+  extractProps(condition: string) {
     const props = condition.match(ROUTER_CONDITON_REGEX)
 
-    if (props && props.length > 3) {
+    if (props?.length > 3) {
       this.setState({
         matchPropsType: availableProps.find(x => x.value === props[1]),
         matchPropsFieldName: props[2],
@@ -131,9 +179,9 @@ class ConditionModalForm extends Component {
   changeTransitionType(type) {
     this.setState({
       typeOfTransition: type,
-      flowToSubflow: this.state.flowToSubflow || _.get(this.state.subflowOptions, '[0]'),
-      flowToNode: this.state.flowToNode || _.first(this.nodeOptions()),
-      transitionError: null
+      flowToSubflow: this.state.flowToSubflow || this.state.subflowOptions[0],
+      flowToNode: this.state.flowToNode || this.nodeOptions()[0],
+      transitionError: undefined
     })
   }
 
@@ -155,23 +203,23 @@ class ConditionModalForm extends Component {
     }
 
     this.setState({
-      conditionError: null,
-      transitionError: null
+      conditionError: undefined,
+      transitionError: undefined
     })
 
     return true
   }
 
-  resetForm(props) {
+  resetForm(state?: Pick<State, 'condition' | 'conditionType'>) {
     this.setState({
       typeOfTransition: 'node',
-      flowToSubflow: null,
-      flowToNode: _.first(this.nodeOptions()),
+      flowToSubflow: undefined,
+      flowToNode: this.nodeOptions()[0],
       returnToNode: '',
-      conditionError: null,
-      transitionError: null,
+      conditionError: undefined,
+      transitionError: undefined,
       condition: '',
-      ...props
+      ...state
     })
   }
 
@@ -183,31 +231,32 @@ class ConditionModalForm extends Component {
     // replace: "{{stuff}} more stuff... {{other stuff}}" by "stuff more stuff... other stuff"
     const condition = this.state.condition.replace(/({{)(.*?)(}})/g, '$2')
     const payload = {
-      caption: this.props.item && this.props.item.caption,
+      caption: this.props.item?.caption,
       condition,
-      conditionType: this.state.conditionType
+      conditionType: this.state.conditionType,
+      node: undefined
     }
 
     if (this.state.typeOfTransition === 'subflow') {
       const node = this.state.flowToSubflowNode
-      const subflow = _.get(this.state, 'flowToSubflow.value') || _.get(this.state, 'flowToSubflow')
+      const subflow = this.state.flowToSubflow?.value || this.state.flowToSubflow
 
-      payload.node = subflow + (node && node.length ? '#' + node.replace(/\s/g, '') : '')
+      payload.node = `${subflow}${node?.length ? `#${node.replace(/\s/g, '')}` : ''}`
     } else if (this.state.typeOfTransition === 'end') {
       payload.node = 'END'
     } else if (this.state.typeOfTransition === 'node') {
-      let earlierNode = this.state.isEdit && _.get(this.props, 'item.node')
+      let earlierNode = this.state.isEdit && this.props.item?.node
 
       if (
         earlierNode &&
         (/^END$/i.test(earlierNode) || earlierNode.startsWith('#') || /\.flow\.json$/i.test(earlierNode))
       ) {
-        earlierNode = null
+        earlierNode = undefined
       }
 
-      payload.node = _.get(this.state, 'flowToNode.value') || earlierNode || ''
+      payload.node = this.state.flowToNode?.value || earlierNode || ''
     } else if (this.state.typeOfTransition === 'return') {
-      payload.node = '#' + this.state.returnToNode
+      payload.node = `#${this.state.returnToNode}`
     } else {
       payload.node = ''
     }
@@ -219,7 +268,7 @@ class ConditionModalForm extends Component {
   renderSubflowChoice() {
     const { flowToSubflow, flowToSubflowNode, subflowOptions } = this.state
 
-    const updateSubflowNode = value =>
+    const updateSubflowNode = (value: string) =>
       this.setState({
         flowToSubflowNode: value
       })
@@ -230,7 +279,7 @@ class ConditionModalForm extends Component {
           name="flowToSubflow"
           value={flowToSubflow}
           options={subflowOptions}
-          onChange={flowToSubflow => this.setState({ flowToSubflow })}
+          onChange={(flowToSubflow: Option) => this.setState({ flowToSubflow })}
         />
         <label>{lang.tr('studio.flow.node.transition.specificNodeCalled')}:</label>
         <input type="text" value={flowToSubflowNode} onChange={e => updateSubflowNode(e.target.value)} />
@@ -239,7 +288,7 @@ class ConditionModalForm extends Component {
   }
 
   renderReturnToNode() {
-    const updateNode = value =>
+    const updateNode = (value: string) =>
       this.setState({
         returnToNode: value
       })
@@ -279,13 +328,13 @@ class ConditionModalForm extends Component {
         name="flowToNode"
         value={this.state.flowToNode}
         options={this.nodeOptions()}
-        onChange={flowToNode => this.setState({ flowToNode })}
+        onChange={(flowToNode: Option) => this.setState({ flowToNode })}
       />
     )
   }
 
   changeConditionType = event => {
-    const conditionType = event.target.value
+    const conditionType: Condition['conditionType'] = event.target.value
 
     if (conditionType === 'always') {
       this.setState({ conditionType, condition: 'true' })
@@ -296,12 +345,13 @@ class ConditionModalForm extends Component {
     }
   }
 
-  handlePropsTypeChanged = option => this.setState({ matchPropsType: option }, this.updatePropertyMatch)
+  handlePropsTypeChanged = (option: Option) => this.setState({ matchPropsType: option }, this.updatePropertyMatch)
   handlePropsFieldNameChanged = e => this.setState({ matchPropsFieldName: e.target.value }, this.updatePropertyMatch)
-  handlePropsExpressionChanged = value => this.setState({ matchPropsExpression: value }, this.updatePropertyMatch)
-  handleConditionChanged = value => this.setState({ condition: value })
+  handlePropsExpressionChanged = (value: string) =>
+    this.setState({ matchPropsExpression: value }, this.updatePropertyMatch)
+  handleConditionChanged = (value: string) => this.setState({ condition: value })
 
-  handleMatchIntentChanged = option => {
+  handleMatchIntentChanged = (option: Option) => {
     this.setState({
       matchIntent: option,
       condition: `event.nlu.intent.name === '${option.value}'`
@@ -319,11 +369,11 @@ class ConditionModalForm extends Component {
   }
 
   renderIntentPicker() {
-    if (!this.props.intents) {
+    if (!this.props.intents?.length) {
       return null
     }
 
-    const intents = this.props.intents
+    const intents: Option[] = this.props.intents
       .filter(i => !i.name.startsWith('__qna__'))
       .map(({ name }) => ({ label: name, value: name }))
       .concat([{ label: 'none', value: 'none' }])
@@ -361,6 +411,7 @@ class ConditionModalForm extends Component {
           value={this.state.matchPropsExpression}
           onChange={this.handlePropsExpressionChanged}
           className={style.textFields}
+          singleLine={false}
         />
       </Form>
     )
@@ -372,6 +423,7 @@ class ConditionModalForm extends Component {
         placeholder={lang.tr('studio.flow.node.transition.javascriptExpression')}
         value={this.state.condition}
         onChange={this.handleConditionChanged}
+        singleLine={false}
       />
     )
   }
@@ -454,7 +506,7 @@ class ConditionModalForm extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: RootReducer) => ({
   intents: state.skills.intents
 })
 
