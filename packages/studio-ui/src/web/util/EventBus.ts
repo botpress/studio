@@ -37,12 +37,6 @@ class EventBus extends EventEmitter2 {
   }
 
   setup = (userIdScope?: string) => {
-    // TODO: implement this when the studio is executed as a standalone, since the socket is provided by the core
-    // if (!window.BP_SERVER_URL) {
-    //   console.warn('No server configured, socket is disabled')
-    //   return
-    // }
-
     const query = {
       visitorId: auth.getUniqueVisitorId(userIdScope)
     }
@@ -70,7 +64,7 @@ class EventBus extends EventEmitter2 {
     this.studioSocket = io(`${socketUrl}/studio`, {
       query,
       transports,
-      path: `${window['ROOT_PATH']}/socket.io`
+      path: '/socket.io'
     })
     this.studioSocket.on('event', this.dispatchSocketEvent)
   }

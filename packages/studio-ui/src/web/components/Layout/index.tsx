@@ -160,7 +160,7 @@ const Layout: FC<Props> = (props: Props) => {
 
   const goHome = () => {
     if (!isInputFocused()) {
-      window.location.href = `${window.ROOT_PATH}/admin`
+      window.location.href = '/studio'
     }
   }
 

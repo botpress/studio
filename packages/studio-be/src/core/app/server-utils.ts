@@ -22,17 +22,9 @@ const indexCache: { [pageUrl: string]: string } = {}
 export const resolveIndexPaths = (page: string) => (req, res) => {
   res.contentType('text/html')
 
-  // Not caching pages in dev (issue with webpack )
-  if (indexCache[page] && process.IS_PRODUCTION) {
-    return res.send(indexCache[page])
-  }
-
   fs.readFile(resolveStudioAsset(page), (err, data) => {
     if (data) {
-      indexCache[page] = data
-        .toString()
-        .replace(/\<base href=\"\/\" ?\/\>/, `<base href="${process.ROOT_PATH}/" />`)
-        .replace(/ROOT_PATH=""|ROOT_PATH = ''/, `window.ROOT_PATH="${process.ROOT_PATH}"`)
+      indexCache[page] = data.toString()
 
       res.send(indexCache[page])
     } else {

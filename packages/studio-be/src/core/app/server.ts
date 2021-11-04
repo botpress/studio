@@ -58,13 +58,8 @@ export class HTTPServer {
     @inject(TYPES.QnaService) qnaService: QNAService
   ) {
     this.app = express()
-
-    if (!process.IS_PRODUCTION) {
-      this.app.use(errorHandler())
-    }
-
+    this.app.use(errorHandler())
     this.app.use(debugRequestMw)
-
     this.app.use(compression())
 
     this.studioRouter = new StudioRouter(
@@ -86,26 +81,13 @@ export class HTTPServer {
     )
   }
 
-  async setupRootPath() {
-    const botpressConfig = await this.configProvider.getBotpressConfig()
-    const externalUrl = process.env.EXTERNAL_URL || botpressConfig.httpServer.externalUrl
-
-    if (!externalUrl) {
-      process.ROOT_PATH = ''
-    } else {
-      const pathname = new URL(externalUrl).pathname
-      process.ROOT_PATH = pathname.replace(/\/+$/, '')
-    }
-  }
-
   @postConstruct()
   async initialize() {
     this.machineId = await machineUUID()
     await AppLifecycle.waitFor(AppLifecycleEvents.CONFIGURATION_LOADED)
-    await this.setupRootPath()
 
     const app = express()
-    app.use(process.ROOT_PATH, this.app)
+    app.use('', this.app)
     this.httpServer = createServer(app)
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -123,7 +105,6 @@ export class HTTPServer {
     window.SOCKET_TRANSPORTS = ["${getSocketTransports(config).join('","')}"];
     window.SHOW_POWERED_BY = ${!!config.showPoweredBy};
     window.UUID = "${this.machineId}"
-    window.BP_SERVER_URL = "${process.env.BP_SERVER_URL || ''}"
     window.STUDIO_PORT = ${process.PORT}
     window.MESSAGING_ENDPOINT = "${process.env.MESSAGING_ENDPOINT || ''}"
     window.RUNTIME_ENDPOINT = "${process.env.RUNTIME_ENDPOINT || ''}"`
@@ -141,7 +122,6 @@ export class HTTPServer {
     })
 
     this.app.use(monitoringMiddleware)
-
     this.app.use(bodyParser.json({ limit: config.bodyLimit }))
     this.app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -162,7 +142,7 @@ export class HTTPServer {
       const message = err.message || err || 'Unexpected error'
       const details = err.details || ''
       const docs = err.docs || 'https://botpress.com/docs'
-      const devOnly = process.IS_PRODUCTION ? {} : { showStackInDev: true, stack: err.stack, full: err.message }
+      const devOnly = { showStackInDev: true, stack: err.stack, full: err.message }
 
       res.status(statusCode).json({
         statusCode,
@@ -177,7 +157,7 @@ export class HTTPServer {
 
     process.HOST = config.host
     process.PORT = await portFinder.getPortPromise({ port: process.core_env.STUDIO_PORT || config.port })
-    process.LOCAL_URL = `http://localhost:${process.PORT}${process.ROOT_PATH}`
+    process.LOCAL_URL = `http://localhost:${process.PORT}`
     process.EXTERNAL_URL = process.env.EXTERNAL_URL || config.externalUrl || `http://${process.HOST}:${process.PORT}`
 
     await Promise.fromCallback(callback => {

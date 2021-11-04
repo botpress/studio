@@ -9,12 +9,6 @@ import fs from 'fs'
 import _ from 'lodash'
 import { showBanner } from './banner'
 
-async function setupEnv(app: BotpressApp) {
-  await app.database.initialize()
-
-  await app.ghost.initialize()
-}
-
 async function getLogger(provider: LoggerProvider, loggerName: string) {
   const logger = await provider(loggerName)
 
@@ -53,7 +47,7 @@ async function setupDebugLogger(provider: LoggerProvider) {
 async function start() {
   const app = createApp()
   await setupDebugLogger(app.logger)
-  await setupEnv(app)
+  await app.database.initialize()
 
   const logger = await getLogger(app.logger, 'Launcher')
 

@@ -94,8 +94,6 @@ export class ConfigProvider {
       // Variables substitution
       // TODO Check of a better way to handle path correction
       content = content.replace('%BOTPRESS_DIR%', process.PROJECT_LOCATION.replace(/\\/g, '/'))
-      content = content.replace('"$isProduction"', process.IS_PRODUCTION ? 'true' : 'false')
-      content = content.replace('"$isDevelopment"', process.IS_PRODUCTION ? 'false' : 'true')
 
       return <T>JSON.parse(content)
     } catch (e) {

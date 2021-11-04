@@ -16,7 +16,6 @@ declare namespace NodeJS {
 
   export interface Process {
     VERBOSITY_LEVEL: number
-    IS_PRODUCTION: boolean // TODO: look to remove this
     /**
      * Path to the global APP DATA folder, shared across all installations of Botpress Server
      * Use this folder to store stuff you'd like to cache, like NLU language models etc
@@ -27,8 +26,6 @@ declare namespace NodeJS {
     PROXY?: string
     EXTERNAL_URL: string
     LOCAL_URL: string
-    /** This is the subfolder where Botpress is located (ex: /botpress/). It is extracted from the external URL */
-    ROOT_PATH: string
     /** Either equal to studio location, or to the botpress source code file */
     PROJECT_LOCATION: string
     /** Path to the bot folder */
@@ -62,7 +59,6 @@ declare type PRO_FEATURES = 'seats'
  */
 declare interface BotpressEnvironmentVariables {
   readonly STUDIO_PORT?: number
-  readonly ROOT_PATH?: string
   readonly PROJECT_LOCATION?: string
 
   readonly APP_SECRET?: string

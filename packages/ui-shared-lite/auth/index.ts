@@ -57,7 +57,7 @@ export const logout = async (getAxiosClient: () => AxiosInstance) => {
   // Clear access token and ID token from local storage
   localStorage.removeItem(TOKEN_KEY)
   // need to force reload otherwise the token wont clear properly
-  window.location.href = window.location.origin + window['ROOT_PATH']
+  window.location.href = window.location.origin
 }
 
 export const setVisitorId = (userId: string, userIdScope?: string) => {

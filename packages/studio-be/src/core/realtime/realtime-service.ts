@@ -44,7 +44,7 @@ export class RealtimeService {
 
     const io: socketio.Server = socketio(server, {
       transports,
-      path: `${process.ROOT_PATH}/socket.io`,
+      path: '/socket.io',
       origins: '*:*',
       serveClient: false
     })

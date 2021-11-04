@@ -196,12 +196,12 @@ export class StudioRouter extends CustomRouter {
               ${commonEnv}
               window.STUDIO_VERSION = "${process.STUDIO_VERSION}";
               window.ANALYTICS_ID = "${gaId}";
-              window.API_PATH = "${process.ROOT_PATH}/api/v1";
-              window.BOT_API_PATH = "${process.ROOT_PATH}/api/v1/bots/${botId}";
-              window.STUDIO_API_PATH = "${process.ROOT_PATH}/api/v1/studio/${botId}";
+              window.API_PATH = "/api/v1";
+              window.BOT_API_PATH = "/api/v1/bots/${botId}";
+              window.STUDIO_API_PATH = "/api/v1/studio/${botId}";
               window.BOT_ID = "${botId}";
               window.BOT_NAME = "${bot.name}";
-              window.BP_BASE_PATH = "${process.ROOT_PATH}/studio/${botId}";
+              window.BP_BASE_PATH = "/studio/${botId}";
               window.APP_VERSION = "${process.BOTPRESS_VERSION}";
               window.APP_NAME = "${branding.title}";
               window.APP_FAVICON = "${branding.favicon}";

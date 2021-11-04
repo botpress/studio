@@ -26,8 +26,6 @@ interface ScopedGhostOptions {
 }
 
 const MAX_GHOST_FILE_SIZE = '100mb'
-const GLOBAL_GHOST_KEY = '__global__'
-const STUDIO_GHOST_KEY = '__studio__'
 
 @injectable()
 export class GhostService {
@@ -43,20 +41,12 @@ export class GhostService {
     private logger: Logger
   ) {}
 
-  async initialize() {
-    this._scopedGhosts.clear()
-  }
-
   forBot(botId: string): ScopedGhostService {
-    if (!isValidBotId(botId)) {
-      throw new Error(`Invalid botId "${botId}"`)
-    }
-
     if (this._scopedGhosts.has(botId)) {
       return this._scopedGhosts.get(botId)!
     }
 
-    const scopedGhost = new ScopedGhostService(`${this.baseFolder}`, this.diskDriver, this.cache, { botId })
+    const scopedGhost = new ScopedGhostService(this.baseFolder, this.diskDriver, this.cache, { botId })
 
     this._scopedGhosts.set(botId, scopedGhost)
     return scopedGhost
