@@ -33,7 +33,7 @@ const ensureAuthenticated = WrappedComponent => {
             return Promise.reject(error)
           }
           if (error.response.config.url !== `${window.API_PATH}/admin/ping`) {
-            this.checkAuth() // just to make sure 
+            this.checkAuth() // just to make sure
           }
           return Promise.reject(error)
         }
@@ -51,17 +51,15 @@ const ensureAuthenticated = WrappedComponent => {
         <div>
           <div>
             <H5 className={Classes.DARK}>You have been logged out</H5>
-            <p>
-              For security reasons, we have logged you out. Log back in to continue working.
-            </p>
+            <p>For security reasons, we have logged you out. Log back in to continue working.</p>
           </div>
         </div>
       )
       Toaster.create({ position: Position.TOP_RIGHT }).show({
         message: toastContent,
         intent: Intent.DANGER,
-        timeout: 3000,
-        onDismiss:()=>{
+        timeout: 10000,
+        onDismiss: () => {
           this.promptLogin()
         }
       })
