@@ -168,19 +168,6 @@ export class DiskStorageDriver implements StorageDriver {
     }
   }
 
-  async deleteRevision(filePath: string, revision: string): Promise<void> {
-    throw new Error('Method not implemented.')
-  }
-
-  async listRevisions(pathPrefix: string): Promise<FileRevision[]> {
-    try {
-      const content = await this.readFile(path.join(pathPrefix, 'revisions.json'))
-      return JSON.parse(content.toString())
-    } catch (err) {
-      return []
-    }
-  }
-
   async absoluteDirectoryListing(destination: string) {
     try {
       const files = await Promise.fromCallback<string[]>(cb => glob('**/*.*', { cwd: destination }, cb))

@@ -106,7 +106,7 @@ export class CodeEditorRouter extends CustomStudioRouter {
         const folder = path.dirname(req.body.location)
         const filename = path.basename(req.body.location)
 
-        await this.bpfs.root().upsertFile(folder, filename, req.file.buffer)
+        await this.bpfs.forBot(req.params.botId).upsertFile(folder, filename, req.file.buffer)
         res.sendStatus(200)
       })
     )

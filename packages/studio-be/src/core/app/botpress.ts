@@ -69,7 +69,6 @@ export class Botpress {
 
     AppLifecycle.setDone(AppLifecycleEvents.CONFIGURATION_LOADED)
 
-    await this.restoreDebugScope()
     await this.checkNLUEndpoint()
     await this.initializeServices()
     await this.deployAssets()
@@ -78,17 +77,6 @@ export class Botpress {
     await this.discoverBots()
 
     AppLifecycle.setDone(AppLifecycleEvents.BOTPRESS_READY)
-  }
-
-  async restoreDebugScope() {
-    if (await this.ghostService.global().fileExists('/', 'debug.json')) {
-      try {
-        const { scopes } = await this.ghostService.global().readFileAsObject('/', 'debug.json')
-        setDebugScopes(scopes.join(','))
-      } catch (err) {
-        this.logger.attachError(err).error("Couldn't load debug scopes. Check the syntax of debug.json")
-      }
-    }
   }
 
   async checkNLUEndpoint() {

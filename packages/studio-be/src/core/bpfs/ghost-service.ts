@@ -16,7 +16,7 @@ import replace from 'replace-in-file'
 import tmp from 'tmp'
 import { VError } from 'verror'
 
-import { FileRevision, PendingRevisions, ReplaceContent, StorageDriver } from '.'
+import { ReplaceContent, StorageDriver } from '.'
 import { DiskStorageDriver } from './drivers/disk-driver'
 
 interface ScopedGhostOptions {
@@ -45,33 +45,6 @@ export class GhostService {
 
   async initialize() {
     this._scopedGhosts.clear()
-  }
-
-  // Not caching this scope since it's rarely used
-  root(): ScopedGhostService {
-    return new ScopedGhostService(this.baseFolder, this.diskDriver, this.cache)
-  }
-
-  studio(): ScopedGhostService {
-    if (this._scopedGhosts.has(STUDIO_GHOST_KEY)) {
-      return this._scopedGhosts.get(STUDIO_GHOST_KEY)!
-    }
-
-    const scopedGhost = new ScopedGhostService(process.PROJECT_LOCATION, this.diskDriver, this.cache)
-
-    this._scopedGhosts.set(STUDIO_GHOST_KEY, scopedGhost)
-    return scopedGhost
-  }
-
-  global(): ScopedGhostService {
-    if (this._scopedGhosts.has(GLOBAL_GHOST_KEY)) {
-      return this._scopedGhosts.get(GLOBAL_GHOST_KEY)!
-    }
-
-    const scopedGhost = new ScopedGhostService(`${this.baseFolder}global`, this.diskDriver, this.cache)
-
-    this._scopedGhosts.set(GLOBAL_GHOST_KEY, scopedGhost)
-    return scopedGhost
   }
 
   forBot(botId: string): ScopedGhostService {
@@ -115,23 +88,6 @@ export class ScopedGhostService {
 
     this.isDirectoryGlob = this.baseDir.endsWith('*')
     this.primaryDriver = diskDriver
-  }
-
-  /**
-   * TODO: Refactor this on v12.1.4
-   * This is a temporary workaround to lock bots marked as "locked" until modules are correctly updated.
-   */
-  private async _assertBotUnlocked(directory: string, file?: string) {
-    if (!this.options.botId || directory.startsWith('./models')) {
-      return
-    }
-
-    if (await this.fileExists('/', 'bot.config.json')) {
-      const config = await this.readFileAsObject<BotConfig>('/', 'bot.config.json')
-      if (config.locked) {
-        throw new Error('Bot locked')
-      }
-    }
   }
 
   private _normalizeFolderName(rootFolder: string) {
@@ -179,10 +135,6 @@ export class ScopedGhostService {
       ignoreLock: false
     }
   ): Promise<void> {
-    if (!options.ignoreLock) {
-      await this._assertBotUnlocked(rootFolder, file)
-    }
-
     if (this.isDirectoryGlob) {
       throw new Error("Ghost can't read or write under this scope")
     }
@@ -202,17 +154,13 @@ export class ScopedGhostService {
   }
 
   async upsertFiles(rootFolder: string, content: FileContent[], options?: UpsertOptions): Promise<void> {
-    if (options && !options.ignoreLock) {
-      await this._assertBotUnlocked(rootFolder)
-    }
-
     await Promise.all(content.map(c => this.upsertFile(rootFolder, c.name, c.content)))
   }
 
   public async exportToDirectory(directory: string, excludes?: string | string[]): Promise<string[]> {
     const allFiles = await this.directoryListing('./', '*.*', excludes, true)
 
-    for (const file of allFiles.filter(x => x !== 'revisions.json')) {
+    for (const file of allFiles) {
       const content = await this.primaryDriver.readFile(this._normalizeFileName('./', file))
       const outPath = path.join(directory, file)
       mkdirp.sync(path.dirname(outPath))
@@ -245,7 +193,6 @@ export class ScopedGhostService {
       }
 
       const filename = path.join(tmpDir.name, 'archive.tgz')
-
       const archive = await createArchive(filename, tmpDir.name, outFiles)
       return await fse.readFile(archive)
     } finally {
@@ -313,7 +260,6 @@ export class ScopedGhostService {
   }
 
   async deleteFile(rootFolder: string, file: string): Promise<void> {
-    await this._assertBotUnlocked(rootFolder, file)
     if (this.isDirectoryGlob) {
       throw new Error("Ghost can't read or write under this scope")
     }
@@ -325,7 +271,6 @@ export class ScopedGhostService {
   }
 
   async renameFile(rootFolder: string, fromName: string, toName: string): Promise<void> {
-    await this._assertBotUnlocked(rootFolder, fromName)
     const fromPath = this._normalizeFileName(rootFolder, fromName)
     const toPath = this._normalizeFileName(rootFolder, toName)
 
@@ -333,7 +278,6 @@ export class ScopedGhostService {
   }
 
   async deleteFolder(folder: string): Promise<void> {
-    await this._assertBotUnlocked(folder)
     if (this.isDirectoryGlob) {
       throw new Error("Ghost can't read or write under this scope")
     }
@@ -365,10 +309,6 @@ export class ScopedGhostService {
       }
       throw new VError(err, `Could not list directory under ${rootFolder}`)
     }
-  }
-
-  async getPendingChanges(): Promise<PendingRevisions> {
-    return {}
   }
 
   onFileChanged(callback: (filePath: string) => void): ListenHandle {

@@ -94,7 +94,7 @@ export const UploadModal: FC<Props> = props => {
 
     let fullPath = state.fullPath.length ? state.fullPath : files[0].name
     if (props.isComponent) {
-      fullPath = `bots/${window.BOT_ID}/components/${files[0].name}`
+      fullPath = `components/${files[0].name}`
     }
 
     dispatch({

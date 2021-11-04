@@ -55,7 +55,6 @@ export class ActionService {
 
 export class ScopedActionService {
   private _builtinActionsCache: LocalActionDefinition[] | undefined
-  private _globalActionsCache: LocalActionDefinition[] | undefined
   private _localActionsCache: LocalActionDefinition[] | undefined
   private _scriptsCache: Map<string, string> = new Map()
 
@@ -64,11 +63,10 @@ export class ScopedActionService {
   }
 
   async listActions(): Promise<LocalActionDefinition[]> {
-    const globalActions = await this._listGlobalActions()
     const localActions = await this.listLocalActions()
     const builtinActions = await this.listBuiltinActions()
 
-    const userActions = [...globalActions, ...localActions]
+    const userActions = localActions
 
     // We ignore builtin actions when they already exists for the bot locally
     return [...userActions, ..._.differenceBy(builtinActions, userActions, x => x.name)]
@@ -107,18 +105,6 @@ export class ScopedActionService {
     return actions
   }
 
-  private async _listGlobalActions() {
-    if (this._globalActionsCache) {
-      return this._globalActionsCache
-    }
-
-    const actionFiles = (await this.ghost.global().directoryListing('actions', '*.js', EXCLUDES)).filter(enabled)
-    const actions = await Promise.map(actionFiles, async file => this._getActionDefinition(file, 'global'))
-
-    this._globalActionsCache = actions
-    return actions
-  }
-
   private _listenForCacheInvalidation() {
     const clearDebounce = _.debounce(this._clearCache.bind(this), DEBOUNCE_DELAY, { leading: true, trailing: false })
 
@@ -131,7 +117,6 @@ export class ScopedActionService {
 
   private _clearCache() {
     this._scriptsCache.clear()
-    this._globalActionsCache = undefined
     this._localActionsCache = undefined
   }
 
@@ -148,13 +133,8 @@ export class ScopedActionService {
       return this._scriptsCache.get(name)!
     }
 
-    let script: string
-    if (scope === 'global') {
-      script = await this.ghost.global().readFileAsString('actions', `${name}.js`)
-    } else {
-      const filename = legacy ? `${name}.js` : `${name}.http.js`
-      script = await this.ghost.forBot(this.botId).readFileAsString('actions', filename)
-    }
+    const filename = legacy ? `${name}.js` : `${name}.http.js`
+    const script = await this.ghost.forBot(this.botId).readFileAsString('actions', filename)
 
     this._scriptsCache.set(`${name}_${legacy}_${scope}`, script)
     return script

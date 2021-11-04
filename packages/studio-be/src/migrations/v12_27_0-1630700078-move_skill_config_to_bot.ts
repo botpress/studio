@@ -14,8 +14,6 @@ const migration: Migration = {
       let skillConfig
       if (await ghostService.forBot(botId).fileExists('config', 'basic-skills.json')) {
         skillConfig = await ghostService.forBot(botId).readFileAsObject('config', 'basic-skills.json')
-      } else if (await ghostService.global().fileExists('config', 'basic-skills.json')) {
-        skillConfig = await ghostService.global().readFileAsObject('config', 'basic-skills.json')
       }
 
       if (skillConfig) {

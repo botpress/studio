@@ -171,10 +171,6 @@ export class LibrariesService {
     return true
   }
 
-  createDefaultExample = async () => {
-    await this.bpfs.global().upsertFile(LIB_FOLDER, 'example.js', example)
-  }
-
   getNpmPath = async () => {
     if (this.npmPath) {
       return this.npmPath

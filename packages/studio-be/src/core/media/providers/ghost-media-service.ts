@@ -14,7 +14,7 @@ export class GhostMediaService implements MediaService {
   private MEDIA_DIR = 'media'
   private ghost: ScopedGhostService
   constructor(ghostProvider: GhostService, private botId?: string) {
-    this.ghost = this.botId ? ghostProvider.forBot(this.botId) : ghostProvider.global()
+    this.ghost = ghostProvider.forBot(this.botId!)
   }
 
   async saveFile(name: string, content: Buffer): Promise<{ url: string; fileName: string }> {

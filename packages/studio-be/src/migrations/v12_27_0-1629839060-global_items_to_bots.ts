@@ -33,13 +33,8 @@ const migration: Migration = {
     let hasChanges = false
     const flowService = inversify.get<FlowService>(TYPES.FlowService)
 
-    const globalTypes = await ghostService.global().directoryListing(CONTENT_DIR, '*.*')
     const builtinTypes = await listDir(getBuiltinPath(CONTENT_DIR), { fileFilter: '**/*.js' })
-
-    const contentTypes = [
-      ...globalTypes.filter(x => !x.startsWith('builtin/')),
-      ...builtinTypes.map(x => x.relativePath)
-    ]
+    const contentTypes = builtinTypes.map(x => x.relativePath)
 
     const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
       const botTypes = await ghostService.forBot(botId).directoryListing(CONTENT_DIR, '*.*')
@@ -51,8 +46,6 @@ const migration: Migration = {
         let content
         if (builtinTypes.find(x => x.relativePath === type)) {
           content = await fse.readFile(path.join(getBuiltinPath(CONTENT_DIR), type))
-        } else if (globalTypes.find(x => x === type)) {
-          content = await ghostService.global().readFileAsBuffer(CONTENT_DIR, type)
         }
 
         if (content) {
@@ -66,11 +59,7 @@ const migration: Migration = {
      * Scan each flows and extract actions, then if the bot doesn't have it locally, fetch it from builtin or global.
      * We prefer builtin first because we had to make slight adjustments to some actions (module config was moved to bot config)
      */
-    const globalActions = await ghostService.global().directoryListing('actions', '*.*')
     const builtinActions = await listDir(getBuiltinPath('actions'))
-
-    // We ignore actions of custom modules for now, since they may require their custom node_modules folder
-    const globalWithoutCustomModules = globalActions.filter(fileName => path.dirname(fileName) === '.')
 
     const updateBotActions = async (botId: string) => {
       const botActions = await ghostService.forBot(botId).directoryListing(ACTIONS_DIR, '*.*')
@@ -85,8 +74,6 @@ const migration: Migration = {
         let content
         if (builtinActions.find(x => x.relativePath === actionFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
-        } else if (globalWithoutCustomModules.find(x => x === actionFile)) {
-          content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
         }
 
         if (content) {
@@ -100,16 +87,8 @@ const migration: Migration = {
      * Take all global hooks, ignore our own modules and those which are not related to bots.
      * Then we copy all any remaining global hook locally, and we add builtin ones.
      */
-    const globalHooks = await ghostService.global().directoryListing(HOOKS_DIR, '*.*')
     const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
-
-    // Ignore hooks of custom modules, since they may need their node_modules. We copy other global hooks locally
-    const globalBotHooks = globalHooks.filter(path => {
-      const [hookType, _moduleName, fileName] = path.split('/')
-      return BOT_HOOKS.includes(hookType) && !fileName
-    })
-
-    const globalWithBuiltin = [...globalBotHooks, ...builtinHooks.map(x => x.relativePath)]
+    const globalWithBuiltin = builtinHooks.map(x => x.relativePath)
 
     const updateBotHooks = async (botId: string) => {
       const botHooks = await ghostService.forBot(botId).directoryListing(HOOKS_DIR, '*.*')
@@ -120,9 +99,7 @@ const migration: Migration = {
         }
 
         let content
-        if (globalHooks.find(x => x === hookFile)) {
-          content = await ghostService.global().readFileAsBuffer(HOOKS_DIR, hookFile)
-        } else if (builtinHooks.find(x => x.relativePath === hookFile)) {
+        if (builtinHooks.find(x => x.relativePath === hookFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(HOOKS_DIR), hookFile))
         }
 
