@@ -658,6 +658,7 @@
         "intentsVeryClose": "Les intentions prévues sont très proches.",
         "youCanAccountForIt": "Vous pouvez en rendre compte en vérifiant la variable : ",
         "ambiguous": "Ambigu",
+        "noModel": "Échec d'évaluation NLU car aucun modèle n'est disponible",
         "languageUnderstanding": "Compréhension du langage"
       },
       "slots": {

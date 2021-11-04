@@ -85,7 +85,9 @@ class Inspector extends Component<Props> {
 
     const updateNodeAndRefresh = (...args) => {
       updateFlowNode(...args)
-      refreshFlowsLinks()
+      setImmediate(() => {
+        refreshFlowsLinks()
+      })
     }
 
     if (nodeType === 'skill-call') {

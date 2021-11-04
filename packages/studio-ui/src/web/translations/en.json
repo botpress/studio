@@ -662,6 +662,7 @@
         "intentsVeryClose": "Predicted intents are very close.",
         "youCanAccountForIt": "You can account for it checking the variable : ",
         "ambiguous": "Ambiguous",
+        "noModel": "Failed at running NLU as no model was trained",
         "languageUnderstanding": "Language Understanding"
       },
       "slots": {

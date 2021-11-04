@@ -15,13 +15,8 @@ interface Props {
 }
 
 const Text: FC<Props> = props => {
-  const [value, setValue] = useState('')
   const { formContext, formData, schema, required, uiSchema, onChange } = props
   const key = useRef(`${formContext?.customKey}`)
-
-  useEffect(() => {
-    setValue(formData)
-  }, [formData])
 
   useEffect(() => {
     key.current = `${formContext?.customKey}`
@@ -36,12 +31,12 @@ const Text: FC<Props> = props => {
         <SmartInput
           key={key.current}
           singleLine={uiSchema.$subtype !== 'textarea'}
-          value={value}
+          value={formData}
           onChange={onChange}
           className={style.textarea}
           isSideForm
         />
-        {isMissingCurlyBraceClosure(value) && (
+        {isMissingCurlyBraceClosure(formData) && (
           <p className={style.fieldError}>{lang.tr('studio.content.missingClosingCurlyBrace')}</p>
         )}
       </div>

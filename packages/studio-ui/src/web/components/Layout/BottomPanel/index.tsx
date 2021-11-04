@@ -100,7 +100,7 @@ const BottomPanel = props => {
 
   return (
     <div className={style.container}>
-      <Tabs className={style.verticalTab} vertical onChange={tab => handleChangeTab(tab)} selectedTabId={tab}>
+      <Tabs className={style.verticalTab} vertical onChange={tab => handleChangeTab(tab as string)} selectedTabId={tab}>
         <Tab id="debugger" title={lang.tr('debugger')} />
         <Tab id="logs" title={lang.tr('logs')} />
         {props.inspectorEnabled && <Tab id="inspector" title={lang.tr('inspector')} />}

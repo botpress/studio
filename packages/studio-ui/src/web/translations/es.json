@@ -636,6 +636,7 @@
         "intentsVeryClose": "Los intentos previstos están muy cerca",
         "youCanAccountForIt": "Puede contabilizarlo marcando la variable:",
         "ambiguous": "Ambiguous",
+        "noModel": "No se pudo ejecutar NLU porque no se entrenó ningún modelo",
         "languageUnderstanding": "Comprensión del lenguaje"
       },
       "slots": {
