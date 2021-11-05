@@ -1,3 +1,22 @@
+## [0.0.41](https://github.com/botpress/studio/compare/v0.0.28...v0.0.41) (2021-10-22)
+
+
+### Bug Fixes
+
+* **qna:** fix context search in QnA ([#141](https://github.com/botpress/studio/issues/141)) ([f8bacf3](https://github.com/botpress/studio/commit/f8bacf355d122e6a6e7edc60c951468f71f96fea))
+* **studio:** ignore proxy when calling core ([#142](https://github.com/botpress/studio/issues/142)) ([cf44e91](https://github.com/botpress/studio/commit/cf44e913b23005da2f25b391b1b73d407d9d16c5))
+
+
+
+# [0.0.40](https://github.com/botpress/studio/compare/v0.0.39...v0.0.40) (2021-10-18)
+
+
+### Bug Fixes
+
+* always display search bar on qna ([#136](https://github.com/botpress/studio/issues/136)) ([0220da2](https://github.com/botpress/studio/commit/0220da24965daa3b1e35a4599e7d14e82229a4dc))
+
+
+
 ## [0.0.39](https://github.com/botpress/studio/compare/v0.0.28...v0.0.39) (2021-10-07)
 
 

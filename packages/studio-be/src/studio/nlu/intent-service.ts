@@ -38,7 +38,7 @@ export class IntentService {
       throw new Error('Invalid intent name, expected at least one character')
     }
 
-    const availableEntities = await this.nluService.entities.getEntities(botId)
+    const availableEntities = await this.nluService.entities.listEntities(botId)
 
     _.chain(intent.slots)
       .flatMap('entities')

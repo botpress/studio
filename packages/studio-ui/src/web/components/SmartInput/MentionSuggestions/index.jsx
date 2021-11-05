@@ -1,13 +1,12 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import cx from 'classnames'
 import { genKey } from 'draft-js'
 import { escapeRegExp } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import addMention from '../modifiers/addMention'
+import style from '../styles.scss'
 import decodeOffsetKey from '../utils/decodeOffsetKey'
 import getSearchText from '../utils/getSearchText'
-import cx from 'classnames'
-
-import style from '../styles.scss'
 
 const defaultEntryComponent = props => {
   const {
@@ -170,7 +169,9 @@ export class MentionSuggestions extends Component {
     const anchorOffset = selection.getAnchorOffset()
 
     // the list should not be visible if a range is selected or the editor has no focus
-    if (!selection.isCollapsed() || !selection.getHasFocus()) return removeList()
+    if (!selection.isCollapsed() || !selection.getHasFocus()) {
+      return removeList()
+    }
 
     // identify the start & end positon of each search-text
     const offsetDetails = searches.map(offsetKey => decodeOffsetKey(offsetKey))
@@ -202,7 +203,9 @@ export class MentionSuggestions extends Component {
           (anchorOffset > start + this.props.mentionTrigger.length && anchorOffset <= end) // @ is in the text or at the end
       )
 
-    if (selectionIsInsideWord.every(isInside => isInside === false)) return removeList()
+    if (selectionIsInsideWord.every(isInside => isInside === false)) {
+      return removeList()
+    }
 
     const lastActiveOffsetKey = this.activeOffsetKey
     this.activeOffsetKey = selectionIsInsideWord

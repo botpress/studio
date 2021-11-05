@@ -42,7 +42,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
   editor: any
 
   mentionOptions = {
-    mentionTrigger: '{', // The character that will trigger the auto-complete to show up
+    mentionTrigger: '{{', // The character that will trigger the auto-complete to show up
     mentionRegExp: '{?[\\d\\w\\.]*}{0,2}', // Combined with mentionTrigger's "{", this looks for "{{something.like.this}}"
     entityMutability: 'MUTABLE' // Mutable means the user will be able to delete and add characters to this entity once tagged
   }

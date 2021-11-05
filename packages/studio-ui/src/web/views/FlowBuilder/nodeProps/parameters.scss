@@ -1,6 +1,7 @@
 .key input {
   padding: 5px;
   border: solid 1px #ddd;
+  height: 32px;
 }
 
 .invalid input {
@@ -15,6 +16,10 @@
 
   input {
     width: 100%;
+  }
+
+  tbody {
+    overflow-y: overlay;
   }
 
   margin-bottom: 0;

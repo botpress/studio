@@ -6,6 +6,7 @@ let coreClient: AxiosInstance
 
 if (INTERNAL_PASSWORD) {
   coreClient = axios.create({
+    proxy: false,
     headers: { authorization: INTERNAL_PASSWORD },
     baseURL: `http://localhost:${CORE_PORT}${ROOT_PATH}/api/internal`
   })

@@ -10,7 +10,7 @@ Currently, it is not recommended to run the studio on its own. Therefore, you mu
 Like before, any changes made on the frontend will be available after a simple page refresh. Changes on the backend will require a server restart.
 
 Since this package MUST be started from the Botpress Server, you need to set a special environment variable on the server so it can load the correct files.
-The variable is named `DEV_STUDIO_PATH` and must point to `packages/studio-be/out`
+The variable is named `DEV_STUDIO_PATH` and must point to `packages/studio-be/out`. Watch out, path must be an abs path, env var doesn't support relative path.
 
 ## As standalone (NOT RECOMMENDED)
 

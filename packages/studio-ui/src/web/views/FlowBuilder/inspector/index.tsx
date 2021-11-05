@@ -1,4 +1,5 @@
-import { Button, H4 } from '@blueprintjs/core'
+import { H4 } from '@blueprintjs/core'
+import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
@@ -52,7 +53,7 @@ class Inspector extends Component<Props> {
             <i className={cx('material-icons', style.closeIcon)} onClick={close}>
               close
             </i>
-            <H4>{node ? 'Node Properties' : 'Flow Properties'}</H4>
+            <H4>{node ? lang.tr('studio.flow.node.nodeProperties') : lang.tr('studio.flow.flowProperties')}</H4>
           </Fragment>
         )}
         {this.renderNodeProperties(nodeType)}
@@ -84,7 +85,9 @@ class Inspector extends Component<Props> {
 
     const updateNodeAndRefresh = (...args) => {
       updateFlowNode(...args)
-      refreshFlowsLinks()
+      setImmediate(() => {
+        refreshFlowsLinks()
+      })
     }
 
     if (nodeType === 'skill-call') {
