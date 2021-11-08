@@ -162,7 +162,6 @@ export class Debugger extends React.Component<Props, State> {
   }
 
   handleNewSession = () => {
-    const userId = nanoid(20)
     this.postToIframe('new-session', null)
   }
 
