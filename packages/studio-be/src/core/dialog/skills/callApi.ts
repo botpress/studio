@@ -14,7 +14,7 @@ const generateFlow = async (data: any, metadata: sdk.FlowGeneratorMetadata): Pro
 }
 
 const createNodes = data => {
-  const nodes: sdk.SkillFlowNode[] = [
+  const nodes: sdk.FlowNode[] = [
     {
       name: 'entry',
       onEnter: [
