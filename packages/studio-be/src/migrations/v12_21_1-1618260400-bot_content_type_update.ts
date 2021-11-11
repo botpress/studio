@@ -8,40 +8,33 @@ const migration: Migration = {
     target: 'bot',
     type: 'config'
   },
-  up: async ({ botService, configProvider, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({
+    configProvider,
+    metadata: { botId, botConfig, isDryRun }
+  }: MigrationOpts): Promise<sdk.MigrationResult> => {
     let hasChanges = false
 
-    const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
-      const newTypes = ['builtin_video', 'builtin_audio']
-      const contentTypes = botConfig.imports.contentTypes || []
+    const newTypes = ['builtin_video', 'builtin_audio']
+    const contentTypes = botConfig.imports.contentTypes || []
 
-      // Fix for the previous migration which was removed
-      const hasInvalidEntry = !!contentTypes.find(x => typeof x !== 'string')
-      const hasMissingTypes = !newTypes.every(type => contentTypes.find(x => x === type))
+    // Fix for the previous migration which was removed
+    const hasInvalidEntry = !!contentTypes.find(x => typeof x !== 'string')
+    const hasMissingTypes = !newTypes.every(type => contentTypes.find(x => x === type))
 
-      if (contentTypes.length && (hasInvalidEntry || hasMissingTypes)) {
-        hasChanges = true
-        botConfig.imports.contentTypes = _.uniq([...contentTypes.filter(x => typeof x === 'string'), ...newTypes])
+    if (contentTypes.length && (hasInvalidEntry || hasMissingTypes)) {
+      hasChanges = true
+      botConfig.imports.contentTypes = _.uniq([...contentTypes.filter(x => typeof x === 'string'), ...newTypes])
 
+      if (!isDryRun) {
         await configProvider.setBotConfig(botId, botConfig)
       }
     }
 
-    if (metadata.botId) {
-      const botConfig = await botService.findBotById(metadata.botId)
-      await updateBotContentTypes(metadata.botId, botConfig!)
-    } else {
-      const bots = await botService.getBots()
-      for (const [botId, botConfig] of bots) {
-        await updateBotContentTypes(botId, botConfig)
-      }
-    }
-
-    return { success: true, message: hasChanges ? 'New types added successfully' : 'Nothing to change' }
+    return { success: true, hasChanges }
   },
   down: async () => {
     // Down migrations not necessary for content types, no impact
-    return { success: true, message: 'Nothing to change' }
+    return { success: true, hasChanges: false }
   }
 }
 

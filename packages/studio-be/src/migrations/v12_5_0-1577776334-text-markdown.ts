@@ -9,8 +9,8 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ botService, ghostService, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
-    let hasChanged = false
+  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    let hasChanges = false
     const checkFile = (fileContent: string, nbElements: number) => {
       const parsed = JSON.parse(fileContent)
       return parsed.length === nbElements
@@ -24,44 +24,34 @@ const migration: Migration = {
 
           if (!(markdownKey in formData)) {
             formData[markdownKey] = true
-            hasChanged = true
+            hasChanges = true
           }
         }
       }
     }
 
-    const migrateBotTextContent = async (botId: string) => {
-      const bpfs = ghostService.forBot(botId)
-      const entFiles = await bpfs.directoryListing(ELEMENTS_DIR, '*.json')
+    const bpfs = ghostService.forBot(botId)
+    const entFiles = await bpfs.directoryListing(ELEMENTS_DIR, '*.json')
 
-      for (const fileName of entFiles) {
-        try {
-          const contentElements = await bpfs.readFileAsObject<sdk.ContentElement[]>(ELEMENTS_DIR, fileName)
-          contentElements.forEach(element => updateFormData(element))
+    for (const fileName of entFiles) {
+      try {
+        const contentElements = await bpfs.readFileAsObject<sdk.ContentElement[]>(ELEMENTS_DIR, fileName)
+        contentElements.forEach(element => updateFormData(element))
 
-          const fileContent = JSON.stringify(contentElements, undefined, 2)
+        const fileContent = JSON.stringify(contentElements, undefined, 2)
 
-          // Just double-checking before writing the content back
-          if (checkFile(fileContent, contentElements.length)) {
+        // Just double-checking before writing the content back
+        if (checkFile(fileContent, contentElements.length)) {
+          if (!isDryRun) {
             await bpfs.upsertFile(ELEMENTS_DIR, fileName, fileContent, { ignoreLock: true })
           }
-        } catch (err) {
-          console.error(`Error processing file ${fileName} for bot ${botId}`)
         }
+      } catch (err) {
+        console.error(`Error processing file ${fileName} for bot ${botId}`)
       }
     }
 
-    if (metadata.botId) {
-      await migrateBotTextContent(metadata.botId)
-    } else {
-      const bots = await botService.getBots()
-      await Promise.map(bots.keys(), botId => migrateBotTextContent(botId))
-    }
-
-    return {
-      success: true,
-      message: hasChanged ? 'Text content type updated successfully' : 'Property already updated, skipping...'
-    }
+    return { success: true, hasChanges }
   }
 }
 

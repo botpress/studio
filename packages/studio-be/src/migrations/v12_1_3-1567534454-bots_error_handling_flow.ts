@@ -1,5 +1,5 @@
 import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 
 const FLOW_DIR = 'flows'
 const ERROR_FLOW = 'error.flow.json'
@@ -15,12 +15,10 @@ const migration: Migration = {
     type: 'content'
   },
   up: async ({
-    logger,
-    botService,
     ghostService,
-    metadata,
+    metadata: { botId, isDryRun },
     configProvider
-  }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  }: MigrationOpts): Promise<MigrationResult> => {
     const errorFlow = {
       version: '0.0.1',
       catchAll: {},
@@ -60,19 +58,17 @@ const migration: Migration = {
       modifiedOn: new Date()
     })
 
-    const updateBot = async botId => {
-      const bpfs = ghostService.forBot(botId)
+    const bpfs = ghostService.forBot(botId)
 
-      if (await bpfs.fileExists(FLOW_DIR, ERROR_FLOW)) {
-        return logger.warn(
-          `Bot "${botId}" already has a flow named "error". Users will be redirected there when encountering an error.`
-        )
-      }
+    if (await bpfs.fileExists(FLOW_DIR, ERROR_FLOW)) {
+      return { hasChanges: false }
+    }
 
-      const botConfig = await configProvider.getBotConfig(botId)
-      const hasTextElements = await bpfs.fileExists(ELEMENTS_DIR, TEXT_ELEMENTS)
-      const existingElements = hasTextElements ? await bpfs.readFileAsObject<any[]>(ELEMENTS_DIR, TEXT_ELEMENTS) : []
+    const botConfig = await configProvider.getBotConfig(botId)
+    const hasTextElements = await bpfs.fileExists(ELEMENTS_DIR, TEXT_ELEMENTS)
+    const existingElements = hasTextElements ? await bpfs.readFileAsObject<any[]>(ELEMENTS_DIR, TEXT_ELEMENTS) : []
 
+    if (!isDryRun) {
       await bpfs.upsertFile(FLOW_DIR, ERROR_FLOW, JSON.stringify(errorFlow, undefined, 2), { ignoreLock: true })
       await bpfs.upsertFile(FLOW_DIR, ERROR_UI, JSON.stringify(errorFlowUi, undefined, 2), { ignoreLock: true })
 
@@ -84,15 +80,7 @@ const migration: Migration = {
       )
     }
 
-    if (metadata.botId) {
-      await updateBot(metadata.botId)
-    } else {
-      const bots = await botService.getBots()
-      for (const botId of Array.from(bots.keys())) {
-        await updateBot(botId)
-      }
-    }
-    return { success: true, message: 'Configuration updated successfully' }
+    return { success: true, hasChanges: true }
   }
 }
 

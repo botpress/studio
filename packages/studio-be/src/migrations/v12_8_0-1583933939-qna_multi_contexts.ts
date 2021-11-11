@@ -7,40 +7,29 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ botService, ghostService, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<sdk.MigrationResult> => {
     let hasChanges = false
 
-    const updateBot = async (botId: string) => {
-      const bpfs = ghostService.forBot(botId)
-      const files = await bpfs.directoryListing('./qna', '*.json')
+    const bpfs = ghostService.forBot(botId)
+    const files = await bpfs.directoryListing('./qna', '*.json')
 
-      for (const file of files) {
-        const content = (await bpfs.readFileAsObject('./qna', file)) as any
-        const { contexts, category } = content.data
+    for (const file of files) {
+      const content = (await bpfs.readFileAsObject('./qna', file)) as any
+      const { contexts, category } = content.data
 
-        if (contexts === undefined) {
-          content.data.contexts = category ? [category] : []
-          delete content.data.category
+      if (contexts === undefined) {
+        content.data.contexts = category ? [category] : []
+        delete content.data.category
 
+        hasChanges = true
+
+        if (!isDryRun) {
           await bpfs.upsertFile('./qna', file, JSON.stringify(content, undefined, 2), { ignoreLock: true })
-          hasChanges = true
         }
       }
     }
 
-    if (metadata.botId) {
-      await updateBot(metadata.botId)
-    } else {
-      const bots = await botService.getBots()
-      for (const botId of Array.from(bots.keys())) {
-        await updateBot(botId)
-      }
-    }
-
-    return {
-      success: true,
-      message: hasChanges ? 'Field converted successfully' : 'Field is already converted, skipping...'
-    }
+    return { success: true, hasChanges }
   }
 }
 

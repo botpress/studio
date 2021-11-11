@@ -1,5 +1,5 @@
 import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 import _ from 'lodash'
 import path from 'path'
 
@@ -9,33 +9,31 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ botService, ghostService, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
-    const migrateBotEntities = async (botId: string) => {
-      const bpfs = ghostService.forBot(botId)
-      const entFiles = await bpfs.directoryListing('./entities', '*.json')
-      for (const fileName of entFiles) {
-        const entityDef = (await bpfs.readFileAsObject('./entities', fileName)) as sdk.NLU.EntityDefinition
-        entityDef.occurrences = _.cloneDeep(entityDef['occurences'])
-        delete entityDef['occurences']
+  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<MigrationResult> => {
+    let hasChanges = false
+    const bpfs = ghostService.forBot(botId)
+    const entFiles = await bpfs.directoryListing('./entities', '*.json')
+
+    for (const fileName of entFiles) {
+      const entityDef = (await bpfs.readFileAsObject('./entities', fileName)) as sdk.NLU.EntityDefinition
+      if (entityDef['occurences']) {
+        hasChanges = true
+      }
+
+      entityDef.occurrences = _.cloneDeep(entityDef['occurences'])
+      delete entityDef['occurences']
+
+      if (!isDryRun) {
         await bpfs.upsertFile('./entities', fileName, JSON.stringify(entityDef, undefined, 2), { ignoreLock: true })
       }
     }
-    if (metadata.botId) {
-      await migrateBotEntities(metadata.botId)
-    } else {
-      const bots = await botService.getBots()
-      await Promise.map(bots.keys(), botId => migrateBotEntities(botId))
-    }
 
-    return { success: true, message: "Entities' properties updated successfully" }
+    return { success: true, hasChanges }
   },
 
-  down: async ({ logger }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  down: async ({ logger }: MigrationOpts): Promise<MigrationResult> => {
     logger.warn(`No down migration written for ${path.basename(__filename)}`)
-    return {
-      success: true,
-      message: 'No down migration written.'
-    }
+    return { hasChanges: false }
   }
 }
 

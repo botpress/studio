@@ -20,19 +20,10 @@ export class BotMigrationService {
     private bpfs: GhostService
   ) {}
 
-  async executeMissingBotMigrations(botId: string, currentVersion: string, isDown?: boolean) {
-    debug.forBot(botId, 'Checking missing migrations for bot ', { botId, currentVersion, isDown })
+  async executeMissingBotMigrations(botId: string, currentVersion: string) {
+    debug.forBot(botId, 'Checking missing migrations for bot ', { botId, currentVersion })
 
-    if (process.env.TESTMIG_NEW) {
-      const isBotOlder = semver.lt(currentVersion, process.BOTPRESS_VERSION)
-      currentVersion = isBotOlder ? currentVersion : process.BOTPRESS_VERSION
-    }
-
-    const missingMigrations = this.migService.filterMigrations(this.migService.getAllMigrations(), currentVersion, {
-      isDown,
-      target: 'bot'
-    })
-
+    const missingMigrations = await this.getMissingMigrations(botId, this.migService.getAllMigrations())
     if (!missingMigrations.length) {
       return
     }
@@ -43,8 +34,7 @@ export class BotMigrationService {
     }, botId)
 
     try {
-      this.displayMigrationStatus(currentVersion, missingMigrations, this.logger.forBot(botId))
-      await this.executeBotMigrations(botId, missingMigrations)
+      await this.executeBotMigrations(botId, missingMigrations, currentVersion)
     } finally {
       captureLogger.dispose()
 
@@ -68,58 +58,66 @@ export class BotMigrationService {
     await this.bpfs.forBot(botId).upsertFile('/', 'migrations.json', JSON.stringify(entries, undefined, 2))
   }
 
-  private displayMigrationStatus(configVersion: string, missingMigrations: MigrationFile[], logger: sdk.Logger) {
-    const migrations = missingMigrations.map(x => this.migService.loadedMigrations[x.filename].info)
+  private async getMissingMigrations(botId: string, migrations: MigrationFile[]): Promise<MigrationFile[]> {
+    const botConfig = await this.configProvider.getBotConfig(botId)
+    const opts = await this.migService.getMigrationOpts({ botId, botConfig, isDryRun: true })
 
-    logger.warn(chalk`
-${_.repeat(' ', 9)}========================================
-{bold ${centerText(`Migration${migrations.length === 1 ? '' : 's'} Required`, 40, 9)}}
-{dim ${centerText(`Version ${configVersion} => ${this.migService.targetVersion} `, 40, 9)}}
-{dim ${centerText(`${migrations.length} change${migrations.length === 1 ? '' : 's'}`, 40, 9)}}
-${_.repeat(' ', 9)}========================================`)
-
-    Object.keys(types).map(type => {
-      logger.warn(chalk`{bold ${types[type]}}`)
-      const filtered = migrations.filter(x => x.type === type)
-
-      if (filtered.length) {
-        filtered.map(x => logger.warn(`- ${x.description}`))
-      } else {
-        logger.warn('- None')
+    const missing = await Promise.mapSeries(migrations, async migration => {
+      try {
+        const result = await this.migService.loadedMigrations[migration.filename].up(opts)
+        if (result.hasChanges) {
+          return migration
+        }
+      } catch (err) {
+        return migration
       }
     })
+
+    return missing.filter(x => x !== undefined) as MigrationFile[]
   }
 
-  private async executeBotMigrations(botId: string, missingMigrations: MigrationFile[]) {
-    this.logger.info(chalk`
-${_.repeat(' ', 9)}========================================
-{bold ${centerText(
-      `Executing ${missingMigrations.length} migration${missingMigrations.length === 1 ? '' : 's'}`,
-      40,
-      9
-    )}}
-${_.repeat(' ', 9)}========================================`)
+  private writeLabel(migrations: number, botId: string, version: string) {
+    const configLabel = `(${version} => ${this.migService.targetVersion})`
+    const changesLabel = `${migrations} change${migrations === 1 ? '' : 's'}`
 
-    const opts = await this.migService.getMigrationOpts({ botId })
+    return chalk`{bold Migration${migrations === 1 ? '' : 's'} Required for ${botId}} ${configLabel} - ${changesLabel}`
+  }
+
+  private async executeBotMigrations(botId: string, migrations: MigrationFile[], configVersion: string) {
+    const botConfig = await this.configProvider.getBotConfig(botId)
+    const opts = await this.migService.getMigrationOpts({ botId, botConfig })
     let hasFailures = false
 
-    await Promise.mapSeries(missingMigrations, async ({ filename }) => {
-      const result = await this.migService.loadedMigrations[filename].up(opts)
-      debug.forBot(botId, 'Migration step finished', { filename, result })
-      if (result.success) {
-        this.logger.forBot(botId).info(`- ${result.message || 'Success'}`)
-      } else {
-        hasFailures = true
-        this.logger.forBot(botId).error(`- ${result.message || 'Failure'}`)
+    const logger = this.logger.forBot(botId)
+
+    logger.warn(this.writeLabel(migrations.length, botId, configVersion))
+
+    await Promise.mapSeries(migrations, async ({ filename, info }) => {
+      const label = `${types[info.type]} - ${info.description}`
+
+      try {
+        const result = await this.migService.loadedMigrations[filename].up(opts)
+        debug.forBot(botId, 'Migration step finished', { filename, result })
+
+        if (result.success) {
+          logger.warn(`${chalk.green('[success]')} ${label}`)
+        } else if (result.hasChanges) {
+          logger.error(`${chalk.red('[failure]')} ${label}: ${result.message || ''}`)
+        }
+
+        return
+      } catch (err) {
+        logger.attachError(err).error(`${chalk.red('[failure]')} ${label}`)
       }
+
+      hasFailures = true
     })
 
+    logger.warn('')
     if (hasFailures) {
-      return this.logger.error('Could not complete bot migration. It may behave unexpectedly.')
+      return this.logger.error(`[${botId}] Could not complete bot migration. It may behave unexpectedly.`)
     }
 
     await this.configProvider.mergeBotConfig(botId, { version: this.migService.targetVersion })
-
-    this.logger.info(`Migration${missingMigrations.length === 1 ? '' : 's'} completed successfully! `)
   }
 }

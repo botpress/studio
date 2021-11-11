@@ -99,48 +99,44 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ botService, ghostService, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
-    let hasChanged = false
-    const migrateModels = async (bot: sdk.BotConfig) => {
-      const ghost = ghostService.forBot(bot.id)
+  up: async ({
+    botService,
+    ghostService,
+    metadata: { botId, botConfig, isDryRun }
+  }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    let hasChanges = false
 
-      return Promise.mapSeries(bot.languages, async lang => {
-        await pruneModels(ghost, lang)
-        const modNames = await listModelsForLang(ghost, lang)
+    const ghost = ghostService.forBot(botId)
 
-        return Promise.map(modNames, async mod => {
-          try {
+    await Promise.mapSeries(botConfig.languages, async lang => {
+      await pruneModels(ghost, lang)
+      const modNames = await listModelsForLang(ghost, lang)
+
+      return Promise.map(modNames, async mod => {
+        try {
+          hasChanges = true
+
+          if (!isDryRun) {
             const model: any = await ghost.readFileAsObject(MODELS_DIR, mod)
             if (!model.hash) {
               return ghost.deleteFile(MODELS_DIR, mod) // model is really outdated
             }
-            hasChanged = true
+
             return saveModel(ghost, model, model.hash) // Triggers model compression
-          } catch (err) {
-            // model is probably an archive
-            return
           }
-        })
+        } catch (err) {
+          // model is probably an archive
+          return
+        }
       })
-    }
+    })
 
-    if (!metadata.botId) {
-      const bots = await botService.getBots()
-      await Promise.map(bots.values(), migrateModels)
-    }
-
-    return {
-      success: true,
-      message: hasChanged ? 'Model compression completed successfully' : 'Nothing to compress, skipping...'
-    }
+    return { success: true, hasChanges }
   },
 
   down: async ({ logger }: MigrationOpts): Promise<sdk.MigrationResult> => {
     logger.warn(`No down migration written for ${path.basename(__filename)}`)
-    return {
-      success: true,
-      message: 'No down migration written.'
-    }
+    return { success: true, hasChanges: false }
   }
 }
 

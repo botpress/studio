@@ -8,38 +8,30 @@ const migration: Migration = {
     target: 'bot',
     type: 'config'
   },
-  up: async ({ botService, configProvider, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ configProvider, metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    const { botId, botConfig, isDryRun } = metadata
+
     let hasChanges = false
 
-    const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
-      const newTypes = ['builtin_file', 'builtin_location']
-      const { contentTypes } = botConfig.imports
+    const newTypes = ['builtin_file', 'builtin_location']
+    const { contentTypes } = botConfig.imports
 
-      const hasMissingTypes = !newTypes.every(type => contentTypes.find(x => x === type))
+    const hasMissingTypes = !newTypes.every(type => contentTypes?.find(x => x === type))
 
-      if (hasMissingTypes) {
-        hasChanges = true
+    if (contentTypes && hasMissingTypes) {
+      hasChanges = true
+
+      if (!isDryRun) {
         botConfig.imports.contentTypes = _.uniq([...contentTypes, ...newTypes])
-
         await configProvider.setBotConfig(botId, botConfig)
       }
     }
 
-    if (metadata.botId) {
-      const botConfig = await botService.findBotById(metadata.botId)
-      await updateBotContentTypes(metadata.botId, botConfig!)
-    } else {
-      const bots = await botService.getBots()
-      for (const [botId, botConfig] of bots) {
-        await updateBotContentTypes(botId, botConfig)
-      }
-    }
-
-    return { success: true, message: hasChanges ? 'New types added successfully' : 'Nothing to change' }
+    return { success: true, hasChanges }
   },
   down: async () => {
     // Down migrations not necessary for content types, no impact
-    return { success: true, message: 'Nothing to change' }
+    return { hasChanges: false, message: 'Nothing to change' }
   }
 }
 

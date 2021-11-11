@@ -63,52 +63,47 @@ const migration: Migration = {
     type: 'config'
   },
   up: async ({
-    botService,
     ghostService,
     logger,
     inversify,
-    metadata
+    metadata: { botId, isDryRun }
   }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    let hasChanges = false
     const flowService = inversify.get<FlowService>(TYPES.FlowService)
-    const updateFlowContent = async (botId: string) => {
-      const ghost = ghostService.forBot(botId)
-      const contentMap = await getBotContentMap(ghost)
 
-      const flows = await flowService.forBot(botId).loadAll()
-      return Promise.map(flows, async flow => {
-        try {
-          const updatedFlow = await migrateFlow(flow, contentMap)
-          if (!updatedFlow) {
-            return
-          }
+    const ghost = ghostService.forBot(botId)
+    const contentMap = await getBotContentMap(ghost)
 
-          // Taken from FlowService
-          const flowContent = {
-            ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'triggers', 'label', 'description']),
-            nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
-          }
+    const flows = await flowService.forBot(botId).loadAll()
+    await Promise.map(flows, async flow => {
+      try {
+        const updatedFlow = await migrateFlow(flow, contentMap)
+        if (!updatedFlow) {
+          return
+        }
+
+        // Taken from FlowService
+        const flowContent = {
+          ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'triggers', 'label', 'description']),
+          nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
+        }
+
+        if (!isDryRun) {
           await ghost.upsertFile('./flows', flow.location!, JSON.stringify(flowContent, undefined, 2), {
             ignoreLock: true
           })
-        } catch (err) {
-          logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not migrate say node data')
         }
-      })
-    }
 
-    if (metadata.botId) {
-      await updateFlowContent(metadata.botId)
-    } else {
-      const bots = await botService.getBots()
-      for (const botId of Array.from(bots.keys())) {
-        await updateFlowContent(botId)
+        hasChanges = true
+      } catch (err) {
+        logger
+          .forBot(botId)
+          .attachError(err)
+          .error('Could not migrate say node data')
       }
-    }
+    })
 
-    return { success: true, message: 'Configuration updated successfully' }
+    return { success: true, hasChanges }
   }
 }
 

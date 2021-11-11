@@ -8,16 +8,14 @@ import Database from 'core/database'
 import { BotMigrationService } from 'core/migration'
 import fse from 'fs-extra'
 import glob from 'glob'
-import { Container, inject, injectable, postConstruct, tagged } from 'inversify'
-import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
+import { Container, inject, injectable, tagged } from 'inversify'
 import _ from 'lodash'
 import path from 'path'
 import semver from 'semver'
 
 export const types = {
-  database: 'Database Changes',
-  config: 'Config File Changes',
-  content: 'Changes to Content Files (*.json)'
+  config: 'Config Changes',
+  content: 'Content Changes'
 }
 
 export interface MigrationEntry {
@@ -26,8 +24,6 @@ export interface MigrationEntry {
   details: string | string[]
   created_at: any
 }
-
-const FIRST_VERSION = '12.0.0'
 
 @injectable()
 export class MigrationService {
@@ -50,25 +46,7 @@ export class MigrationService {
     this.targetVersion = process.BOTPRESS_VERSION
   }
 
-  @postConstruct()
-  async initialize() {
-    const migrations = await this.getAllMigrations()
-
-    if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
-      const versions = migrations.map(x => x.version).sort(semver.compare)
-      this.targetVersion = _.last(versions)!
-    }
-
-    if (process.env.TESTMIG_ALL) {
-      await AppLifecycle.waitFor(AppLifecycleEvents.SERVICES_READY)
-
-      for (const botId of await this.botService.getBotsIds()) {
-        await this.botMigration.executeMissingBotMigrations(botId, FIRST_VERSION)
-      }
-    }
-  }
-
-  public async getMigrationOpts(metadata?: sdk.MigrationMetadata): Promise<MigrationOpts> {
+  public async getMigrationOpts(metadata: MigrationMetadata): Promise<MigrationOpts> {
     return {
       ghostService: this.bpfs,
       logger: this.logger,
@@ -76,21 +54,20 @@ export class MigrationService {
       configProvider: this.configProvider,
       database: this.database,
       inversify: container,
-      metadata: metadata || {}
+      metadata
     }
   }
 
   public getAllMigrations(): MigrationFile[] {
-    const coreMigrations = this._getMigrations(path.join(__dirname, '../../migrations'), true)
+    const migrations = this._getMigrations(path.join(__dirname, '../../migrations'), true)
 
-    const migrations = [...coreMigrations]
-    migrations.map(file => {
+    return migrations.map(file => {
       if (!this.loadedMigrations[file.filename]) {
         this.loadedMigrations[file.filename] = require(file.location).default
       }
-    })
 
-    return migrations
+      return { ...file, info: this.loadedMigrations[file.filename].info }
+    })
   }
 
   private _getMigrations(rootPath: string, assertExists = false): MigrationFile[] {
@@ -112,36 +89,6 @@ export class MigrationService {
       'date'
     )
   }
-
-  public filterMigrations = (
-    files: MigrationFile[],
-    currentVersion: string,
-    { isDown, type, target }: { isDown?: boolean; type?: MigrationType; target?: MigrationTarget } = {
-      isDown: false,
-      type: undefined,
-      target: undefined
-    }
-  ) => {
-    const comparator = isDown
-      ? `>${this.targetVersion} <= ${currentVersion}`
-      : `>${currentVersion} <= ${this.targetVersion}`
-
-    const filteredFiles = files.filter(file => semver.satisfies(file.version, comparator))
-
-    if (_.isEmpty(this.loadedMigrations)) {
-      return filteredFiles
-    }
-
-    return filteredFiles.filter(file => {
-      const content = this.loadedMigrations[file.filename]
-
-      return (
-        ((isDown && content?.down) || (!isDown && content?.up)) &&
-        (type === undefined || type === content?.info.type) &&
-        (target === undefined || target === content?.info.target)
-      )
-    })
-  }
 }
 
 export interface MigrationFile {
@@ -150,6 +97,13 @@ export interface MigrationFile {
   location: string
   filename: string
   title: string
+  info: MigrationInfo
+}
+
+interface MigrationInfo {
+  description: string
+  target?: MigrationTarget
+  type: MigrationType
 }
 
 export interface MigrationOpts {
@@ -159,18 +113,30 @@ export interface MigrationOpts {
   configProvider: ConfigProvider
   database: Database
   inversify: Container
-  metadata: sdk.MigrationMetadata
+  metadata: MigrationMetadata
 }
 
 export type MigrationType = 'database' | 'config' | 'content'
-export type MigrationTarget = 'core' | 'bot'
+export type MigrationTarget = 'bot'
 
 export interface Migration {
-  info: {
-    description: string
-    target?: MigrationTarget
-    type: MigrationType
-  }
-  up: (opts: MigrationOpts) => Promise<sdk.MigrationResult>
-  down?: (opts: MigrationOpts) => Promise<sdk.MigrationResult>
+  info: MigrationInfo
+  up: (opts: MigrationOpts) => Promise<MigrationResult>
+  down?: (opts: MigrationOpts) => Promise<MigrationResult>
+}
+
+export interface MigrationResult {
+  /** Indicates if the migration ran successfully or not, can be optional if no changes or in a dry run */
+  success?: boolean
+  /** Indicates if the migration would change something (in a dry run) or if it did change something (not in a dry run)  */
+  hasChanges?: boolean
+  /** Optional message if there was an error */
+  message?: string
+}
+
+export interface MigrationMetadata {
+  botId: string
+  botConfig: sdk.BotConfig
+  /** On a dry run, we only indicate if the migration would need to be executed */
+  isDryRun?: boolean
 }
