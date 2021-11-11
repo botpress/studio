@@ -46,7 +46,7 @@ export const textNodesFromUtterance = (
   return _.chain(parsedSlots)
     .flatMap((pslot, i, all) => {
       const previousSlot = all[i - 1]
-      const from = previousSlot?.cleanPosition.start ?? 0
+      const from = previousSlot?.cleanPosition.end ?? 0
       const to = pslot.cleanPosition.start
 
       const slotExists = allSlots.some(s => s.name === pslot.name)
