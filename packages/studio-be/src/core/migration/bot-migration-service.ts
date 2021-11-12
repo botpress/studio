@@ -69,7 +69,10 @@ export class BotMigrationService {
           return migration
         }
       } catch (err) {
-        return migration
+        this.logger
+          .forBot(botId)
+          .attachError(err)
+          .error(`There was an error while processing migration ${migration.title} for bot ${botId}`)
       }
     })
 
