@@ -103,14 +103,12 @@ export class BotMigrationService {
           logger.warn(`${chalk.green('[success]')} ${label}`)
         } else if (result.hasChanges) {
           logger.error(`${chalk.red('[failure]')} ${label}: ${result.message || ''}`)
+          hasFailures = true
         }
-
-        return
       } catch (err) {
         logger.attachError(err).error(`${chalk.red('[failure]')} ${label}`)
+        hasFailures = true
       }
-
-      hasFailures = true
     })
 
     logger.warn('')
