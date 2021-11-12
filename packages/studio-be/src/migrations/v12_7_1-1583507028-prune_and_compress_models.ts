@@ -114,10 +114,10 @@ const migration: Migration = {
 
       return Promise.map(modNames, async mod => {
         try {
+          const model: any = await ghost.readFileAsObject(MODELS_DIR, mod)
           hasChanges = true
 
           if (!isDryRun) {
-            const model: any = await ghost.readFileAsObject(MODELS_DIR, mod)
             if (!model.hash) {
               return ghost.deleteFile(MODELS_DIR, mod) // model is really outdated
             }
