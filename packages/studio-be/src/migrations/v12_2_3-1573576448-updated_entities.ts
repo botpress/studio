@@ -20,7 +20,10 @@ const migration: Migration = {
     const entFiles = await bpfs.directoryListing('./entities', '*.json')
 
     for (const fileName of entFiles) {
-      const entityDef = (await bpfs.readFileAsObject('./entities', fileName)) as sdk.NLU.EntityDefinition
+      const entityDef = (await bpfs.readFileAsObject('./entities', fileName, {
+        noCache: true
+      })) as sdk.NLU.EntityDefinition
+
       if (entityDef.type === 'pattern') {
         if (entityDef.matchCase === undefined) {
           hasChanges = true

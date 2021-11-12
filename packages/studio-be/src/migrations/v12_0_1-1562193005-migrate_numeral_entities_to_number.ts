@@ -14,7 +14,7 @@ const migration: Migration = {
     const intents = await bpfs.directoryListing('./intents', '*.json')
 
     for (const file of intents) {
-      const content = (await bpfs.readFileAsObject('./intents', file)) as sdk.NLU.IntentDefinition
+      const content = (await bpfs.readFileAsObject('./intents', file, { noCache: true })) as sdk.NLU.IntentDefinition
 
       content.slots = content.slots.map(slot => {
         if (slot.entities?.find(entity => entity === 'numeral')) {

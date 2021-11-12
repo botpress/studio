@@ -1,6 +1,7 @@
 import * as sdk from 'botpress/sdk'
 import { FlowView } from 'common/typings'
 import { TYPES } from 'core/app/types'
+import { ScopedGhostService } from 'core/bpfs'
 import { FlowService } from 'core/dialog'
 import { Migration, MigrationOpts } from 'core/migration'
 import _ from 'lodash'
@@ -43,17 +44,16 @@ async function migrateFlow(
   return flow
 }
 
-async function getBotContentMap(ghost: sdk.ScopedGhostService): Promise<_.Dictionary<sdk.ContentElement>> {
+async function getBotContentMap(ghost: ScopedGhostService): Promise<_.Dictionary<sdk.ContentElement>> {
   const contentFiles = await ghost.directoryListing(CONTENT_DIR, '*.json')
-  return Promise.map(contentFiles, f => ghost.readFileAsObject<sdk.ContentElement[]>(CONTENT_DIR, f)).reduce(
-    (elems, next) => {
-      for (const elem of next) {
-        elems[elem.id] = elem
-      }
-      return elems
-    },
-    {}
-  )
+  return Promise.map(contentFiles, f =>
+    ghost.readFileAsObject<sdk.ContentElement[]>(CONTENT_DIR, f, { noCache: true })
+  ).reduce((elems, next) => {
+    for (const elem of next) {
+      elems[elem.id] = elem
+    }
+    return elems
+  }, {})
 }
 
 const migration: Migration = {

@@ -14,7 +14,7 @@ const migration: Migration = {
     const files = await bpfs.directoryListing('./qna', '*.json')
 
     for (const file of files) {
-      const content = (await bpfs.readFileAsObject('./qna', file)) as any
+      const content = (await bpfs.readFileAsObject('./qna', file, { noCache: true })) as any
       const { contexts, category } = content.data
 
       if (contexts === undefined) {

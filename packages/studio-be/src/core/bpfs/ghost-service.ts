@@ -334,11 +334,11 @@ export class ScopedGhostService {
     return (await this.readFileAsBuffer(rootFolder, file)).toString()
   }
 
-  async readFileAsObject<T>(rootFolder: string, file: string): Promise<T> {
+  async readFileAsObject<T>(rootFolder: string, file: string, options?: { noCache: boolean }): Promise<T> {
     const fileName = this._normalizeFileName(rootFolder, file)
     const cacheKey = this.objectCacheKey(fileName)
 
-    if (!(await this.cache.has(cacheKey))) {
+    if (!(await this.cache.has(cacheKey)) || options?.noCache) {
       const value = await this.readFileAsString(rootFolder, file)
       let obj
       try {
@@ -350,7 +350,11 @@ export class ScopedGhostService {
           throw new Error(`SyntaxError in your JSON: ${file}: \n ${e}`)
         }
       }
-      await this.cache.set(cacheKey, obj)
+
+      if (!options?.noCache) {
+        await this.cache.set(cacheKey, obj)
+      }
+
       return obj
     }
 

@@ -95,8 +95,9 @@ export class BotMigrationService {
 
     logger.warn(this.writeLabel(migrations.length, botId, configVersion))
 
-    await Promise.mapSeries(migrations, async ({ filename, info }) => {
-      const label = `${types[info.type]} - ${info.description}`
+    await Promise.mapSeries(migrations, async ({ filename, info }, idx) => {
+      const isLast = idx === migrations.length - 1
+      const label = `${types[info.type]} - ${info.description} ${isLast ? '\n' : ''}`
 
       try {
         const result = await this.migService.loadedMigrations[filename].up(opts)
@@ -114,7 +115,6 @@ export class BotMigrationService {
       }
     })
 
-    logger.warn('')
     if (hasFailures) {
       return this.logger.error(`[${botId}] Could not complete bot migration. It may behave unexpectedly.`)
     }

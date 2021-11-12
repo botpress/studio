@@ -114,7 +114,7 @@ const migration: Migration = {
 
       return Promise.map(modNames, async mod => {
         try {
-          const model: any = await ghost.readFileAsObject(MODELS_DIR, mod)
+          const model: any = await ghost.readFileAsObject(MODELS_DIR, mod, { noCache: true })
           hasChanges = true
 
           if (!isDryRun) {

@@ -35,7 +35,10 @@ const migration: Migration = {
 
     for (const fileName of entFiles) {
       try {
-        const contentElements = await bpfs.readFileAsObject<sdk.ContentElement[]>(ELEMENTS_DIR, fileName)
+        const contentElements = await bpfs.readFileAsObject<sdk.ContentElement[]>(ELEMENTS_DIR, fileName, {
+          noCache: true
+        })
+
         contentElements.forEach(element => updateFormData(element))
 
         const fileContent = JSON.stringify(contentElements, undefined, 2)
