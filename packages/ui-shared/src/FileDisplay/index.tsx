@@ -8,6 +8,7 @@ import { FileDisplayProps } from './typings'
 const FileDisplay: FC<FileDisplayProps> = props => {
   const { url, type, deletable, onDelete } = props
 
+  const fullUrl = `${window['ROOT_PATH']}${url}`
   const filename = url.substring(url.lastIndexOf('/') + 1)
   const mimeType = mime.lookup(url) || undefined
 
@@ -20,7 +21,7 @@ const FileDisplay: FC<FileDisplayProps> = props => {
   switch (type) {
     case 'image':
       return (
-        <div style={{ backgroundImage: `url('${url}')` }} className={style.imageWrapper}>
+        <div style={{ backgroundImage: `url('${fullUrl}')` }} className={style.imageWrapper}>
           <div className={style.imageWrapperActions}>{deletable && deletableFile()}</div>
         </div>
       )
@@ -29,7 +30,7 @@ const FileDisplay: FC<FileDisplayProps> = props => {
         <div className={style.audioWrapper}>
           <div className={style.audioWrapperActions}>{deletable && deletableFile()}</div>
           <audio controls className={style.audioWrapperSource}>
-            <source src={url} type={mimeType} />
+            <source src={fullUrl} type={mimeType} />
             Your browser does not support the audio element.
           </audio>
         </div>
@@ -39,7 +40,7 @@ const FileDisplay: FC<FileDisplayProps> = props => {
         <div className={style.videoWrapper}>
           <div className={style.videoWrapperActions}>{deletable && deletableFile()}</div>
           <video controls width={200} height={200} className={style.videoWrapperSource}>
-            <source src={url} type={mimeType} />
+            <source src={fullUrl} type={mimeType} />
             Your browser does not support the video element.
           </video>
         </div>
@@ -48,7 +49,7 @@ const FileDisplay: FC<FileDisplayProps> = props => {
       return (
         <div className={style.fileWrapper}>
           <div className={style.fileWrapperActions}>{deletable && deletableFile()}</div>
-          <a href={url} target="_blank" className={style.fileWrapperFile}>
+          <a href={fullUrl} target="_blank" className={style.fileWrapperFile}>
             {filename}
           </a>
         </div>
