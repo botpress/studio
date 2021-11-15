@@ -3,7 +3,7 @@ import { props } from 'bluebird'
 import { lang, ShortcutLabel, Textarea, utils } from 'botpress/shared'
 import cx from 'classnames'
 import _uniqueId from 'lodash/uniqueId'
-import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
+import React, { FC, Fragment, useEffect, useRef, useState, KeyboardEvent } from 'react'
 
 import BotpressContentTypePicker from '~/components/Content/Select'
 import BotpressContentPicker from '~/components/Content/Select/Widget'
@@ -49,7 +49,12 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
     updateItems(localItems)
   }
 
-  const onKeyDown = (e: KeyboardEvent, index: number): void => {
+  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number): void => {
+    if (e.nativeEvent.isComposing && e.key === 'Enter') {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       updateLocalItem(index, localItems[index] + '\n')
     }
