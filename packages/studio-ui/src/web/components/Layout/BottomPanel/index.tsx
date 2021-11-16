@@ -1,4 +1,4 @@
-import { Button, Divider, Tab, Tabs } from '@blueprintjs/core'
+import { Button, Divider, Tab, Tabs, ButtonGroup } from '@blueprintjs/core'
 import { lang, ToolTip, MainLayout, utils } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
@@ -15,6 +15,7 @@ import style from './style.scss'
 const MAX_HISTORY = 10
 const BOTTOM_PANEL_TAB = 'bottomPanelTab'
 const AUTO_FOCUS_DEBUGGER = 'autoFocusDebugger'
+const CODE_EDITOR = 'Code Editor'
 
 const DevPanel = MainLayout.BottomPanel
 
@@ -113,6 +114,14 @@ const BottomPanel = props => {
       <div className={cx(style.padded, style.fullWidth)}>
         <DevPanel.Container activeTab={tab} />
         <Logs commonButtons={commonButtons} hidden={tab !== 'logs'} />
+
+        {tab === CODE_EDITOR && (
+            <div className={cx(style.commonButtons)}>
+              <ButtonGroup minimal={true}>
+                {commonButtons}
+              </ButtonGroup>
+            </div>
+        )}
 
         <Debugger
           messageId={messageId}
