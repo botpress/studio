@@ -1,5 +1,5 @@
 import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 import fse, { WriteStream } from 'fs-extra'
 import _ from 'lodash'
 import path from 'path'
@@ -99,17 +99,16 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({
-    botService,
-    ghostService,
-    metadata: { botId, botConfig, isDryRun }
-  }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ ghostService, metadata: { botId, botConfig, isDryRun } }: MigrationOpts): Promise<MigrationResult> => {
     let hasChanges = false
 
     const ghost = ghostService.forBot(botId)
 
     await Promise.mapSeries(botConfig.languages, async lang => {
-      await pruneModels(ghost, lang)
+      if (!isDryRun) {
+        await pruneModels(ghost, lang)
+      }
+
       const modNames = await listModelsForLang(ghost, lang)
 
       return Promise.map(modNames, async mod => {
@@ -131,7 +130,7 @@ const migration: Migration = {
       })
     })
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   },
 
   down: async ({ logger }: MigrationOpts): Promise<sdk.MigrationResult> => {

@@ -78,9 +78,11 @@ const migration: Migration = {
         JSON.stringify([...existingElements, getErrorElement(botConfig.defaultLanguage)], undefined, 2),
         { ignoreLock: true }
       )
+
+      return { success: true }
     }
 
-    return { success: true, hasChanges: true }
+    return { hasChanges: true }
   }
 }
 

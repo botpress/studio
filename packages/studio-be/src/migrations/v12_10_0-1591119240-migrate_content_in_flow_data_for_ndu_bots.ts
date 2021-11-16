@@ -3,7 +3,7 @@ import { FlowView } from 'common/typings'
 import { TYPES } from 'core/app/types'
 import { ScopedGhostService } from 'core/bpfs'
 import { FlowService } from 'core/dialog'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 import _ from 'lodash'
 
 const CONTENT_DIR = 'content-elements'
@@ -67,7 +67,7 @@ const migration: Migration = {
     logger,
     inversify,
     metadata: { botId, isDryRun }
-  }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  }: MigrationOpts): Promise<MigrationResult> => {
     let hasChanges = false
     const flowService = inversify.get<FlowService>(TYPES.FlowService)
 
@@ -103,7 +103,7 @@ const migration: Migration = {
       }
     })
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   }
 }
 

@@ -30,7 +30,7 @@ const migration: Migration = {
       }
     }
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   }
 }
 

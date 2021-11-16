@@ -1,5 +1,4 @@
-import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 import _ from 'lodash'
 
 const migration: Migration = {
@@ -8,10 +7,7 @@ const migration: Migration = {
     target: 'bot',
     type: 'config'
   },
-  up: async ({
-    configProvider,
-    metadata: { botId, botConfig, isDryRun }
-  }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ configProvider, metadata: { botId, botConfig, isDryRun } }: MigrationOpts): Promise<MigrationResult> => {
     let hasChanges = false
 
     const newTypes = ['builtin_video', 'builtin_audio']
@@ -30,7 +26,7 @@ const migration: Migration = {
       }
     }
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   },
   down: async () => {
     // Down migrations not necessary for content types, no impact

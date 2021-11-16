@@ -1,5 +1,5 @@
 import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 
 const ELEMENTS_DIR = 'content-elements'
 
@@ -9,7 +9,7 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<MigrationResult> => {
     let hasChanges = false
     const checkFile = (fileContent: string, nbElements: number) => {
       const parsed = JSON.parse(fileContent)
@@ -54,7 +54,7 @@ const migration: Migration = {
       }
     }
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   }
 }
 

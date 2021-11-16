@@ -21,17 +21,17 @@ const migration: Migration = {
 
       if (entityDef['occurences']) {
         hasChanges = true
-      }
 
-      entityDef.occurrences = _.cloneDeep(entityDef['occurences'])
-      delete entityDef['occurences']
+        entityDef.occurrences = _.cloneDeep(entityDef['occurences'])
+        delete entityDef['occurences']
 
-      if (!isDryRun) {
-        await bpfs.upsertFile('./entities', fileName, JSON.stringify(entityDef, undefined, 2), { ignoreLock: true })
+        if (!isDryRun) {
+          await bpfs.upsertFile('./entities', fileName, JSON.stringify(entityDef, undefined, 2), { ignoreLock: true })
+        }
       }
     }
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   },
 
   down: async ({ logger }: MigrationOpts): Promise<MigrationResult> => {

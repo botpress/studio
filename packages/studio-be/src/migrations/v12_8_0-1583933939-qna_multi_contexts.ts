@@ -1,5 +1,4 @@
-import * as sdk from 'botpress/sdk'
-import { Migration, MigrationOpts } from 'core/migration'
+import { Migration, MigrationOpts, MigrationResult } from 'core/migration'
 
 const migration: Migration = {
   info: {
@@ -7,7 +6,7 @@ const migration: Migration = {
     target: 'bot',
     type: 'content'
   },
-  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<sdk.MigrationResult> => {
+  up: async ({ ghostService, metadata: { botId, isDryRun } }: MigrationOpts): Promise<MigrationResult> => {
     let hasChanges = false
 
     const bpfs = ghostService.forBot(botId)
@@ -29,7 +28,7 @@ const migration: Migration = {
       }
     }
 
-    return { success: true, hasChanges }
+    return isDryRun ? { hasChanges } : { success: true }
   }
 }
 
