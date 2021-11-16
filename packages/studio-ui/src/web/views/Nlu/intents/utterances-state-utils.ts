@@ -1,3 +1,4 @@
+import { NLU } from 'botpress/sdk'
 import { parseUtterance } from 'common/utterance-parser'
 import _ from 'lodash'
 import { MarkJSON, NodeJSON, TextJSON, Value, ValueJSON } from 'slate'
@@ -29,29 +30,46 @@ const slotNode = (slot: ParsedSlot, uttIdx: number): TextJSON => ({
   marks: [makeSlotMark(slot.name, uttIdx)]
 })
 
-// Unit tests are available for this function but somehow not working on our CI
-// uncomment when editing this function
-export const textNodesFromUtterance = (rawUtterance: string, idx: number = 0): TextJSON[] => {
+const emptySlotNode = (slot: ParsedSlot): TextJSON => ({
+  object: 'text',
+  text: slot.value,
+  marks: []
+})
+
+export const textNodesFromUtterance = (
+  allSlots: NLU.SlotDefinition[],
+  rawUtterance: string,
+  idx: number = 0
+): TextJSON[] => {
   const { utterance, parsedSlots } = parseUtterance(rawUtterance)
-  // @ts-ignore
+
   return _.chain(parsedSlots)
     .flatMap((pslot, i, all) => {
-      const from = _.get(all, `${i - 1}.cleanPosition.end`, 0)
+      const previousSlot = all[i - 1]
+      const from = previousSlot?.cleanPosition.end ?? 0
       const to = pslot.cleanPosition.start
-      return [textNode(utterance, from, to), slotNode(pslot, idx)]
+
+      const slotExists = allSlots.some(s => s.name === pslot.name)
+      const pslotNode = slotExists ? slotNode(pslot, idx) : emptySlotNode(pslot)
+
+      return [textNode(utterance, from, to), pslotNode]
     })
     .thru(nodes => {
       // append remaining
-      const start = _.get(_.last(parsedSlots), 'cleanPosition.end', 0)
+      const start = _.last(parsedSlots)?.cleanPosition.end ?? 0
       return [...nodes, textNode(utterance, start)]
     })
-    .filter(n => n.text)
+    .filter(n => !!n.text)
     .value()
 }
 
 // Unit tests are available for this function but somehow not working on our CI
 // uncomment when editing this function
-export const utterancesToValue = (utterances: string[], selection = undefined): Value => {
+export const utterancesToValue = (
+  allSlots: NLU.SlotDefinition[],
+  utterances: string[],
+  selection = undefined
+): Value => {
   const summary = utterances[0] || ''
   const rest = utterances.length > 1 ? utterances.slice(1) : []
 
@@ -64,13 +82,13 @@ export const utterancesToValue = (utterances: string[], selection = undefined): 
           object: 'block',
           type: 'title',
           data: {},
-          nodes: textNodesFromUtterance(summary, 0)
+          nodes: textNodesFromUtterance(allSlots, summary, 0)
         },
         ...rest.map((text: string, i: number) => ({
           object: 'block',
           type: 'paragraph',
           data: {},
-          nodes: textNodesFromUtterance(text, i + 1)
+          nodes: textNodesFromUtterance(allSlots, text, i + 1)
         }))
       ] as NodeJSON[]
     }

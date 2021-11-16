@@ -96,15 +96,13 @@ const NLU: FC<Props> = props => {
     )
   }
 
-  const customEntities = entities.filter(e => e.type !== 'system')
-
   return (
     <Container>
       <NLUSidePanel
         api={api}
         contentLang={props.contentLang}
         currentItem={currentItem}
-        entities={customEntities}
+        entities={entities}
         intents={intents}
         reloadEntities={loadEntities}
         reloadIntents={loadIntents}

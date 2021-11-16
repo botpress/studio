@@ -67,14 +67,24 @@ export default class FlowPickWidget extends Component {
             Flow:
           </Col>
           <Col sm={6} md={4}>
-            <Select value={redirectFlow} options={flowOptions} onChange={this.onSelectChange('redirectFlow')} />
+            <Select
+              value={redirectFlow}
+              options={flowOptions}
+              onChange={this.onSelectChange('redirectFlow')}
+              menuPortalTarget={document.getElementById('menuOverlayPortal')}
+            />
           </Col>
 
           <Col sm={6} md={2}>
             Node:
           </Col>
           <Col sm={6} md={4}>
-            <Select value={redirectNode} options={nodeOptions} onChange={this.onSelectChange('redirectNode')} />
+            <Select
+              value={redirectNode}
+              options={nodeOptions}
+              onChange={this.onSelectChange('redirectNode')}
+              menuPortalTarget={document.getElementById('menuOverlayPortal')}
+            />
           </Col>
         </Row>
       </div>
