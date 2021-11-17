@@ -27,7 +27,7 @@ const Toolbar: FC<Props> = props => {
   return (
     <header className={style.toolbar}>
       <div className={style.list}>
-        <Tooltip position="right-bottom" content={lang.tr('toolbar.salesCallToActionDescription')}>
+        <Tooltip position="right-bottom" content={lang.tr('studio.flow.toolbar.salesCallToActionDescription')}>
           <a className={style.cta_btn} target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
             {lang.tr('studio.flow.toolbar.salesCallToAction')}
           </a>
