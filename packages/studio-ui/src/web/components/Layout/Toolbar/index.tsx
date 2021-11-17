@@ -29,7 +29,7 @@ const Toolbar: FC<Props> = props => {
       <div className={style.list}>
         <Tooltip position="right-bottom" content={lang.tr('toolbar.salesCallToActionDescription')}>
           <a className={style.cta_btn} target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
-            {lang.tr('toolbar.salesCallToAction')}
+            {lang.tr('studio.flow.toolbar.salesCallToAction')}
           </a>
         </Tooltip>
         <div>
