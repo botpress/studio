@@ -27,9 +27,9 @@ const Toolbar: FC<Props> = props => {
   return (
     <header className={style.toolbar}>
       <div className={style.list}>
-        <Tooltip position="right-bottom" content="Secure, scalable, entreprise-grade chatbots">
+        <Tooltip position="right-bottom" content={lang.tr('toolbar.salesCallToActionDescription')}>
           <AnchorButton target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
-            Start a free entreprise trial
+            {lang.tr('toolbar.salesCallToAction')}
           </AnchorButton>
         </Tooltip>
         <div>
