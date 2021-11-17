@@ -1,4 +1,4 @@
-import { AnchorButton, Icon, Tooltip } from '@blueprintjs/core'
+import { Icon, Tooltip } from '@blueprintjs/core'
 import { lang, ShortcutLabel } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { FC, Fragment } from 'react'
@@ -28,9 +28,9 @@ const Toolbar: FC<Props> = props => {
     <header className={style.toolbar}>
       <div className={style.list}>
         <Tooltip position="right-bottom" content="Secure, scalable, entreprise-grade chatbots">
-          <AnchorButton target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
+          <a className={style.cta_btn} target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
             Start a free entreprise trial
-          </AnchorButton>
+          </a>
         </Tooltip>
         <div>
           {!!hasDoc && (
