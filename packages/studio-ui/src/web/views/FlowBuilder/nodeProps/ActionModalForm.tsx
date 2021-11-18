@@ -243,47 +243,56 @@ class ActionModalForm extends Component<Props, State> {
     }
   }
 
+  handleAltEnter = (event: React.KeyboardEvent) => {
+    if (event.altKey && event.key === 'Enter' && this.isValid()) {
+      this.onSubmit()
+    }
+  }
+
   render() {
     const formId = 'action-modal-form'
+
     return (
-      <Dialog.Wrapper
-        size="md"
-        title={this.state.isEdit ? lang.tr('studio.flow.node.editAction') : lang.tr('studio.flow.node.addAction')}
-        isOpen={this.props.show}
-        onClose={this.onClose}
-        onSubmit={this.onSubmit}
-        id={formId}
-      >
-        <Dialog.Body>
-          {!this.props.layoutv2 ? (
-            <div>
-              <h5>{lang.tr('studio.flow.node.theBotWill')}:</h5>
-              <div className={style.section}>
-                <Radio checked={this.state.actionType === 'message'} onChange={this.onChangeType('message')}>
-                  {lang.tr('studio.flow.node.saySomething')}
-                </Radio>
-                <Radio checked={this.state.actionType === 'code'} onChange={this.onChangeType('code')}>
-                  {lang.tr('studio.flow.node.executeCode')} <LinkDocumentationProvider file="main/code" />
-                </Radio>
+      <div onKeyDown={this.handleAltEnter}>
+        <Dialog.Wrapper
+          size="md"
+          title={this.state.isEdit ? lang.tr('studio.flow.node.editAction') : lang.tr('studio.flow.node.addAction')}
+          isOpen={this.props.show}
+          onClose={this.onClose}
+          onSubmit={this.onSubmit}
+          id={formId}
+        >
+          <Dialog.Body>
+            {!this.props.layoutv2 ? (
+              <div>
+                <h5>{lang.tr('studio.flow.node.theBotWill')}:</h5>
+                <div className={style.section}>
+                  <Radio checked={this.state.actionType === 'message'} onChange={this.onChangeType('message')}>
+                    {lang.tr('studio.flow.node.saySomething')}
+                  </Radio>
+                  <Radio checked={this.state.actionType === 'code'} onChange={this.onChangeType('code')}>
+                    {lang.tr('studio.flow.node.executeCode')} <LinkDocumentationProvider file="main/code" />
+                  </Radio>
+                </div>
+                {this.state.actionType === 'message' ? this.renderSectionMessage() : this.renderSectionAction()}
               </div>
-              {this.state.actionType === 'message' ? this.renderSectionMessage() : this.renderSectionAction()}
-            </div>
-          ) : (
-            this.renderSectionAction()
-          )}
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button id="btn-cancel-action" onClick={this.onClose} form={formId}>
-            {lang.tr('cancel')}
-          </Button>
-          <Button id="btn-submit-action" type="submit" bsStyle="primary" form={formId} disabled={!this.isValid()}>
-            {this.state.isEdit
-              ? lang.tr('studio.flow.node.finishUpdateAction')
-              : lang.tr('studio.flow.node.finishAddAction')}{' '}
-            (Alt+Enter)
-          </Button>
-        </Dialog.Footer>
-      </Dialog.Wrapper>
+            ) : (
+              this.renderSectionAction()
+            )}
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button id="btn-cancel-action" onClick={this.onClose} form={formId}>
+              {lang.tr('cancel')}
+            </Button>
+            <Button id="btn-submit-action" type="submit" bsStyle="primary" form={formId} disabled={!this.isValid()}>
+              {this.state.isEdit
+                ? lang.tr('studio.flow.node.finishUpdateAction')
+                : lang.tr('studio.flow.node.finishAddAction')}{' '}
+              (Alt+Enter)
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Wrapper>
+      </div>
     )
   }
 }
