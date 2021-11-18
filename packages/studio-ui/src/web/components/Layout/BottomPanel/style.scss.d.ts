@@ -2,6 +2,7 @@
 // Please do not change this file!
 interface CssExports {
   'boxed': string;
+  'commonButtons': string;
   'container': string;
   'divide': string;
   'flex': string;

@@ -377,10 +377,13 @@ export class DiagramManager {
     })
 
     this.activeModel.addNode(model)
+    // Select newly inserted nodes
+    this.storeDispatch.switchFlowNode(node.id)
+    model.setSelected(true)
 
+    // Open Node Properties
     setTimeout(() => {
-      // Select newly inserted nodes
-      model.setSelected(true)
+      // Call again to make sure that the correct node is selected
       this.storeDispatch.switchFlowNode(node.id)
       this.storeDispatch.openFlowNodeProps()
     }, 150)

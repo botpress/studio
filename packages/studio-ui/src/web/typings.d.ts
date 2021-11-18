@@ -15,6 +15,7 @@ declare global {
     APP_CUSTOM_CSS: string
     BOT_API_PATH: string
     API_PATH: string
+    SEGMENT_WRITE_KEY: string
 
     ROOT_PATH: string
     BOT_NAME: string

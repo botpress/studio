@@ -1,4 +1,5 @@
 import * as sdk from 'botpress/sdk'
+import { getEntityId } from 'common/entity-id'
 import { GhostService } from 'core/bpfs'
 import { sanitizeFileName } from 'core/misc/utils'
 import * as CacheManager from './cache-manager'
@@ -23,7 +24,10 @@ const SYSTEM_ENTITIES = [
 ]
 
 const getSystemEntities = (): sdk.NLU.EntityDefinition[] => {
-  return [...SYSTEM_ENTITIES, 'any'].map(name => ({ name, type: 'system' })) as sdk.NLU.EntityDefinition[]
+  return [...SYSTEM_ENTITIES, 'any'].map(name => {
+    const entityDef: sdk.NLU.EntityDefinition = { name, type: 'system', id: getEntityId(name) }
+    return entityDef
+  })
 }
 
 export class EntityService {
@@ -38,7 +42,7 @@ export class EntityService {
     return Promise.mapSeries(intentNames, n => this.getEntity(botId, n))
   }
 
-  public async getEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
+  public async listEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
     return [...getSystemEntities(), ...(await this.getCustomEntities(botId))]
   }
 

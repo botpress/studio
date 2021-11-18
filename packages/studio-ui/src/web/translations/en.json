@@ -313,6 +313,7 @@
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "zoomToFit": "Fit to screen",
+      "flowProperties": "Flow properties",
       "addNode": "Add Node",
       "addToLibrary": "Add to library",
       "cantDeleteFailure": "You can't delete the failure node.",
@@ -356,6 +357,7 @@
         "tryingToLoad": "It seems like you are trying to load a module that has not been registered. Please make sure the module is registered then restart the bot."
       },
       "node": {
+        "nodeProperties": "Node Properties",
         "actionParameters": "Action Parameters",
         "actionServer": "Action Server",
         "actionServerTooltip": "This is the action server on which the action will be executed",
@@ -489,7 +491,9 @@
         "somebodyIsEditing": "Somebody is editing another flow",
         "whenDiscussionTimeouts": "When a discussion timeouts (user doesn't answer in the configured timeframe) he will be redirected here.",
         "whenConversationEnds": "When a conversation ends (no transition) he will be redirected here.",
-        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here"
+        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here",
+        "salesCallToAction": "Start a free Enterprise trial",
+        "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
       },
       "topic": "Topic",
       "topicEditor": {
@@ -663,6 +667,7 @@
         "intentsVeryClose": "Predicted intents are very close.",
         "youCanAccountForIt": "You can account for it checking the variable : ",
         "ambiguous": "Ambiguous",
+        "noModel": "Failed at running NLU as no model was trained",
         "languageUnderstanding": "Language Understanding"
       },
       "slots": {
