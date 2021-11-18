@@ -1,6 +1,7 @@
 import { Button, Colors, FormGroup, Icon, InputGroup, Position, Radio, RadioGroup, Tooltip } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang, toast, utils } from 'botpress/shared'
+import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState, useReducer } from 'react'
 
@@ -60,15 +61,9 @@ export const ListEntityEditor: React.FC<Props> = props => {
     }
   }, [state])
 
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
-
   const isNewOccurrenceEmpty = () => newOccurrence.trim().length === 0
 
-  const isUniqueInEntity = newElement =>
+  const isUniqueInEntity = (newElement: string) =>
     !props.entities
       .filter(entity => entity.type === 'list')
       .filter(entity => entity.id === props.entity.id)

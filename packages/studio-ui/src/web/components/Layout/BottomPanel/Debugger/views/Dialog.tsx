@@ -54,7 +54,7 @@ const Dialog: FC<Props> = props => {
       </ContentSection>
 
       {props.suggestions?.length > 0 && (
-        <ContentSection title={lang.tr('studio.bottomPanel.debugger.dialog.dialogManager')} className={style.section}>
+        <ContentSection title={lang.tr('bottomPanel.debugger.dialog.dialogManager')} className={style.section}>
           <Suggestions suggestions={props.suggestions} />
         </ContentSection>
       )}

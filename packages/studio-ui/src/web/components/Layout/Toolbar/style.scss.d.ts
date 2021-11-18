@@ -3,6 +3,8 @@
 interface CssExports {
   'active': string;
   'clickable': string;
+  'cta_btn': string;
+  'cta_tooltip': string;
   'divider': string;
   'item': string;
   'itemSpacing': string;

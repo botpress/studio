@@ -21,7 +21,7 @@
   .list {
     align-items: center;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     margin: 0;
     padding: 10px 15px;
     width: 100%;
@@ -79,4 +79,30 @@
   padding: 3px 5px;
   font-size: 14px;
   margin: 5px auto;
+}
+
+.cta {
+  &_btn {
+    background-color: rgb(50, 118, 234);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px;
+    margin: 0 8px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    &:hover,
+    &:active,
+    &:focus {
+      text-decoration: none;
+      background-color: rgb(202, 215, 245);
+      color: rgb(50, 118, 234);
+    }
+  }
+  &_tooltip {
+    background: #fff;
+    color: #111;
+  }
 }

@@ -395,6 +395,7 @@
       "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
+      "flowProperties": "Propriétés du flow",
       "addNode": "Ajouter une node",
       "addToLibrary": "Ajouter dans la librairie",
       "cantDeleteFailure": "Vous ne pouvez pas supprimer le nœud d'échec.",
@@ -438,6 +439,7 @@
         "tryingToLoad": "Il semble que vous essayez de charger un module qui n'a pas été enregistré. Veuillez vous assurer que le module est enregistré puis redémarrez le bot."
       },
       "node": {
+        "nodeProperties": "Propriétés du node",
         "actionParameters": "Paramètres d'action",
         "actionServer": "Serveur d'action",
         "actionServerTooltip": "Il s'agit du serveur d'action sur lequel l'action sera exécutée",
@@ -565,7 +567,9 @@
         "somebodyIsEditing": "Quelqu'un modifie un autre flow",
         "whenDiscussionTimeouts": "Lors d'un délai d'attente de discussion (l'utilisateur ne répond pas dans le délai configuré), il sera redirigé ici.",
         "whenConversationEnds": "Lorsqu'une conversation se termine (pas de transition), il sera redirigé ici.",
-        "whenErrorEncountered": "Lorsqu'une erreur est rencontrée dans le flux, l'utilisateur est redirigé ici"
+        "whenErrorEncountered": "Lorsqu'une erreur est rencontrée dans le flux, l'utilisateur est redirigé ici",
+        "salesCallToAction": "Essayez Entreprise gratuitement",
+        "salesCallToActionDescription": "Chatbots sécurisés, évolutifs et de qualité entreprise"
       },
       "transition": "Transition",
       "unauthUpdate": "Mise à jour de flow non autorisée. Vous ne disposez pas des privilèges de rôle suffisants pour modifier les flows.",
@@ -688,6 +692,7 @@
         "intentsVeryClose": "Les intentions prévues sont très proches.",
         "youCanAccountForIt": "Vous pouvez en rendre compte en vérifiant la variable : ",
         "ambiguous": "Ambigu",
+        "noModel": "Échec d'évaluation NLU car aucun modèle n'est disponible",
         "languageUnderstanding": "Compréhension du langage"
       },
       "slots": {

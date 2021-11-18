@@ -188,6 +188,10 @@ export class StudioRouter extends CustomRouter {
         const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
         const commonEnv = await this.httpServer.getCommonEnv()
 
+        const segmentWriteKey = process.core_env.BP_DEBUG_SEGMENT
+          ? 'OzjoqVagiw3p3o1uocuw6kd2YYjm6CHi' // Dev key from Segment
+          : '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // Prod key from Segment
+
         const totalEnv = `
           (function(window) {
               ${commonEnv}
@@ -206,6 +210,7 @@ export class StudioRouter extends CustomRouter {
               window.BOT_LOCKED = ${!!bot.locked};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
+              window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
             })(typeof window != 'undefined' ? window : {})
           `
 

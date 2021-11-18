@@ -20,6 +20,12 @@ const NLU: FC<{ nluData: sdk.IO.EventUnderstanding; session: any }> = ({ nluData
     <Fragment>
       <ContentSection title={lang.tr('bottomPanel.debugger.nlu.languageUnderstanding')} className={style.section}>
         <div>
+          {!nluData?.modelId?.length && (
+            <span style={{ color: Colors.RED3 }}>
+              <Icon icon="warning-sign" color={Colors.RED3} />
+              <strong>&nbsp;{lang.tr('bottomPanel.debugger.nlu.noModel')}</strong>
+            </span>
+          )}
           {nluData.ambiguous && (
             <Tooltip
               position={Position.TOP}
