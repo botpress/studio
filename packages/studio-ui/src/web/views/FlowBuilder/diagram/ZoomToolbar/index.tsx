@@ -33,7 +33,7 @@ const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel, zoomT
       <Button icon="zoom-in" onClick={zoomIn} />
     </ToolTip>
     <ToolTip content={lang.tr('studio.zoomToFit')}>
-      <Button icon="zoom-to-fit" onClick={zoomToFit} />
+      <Button className={style.zoomToFit} icon="zoom-to-fit" onClick={zoomToFit} />
     </ToolTip>
   </div>
 )
