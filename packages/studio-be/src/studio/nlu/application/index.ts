@@ -1,3 +1,4 @@
+import { Health } from '@botpress/nlu-client'
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
 
@@ -27,7 +28,7 @@ export class NLUApplication {
     }
   }
 
-  public async getHealth() {
+  public async getHealth(): Promise<Health | undefined> {
     try {
       const { health } = await this._nluClient.getInfo()
       return health

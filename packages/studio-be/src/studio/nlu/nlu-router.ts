@@ -251,7 +251,11 @@ export class NLURouter extends CustomStudioRouter {
       '/health',
       this.asyncMiddleware(async (req, res) => {
         const health = await this.nluService.app?.getHealth()
-        res.send(health)
+
+        if (!health) {
+          return res.status(404).send('NLU Server is unreachable')
+        }
+        return res.send(health)
       })
     )
 
