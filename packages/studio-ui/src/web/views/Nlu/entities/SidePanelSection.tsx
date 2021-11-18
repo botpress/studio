@@ -7,7 +7,7 @@ import { Item } from '~/components/Shared/Interface/typings'
 import { NluItem } from '..'
 import { NluClient } from '../client'
 
-import { EntityNameModal } from './EntityNameModal'
+import { EntityModalAction, EntityNameModal } from './EntityNameModal'
 
 interface Props {
   api: NluClient
@@ -22,7 +22,7 @@ export const EntitySidePanelSection: FC<Props> = props => {
   const [entitiesFilter, setEntitiesFilter] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [entity, setEntity] = useState<NLU.EntityDefinition>()
-  const [entityAction, setEntityAction] = useState<any>('create')
+  const [entityAction, setEntityAction] = useState<EntityModalAction>('create')
 
   const renameEntity = (entity: NLU.EntityDefinition) => {
     setEntity(entity)
@@ -52,7 +52,8 @@ export const EntitySidePanelSection: FC<Props> = props => {
     }
   }
 
-  const entityItems: Item[] = props.entities
+  const customEntities = props.entities.filter(e => e.type !== 'system')
+  const entityItems: Item[] = customEntities
     .filter(entity => !entitiesFilter || entity.name.includes(entitiesFilter))
     .map(entity => ({
       key: entity.name,

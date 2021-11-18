@@ -39,9 +39,9 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
     setError(error)
   }
 
-  const onChange = (value: string | null) => {
+  const onChange = (value: string | null, allowEmpty: boolean = false) => {
     const error = validate(value)
-    if (error) {
+    if (error && !allowEmpty) {
       return setError(error.message)
     }
 
@@ -70,7 +70,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
         {!enterUrlManually && (
           <FormFields.Upload
             axios={axios.create({ baseURL: window.STUDIO_API_PATH })}
-            onChange={onChange}
+            onChange={value => onChange(value, true)}
             value={value}
             type={subtype}
             filter={filter}

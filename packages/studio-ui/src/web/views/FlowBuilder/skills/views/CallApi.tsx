@@ -1,3 +1,4 @@
+import nanoid from 'nanoid/generate'
 import React from 'react'
 import { Tabs, Tab, Row, Col, Alert } from 'react-bootstrap'
 import Select from 'react-select'
@@ -37,6 +38,7 @@ export class CallAPI extends React.Component<any, any> {
     selectedMemory: memoryOptions[0],
     variable: 'response',
     body: undefined,
+    randomId: nanoid('abcdefghijklmnopqrstuvwxyz0123456789', 10),
     headers: undefined,
     url: undefined,
     invalidJson: false
@@ -51,6 +53,7 @@ export class CallAPI extends React.Component<any, any> {
       this.setState({
         selectedMethod: this.createSelectOption(this.getInitialDataProps('method')) || this.state.selectedMethod,
         selectedMemory: this.createSelectOption(this.getInitialDataProps('memory')) || this.state.selectedMemory,
+        randomId: this.getOrDefault('randomId', 'randomId'),
         headers: stringify(this.getInitialDataProps('headers')) || this.state.headers,
         variable: this.getOrDefault('variable', 'variable'),
         body: this.getOrDefault('body', 'body'),
@@ -69,6 +72,7 @@ export class CallAPI extends React.Component<any, any> {
       const data = {
         method: selectedMethod.value,
         memory: selectedMemory.value,
+        randomId: this.state.randomId,
         body,
         headers: headers ? JSON.parse(headers) : undefined,
         url,

@@ -132,7 +132,7 @@ export class NLURouter extends CustomStudioRouter {
         const { botId } = req.params
         const { ignoreSystem } = req.query
 
-        const entities = await this.nluService.entities.getEntities(botId)
+        const entities = await this.nluService.entities.listEntities(botId)
         const mapped = entities.map(x => ({ ...x, label: `${x.type}.${x.name}` }))
 
         res.json(yn(ignoreSystem) ? mapped.filter(x => x.type !== 'system') : mapped)
@@ -251,7 +251,11 @@ export class NLURouter extends CustomStudioRouter {
       '/health',
       this.asyncMiddleware(async (req, res) => {
         const health = await this.nluService.app?.getHealth()
-        res.send(health)
+
+        if (!health) {
+          return res.status(404).send('NLU Server is unreachable')
+        }
+        return res.send(health)
       })
     )
 

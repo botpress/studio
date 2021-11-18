@@ -1,3 +1,30 @@
+## [0.0.42](https://github.com/botpress/studio/compare/v0.0.41...v0.0.42) (2021-11-09)
+
+
+### Bug Fixes
+
+* **content:** fix carousel img delete button ([#189](https://github.com/botpress/studio/issues/189)) ([065fb47](https://github.com/botpress/studio/commit/065fb477d92cb51bde7d9873cf751e8d9763de75))
+* **nlu:** allow copy paste utterances ([#171](https://github.com/botpress/studio/issues/171)) ([fcd96cb](https://github.com/botpress/studio/commit/fcd96cbea5ce6fac9b1288b7be1c5445de49a124))
+* **nlu:** prevent creating an entity with same name as a system ([#158](https://github.com/botpress/studio/issues/158)) ([4d22dd2](https://github.com/botpress/studio/commit/4d22dd2cb5035213c9aecb170e9d2cf0d9b037a9))
+* **skills:** dialog overflow on too many params, fixes [#149](https://github.com/botpress/studio/issues/149) ([#151](https://github.com/botpress/studio/issues/151)) ([266cb94](https://github.com/botpress/studio/commit/266cb94c3035c41ac3ec5d7457bef7cd3785f4d3))
+* **studio:** added translations in node and flow inspector ([#180](https://github.com/botpress/studio/issues/180)) ([8280b62](https://github.com/botpress/studio/commit/8280b62256deb664a73570a24033e4e8394701fc))
+* **studio:** can't lose the bottom debugger panel because of window resize anymore ([#170](https://github.com/botpress/studio/issues/170)) ([54c219a](https://github.com/botpress/studio/commit/54c219a85ddaf185e1528ec8999d12f06d8ea701))
+* **studio:** CMS crashes on new language translation ([#166](https://github.com/botpress/studio/issues/166)) ([3a1dbe5](https://github.com/botpress/studio/commit/3a1dbe5701f1cfc3bc0e2d8fef320ed345522cf6))
+* **studio:** DEV-1421: Fix rename node ([#165](https://github.com/botpress/studio/issues/165)) ([3b407de](https://github.com/botpress/studio/commit/3b407deb01e47ddfaa5ce07654d5604b2e420026))
+* **studio:** display error when no nlu modelId ([#183](https://github.com/botpress/studio/issues/183)) ([644ce44](https://github.com/botpress/studio/commit/644ce448922bf3b0ca33152898d56f5faac6de5e))
+* **studio:** fix the smartinput suggestions cursor in contentform ([#161](https://github.com/botpress/studio/issues/161)) ([86ea816](https://github.com/botpress/studio/commit/86ea81651f3f938ae4b193ed60e189310818f745)), closes [#49](https://github.com/botpress/studio/issues/49)
+* **studio:** missing translation in debugger panel ([#173](https://github.com/botpress/studio/issues/173)) ([bf57d63](https://github.com/botpress/studio/commit/bf57d63ec3611931aabea7b024f70b6771538bdb))
+* **studio:** select dropdown overflowing modals did not render properly - fixes [#137](https://github.com/botpress/studio/issues/137) ([#155](https://github.com/botpress/studio/issues/155)) ([77cc384](https://github.com/botpress/studio/commit/77cc384a2560687cce1e36eb84358ffa90c90d8b))
+* **studio:** show webchat by default ([#167](https://github.com/botpress/studio/issues/167)) ([884ebc2](https://github.com/botpress/studio/commit/884ebc24dcd9e1c24c1e803ebd97d486c2031f98))
+* small eslint warnings and typings ([5a75434](https://github.com/botpress/studio/commit/5a754348372b813a83ceea5655a254bc98f1a698))
+
+
+### Features
+
+* adds Segment integration ([#147](https://github.com/botpress/studio/issues/147)) ([ea98ee0](https://github.com/botpress/studio/commit/ea98ee02e85f6b605784e7417dfe2ebd111fb00c))
+
+
+
 ## [0.0.41](https://github.com/botpress/studio/compare/v0.0.28...v0.0.41) (2021-10-22)
 
 

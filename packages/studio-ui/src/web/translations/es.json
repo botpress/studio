@@ -463,6 +463,7 @@
       "contentTypeWarning": "Tenga en cuenta que este tipo de contenido solo es compatible con {channels}"
     },
     "flow": {
+      "flowProperties": "Propiedades de flujo",
       "addNode": "Añadir nodo",
       "addToLibrary": "Añadir a la biblioteca",
       "cantDeleteFailure": "No puede eliminar el nodo de falla.",
@@ -506,6 +507,7 @@
         "tryingToLoad": "Parece que está intentando cargar un módulo que no se ha registrado. Asegúrese de que el módulo está registrado y reinicie el bot."
       },
       "node": {
+        "nodeProperties": "Propiedades de nodo",
         "actionParameters": "Parámetros de acción",
         "actionServer": "Servidor de acciones",
         "actionServerTooltip": "Este es el servidor de acciones en el que se ejecutará la acción",
@@ -634,7 +636,9 @@
         "somebodyIsEditing": "Alguien está editando otro flujo",
         "whenDiscussionTimeouts": "Cuando se espera un tiempo de espera de discusión (el usuario no responde en el marco temporal configurado) será redirigido aquí.",
         "whenConversationEnds": "Cuando finalice una conversación (sin transición), será redirigido aquí.",
-        "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí"
+        "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí",
+        "salesCallToAction": "Prueba Enterprise gratis",
+        "salesCallToActionDescription": "Chatbots seguros, escalables y de nivel empresarial"
       },
       "transition": "Transición",
       "unauthUpdate": "Actualización de flujo no autorizada. No tiene privilegios de rol suficientes para modificar flujos.",
@@ -756,6 +760,7 @@
         "intentsVeryClose": "Los intentos previstos están muy cerca",
         "youCanAccountForIt": "Puede contabilizarlo marcando la variable:",
         "ambiguous": "Ambiguous",
+        "noModel": "No se pudo ejecutar NLU porque no se entrenó ningún modelo",
         "languageUnderstanding": "Comprensión del lenguaje"
       },
       "slots": {

@@ -5,6 +5,7 @@ import { sanitizeFileName } from 'core/misc/utils'
 import _ from 'lodash'
 
 import { NLUService } from '../nlu-service'
+import { trimUtterances } from '../utils'
 
 const INTENTS_DIR = './intents'
 
@@ -38,7 +39,7 @@ export class IntentRepository {
       throw new Error('Invalid intent name, expected at least one character')
     }
 
-    const availableEntities = await this.nluService.entities.getEntities(botId)
+    const availableEntities = await this.nluService.entities.listEntities(botId)
 
     _.chain(intent.slots)
       .flatMap('entities')
@@ -48,6 +49,8 @@ export class IntentRepository {
           throw Error(`"${entity}" is neither a system entity nor a custom entity`)
         }
       })
+
+    trimUtterances(intent)
 
     await this.ghostService.forBot(botId).upsertFile(INTENTS_DIR, `${name}.json`, JSON.stringify(intent, undefined, 2))
     return intent

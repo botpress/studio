@@ -20,7 +20,7 @@ export class DefinitionsRepository {
   // TODO: use the actual repo with the ghost, not an HTTP call
   public async getTrainDefinitions(botId: string): Promise<TrainDefinitions> {
     const intentDefs = await this.intentRepo.getIntents(botId)
-    const entityDefs = await this.entityRepo.getEntities(botId)
+    const entityDefs = await this.entityRepo.listEntities(botId)
 
     return {
       intentDefs,

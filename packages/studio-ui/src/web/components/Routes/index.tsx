@@ -2,9 +2,11 @@ import { createBrowserHistory } from 'history'
 import queryString from 'query-string'
 import React from 'react'
 import ReactGA from 'react-ga'
+import { connect } from 'react-redux'
 import { Router, Switch } from 'react-router-dom'
 import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
+import injectSegment from '~/util/InjectSegment'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
@@ -33,8 +35,10 @@ const logPageView = () => {
   ReactGA.pageview(page)
 }
 
-export default () => {
+const RoutesRouter = props => {
   if (window.SEND_USAGE_STATS) {
+    injectSegment(props.user)
+
     ReactGA.initialize(window.ANALYTICS_ID, {
       gaOptions: {
         userId: window.UUID
@@ -51,3 +55,11 @@ export default () => {
     </Router>
   )
 }
+
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(RoutesRouter)
