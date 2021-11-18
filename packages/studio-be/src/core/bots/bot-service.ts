@@ -20,6 +20,8 @@ const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
 
 const debug = DEBUG('services:bots')
 
+type UnmountListener = (botId: string) => Promise<void>
+
 @injectable()
 export class BotService {
   public mountBot: Function = this.localMount
@@ -28,6 +30,7 @@ export class BotService {
   private _botIds: string[] | undefined
   private static _mountedBots: Map<string, boolean> = new Map()
   private _trainWatchers: { [botId: string]: ListenHandle } = {}
+  private _unmountListeners: UnmountListener[] = []
 
   constructor(
     @inject(TYPES.Logger)
@@ -46,6 +49,10 @@ export class BotService {
   async init() {
     this.mountBot = await this.jobService.broadcast<void>(this.localMount.bind(this))
     this.unmountBot = await this.jobService.broadcast<void>(this.localUnmount.bind(this))
+  }
+
+  public listenForBotUnmount(listener: UnmountListener) {
+    this._unmountListeners.push(listener)
   }
 
   async findBotById(botId: string): Promise<BotConfig | undefined> {
@@ -286,7 +293,10 @@ export class BotService {
     }
 
     await this.cms.clearElementsFromCache(botId)
-    BOTPRESS_EVENTS.emit('unmountBot', { botId })
+
+    for (const listener of this._unmountListeners) {
+      await listener(botId)
+    }
 
     BotService._mountedBots.set(botId, false)
 

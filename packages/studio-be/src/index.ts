@@ -1,6 +1,5 @@
 global['NativePromise'] = global.Promise
 
-import EventEmitter from 'events'
 import fs from 'fs'
 import path from 'path'
 import yn from 'yn'
@@ -46,8 +45,6 @@ if (process.env.APP_DATA_PATH) {
 }
 
 process.IS_FAILSAFE = yn(process.env.BP_FAILSAFE) || false
-process.BOTPRESS_EVENTS = new EventEmitter()
-process.BOTPRESS_EVENTS.setMaxListeners(1000)
 process.LOADED_MODULES = {}
 
 process.STUDIO_LOCATION = process.pkg
