@@ -310,6 +310,9 @@
       "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
     },
     "flow": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomToFit": "Fit to screen",
       "addNode": "Add Node",
       "addToLibrary": "Add to library",
       "cantDeleteFailure": "You can't delete the failure node.",

@@ -306,6 +306,9 @@
       "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
+      "zoomIn": "Agrandir",
+      "zoomOut": "Rapetisser",
+      "zoomToFit": "Ajuster à la taille de l'écran",
       "addNode": "Ajouter une node",
       "addToLibrary": "Ajouter dans la librairie",
       "cantDeleteFailure": "Vous ne pouvez pas supprimer le nœud d'échec.",
