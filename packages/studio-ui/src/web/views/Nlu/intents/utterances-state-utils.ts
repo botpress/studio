@@ -46,7 +46,7 @@ export const textNodesFromUtterance = (
   return _.chain(parsedSlots)
     .flatMap((pslot, i, all) => {
       const previousSlot = all[i - 1]
-      const from = previousSlot?.cleanPosition.start ?? 0
+      const from = previousSlot?.cleanPosition.end ?? 0
       const to = pslot.cleanPosition.start
 
       const slotExists = allSlots.some(s => s.name === pslot.name)
@@ -104,14 +104,10 @@ export const valueToUtterances = (value: Value): string[] => {
     .getIn(['document', 'nodes'])
     .map(block =>
       block.nodes.reduce((utt: string, node, idx: number) => {
-        let value = node.get('text')
+        const value = node.get('text')
         if (node.marks.size > 0) {
           const slot = node.marks.first().data.get(SLOT_MARK)
           return `${utt}[${value}](${slot})`
-        }
-
-        if (idx + 1 >= block.nodes.size) {
-          value = value.trimEnd()
         }
 
         return `${utt}${value}`
