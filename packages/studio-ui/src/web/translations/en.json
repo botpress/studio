@@ -488,7 +488,9 @@
         "somebodyIsEditing": "Somebody is editing another flow",
         "whenDiscussionTimeouts": "When a discussion timeouts (user doesn't answer in the configured timeframe) he will be redirected here.",
         "whenConversationEnds": "When a conversation ends (no transition) he will be redirected here.",
-        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here"
+        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here",
+        "salesCallToAction": "Start a free Enterprise trial",
+        "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
       },
       "topic": "Topic",
       "topicEditor": {
