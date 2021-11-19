@@ -17,7 +17,6 @@ import { Memoize } from 'lodash-decorators'
 import LRUCache from 'lru-cache'
 import moment from 'moment'
 import ms from 'ms'
-import { BOTPRESS_EVENTS } from 'process'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 

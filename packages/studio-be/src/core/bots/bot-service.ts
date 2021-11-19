@@ -13,7 +13,6 @@ import { inject, injectable, postConstruct, tagged } from 'inversify'
 import Joi from 'joi'
 import _ from 'lodash'
 import path from 'path'
-import { BOTPRESS_EVENTS } from 'process'
 
 const BOT_CONFIG_FILENAME = 'bot.config.json'
 const BOT_ID_PLACEHOLDER = '/bots/BOT_ID_PLACEHOLDER/'
