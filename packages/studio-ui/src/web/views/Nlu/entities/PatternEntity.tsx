@@ -12,6 +12,7 @@ import {
 } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
+import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
 
@@ -36,12 +37,6 @@ export const PatternEntityEditor: React.FC<Props> = props => {
     setPattern(props.entity.pattern)
     setExampleStr((props.entity.examples || []).join('\n'))
   }, [props.entity])
-
-  const getEntityId = (entityName: string) =>
-    entityName
-      .trim()
-      .toLowerCase()
-      .replace(/[\t\s]/g, '-')
 
   const validateExamples = _.debounce(() => {
     let p = pattern

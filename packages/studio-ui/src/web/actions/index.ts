@@ -311,6 +311,7 @@ export const toggleBottomPanelExpand = createAction('UI/TOGGLE_BOTTOM_PANEL_EXPA
 export const zoomIn = createAction('UI/ZOOM_IN_DIAGRAM')
 export const zoomOut = createAction('UI/ZOOM_OUT_DIAGRAM')
 export const zoomToLevel = createAction('UI/ZOOM_TO_LEVEL_DIAGRAM')
+export const zoomToFit = createAction('UI/ZOOM_TO_FIT_DIAGRAM')
 export const setEmulatorOpen = createAction('EMULATOR_OPENED')
 
 // User

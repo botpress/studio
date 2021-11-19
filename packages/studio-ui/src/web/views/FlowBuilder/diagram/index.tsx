@@ -247,7 +247,11 @@ class Diagram extends Component<Props> {
     }
 
     if (prevProps.zoomLevel !== this.props.zoomLevel) {
-      this.diagramEngine.diagramModel.setZoomLevel(this.props.zoomLevel)
+      if (this.props.zoomLevel === -1) {
+        this.manager.updateZoomLevel()
+      } else {
+        this.diagramEngine.diagramModel.setZoomLevel(this.props.zoomLevel)
+      }
     }
 
     if (prevProps.debuggerEvent !== this.props.debuggerEvent) {

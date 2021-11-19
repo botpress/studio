@@ -5,8 +5,9 @@
 .dialog {
   max-height: 90%;
   background-color: white !important;
+  overflow-y: scroll;
 
-  :global(.bp3-dialog-body){
+  :global(.bp3-dialog-body) {
     overflow: auto;
   }
 

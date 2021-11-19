@@ -76,16 +76,7 @@ export class DiagramManager {
       return
     }
 
-    const nodes = currentFlow.nodes.map((node: NodeView) => {
-      node.x = _.round(node.x)
-      node.y = _.round(node.y)
-
-      return createNodeModel(node, {
-        ...node,
-        isStartNode: currentFlow.startNode === node.name,
-        isHighlighted: this.shouldHighlightNode(node)
-      })
-    })
+    const nodes = this.getBlockModelFromFlow(currentFlow)
     this.activeModel.addListener({ zoomUpdated: e => this.storeDispatch.zoomToLevel?.(Math.floor(e.zoom)) })
 
     this.activeModel.addAll(...nodes)
@@ -97,6 +88,24 @@ export class DiagramManager {
     // Setting the initial links hash when changing flow
     this.getLinksRequiringUpdate()
     this.highlightLinkedNodes()
+  }
+
+  updateZoomLevel() {
+    const nodes = this.getBlockModelFromFlow(this.currentFlow)
+    this._updateZoomLevel(nodes)
+  }
+
+  getBlockModelFromFlow(flow: FlowView) {
+    return flow.nodes.map((node: NodeView) => {
+      node.x = _.round(node.x)
+      node.y = _.round(node.y)
+
+      return createNodeModel(node, {
+        ...node,
+        isStartNode: flow.startNode === node.name,
+        isHighlighted: this.shouldHighlightNode(node)
+      })
+    })
   }
 
   shouldHighlightNode(node: NodeView): boolean {
@@ -368,10 +377,13 @@ export class DiagramManager {
     })
 
     this.activeModel.addNode(model)
+    // Select newly inserted nodes
+    this.storeDispatch.switchFlowNode(node.id)
+    model.setSelected(true)
 
+    // Open Node Properties
     setTimeout(() => {
-      // Select newly inserted nodes
-      model.setSelected(true)
+      // Call again to make sure that the correct node is selected
       this.storeDispatch.switchFlowNode(node.id)
       this.storeDispatch.openFlowNodeProps()
     }, 150)

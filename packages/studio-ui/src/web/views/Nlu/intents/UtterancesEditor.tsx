@@ -2,9 +2,25 @@ import { Tag } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
+import * as Immutable from 'immutable'
 import _ from 'lodash'
 import React from 'react'
-import { Document, Editor as CoreEditor, MarkJSON, Node, Range, Selection, Value } from 'slate'
+import {
+  BlockJSON,
+  Document,
+  DocumentJSON,
+  Editor as CoreEditor,
+  InlineJSON,
+  MarkJSON,
+  Node,
+  NodeJSON,
+  Operation,
+  Range,
+  Selection,
+  TextJSON,
+  Value,
+  ValueJSON
+} from 'slate'
 import { Editor, EditorProps, RenderBlockProps, RenderMarkProps } from 'slate-react'
 import PlaceholderPlugin from 'slate-react-placeholder'
 
@@ -39,10 +55,15 @@ interface State {
   showSlotMenu: boolean
 }
 
+interface NodeModification<T extends NodeJSON> {
+  node: T
+  modified: boolean
+}
+
 export class UtterancesEditor extends React.Component<Props, State> {
   state = {
     selection: { utterance: -1, block: -1, from: -1, to: -1 },
-    value: utterancesToValue([]),
+    value: utterancesToValue([], []),
     showSlotMenu: false
   }
   utteranceKeys = []
@@ -52,7 +73,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
   }
 
   init = (utterances: string[]) => {
-    const value = utterancesToValue(utterances)
+    const value = utterancesToValue(this.props.slots, utterances)
     this.setState({ value })
   }
 
@@ -60,7 +81,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
     if (prevProps.intentName !== this.props.intentName) {
       this.init(this.props.utterances)
     } else if (!_.isEqual(this.props.utterances, prevProps.utterances)) {
-      const value = utterancesToValue(this.props.utterances, this.state.value.get('selection'))
+      const value = utterancesToValue(this.props.slots, this.props.utterances, this.state.value.get('selection'))
       this.setState({ value })
     }
   }
@@ -209,24 +230,107 @@ export class UtterancesEditor extends React.Component<Props, State> {
     this.props.onChange(valueToUtterances(value))
   }
 
-  dispatchNeeded = operations => {
+  dispatchNeeded = (operations: Immutable.List<Operation>) => {
     return operations
       .map(x => x.get('type'))
       .filter(x => ['insert_text', 'remove_text', 'add_mark', 'remove_mark', 'split_node'].includes(x)).size
   }
 
-  onChange = ({ value, operations }: { value: Value; operations: any }) => {
+  onChange = ({ value, operations }: { value: Value; operations: Immutable.List<Operation> }) => {
     let selection: Selected | undefined
     if (operations.filter(x => x.get('type') === 'set_selection').size) {
       selection = this.onSelectionChanged(value)
     }
 
-    const newState: Partial<State> = selection ? { value, selection } : { value }
+    const valueJson = value.toJSON({ preserveAnnotations: true, preserveData: true, preserveSelection: true })
+    const { valueJson: modifiedValueJson, modified } = this._modifyValue(valueJson)
+    const modifiedValue = modified ? Value.fromJSON(modifiedValueJson) : value
+
+    const newState: Partial<State> = selection ? { value: modifiedValue, selection } : { value: modifiedValue }
     this.setState(newState as State)
 
     if (this.dispatchNeeded(operations)) {
-      this.dispatchChanges(value)
+      this.dispatchChanges(modifiedValue)
     }
+  }
+
+  private _modifyValue = (valueJson: ValueJSON): { valueJson: ValueJSON; modified: boolean } => {
+    const { document } = valueJson
+    const { nodes } = document ?? {}
+    if (!nodes) {
+      return { valueJson, modified: false }
+    }
+
+    const modifiedNodes = nodes.map(this._exploreNodes)
+    const modifiedValueJson: ValueJSON = {
+      ...valueJson,
+      document: {
+        ...document,
+        nodes: modifiedNodes.map(({ node }) => node)
+      }
+    }
+
+    return {
+      valueJson: modifiedValueJson,
+      modified: modifiedNodes.some(({ modified }) => modified)
+    }
+  }
+
+  // Recursively explore all nodes
+  private _exploreNodes = (node: NodeJSON): NodeModification<NodeJSON> => {
+    if (this._hasChildNodes(node)) {
+      const { nodes: childNodes } = node
+
+      const modifiedChildNodes = childNodes.map(this._exploreNodes)
+      const modifiedNode: NodeJSON = {
+        ...node,
+        // @ts-ignore
+        nodes: modifiedChildNodes.map(({ node }) => node)
+      }
+
+      return {
+        node: modifiedNode,
+        modified: modifiedChildNodes.some(({ modified }) => modified)
+      }
+    }
+    return this._rmUnexistingSlots(node)
+  }
+
+  private _rmUnexistingSlots = (v: TextJSON): NodeModification<TextJSON> => {
+    const { marks } = v
+    if (!marks.length) {
+      return {
+        node: v,
+        modified: false
+      }
+    }
+
+    const modifiedMarks = marks.filter(m => {
+      const { type, data } = m
+      if (type !== 'slot') {
+        return true
+      }
+      const { slotName } = data as { slotName: string }
+      return !slotName || this._slotExists(slotName)
+    })
+
+    const modifiedNode: TextJSON = {
+      ...v,
+      marks: modifiedMarks
+    }
+
+    return {
+      node: modifiedNode,
+      modified: modifiedMarks.length !== marks.length
+    }
+  }
+
+  private _hasChildNodes = (n: NodeJSON): n is DocumentJSON | BlockJSON | InlineJSON => {
+    return n.object === 'document' || n.object === 'block' || n.object === 'inline'
+  }
+
+  private _slotExists = (slotName: string) => {
+    return this.props.slots.map(s => s.name).includes(slotName)
   }
 
   renderMark = (props: RenderMarkProps, editor: CoreEditor, next: () => any) => {

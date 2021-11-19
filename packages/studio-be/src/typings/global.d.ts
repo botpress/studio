@@ -207,6 +207,7 @@ declare interface BotpressEnvironmentVariables {
    * ex: ['nlu', 'nlu-testing']
    */
   readonly BP_ENABLED_MODULES?: string
+  readonly BP_DEBUG_SEGMENT?: boolean
 }
 
 interface IDebug {

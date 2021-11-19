@@ -14,7 +14,7 @@ import {
 import { authEvents, setToken } from '~/util/Auth'
 import EventBus from '~/util/EventBus'
 
-import routes, { history } from '../Routes'
+import Routes, { history } from '../Routes'
 
 interface Props {
   fetchModules: () => void
@@ -102,7 +102,7 @@ class App extends Component<Props> {
         {!window.IS_STANDALONE && (
           <TokenRefresher getAxiosClient={() => axios} onRefreshCompleted={token => setToken(token)} />
         )}
-        {routes()}
+        <Routes />
       </Fragment>
     )
   }

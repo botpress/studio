@@ -287,6 +287,7 @@ const QnA: FC<Props> = props => {
                       data: { ...data, redirectFlow: selected.value }
                     })
                   }
+                  menuPortalTarget={document.getElementById('menuOverlayPortal')}
                 />
               </div>
               <div>
