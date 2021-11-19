@@ -306,6 +306,8 @@
       "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
+      "invalidName": "Nom invalide",
+      "invalidCharacters": "Le nom contient des caractères réservés ou invalides.",
       "zoomIn": "Agrandir",
       "zoomOut": "Rapetisser",
       "zoomToFit": "Ajuster à la taille de l'écran",
@@ -365,6 +367,8 @@
         "add": "ajouter",
         "addAction": "Ajouter une nouvelle action",
         "cantSeeActions": "Vous ne voyez pas votre action?",
+        "nameAlreadyExists": "Impossible de renommer le node (Ce nom existe déjà)",
+        "emptyName": "Le nom du node ne peut être vide",
         "chatbotExecutes": "L'assistant virtuel exécute",
         "chatbotSays": "L'assistant virtuel dit",
         "triggeredBy": "Le workflow est is déclenché par",

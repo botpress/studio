@@ -49,7 +49,6 @@ declare namespace NodeJS {
     TELEMETRY_URL: string
     core_env: BotpressEnvironmentVariables
     distro: OSDistribution
-    BOTPRESS_EVENTS: EventEmitter
     IS_FAILSAFE: boolean
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
