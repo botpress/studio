@@ -215,7 +215,7 @@ export class StudioRouter extends CustomRouter {
               window.BOT_LOCKED = ${!!bot.locked};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
-              window.IS_CLOUD_BOT = ${!bot.standalone}
+              window.IS_CLOUD_BOT = ${bot.isCloudBot}
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
             })(typeof window != 'undefined' ? window : {})
           `
