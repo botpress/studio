@@ -41,5 +41,14 @@ export class ConfigRouter extends CustomStudioRouter {
         }
       })
     )
+
+    router.get(
+      '/nlu/languages',
+      this.needPermissions('read', 'bot.content'),
+      this.asyncMiddleware(async (req, res) => {
+        const languages = await this.nluService.getLanguages()
+        res.send(languages)
+      })
+    )
   }
 }
