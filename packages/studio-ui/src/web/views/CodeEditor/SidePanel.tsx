@@ -76,9 +76,6 @@ class PanelContent extends React.Component<Props> {
     const sharedLibs = []
     this.addFiles('bot.shared_libs', lang.tr('code-editor.sidePanel.currentBot'), sharedLibs)
 
-    const components = []
-    this.addFiles('bot.components', lang.tr('code-editor.sidePanel.currentBot'), components)
-
     this.addFiles('hook_example', EXAMPLE_FOLDER_LABEL, hookFiles)
     this.addFiles('action_example', EXAMPLE_FOLDER_LABEL, actionFiles)
 
@@ -87,8 +84,7 @@ class PanelContent extends React.Component<Props> {
       hookFiles,
       botConfigs: botConfigFiles,
       moduleConfigFiles,
-      sharedLibs,
-      components
+      sharedLibs
     })
   }
 
@@ -181,30 +177,6 @@ class PanelContent extends React.Component<Props> {
         <FileNavigator
           id="actions"
           files={this.state.actionFiles}
-          expandedNodes={this.expandedNodes}
-          selectedNode={this.state.selectedNode}
-          onNodeStateExpanded={this.updateNodeExpanded}
-          onNodeStateSelected={this.updateNodeSelected}
-        />
-      </SidePanelSection>
-    )
-  }
-
-  renderSectionComponents() {
-    const actions = [
-      {
-        id: 'btn-upload',
-        icon: <Icon icon="upload" />,
-        key: 'upload',
-        onClick: () => this.setState({ selectedFile: undefined, isUploadModalOpen: true, isComponent: true })
-      }
-    ]
-
-    return (
-      <SidePanelSection label={lang.tr('code-editor.sidePanel.components')} actions={actions}>
-        <FileNavigator
-          id="components"
-          files={this.state.components}
           expandedNodes={this.expandedNodes}
           selectedNode={this.state.selectedNode}
           onNodeStateExpanded={this.updateNodeExpanded}
@@ -314,7 +286,6 @@ class PanelContent extends React.Component<Props> {
 
           {this.renderSectionActions()}
           {this.renderSectionHooks()}
-          {this.renderSectionComponents()}
           {this.renderSharedLibs()}
           {this.renderSectionConfig()}
           {this.renderSectionModuleConfig()}

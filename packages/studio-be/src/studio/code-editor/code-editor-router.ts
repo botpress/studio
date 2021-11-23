@@ -2,13 +2,11 @@ import { RequestWithPerms } from 'common/code-editor'
 import { ALL_BOTS } from 'common/utils'
 import { hasPermissions } from 'core/security'
 import _ from 'lodash'
-import multer from 'multer'
-import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 import { Editor } from './editor'
-import { getPermissionsMw, validateFilePayloadMw, validateFileUploadMw } from './utils_router'
+import { getPermissionsMw, validateFilePayloadMw } from './utils_router'
 
 const debugRead = DEBUG('audit:code-editor:read')
 const debugWrite = DEBUG('audit:code-editor:write')
@@ -124,20 +122,6 @@ export class CodeEditorRouter extends CustomStudioRouter {
         audit(debugWrite, 'deleteFile', req)
 
         await editor.forBot(req.params.botId).deleteFile(req.body)
-        res.sendStatus(200)
-      })
-    )
-
-    router.post(
-      '/upload',
-      loadPermsMw,
-      validateFileUploadMw,
-      multer().single('file'),
-      this.asyncMiddleware(async (req: any, res) => {
-        const folder = path.dirname(req.body.location)
-        const filename = path.basename(req.body.location)
-
-        await this.bpfs.root().upsertFile(folder, filename, req.file.buffer)
         res.sendStatus(200)
       })
     )
