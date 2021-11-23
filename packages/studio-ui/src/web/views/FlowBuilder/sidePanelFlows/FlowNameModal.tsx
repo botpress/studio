@@ -61,6 +61,8 @@ const FlowNameModal: FC<Props> = props => {
     submitText = lang.tr('rename')
   }
 
+  const isNameInvalid = name?.startsWith('skills/')
+
   return (
     <Dialog isOpen={props.isOpen} onClose={closeModal} transitionDuration={0} {...dialog}>
       <form onSubmit={submit}>
@@ -85,6 +87,12 @@ const FlowNameModal: FC<Props> = props => {
               {lang.tr('studio.flow.sidePanel.nameInUseMessage')}
             </Callout>
           )}
+
+          {isNameInvalid && (
+            <Callout title={lang.tr('studio.flow.invalidName')} intent={Intent.DANGER}>
+              {lang.tr('studio.flow.invalidCharacters')}
+            </Callout>
+          )}
         </div>
 
         <div className={Classes.DIALOG_FOOTER}>
@@ -94,7 +102,7 @@ const FlowNameModal: FC<Props> = props => {
               type="submit"
               text={submitText}
               onClick={submit}
-              disabled={!name || isIdentical || alreadyExists}
+              disabled={!name || isIdentical || alreadyExists || isNameInvalid}
             />
           </div>
         </div>

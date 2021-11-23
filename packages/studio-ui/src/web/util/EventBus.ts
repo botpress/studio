@@ -1,12 +1,12 @@
 import { auth } from 'botpress/shared'
 import { EventEmitter2 } from 'eventemitter2'
-import io from 'socket.io-client'
+import { Socket, io } from 'socket.io-client'
 import { authEvents } from '~/util/Auth'
 
 class EventBus extends EventEmitter2 {
-  private adminSocket: SocketIOClient.Socket
-  private guestSocket: SocketIOClient.Socket
-  static default
+  private adminSocket: Socket
+  private guestSocket: Socket
+  static default: EventBus
 
   constructor() {
     super({
@@ -51,11 +51,6 @@ class EventBus extends EventEmitter2 {
       visitorId: auth.getUniqueVisitorId(userIdScope)
     }
 
-    const token = auth.getToken()
-    if (token) {
-      Object.assign(query, { token })
-    }
-
     if (this.adminSocket) {
       this.adminSocket.off('event', this.dispatchSocketEvent)
       this.adminSocket.disconnect()
@@ -69,8 +64,10 @@ class EventBus extends EventEmitter2 {
 
     const socketUrl = window['BP_SOCKET_URL'] || window.location.origin
     const transports = window.SOCKET_TRANSPORTS
+    const token = auth.getToken()
 
     this.adminSocket = io(`${socketUrl}/admin`, {
+      auth: { token },
       query,
       transports,
       path: `${window['ROOT_PATH']}/socket.io`

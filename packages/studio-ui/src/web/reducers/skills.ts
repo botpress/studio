@@ -1,4 +1,4 @@
-import { Skill } from 'botpress/sdk'
+import { NLU, Skill } from 'botpress/sdk'
 import { LocalActionDefinition } from 'common/typings'
 import { handleActions } from 'redux-actions'
 import {
@@ -72,6 +72,7 @@ export interface SkillsReducer {
     actions: any[]
     location: any
   }
+  intents?: NLU.Intent[]
 }
 
 const reducer = handleActions(

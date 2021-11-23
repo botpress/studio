@@ -1,4 +1,4 @@
-import { Dropdown, lang, MoreOptions, MoreOptionsItems } from 'botpress/shared'
+import { Dropdown, lang, MoreOptions, MoreOptionsItems, toast } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { connect } from 'react-redux'
@@ -52,14 +52,21 @@ const SaySomethingForm: FC<Props> = props => {
     }
   }, [props.currentFlowNode.id])
 
-  const renameNode = text => {
-    if (text) {
-      const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
-
-      if (!alreadyExists) {
-        props.updateNode({ name: text })
-      }
+  const onChange = text => {
+    if (!text) {
+      return toast.failure(lang.tr('studio.flow.node.emptyName'))
     }
+
+    if (text === props.currentFlowNode.nodeName) {
+      return
+    }
+
+    const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
+    if (alreadyExists) {
+      return toast.failure(lang.tr('studio.flow.node.nameAlreadyExists'))
+    }
+
+    props.updateNode({ name: text })
   }
 
   const transformText = text => {
@@ -158,7 +165,7 @@ const SaySomethingForm: FC<Props> = props => {
           readOnly={readOnly}
           value={currentFlowNode.name}
           className={style.textInput}
-          onChanged={renameNode}
+          onChanged={onChange}
           transform={transformText}
         />
       </label>

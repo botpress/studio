@@ -3,6 +3,7 @@
 interface CssExports {
   'label': string;
   'zoomLevel': string;
+  'zoomToFit': string;
   'zoomWrapper': string;
 }
 declare var cssExports: CssExports;

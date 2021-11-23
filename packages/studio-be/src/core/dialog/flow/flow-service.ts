@@ -74,6 +74,7 @@ export class FlowService {
   ) {
     this._listenForCacheInvalidation()
     this.botService.flowService = this
+    this.botService.listenForBotUnmount(this.handleUnmount.bind(this))
   }
 
   @postConstruct()
@@ -81,6 +82,10 @@ export class FlowService {
     await AppLifecycle.waitFor(AppLifecycleEvents.CONFIGURATION_LOADED)
 
     this.invalidateFlow = <any>await this.jobService.broadcast<void>(this._localInvalidateFlow.bind(this))
+  }
+
+  private async handleUnmount(botId: string) {
+    delete this.scopes[botId]
   }
 
   private _localInvalidateFlow(botId: string, key: string, flow?: FlowView, newKey?: string) {

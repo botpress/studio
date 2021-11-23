@@ -72,7 +72,7 @@ const FlowBuilder = (props: Props) => {
   useEffect(() => {
     if (props.errorSavingFlows) {
       const { status } = props.errorSavingFlows
-      const message = status === 403 ? lang.tr('studio.unauthUpdate') : lang.tr('studio.errorWhileSaving')
+      const message = status === 403 ? lang.tr('studio.unauthUpdate') : lang.tr('studio.flow.errorWhileSaving')
       toastFailure(message, Timeout.LONG, props.clearErrorSaveFlows, { delayed: true })
     }
   }, [props.errorSavingFlows])
