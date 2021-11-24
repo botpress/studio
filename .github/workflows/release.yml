@@ -31,8 +31,10 @@ jobs:
       - name: 'Build and Package'
         if: ${{ steps.release_details.outputs.is_new_release == 'true' }}
         run: |
-          yarn build --prod
+          yarn build
           yarn package
+        env:
+          NODE_ENV: production
       - name: 'Release'
         if: ${{ steps.release_details.outputs.is_new_release == 'true' }}
         uses: softprops/action-gh-release@v1

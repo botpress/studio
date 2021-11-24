@@ -30,12 +30,11 @@
     "outputPath": "./bin"
   },
   "scripts": {
-    "postinstall": "yarn cmd create:env.debug --location ./.env.debug",
-    "cmd": "yarn run gulp",
-    "build": "yarn cmd build",
-    "package": "yarn cmd package:studio",
-    "watch": "yarn cmd watch:studio",
-    "start": "yarn cmd start:studio",
+    "postinstall": "node ./scripts/create_default_env --location ./.env.debug",
+    "build": "yarn workspaces foreach -ptiv run build",
+    "watch": "yarn workspaces foreach -piv run watch",
+    "package": "node ./scripts/package",
+    "start": "node ./scripts/start_studio",
     "release": "node ./scripts/utils/release",
     "prettier": "cross-env prettier --check './packages/**/*.ts'",
     "eslint": "cross-env eslint packages/ --ext .ts,.tsx",
@@ -70,6 +69,5 @@
   "resolutions": {
     "fstream": ">=1.0.12",
     "lodash": ">=4.17.21"
-  },
-  "dependencies": {}
+  }
 }
