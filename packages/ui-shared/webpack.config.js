@@ -34,6 +34,9 @@ const config = {
     '@blueprintjs/core': 'BlueprintJsCore',
     '@blueprintjs/select': 'BlueprintJsSelect'
   },
+  infrastructureLogging: {
+    level: 'error'
+  },
   plugins: [],
   module: {
     rules: [
@@ -79,8 +82,10 @@ if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
 if (!isWatching) {
   config.plugins.push(
     new FileManagerPlugin({
-      onStart: {
-        delete: ['dist']
+      events: {
+        onStart: {
+          delete: ['dist']
+        }
       }
     })
   )
