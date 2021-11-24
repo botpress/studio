@@ -17,7 +17,7 @@ const writeMetadata = async () => {
     console.error(`Couldn't get active branch`, err)
   }
 
-  await fse.writeJSONSync('./packages/studio-be/src/metadata.json', metadata, { spaces: 2 })
+  await fse.writeJSONSync(path.join(__dirname, '../packages/studio-be/src/metadata.json'), metadata, { spaces: 2 })
 }
 
 writeMetadata()

@@ -20915,7 +20915,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"studio-be@workspace:packages/studio-be":
+"studio-be@*, studio-be@workspace:packages/studio-be":
   version: 0.0.0-use.local
   resolution: "studio-be@workspace:packages/studio-be"
   dependencies:
@@ -22256,6 +22256,7 @@ __metadata:
     sass-loader: ^6.0.6
     script-loader: ^0.7.0
     snarkdown: ^1.2.2
+    studio-be: "*"
     style-loader: ^0.13.1
     terser-webpack-plugin: ^2.2.2
     ts-loader: ^6.0.2

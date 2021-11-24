@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
-    "build": "yarn tsc --build",
+    "build": "node ../../scripts/write_metadata && yarn tsc --build",
     "clean": "node ./node_modules/rimraf/bin.js ./out",
     "watch": "yarn tsc --build --watch"
   },
