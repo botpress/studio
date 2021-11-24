@@ -2004,16 +2004,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/body-parser@npm:*":
-  version: 1.19.0
-  resolution: "@types/body-parser@npm:1.19.0"
-  dependencies:
-    "@types/connect": "*"
-    "@types/node": "*"
-  checksum: 15043566f1909e2a08dabb0a5d2642f8988545a1369bc5995fc40ee90c95200da2aa66f9240fcb19fc6af6ff4e27ff453f311b49363c14bb308c308c0751ca9b
-  languageName: node
-  linkType: hard
-
 "@types/classnames@npm:^2.2.6":
   version: 2.3.1
   resolution: "@types/classnames@npm:2.3.1"
@@ -2023,42 +2013,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/connect@npm:*":
-  version: 3.4.34
-  resolution: "@types/connect@npm:3.4.34"
-  dependencies:
-    "@types/node": "*"
-  checksum: c6e2aa299cf3979c00602f48ce9163700f0cbfec6ba2a8e1506d08f51da0279805a478ea094252fad7c369a563ee033b359c708ab34b1763397c58d7e2df07ad
-  languageName: node
-  linkType: hard
-
 "@types/dom4@npm:^2.0.1":
   version: 2.0.1
   resolution: "@types/dom4@npm:2.0.1"
   checksum: d4b746c7b891ae1d5c7e8d4e9410c1c58fc0fe8ee71855967bb4699af6ed8b067e66aa5f53b6d9559ef3479d4ca94cb13504000f4ac0cff58b1f3eb8b489b064
-  languageName: node
-  linkType: hard
-
-"@types/express-serve-static-core@npm:^4.17.18":
-  version: 4.17.21
-  resolution: "@types/express-serve-static-core@npm:4.17.21"
-  dependencies:
-    "@types/node": "*"
-    "@types/qs": "*"
-    "@types/range-parser": "*"
-  checksum: 27a95fa85dfbc5c7e6aa6e2fbd27eb621fe4e49d38be89b9bfa0b6c1defd30e6f9a5109f14ebfa0c7de967950e742d36cd0354158443b684032974c0abf7308d
-  languageName: node
-  linkType: hard
-
-"@types/express@npm:^4.16.0":
-  version: 4.17.12
-  resolution: "@types/express@npm:4.17.12"
-  dependencies:
-    "@types/body-parser": "*"
-    "@types/express-serve-static-core": ^4.17.18
-    "@types/qs": "*"
-    "@types/serve-static": "*"
-  checksum: 5869f575f66e5ea891a00fd253719577a1afe8d39fba47f3f24539188dac351d61f4511a168c6b5b5c902c724b26809950421325887896f5e23f28a3a2aa9458
   languageName: node
   linkType: hard
 
@@ -2246,13 +2204,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mime@npm:^1":
-  version: 1.3.2
-  resolution: "@types/mime@npm:1.3.2"
-  checksum: 0493368244cced1a69cb791b485a260a422e6fcc857782e1178d1e6f219f1b161793e9f87f5fae1b219af0f50bee24fcbe733a18b4be8fdd07a38a8fb91146fd
-  languageName: node
-  linkType: hard
-
 "@types/minimatch@npm:*":
   version: 3.0.5
   resolution: "@types/minimatch@npm:3.0.5"
@@ -2326,20 +2277,6 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: 0595a8aa9d14357fce67644dd7b58864f8b1339ceea8c455179c581511327fa02f814cd83e615b207ec67ca5fec6446073132eb32d83344ee79bbef93e66d106
-  languageName: node
-  linkType: hard
-
-"@types/qs@npm:*":
-  version: 6.9.6
-  resolution: "@types/qs@npm:6.9.6"
-  checksum: 01871b1cf7062717ec76fcb9b29ddae1e04fcfadc1c76d86ec2571e72f27bf09ff31b094b295be8d4ca664aeec9b8965563680b31fcab7aba1ed93afac5181cd
-  languageName: node
-  linkType: hard
-
-"@types/range-parser@npm:*":
-  version: 1.2.3
-  resolution: "@types/range-parser@npm:1.2.3"
-  checksum: a0a4218214d2c599e2128a8965e9183d1f0b8fc614def43a2183cf80534d10fcf86357c823c7907e779df0ab048fd1fa3818b4c8f0f6f99ba150a3f99df7d03d
   languageName: node
   linkType: hard
 
@@ -2459,16 +2396,6 @@ __metadata:
   version: 0.16.1
   resolution: "@types/scheduler@npm:0.16.1"
   checksum: 2ff8034df029a6cbb3623b05fa895cac4fc504806a8e948ebe29675a1edfa5ac04faac7611016076b3ffefc2037bbe344ad1978304059b2d4c78e513ec43c7bf
-  languageName: node
-  linkType: hard
-
-"@types/serve-static@npm:*":
-  version: 1.13.9
-  resolution: "@types/serve-static@npm:1.13.9"
-  dependencies:
-    "@types/mime": ^1
-    "@types/node": "*"
-  checksum: 5c5f3b64e9fe7c51fb428ef70f1f2365b897fc3c8400be6d6afc8db0f152639182b360361ebd3d0cbaeb607b125dee03bf0c50bf7e08642ff150028f05bb7381
   languageName: node
   linkType: hard
 
@@ -8859,7 +8786,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.16.3, express@npm:^4.16.4":
+"express@npm:^4.16.3, express@npm:^4.17.1":
   version: 4.17.1
   resolution: "express@npm:4.17.1"
   dependencies:
@@ -21017,7 +20944,6 @@ __metadata:
     "@botpress/native-extensions": 0.0.1
     "@types/bluebird-global": ^3.5.9
     "@types/bluebird-retry": ^0.11.4
-    "@types/express": ^4.16.0
     "@types/fs-extra": ^9.0.12
     "@types/jest": ^24.9.0
     "@types/jest-environment-puppeteer": ^4.3.1
@@ -21041,7 +20967,7 @@ __metadata:
     dotenv: ^9.0.2
     errorhandler: ^1.5.1
     eventemitter2: ^5.0.1
-    express: ^4.16.4
+    express: ^4.17.1
     express-rate-limit: ^3.5.1
     express-urlrewrite: ^1.2.0
     fs-extra: ^9.1.0
