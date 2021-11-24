@@ -68,10 +68,6 @@
     "yargs": "^17.0.1",
     "yn": "^2.0.0"
   },
-  "resolutions": {
-    "fstream": ">=1.0.12",
-    "lodash": ">=4.17.19"
-  },
   "optionalDependencies": {
     "ioredis": "^4.14.1",
     "sqlite3": "4.2.0"
