@@ -2,7 +2,7 @@ name: Release
 on:
   push:
     branches:
-      - ya-build
+      - ya-build-test
 jobs:
   build:
     name: Build Project
