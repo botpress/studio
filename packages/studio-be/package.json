@@ -10,9 +10,9 @@
   },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
-    "build": "yarn clean && yarn tsc",
+    "build": "node ../../scripts/write_metadata && yarn tsc --build",
     "clean": "node ./node_modules/rimraf/bin.js ./out",
-    "watch": "yarn tsc --watch"
+    "watch": "yarn tsc --build --watch"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
@@ -32,7 +32,7 @@
     "dotenv": "^9.0.2",
     "errorhandler": "^1.5.1",
     "eventemitter2": "^5.0.1",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "express-rate-limit": "^3.5.1",
     "express-urlrewrite": "^1.2.0",
     "fs-extra": "^9.1.0",
@@ -62,15 +62,11 @@
     "rimraf": "^3.0.2",
     "tar": "^6.1.0",
     "tmp": "^0.2.1",
-    "typescript": "^4.2.4",
+    "typescript": "^4.4.4",
     "verror": "^1.10.0",
     "vm2": "^3.9.3",
     "yargs": "^17.0.1",
     "yn": "^2.0.0"
-  },
-  "resolutions": {
-    "fstream": ">=1.0.12",
-    "lodash": ">=4.17.19"
   },
   "optionalDependencies": {
     "ioredis": "^4.14.1",
@@ -79,7 +75,7 @@
   "devDependencies": {
     "@types/bluebird-global": "^3.5.9",
     "@types/bluebird-retry": "^0.11.4",
-    "@types/express": "^4.16.0",
+    "@types/express": "^4.17.13",
     "@types/fs-extra": "^9.0.12",
     "@types/jest": "^24.9.0",
     "@types/jest-environment-puppeteer": "^4.3.1",

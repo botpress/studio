@@ -5,6 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "useUnknownInCatchVariables": false,
     "allowJs": true,
     "target": "es5",
     "lib": ["es7", "dom"],
