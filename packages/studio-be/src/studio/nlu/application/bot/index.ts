@@ -19,6 +19,9 @@ export interface MountOptions {
   queueTraining: boolean
 }
 
+type BpTrainingError = sdk.NLU.TrainingError
+type BpTrainingStatus = sdk.NLU.TrainingStatus
+
 export class Bot {
   private _botId: string
   private _languages: string[]
@@ -97,7 +100,15 @@ export class Bot {
         return this._handleTrainingUpdate(language, ts)
       })
     } catch (err) {
-      this._logger.attachError(err).error('An error occured during training.')
+      const defaultErrMsg = 'An error occured during training.'
+      this._logger.attachError(err).error(defaultErrMsg)
+
+      const errMsg = err instanceof Error ? err.message : defaultErrMsg
+      const error: BpTrainingError = { type: 'unknown', message: errMsg }
+      const status: BpTrainingStatus = 'errored'
+      const progress = 0
+      const ts: BpTrainingSession = { botId: this._botId, language, status, progress, error }
+      this._webSocket(ts)
     }
   }
 

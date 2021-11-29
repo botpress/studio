@@ -293,11 +293,19 @@ declare module 'botpress/sdk' {
       | 'errored'
       | null
 
+    export type TrainingErrorType = 'zombie-training' | 'unknown'
+    export interface TrainingError {
+      type: TrainingErrorType
+      message: string
+      stackTrace?: string
+    }
+
     export interface TrainingSession {
       key: string
       status: TrainingStatus
       language: string
       progress: number
+      error?: TrainingError
     }
 
     export type EntityType = 'system' | 'pattern' | 'list'

@@ -18,7 +18,7 @@ const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
 const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const { trainSession, dark } = props
 
-  const { status, progress } = trainSession ?? {}
+  const { status, progress, error } = trainSession ?? {}
   const [loading, setLoading] = useState(false)
 
   const [message, setMessage] = useState('')
@@ -37,6 +37,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
       onTrainingProgress(progress ?? 0)
     } else if (status === 'errored') {
       onError()
+      error && window.prompt(error.message) // TODO: replace this by a proper popup
     } else if (status === 'canceled') {
       onCanceling()
     } else if (status === 'needs-training') {
