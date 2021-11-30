@@ -104,7 +104,7 @@ export class Bot {
       this._logger.attachError(err).error(defaultErrMsg)
 
       const errMsg = err instanceof Error ? err.message : defaultErrMsg
-      const error: BpTrainingError = { type: 'unknown', message: errMsg }
+      const error: BpTrainingError = { type: 'pre-condition', message: errMsg }
       const status: BpTrainingStatus = 'errored'
       const progress = 0
       const ts: BpTrainingSession = { botId: this._botId, language, status, progress, error }
