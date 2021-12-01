@@ -19,6 +19,7 @@ export interface BotDefinition {
 export interface TrainingState {
   status: SDKNLU.TrainingStatus
   progress: number
+  error?: SDKNLU.TrainingError
 }
 
 export interface TrainingId {

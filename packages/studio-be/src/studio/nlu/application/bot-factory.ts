@@ -1,4 +1,3 @@
-import { AxiosRequestConfig } from 'axios'
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
 import { Bot } from './bot'
