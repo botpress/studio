@@ -80,37 +80,35 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     return null
   } else {
     return (
-      <React.Fragment>
-        <div className={style.trainStatus}>
-          <span
-            className={cx(
-              dark ? style.trainStatus_message_dark : style.trainStatus_message_light,
-              style.trainStatus_message_spaced
-            )}
-          >
-            {message}
-          </span>
-
-          {status === 'training-pending' && (
-            <div className={style.trainStatus_pending}>
-              <span className={cx(style.trainStatus_pending, style.text)}>{lang.tr('statusBar.trainingPending')}</span>
-              <Spinner size={5} />
-            </div>
+      <div className={style.trainStatus}>
+        <span
+          className={cx(
+            dark ? style.trainStatus_message_dark : style.trainStatus_message_light,
+            style.trainStatus_message_spaced
           )}
-          <AccessControl resource="bot.training" operation="write">
-            {status === 'needs-training' && (
-              <Button minimal className={style.button} onClick={onTrainClicked} disabled={loading}>
-                {lang.tr('statusBar.trainChatbot')}
-              </Button>
-            )}
-            {status === 'training' && (
-              <Button minimal className={cx(style.button, style.danger)} onClick={onCancelClicked} disabled={loading}>
-                {lang.tr('statusBar.cancelTraining')}
-              </Button>
-            )}
-          </AccessControl>
-        </div>
-      </React.Fragment>
+        >
+          {message}
+        </span>
+
+        {status === 'training-pending' && (
+          <div className={style.trainStatus_pending}>
+            <span className={cx(style.trainStatus_pending, style.text)}>{lang.tr('statusBar.trainingPending')}</span>
+            <Spinner size={5} />
+          </div>
+        )}
+        <AccessControl resource="bot.training" operation="write">
+          {status === 'needs-training' && (
+            <Button minimal className={style.button} onClick={onTrainClicked} disabled={loading}>
+              {lang.tr('statusBar.trainChatbot')}
+            </Button>
+          )}
+          {status === 'training' && (
+            <Button minimal className={cx(style.button, style.danger)} onClick={onCancelClicked} disabled={loading}>
+              {lang.tr('statusBar.cancelTraining')}
+            </Button>
+          )}
+        </AccessControl>
+      </div>
     )
   }
 }
