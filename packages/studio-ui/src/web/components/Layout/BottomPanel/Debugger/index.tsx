@@ -9,7 +9,7 @@ import ms from 'ms'
 import nanoid from 'nanoid'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import 'ui-shared/dist/theme.css'
+import '@botpress/ui-shared/dist/theme.css'
 import { setDebuggerEvent } from '~/actions'
 
 import btStyle from '../style.scss'
