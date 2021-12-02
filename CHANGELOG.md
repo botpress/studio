@@ -1,4 +1,4 @@
-## [0.0.43](https://github.com/botpress/studio/compare/v0.0.42...v0.0.43) (2021-12-02)
+## [0.0.44](https://github.com/botpress/studio/compare/v0.0.42...v0.0.44) (2021-12-02)
 
 
 ### Bug Fixes
