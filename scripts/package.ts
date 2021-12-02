@@ -1,4 +1,3 @@
-import 'bluebird-global'
 import { ExecException } from 'child_process'
 import fse from 'fs-extra'
 import path from 'path'

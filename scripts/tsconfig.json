@@ -5,7 +5,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "noImplicitAny": false,
-    "experimentalDecorators": true,
     "target": "es2019",
     "module": "commonjs",
     "moduleResolution": "node",
