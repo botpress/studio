@@ -1,3 +1,38 @@
+## [0.0.43](https://github.com/botpress/studio/compare/v0.0.42...v0.0.43) (2021-12-02)
+
+
+### Bug Fixes
+
+* **debugger:** Voice-Content Type in Emulator ([#163](https://github.com/botpress/studio/issues/163)) ([da4c466](https://github.com/botpress/studio/commit/da4c466a809ebbe722d9863d47f31f9d4474761f))
+* **nlu:** trim utterances on server side ([#175](https://github.com/botpress/studio/issues/175)) ([c4188a3](https://github.com/botpress/studio/commit/c4188a34dfc1c2d2575e9a9c8e978ad503923a45))
+* **qna:** disable new qna creation on IME input ([#164](https://github.com/botpress/studio/issues/164)) ([d748507](https://github.com/botpress/studio/commit/d7485072c42f2ed294967ff98c005901913ba469))
+* **redis:** fix redis only retrying to connect 10 times ([#211](https://github.com/botpress/studio/issues/211)) ([93c294d](https://github.com/botpress/studio/commit/93c294d19a28dc2ed181a3c351c2f4434722ba29))
+* **studio:** fix error when renaming node ([#159](https://github.com/botpress/studio/issues/159)) ([0183dfa](https://github.com/botpress/studio/commit/0183dfaca7e5ea07374e06c0a69e9614a4f19ade))
+* **studio:** fix regression in utterance parsing ([#200](https://github.com/botpress/studio/issues/200)) ([bce7938](https://github.com/botpress/studio/commit/bce79385f6d4e860506b7f00939cb97a092c9ddc))
+* **studio:** fix url when using a different path ([#205](https://github.com/botpress/studio/issues/205)) ([e30b54c](https://github.com/botpress/studio/commit/e30b54c1cbaf0b6914a03a76bf6e146bc136d6e6))
+* **studio:** incorrect transition migration after updating skill ([#179](https://github.com/botpress/studio/issues/179)) ([b30c7e3](https://github.com/botpress/studio/commit/b30c7e3cad221103edbf9fbef439354b57b0b39c))
+* **studio:** more time for logging that user is logged out ([#192](https://github.com/botpress/studio/issues/192)) ([f7c5035](https://github.com/botpress/studio/commit/f7c5035135e9cad6bb130d2d8dcf8a09ff923906))
+* **studio:** no ghost flows when deleting a bot ([#160](https://github.com/botpress/studio/issues/160)) ([60825f3](https://github.com/botpress/studio/commit/60825f3ba764090776fbab84e487a8db1549c8f1))
+* **studio:** nodes created during transition drag will properly open node properties ([#154](https://github.com/botpress/studio/issues/154)) ([5d7f28f](https://github.com/botpress/studio/commit/5d7f28f30078c82a0b87a0fc5312ccc1c26ed5a6))
+* **studio:** prevent using skills in folde rname ([#157](https://github.com/botpress/studio/issues/157)) ([9e89dcf](https://github.com/botpress/studio/commit/9e89dcf6c06f5215e07c6f53623a64718a3b37be))
+* **studio:** warns user about double braces ([#168](https://github.com/botpress/studio/issues/168)) ([371e8ae](https://github.com/botpress/studio/commit/371e8ae17d9c0eaa7d2fec697eed6b17fb634b04))
+* **studio:** Warns user he will be logged out ([#185](https://github.com/botpress/studio/issues/185)) ([323e2b2](https://github.com/botpress/studio/commit/323e2b25e221c9c47b4e0ab2c71001afae628804))
+* **zoom:** added translations ([c833e62](https://github.com/botpress/studio/commit/c833e62e5ab332b7a477ebe2511c107bb8e483e3))
+* **zoom:** apply translations ([ce1e8c7](https://github.com/botpress/studio/commit/ce1e8c7f636c4657ea2dca41b5c6df9410e932f1))
+* **zoom:** more spacing around the zoom buttons ([5bcca17](https://github.com/botpress/studio/commit/5bcca1758f772b636c9d41ac1bfa4ded27144e0b))
+* hardcoded query in context dropdown ([#176](https://github.com/botpress/studio/issues/176)) ([4e8cb8d](https://github.com/botpress/studio/commit/4e8cb8d1e6a7625868e75013eb3907d625f91cb0))
+* subdomain media URL ([0332d21](https://github.com/botpress/studio/commit/0332d2118f157e200d89467c6aeb89f98f482607))
+
+
+### Features
+
+* **bottomPanel:** add common button on code editor ([#162](https://github.com/botpress/studio/issues/162)) ([e49ec77](https://github.com/botpress/studio/commit/e49ec7728596122484fdadc8a34794ad565b094e))
+* **studio:** diagram option to fit the current flow ([df5f64d](https://github.com/botpress/studio/commit/df5f64dd7ef6ba90905960b22554e86fb65ae2b1))
+* **studio:** diagram option to fit the current flow ([cb45414](https://github.com/botpress/studio/commit/cb454141cf339a2db192a05499b7020692a3edf5))
+* **toolbar:** Add CTA button ([#204](https://github.com/botpress/studio/issues/204)) ([f61b9ca](https://github.com/botpress/studio/commit/f61b9caf56af01d8598aace0d475c70d887d2d3c))
+
+
+
 ## [0.0.43](https://github.com/botpress/studio/compare/v0.0.42...v0.0.43) (2021-11-19)
 
 
