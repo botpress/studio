@@ -1,7 +1,7 @@
-require('bluebird-global')
-const path = require('path')
-const { exec } = require('child_process')
-const fse = require('fs-extra')
+import 'bluebird-global'
+import { exec } from 'child_process'
+import fse from 'fs-extra'
+import path from 'path'
 
 const writeMetadata = async () => {
   const metadata = {
@@ -11,13 +11,13 @@ const writeMetadata = async () => {
   }
 
   try {
-    const currentBranch = await Promise.fromCallback(cb => exec('git rev-parse --abbrev-ref HEAD', cb))
+    const currentBranch: string = await Promise.fromCallback(cb => exec('git rev-parse --abbrev-ref HEAD', cb))
     metadata.branch = currentBranch.replace('\n', '')
   } catch (err) {
-    console.error(`Couldn't get active branch`, err)
+    console.error("Couldn't get active branch", err)
   }
 
   await fse.writeJSONSync(path.join(__dirname, '../packages/studio-be/src/metadata.json'), metadata, { spaces: 2 })
 }
 
-writeMetadata()
+void writeMetadata()
