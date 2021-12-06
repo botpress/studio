@@ -16,7 +16,7 @@ export function ContentNotice({ flows, qnaUsage }: { flows: FlowReducer; qnaUsag
   }
   return (
     <Callout className={style.contentNotice} title="Changing Shared Content" intent={Intent.PRIMARY} icon="info-sign">
-      This content is used in {usage.length} places. Changing it will affect all places.
+      <p>This content is used in {usage.length} places. Changing it will affect all places.</p>
     </Callout>
   )
 }

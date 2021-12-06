@@ -1,6 +1,7 @@
 import { ActionBuilderProps, ContentElement, FlowNode } from 'botpress/sdk'
 import { FlowView, NodeView } from 'common/typings'
 import { FlowReducer } from '~/reducers/flows'
+import { ContentElementUsage, ContentUsage } from '~/views/Content'
 
 export { default as ElementPreview } from './ElementPreview'
 export { toastSuccess, toastFailure, toastInfo, Timeout } from './Toaster'
@@ -40,19 +41,6 @@ export const getFlowLabel = (name: string) => {
     return name
   }
 }
-
-/* MOVE THESE TYPES INTO ONE LOCATION */
-interface ContentUsage {
-  type: string
-  id?: string
-  name: string
-  node?: string
-  count: number
-}
-
-type ContentElementUsage = {
-  usage: ContentUsage[]
-} & ContentElement
 
 export const getContentItemUsage = (elementId: string, flows: FlowReducer, qnaUsage: ContentElementUsage[]) => {
   const elementUsage: ContentUsage[] = []

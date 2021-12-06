@@ -271,7 +271,7 @@ interface State {
   qnaUsage: any
 }
 
-type ContentElementUsage = {
+export type ContentElementUsage = {
   usage: ContentUsage[]
 } & ContentElement
 
