@@ -32,7 +32,7 @@ jobs:
 
       - name: debug
         run: |
-          echo 'if this job succeeds, a binary will be available at s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}'
+          echo 'if this job succeeds, a binary will be available at s3://botpress-dev-bins/studio/${{ github.ref_name }}'
 
       - name: Checkout Code
         uses: actions/checkout@master
