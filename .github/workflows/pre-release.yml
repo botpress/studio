@@ -26,13 +26,18 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
-      - name: Extract Informations
-        id: info
-        uses: botpress/gh-actions/extract_info@master
+      - name: Extract branch name on push
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
 
-      - name: debug
-        run: |
-          echo 'if this job succeeds, a binary will be available at s3://botpress-dev-bins/studio/${{ github.ref_name }}'
+      - name: Extract branch name on pull request
+        if: github.event_name == 'pull_request'
+        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+
+      - name: Print branch name
+        run: echo 'The branch name is' $BRANCH_NAME
 
       - name: Checkout Code
         uses: actions/checkout@master
