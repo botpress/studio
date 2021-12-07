@@ -27,7 +27,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Debug
-        run: echo 'if this action succeeds a bin will be available at s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}'
+        run: |
+          echo if this action succeeds a bin will be available at
+          echo s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}
 
       - name: Checkout Code
         uses: actions/checkout@master
