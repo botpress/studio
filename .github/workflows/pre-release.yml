@@ -1,5 +1,24 @@
 name: Pre-Release
-on: pull_request
+on:
+  pull_request:
+    types:
+      [
+        assigned,
+        unassigned,
+        labeled,
+        unlabeled,
+        opened,
+        edited,
+        closed,
+        reopened,
+        synchronize,
+        converted_to_draft,
+        ready_for_review,
+        locked,
+        unlocked,
+        review_requested,
+        review_request,
+      ]
 
 jobs:
   pre_release_bin:
