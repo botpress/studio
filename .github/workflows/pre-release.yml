@@ -1,13 +1,35 @@
 name: Pre-Release
 on:
   pull_request:
-    types: [review_requested]
+    types:
+      [
+        assigned,
+        unassigned,
+        labeled,
+        unlabeled,
+        opened,
+        edited,
+        closed,
+        reopened,
+        synchronize,
+        converted_to_draft,
+        ready_for_review,
+        locked,
+        unlocked,
+        review_requested,
+        review_request,
+      ]
 
 jobs:
   pre_release_bin:
+    if: github.event.pull_request.draft == false
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Debug
+        run: |
+          echo if this action succeeds a bin will be available at
+          echo s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}
       - name: Checkout Code
         uses: actions/checkout@master
 
@@ -24,7 +46,6 @@ jobs:
       - name: Install Tools
         run: |
           pip install awscli
-
       - name: Git Unshallow
         run: git fetch --prune --unshallow
 
@@ -43,10 +64,6 @@ jobs:
       - name: Package Binaries
         run: yarn package
 
-      - name: Extract Informations
-        id: info
-        uses: botpress/gh-actions/extract_info@master
-
       - name: Rename Binary Files
         uses: botpress/gh-actions/rename_binaries@master
 
@@ -55,4 +72,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 sync bin s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
+          aws s3 sync bin s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}
