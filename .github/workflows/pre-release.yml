@@ -1,10 +1,9 @@
 name: Pre-Release
-on:
-  pull_request:
-    types: [review_requested]
+on: [pull_request]
 
 jobs:
   pre_release_bin:
+    if: github.event.pull_request.draft == false
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
