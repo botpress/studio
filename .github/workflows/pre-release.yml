@@ -26,9 +26,14 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Informations
+        id: info
+        uses: botpress/gh-actions/extract_info@master
+
       - name: debug
         run: |
           echo 'if this job succeeds, a binary will be available at s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}'
+
       - name: Checkout Code
         uses: actions/checkout@master
 
@@ -63,10 +68,6 @@ jobs:
 
       - name: Package Binaries
         run: yarn package
-
-      - name: Extract Informations
-        id: info
-        uses: botpress/gh-actions/extract_info@master
 
       - name: Rename Binary Files
         uses: botpress/gh-actions/rename_binaries@master
