@@ -1,5 +1,5 @@
-const fs = require('fs')
-const minimist = require('minimist')
+import fs from 'fs'
+import minimist from 'minimist'
 
 const DEFAULT_INTERNAL_PASSWORD = '$YOUR_INTERNAL_PASSWORD'
 const DEFAULT_BP_PATH = '$YOUR_BP_PATH'
@@ -16,22 +16,19 @@ ROOT_PATH=''
 INTERNAL_PASSWORD=${DEFAULT_INTERNAL_PASSWORD}
 `
 
-const createDefaultEnvFileForDebugging = cb => {
+const createDefaultEnvFileForDebugging = () => {
   const { location } = minimist(process.argv.slice(2))
   if (!location) {
-    return cb(
-      new Error('Creating empty env file for debugging requires the desired file location as 1st positional parameter.')
+    throw new Error(
+      'Creating empty env file for debugging requires the desired file location as 1st positional parameter.'
     )
   }
 
   if (fs.existsSync(location)) {
-    return cb()
+    return
   }
 
   fs.writeFileSync(location, DEFAULT_ENV_VALUE)
-  return cb()
 }
 
-module.exports = {
-  createDefaultEnvFileForDebugging
-}
+createDefaultEnvFileForDebugging()

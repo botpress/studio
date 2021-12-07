@@ -1,6 +1,6 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "description": "Create your virtual assistants",
   "main": "index.js",
   "engines": {
@@ -31,13 +31,12 @@
     "outputPath": "./bin"
   },
   "scripts": {
-    "postinstall": "yarn cmd create:env.debug --location ./.env.debug",
-    "cmd": "yarn run gulp",
-    "build": "yarn cmd build",
-    "package": "yarn cmd package:studio",
-    "watch": "yarn cmd watch:studio",
-    "start": "yarn cmd start:studio",
-    "release": "node ./scripts/utils/release",
+    "build": "yarn workspaces foreach -ptiv run build",
+    "watch": "yarn workspaces foreach -piv run watch",
+    "postinstall": "ts-node --dir scripts create_default_env --location ./.env.debug",
+    "package": "ts-node --dir scripts package",
+    "start": "ts-node --dir scripts start_studio",
+    "release": "ts-node --dir scripts utils/release",
     "prettier": "cross-env prettier --check './packages/**/*.ts'",
     "eslint": "cross-env eslint packages/ --ext .ts,.tsx",
     "test": "cross-env jest -i --detectOpenHandles -c jest.config.js"
@@ -53,24 +52,24 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^31.6.1",
     "fs-extra": "^10.0.0",
-    "gulp": "^4.0.2",
-    "gulp-cli": "^2.3.0",
-    "gulp-file": "^0.4.0",
-    "gulp-rimraf": "^1.0.0",
     "jest": "^27.3.1",
     "minimist": "^1.2.5",
     "pkg": "^4.3.7",
     "prettier": "^1.19.1",
     "semver": "^7.3.5",
     "ts-jest": "^27.0.7",
-    "typescript": "^4.2.4"
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   },
   "workspaces": [
-    "packages/*"
+    "packages/native-extensions",
+    "packages/studio-ui",
+    "packages/studio-be",
+    "packages/ui-shared",
+    "packages/ui-shared-lite"
   ],
   "resolutions": {
     "fstream": ">=1.0.12",
     "lodash": ">=4.17.21"
-  },
-  "dependencies": {}
+  }
 }
