@@ -26,6 +26,9 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: debug
+        run: |
+          echo 'if this job succeeds, a binary will be available at s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}'
       - name: Checkout Code
         uses: actions/checkout@master
 
