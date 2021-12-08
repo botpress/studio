@@ -26,10 +26,17 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Extract Informations
+        id: info
+        uses: botpress/gh-actions/extract_info@master
+        with:
+          branch: ${GITHUB_HEAD_REF}
+
       - name: Debug
         run: |
-          echo if this action succeeds a bin will be available at
-          echo s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}
+          echo if this action succeeds a binary will be available at
+          echo s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
+
       - name: Checkout Code
         uses: actions/checkout@master
 
@@ -65,11 +72,13 @@ jobs:
         run: yarn package
 
       - name: Rename Binary Files
-        uses: botpress/gh-actions/rename_binaries@master
+        uses: botpress/gh-actions/rename_binaries@fl_fix_prerelease
+        with:
+          subname: ${{ steps.info.outputs.branch_sanitized }}
 
       - name: Publish Binaries
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws s3 sync bin s3://botpress-dev-bins/studio/${GITHUB_HEAD_REF}
+          aws s3 sync bin s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
