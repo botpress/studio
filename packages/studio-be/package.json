@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
-    "build": "ts-node  --dir ../../scripts write_metadata && tsc --build",
+    "build": "ts-node --transpile-only ../../scripts/write_metadata.ts && tsc --build && node ./scripts/copy_builtin.js",
     "clean": "rimraf ./out",
     "watch": "tsc --build --watch"
   },
