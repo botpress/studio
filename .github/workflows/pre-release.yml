@@ -26,11 +26,16 @@ jobs:
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Get Branch Name
+        id: branch
+        run: |
+          echo "::set-output name=branch_name::$(echo ${GITHUB_HEAD_REF})"
+
       - name: Extract Informations
         id: info
         uses: botpress/gh-actions/extract_info@master
         with:
-          branch: ${{ env.GITHUB_HEAD_REF }}
+          branch: ${{ steps.branch.outputs.branch_name }}
 
       - name: Debug
         run: |
