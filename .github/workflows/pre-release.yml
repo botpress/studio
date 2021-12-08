@@ -30,7 +30,7 @@ jobs:
         id: info
         uses: botpress/gh-actions/extract_info@master
         with:
-          branch: ${GITHUB_HEAD_REF}
+          branch: ${{ github.ref_head }}
 
       - name: Debug
         run: |
