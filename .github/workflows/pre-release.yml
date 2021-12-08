@@ -35,7 +35,7 @@ jobs:
       - name: Debug
         run: |
           echo if this action succeeds a binary will be available at
-          echo head branch is ${{ env.GITHUB_HEAD_REF }}
+          echo head branch is ${GITHUB_HEAD_REF}
           echo s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
 
       - name: Checkout Code
