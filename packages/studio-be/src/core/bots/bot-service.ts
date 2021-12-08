@@ -63,7 +63,13 @@ const BotCreationSchema = Joi.object().keys({
       id: Joi.string()
     }
   },
-  locked: Joi.bool()
+  locked: Joi.bool(),
+  isCloudBot: Joi.bool().optional(),
+  cloud: Joi.object({
+    oauthUrl: Joi.string().uri(),
+    clientId: Joi.string().allow(''),
+    clientSecret: Joi.string().allow('')
+  }).optional()
 })
 
 const debug = DEBUG('services:bots')
