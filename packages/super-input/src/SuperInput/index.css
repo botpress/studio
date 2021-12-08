@@ -1,0 +1,102 @@
+.bp-editor {
+  position: relative;
+}
+.bp-editor > .cm-editor {
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.bp-editor-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 50;
+  width: 99%;
+  border-radius: 0 0 3px 3px;
+}
+.bp-editor-panel > p {
+  margin: 0;
+  padding: 5px;
+}
+
+.bp-editor-panel.valid {
+  background-color: rgb(180, 255, 164);
+  border: 1.3px solid rgb(51, 139, 43);
+}
+.bp-editor-panel.invalid {
+  background-color: rgb(255, 133, 133);
+  border: 1.3px solid rgb(177, 54, 54);
+}
+
+.bp .cm-options {
+  border-left: 2px solid gray;
+  font-family: monospace;
+}
+
+.cm-options:hover {
+  background-color: #4262ff;
+  color: white;
+}
+
+.cm-options-common {
+  border-left: 3px solid red;
+}
+
+.cm-option-func {
+  border-left: 3px solid yellow;
+}
+/* 
+div.cm-panels-bottom {
+  position: relative;
+}
+
+.cm-eval-panel {
+  padding: 5px 10px;
+  background-color: #d4d4d4;
+  font-family: monospace;
+  z-index: 10;
+  position: absolute;
+  width: -webkit-fill-available;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+.panel-invalid {
+  background-color: #ffa29c;
+}
+.panel-valid {
+  background-color: #a1ffaa;
+}
+div.cm-editor {
+  border: 1px solid black;
+  border-radius: 10px;
+}
+span.cm-completionDetail {
+  float: right;
+  font-size: 0.7rem;
+}
+span.cm-completionLabel {
+  font-size: 0.8rem;
+}
+div.cm-tooltip-autocomplete {
+  border-radius: 5px;
+}
+.cm-tooltip-autocomplete ul li.cm-options[aria-selected="true"] {
+  background: white;
+  color: black;
+  font-weight: bold;
+}
+.cm-tooltip-autocomplete ul li.cm-options {
+  margin: 2px;
+}
+.cm-tooltip-autocomplete ul li:first-child {
+  border-radius: 5px 5px 0 0;
+}
+.cm-tooltip-autocomplete ul li:last-child {
+  border-radius: 0 0 5px 5px;
+}
+span.cm-completionMatchedText {
+  text-decoration: none;
+}
+div.cm-completionInfo.cm-completionInfo-right {
+  top: 0 !important;
+} */
