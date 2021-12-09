@@ -70,18 +70,21 @@ export const ListEntityEditor: React.FC<Props> = props => {
       .some(({ occurrences }) => occurrences.some(({ name, synonyms }) => [name, ...synonyms].includes(newElement)))
 
   const addOccurrence = () => {
-    if (isNewOccurrenceEmpty()) {
+    const trimmed = newOccurrence.trim()
+    if (trimmed.length === 0) {
       return
     }
-    if (!isUniqueInEntity(newOccurrence)) {
+
+    if (!isUniqueInEntity(trimmed)) {
       toast.failure('Occurence duplication within the same entity not allowed')
       return
     }
 
     dispatch({
       type: 'setOccurrences',
-      data: { occurrences: [...state.occurrences, { name: newOccurrence, synonyms: [] }] }
+      data: { occurrences: [...state.occurrences, { name: trimmed, synonyms: [] }] }
     })
+
     setNewOccurrence('')
   }
 
