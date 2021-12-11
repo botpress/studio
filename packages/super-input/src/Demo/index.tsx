@@ -59,7 +59,7 @@ const Demo = () => {
       <Title>SuperInput Inspector</Title>
       <Field>
         <Label>Valid</Label>
-        <SuperInput value={code1} maxHeight="100px" globs={globs} />
+        <SuperInput value={code1} globs={globs} />
       </Field>
       <Field>
         <Label>Invalid</Label>

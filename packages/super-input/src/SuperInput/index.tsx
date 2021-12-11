@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, MutableRefObject } from 'react'
 import { useCodeMirror } from '@uiw/react-codemirror'
 import { defaultHighlightStyle } from '@codemirror/highlight'
 import { completionKeymap } from '@codemirror/autocomplete'
-import { keymap, EditorView } from '@codemirror/view'
+import { placeholder as placeholderExt, keymap, EditorView } from '@codemirror/view'
 import { history, historyKeymap } from '@codemirror/history'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
 import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
@@ -14,8 +14,10 @@ import { IProps } from './types'
 import './index.css'
 
 export default function SuperInput(props: IProps) {
-  let { value, maxHeight, globs, onChange } = props
+  let { value, maxHeight, globs, onChange, placeholder } = props
   if (!globs) globs = {}
+  if (!placeholder) placeholder = 'event.payload !== slots.payload'
+  if (!maxHeight) maxHeight = '100px'
   const editor = useRef() as MutableRefObject<HTMLInputElement>
   const [panel, setPanel] = useState('')
   const { setContainer } = useCodeMirror({
@@ -26,6 +28,7 @@ export default function SuperInput(props: IProps) {
     extensions: [
       EditorView.lineWrapping,
       defaultHighlightStyle.fallback,
+      placeholderExt(placeholder),
       BPLang(),
       oneDarkHighlightStyle,
       bpAutocomplete(globs),
