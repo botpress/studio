@@ -3,6 +3,7 @@ import { ViewUpdate } from '@codemirror/view'
 export interface IProps {
   maxHeight?: string
   value?: string
-  globs: any
+  globs?: any
   onChange?: (newValue: string) => {}
+  placeholder?: string
 }
