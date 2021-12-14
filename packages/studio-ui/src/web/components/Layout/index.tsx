@@ -209,6 +209,7 @@ const Layout: FC<Props> = (props: Props) => {
           <Toolbar
             hasDoc={props.docHints?.length}
             toggleDocs={toggleDocs}
+            toggleGuidedTour={toggleGuidedTour}
             onToggleEmulator={toggleEmulator}
             toggleBottomPanel={props.toggleBottomPanel}
           />
