@@ -25,7 +25,12 @@ interface EntityState {
   occurrences: NLU.EntityDefOccurrence[]
 }
 
-function EntityContentReducer(state: EntityState, action): EntityState {
+interface Action {
+  type: 'setStateFromEntity' | 'setFuzzy' | 'setOccurrences'
+  data: any
+}
+
+function EntityContentReducer(state: EntityState, action: Action): EntityState {
   const { type, data } = action
   if (type === 'setStateFromEntity') {
     const entity: NLU.EntityDefinition = data.entity
@@ -89,15 +94,16 @@ export const ListEntityEditor: React.FC<Props> = props => {
   }
 
   const editOccurrence = (idx: number, occurrence: NLU.EntityDefOccurrence) => {
-    const synonymAdded = () => {
-      const oldOccurence = state.occurrences[idx]
-      return oldOccurence.synonyms.length < occurrence.synonyms.length
-    }
-    if (synonymAdded()) {
-      const newSynonym = _.last(occurrence.synonyms)
-      if (!isUniqueInEntity(newSynonym)) {
+    const oldOccurence = state.occurrences[idx]
+    const synonymAdded = oldOccurence.synonyms.length < occurrence.synonyms.length
+
+    if (synonymAdded) {
+      const newSynonym = occurrence.synonyms.pop()
+      const trimmed = newSynonym.trim()
+      if (!isUniqueInEntity(trimmed)) {
         return toast.failure('Synonym duplication within the same entity not allowed')
       }
+      occurrence.synonyms.push(trimmed)
     }
 
     const occurrences = [...state.occurrences.slice(0, idx), occurrence, ...state.occurrences.slice(idx + 1)]
