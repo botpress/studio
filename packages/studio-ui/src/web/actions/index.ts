@@ -201,7 +201,8 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
   // Create new flows for all skills
   for (const node of skills) {
     let { skillData } = state.flows.flowsByName[node.flow]
-    skillData = { ...skillData, randomId: nanoid(10) }
+    const randomId = nanoid(10)
+    skillData = { ...skillData, randomId }
     const { moduleName } = _.find(state.skills.installed, { id: node.skill })
     const { data } = await axios.post(
       `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
@@ -217,7 +218,10 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
         nodeName: copyName(currentFlowNodeNames, node.name)
       })
     )
-    await createNewFlows(getState())
+    const flows = getState().flows
+    const flowsByName = flows.flowsByName
+    const newFlowKey = Object.keys(flowsByName).find(key => flowsByName[key].skillData?.randomId === randomId)
+    await FlowsAPI.createFlow(flows, newFlowKey)
   }
 
   // Paste non-skills
