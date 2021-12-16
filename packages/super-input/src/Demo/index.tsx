@@ -34,7 +34,7 @@ const Label = styled.h4`
   margin: 0;
 `
 
-const code1 = `{{event.something}} text in between {{event.else}}`
+const code1 = `{{event.state.user.language}} text in between {{ _.add(9, 10) }} else if keywords {{ user.language }}`
 
 const code2 = `{{user.timezone}} is the time zone sir and {{user.language}} is the language!`
 
