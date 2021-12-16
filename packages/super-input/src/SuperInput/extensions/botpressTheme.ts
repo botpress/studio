@@ -55,6 +55,9 @@ const botpressTheme = EditorView.baseTheme({
   },
   'div.cm-tooltip.cm-completionInfo': {
     top: '0 !important'
+  },
+  'div.cm-tooltip-hover': {
+    borderRadius: '4px'
   }
 })
 

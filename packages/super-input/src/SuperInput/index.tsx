@@ -7,7 +7,7 @@ import { history, historyKeymap } from '@codemirror/history'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
 import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 
-import { botpressTheme, bpAutocomplete, BPLang } from './extensions'
+import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, expressDecorator } from './extensions'
 import { evalString } from '../utils/tokenEval'
 import { IProps } from './types'
 
@@ -30,8 +30,10 @@ export default function SuperInput(props: IProps) {
       defaultHighlightStyle.fallback,
       placeholderExt(placeholder),
       BPLang(),
+      hoverInspect(globs),
       oneDarkHighlightStyle,
       bpAutocomplete(globs),
+      // expressDecorator(),
       history(),
       closeBrackets(),
       botpressTheme,
@@ -41,8 +43,8 @@ export default function SuperInput(props: IProps) {
       const { view } = update
       if (update.focusChanged) setPanel(view.hasFocus ? evalString(update.state.doc.sliceString(0), globs) : '')
       else if (update.docChanged) {
-        setPanel(evalString(update.state.doc.sliceString(0), globs))
         if (onChange) onChange(update.state.doc.sliceString(0))
+        setPanel(evalString(update.state.doc.sliceString(0), globs))
       }
     }
   })

@@ -7,7 +7,8 @@ const sandboxProxies = new WeakMap()
 
 // add libs here
 export const libs = {
-  _
+  _,
+  Math
 }
 
 function has(target: any, key: any) {
