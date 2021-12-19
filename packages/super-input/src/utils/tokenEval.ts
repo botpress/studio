@@ -1,9 +1,7 @@
-import eslint from 'eslint-browser'
 import _ from 'lodash'
+import vm from 'vm'
 
 import jsRange from './jsRange'
-
-const sandboxProxies = new WeakMap()
 
 // add libs here
 export const libs = {
@@ -11,40 +9,13 @@ export const libs = {
   Math
 }
 
-function has(target: any, key: any) {
-  return true
-}
-
-function get(target: any, key: any) {
-  if (key === Symbol.unscopables) return undefined
-  return target[key]
-}
+const timeout = 1500 // timeout in ms
 
 function _evalToken(token: string, vars: any = {}) {
-  token = token.replace(/ /g, '').replace(/;/g, '')
-  if ((eslint as any).verify(token).length) return undefined
-  if (!token) return undefined
-  let src = `
-  with (sandbox) { 
-    try {
-      return (${token})
-    } catch {
-      return undefined
-    }
-  }`
   try {
-    // eslint-disable-next-line no-new-func
-    const code = new Function('sandbox', src)
-
-    return (function(sandbox) {
-      if (!sandboxProxies.has(sandbox)) {
-        const sandboxProxy = new Proxy(sandbox, { has, get })
-        sandboxProxies.set(sandbox, sandboxProxy)
-      }
-      return code(sandboxProxies.get(sandbox))
-    })({ ...vars, ...libs })
+    return vm.runInNewContext(token, { ...vars, ...libs }, { timeout })
   } catch {
-    return null
+    return undefined
   }
 }
 
