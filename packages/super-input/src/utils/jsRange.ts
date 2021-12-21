@@ -1,5 +1,5 @@
 const jsRange = (str: string) => {
-  return str.match(/{{((?!}}).)*}}/gm);
-};
+  return str.match(/{{((?!}}).)*}}/gm)
+}
 
-export default jsRange;
+export default jsRange
