@@ -30,15 +30,16 @@
     "outputPath": "./bin"
   },
   "scripts": {
-    "build": "yarn workspaces foreach -ptiv run build",
-    "watch": "yarn workspaces foreach -piv run watch",
+    "build": "yarn workspaces foreach --exclude @botpress/superinput -ptiv run build",
+    "watch": "yarn workspaces foreach --exclude @botpress/superinput -piv run watch",
     "postinstall": "ts-node --dir scripts create_default_env --location ./.env.debug",
     "package": "ts-node --dir scripts package",
     "start": "ts-node --dir scripts start_studio",
     "release": "ts-node --dir scripts utils/release",
     "prettier": "cross-env prettier --check './packages/**/*.ts'",
     "eslint": "cross-env eslint packages/ --ext .ts,.tsx",
-    "test": "cross-env jest -i --detectOpenHandles -c jest.config.js"
+    "test": "cross-env jest -i --detectOpenHandles -c jest.config.js",
+    "superinput": "SKIP_PREFLIGHT_CHECK=true yarn workspace @botpress/superinput start"
   },
   "devDependencies": {
     "@types/node": "^12.18.1",
