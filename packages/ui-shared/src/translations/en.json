@@ -281,5 +281,9 @@
     "thisMonth": "This Month",
     "thisWeek": "This Week",
     "thisYear": "This Year"
+  },
+  "contentNotice": {
+    "title": "Changing Shared Content",
+    "message": "This content is used in {count} places. Changing it will affect all places."
   }
 }

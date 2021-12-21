@@ -36,7 +36,9 @@ jobs:
         run: yarn
 
       - name: Build Project
-        run: yarn build --prod
+        run: yarn build
+        env:
+          NODE_ENV: production
 
       - name: Package Binaries
         run: yarn package

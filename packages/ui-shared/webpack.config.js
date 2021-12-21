@@ -4,8 +4,11 @@ const chalk = require('chalk')
 const webpack = require('webpack')
 const path = require('path')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const isProduction = process.env.NODE_ENV === 'production'
+const FileManagerPlugin = require('filemanager-webpack-plugin')
 const moment = require('moment')
+
+const isProduction = process.env.NODE_ENV === 'production'
+const isWatching = process.argv.indexOf('--watch') !== -1
 
 const config = {
   cache: false,
@@ -31,6 +34,10 @@ const config = {
     '@blueprintjs/core': 'BlueprintJsCore',
     '@blueprintjs/select': 'BlueprintJsSelect'
   },
+  infrastructureLogging: {
+    level: 'error'
+  },
+  plugins: [],
   module: {
     rules: [
       { test: /\.tsx?$/, loader: 'ts-loader', exclude: /node_modules/ },
@@ -69,6 +76,19 @@ const config = {
 
 if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
   config.plugins.push(new BundleAnalyzerPlugin())
+}
+
+// We don't clean the dist folder when watching because all watchers starts at the same time
+if (!isWatching) {
+  config.plugins.push(
+    new FileManagerPlugin({
+      events: {
+        onStart: {
+          delete: ['dist']
+        }
+      }
+    })
+  )
 }
 
 const compiler = webpack(config)

@@ -13,6 +13,7 @@ import withLanguage from '../../Util/withLanguage'
 import CreateOrEditModal from '../CreateOrEditModal'
 
 import style from './style.scss'
+import { WidgetContext } from './WidgetContext'
 
 interface DispatchProps {
   deleteMedia: (formData: any) => Promise<void>
@@ -125,27 +126,31 @@ class ContentPickerWidget extends Component<Props, State> {
     }
 
     return (
-      <ControlGroup fill>
-        <div
-          className={style.clickableInput}
-          onClick={() => (contentItem ? this.editItem() : window.botpress.pickContent({ contentType }, this.onChange))}
-        >
-          <InputGroup
-            placeholder={placeholder}
-            value={textContent}
-            disabled
-            id={inputId || ''}
-            className={style.contentInput}
+      <WidgetContext.Provider value={{ itemId: this.props.itemId }}>
+        <ControlGroup fill>
+          <div
+            className={style.clickableInput}
+            onClick={() =>
+              contentItem ? this.editItem() : window.botpress.pickContent({ contentType }, this.onChange)
+            }
+          >
+            <InputGroup
+              placeholder={placeholder}
+              value={textContent}
+              disabled
+              id={inputId || ''}
+              className={style.contentInput}
+            />
+            {contentItem && <Button icon="edit" className={Classes.FIXED} />}
+          </div>
+          <Button
+            icon="folder-open"
+            onClick={() => window.botpress.pickContent({ contentType }, this.onChange)}
+            className={Classes.FIXED}
           />
-          {contentItem && <Button icon="edit" className={Classes.FIXED} />}
-        </div>
-        <Button
-          icon="folder-open"
-          onClick={() => window.botpress.pickContent({ contentType }, this.onChange)}
-          className={Classes.FIXED}
-        />
-        {this.renderModal()}
-      </ControlGroup>
+          {this.renderModal()}
+        </ControlGroup>
+      </WidgetContext.Provider>
     )
   }
 }

@@ -3,14 +3,15 @@ process.traceDeprecation = true
 const chalk = require('chalk')
 const webpack = require('webpack')
 const path = require('path')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const FileManagerPlugin = require('filemanager-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
-const isProduction = process.env.NODE_ENV === 'production'
 const moment = require('moment')
+
+const isProduction = process.env.NODE_ENV === 'production'
 
 const webConfig = {
   cache: false,
@@ -35,7 +36,7 @@ const webConfig = {
     alias: {
       '~': path.resolve(__dirname, './src/web'),
       common: path.resolve(__dirname, '../studio-be/out/common'),
-      'botpress/shared': 'ui-shared',
+      'botpress/shared': '@botpress/ui-shared',
       'botpress/sdk': path.resolve(__dirname, '../studio-be/src/sdk/botpress.d.ts')
     }
   },
@@ -64,6 +65,9 @@ const webConfig = {
     },
     occurrenceOrder: true
   },
+  infrastructureLogging: {
+    level: 'error'
+  },
   plugins: [
     new HtmlWebpackPlugin({
       inject: true,
@@ -77,21 +81,42 @@ const webConfig = {
         NODE_ENV: isProduction ? JSON.stringify('production') : JSON.stringify('development')
       }
     }),
-    new CopyWebpackPlugin([
-      {
-        from: path.resolve(__dirname, './src/web/img'),
-        to: path.resolve(__dirname, './public/img')
-      },
-      {
-        from: path.resolve(__dirname, './src/web/audio'),
-        to: path.resolve(__dirname, './public/audio')
-      },
-      {
-        from: path.resolve(__dirname, './src/web/external'),
-        to: path.resolve(__dirname, './public/external')
+    new CleanWebpackPlugin(['public']),
+    new FileManagerPlugin({
+      events: {
+        onStart: [
+          {
+            copy: [
+              {
+                source: path.resolve(__dirname, './src/web/img'),
+                destination: path.resolve(__dirname, './public/img')
+              },
+              {
+                source: path.resolve(__dirname, './src/web/audio'),
+                destination: path.resolve(__dirname, './public/audio')
+              },
+              {
+                source: path.resolve(__dirname, './src/web/external'),
+                destination: path.resolve(__dirname, './public/external')
+              }
+            ]
+          }
+        ],
+        onEnd: [
+          {
+            delete: [{ source: path.resolve(__dirname, '../studio-be/out/ui/public'), options: { force: true } }]
+          },
+          {
+            copy: [
+              {
+                source: 'public',
+                destination: path.resolve(__dirname, '../studio-be/out/ui/public')
+              }
+            ]
+          }
+        ]
       }
-    ]),
-    new CleanWebpackPlugin(['public'])
+    })
   ],
 
   module: {

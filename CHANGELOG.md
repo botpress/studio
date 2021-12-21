@@ -1,3 +1,12 @@
+## [0.0.44](https://github.com/botpress/studio/compare/v0.0.42...v0.0.44) (2021-12-02)
+
+
+### Bug Fixes
+
+* **redis:** fix redis only retrying to connect 10 times ([#211](https://github.com/botpress/studio/issues/211)) ([93c294d](https://github.com/botpress/studio/commit/93c294d19a28dc2ed181a3c351c2f4434722ba29))
+
+
+
 ## [0.0.43](https://github.com/botpress/studio/compare/v0.0.42...v0.0.43) (2021-11-19)
 
 
