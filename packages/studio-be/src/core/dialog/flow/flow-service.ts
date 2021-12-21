@@ -93,7 +93,7 @@ export class FlowService {
   private _listenForCacheInvalidation() {
     this.cache.events.on('invalidation', async key => {
       try {
-        const matches = key.match(/^([A-Z0-9-_]+)::data\/bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
+        const matches = key.match(/^([A-Z0-9-_]+)::bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
 
         if (matches && matches.length >= 2) {
           const [key, type, botId, flowName] = matches
@@ -174,6 +174,11 @@ export class ScopedFlowService {
     const expectedSaves = this.expectedSavesCache.get(flowPath)
 
     if (!expectedSaves) {
+      // fix an issue when creating a bot where the .flow.json is written but not the .ui.json because of the locking mechanism
+      if (!(await this.ghost.fileExists(FLOW_DIR, this.toUiPath(flowPath)))) {
+        return
+      }
+
       if (await this.ghost.fileExists(FLOW_DIR, flowPath)) {
         const flow = await this.parseFlow(flowPath)
         await this.localInvalidateFlow(flowPath, flow)
