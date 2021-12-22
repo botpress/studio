@@ -7,11 +7,11 @@ import { history, historyKeymap } from '@codemirror/history'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
 import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 
-import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, expressDecorator } from './extensions'
+import { bpAutocomplete, BPLang, hoverInspect } from './extensions'
 import { evalString } from '../utils/tokenEval'
 import { IProps } from './types'
 
-import './index.css'
+import './index.scss'
 
 export default function SuperInput(props: IProps) {
   let { value, maxHeight, globs, onChange, placeholder } = props
@@ -36,7 +36,6 @@ export default function SuperInput(props: IProps) {
       // expressDecorator(),
       history(),
       closeBrackets(),
-      botpressTheme,
       keymap.of([...closeBracketsKeymap, ...historyKeymap, ...completionKeymap])
     ],
     onUpdate: update => {
@@ -56,10 +55,10 @@ export default function SuperInput(props: IProps) {
   }, [editor, setContainer])
 
   return (
-    <div className="bp-editor" ref={editor}>
+    <div className="bp-editor bp3-form-group bp3-input-group" ref={editor}>
       {panel ? (
         <div
-          className={`bp-editor-panel ${panel === 'INVALID' ? 'invalid' : 'valid'}`}
+          className={`bp-editor-panel bp3-form-helper-text ${panel === 'INVALID' ? 'invalid' : 'valid'}`}
           onMouseDown={e => console.log(e)}
         >
           <p>{panel}</p>

@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 import JSONTree from 'react-json-tree'
-import styled from 'styled-components'
+import './InspectCard.scss'
 
 // const json = {
 //   something: 'thing',
@@ -12,42 +12,25 @@ import styled from 'styled-components'
 // }
 
 const theme = {
-  scheme: 'bright',
-  author: 'chris kempson (http://chriskempson.com)',
-  base00: '#000000',
-  base01: '#303030',
-  base02: '#505050',
-  base03: '#b0b0b0',
-  base04: '#d0d0d0',
-  base05: '#e0e0e0',
-  base06: '#f5f5f5',
-  base07: '#ffffff',
-  base08: '#fb0120',
-  base09: '#fc6d24',
-  base0A: '#fda331',
-  base0B: '#a1c659',
-  base0C: '#76c7b7',
-  base0D: '#6fb3d2',
-  base0E: '#d381c3',
-  base0F: '#be643c'
+  scheme: 'monokai',
+  author: 'wimer hazenberg (http://www.monokai.nl)',
+  base00: '#ffffff', // background
+  base01: '#383830',
+  base02: '#49483e',
+  base03: '#738694', // {}
+  base04: '#a59f85',
+  base05: '#f8f8f2',
+  base06: '#f5f4f1',
+  base07: '#f9f8f5',
+  base08: '#a854a8', // undefined
+  base09: '#d9822b', // number
+  base0A: '#f4bf75',
+  base0B: '#15b371', // string
+  base0C: '#a1efe4',
+  base0D: '#2b95d6', // property
+  base0E: '#ae81ff',
+  base0F: '#cc6633'
 }
-
-const CardContainer = styled.div`
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  border-radius: 4px;
-
-  h6 {
-    margin: 0;
-    padding: 0.3rem 1rem;
-    border-bottom: 1px solid #b0b0b0;
-    font-size: 1rem;
-  }
-  div {
-    margin: 0 5px;
-  }
-`
 
 interface IInspectCardProps {
   title: string
@@ -56,16 +39,14 @@ interface IInspectCardProps {
 
 const InspectCard = (props: IInspectCardProps) => {
   const { title, inspect } = props
-
-  console.log('inspect: ', inspect)
   let dom = document.createElement('div')
   ReactDOM.render(
-    <CardContainer>
-      <h6>{title}</h6>
-      <div>
-        <JSONTree data={inspect} theme={theme} hideRoot={true} />
+    <>
+      <h3 className="bp3-ui-text inspectHeader">{title}</h3>
+      <div className="inspectTree">
+        <JSONTree data={inspect} theme={theme} invertTheme={false} />
       </div>
-    </CardContainer>,
+    </>,
     dom
   )
   return dom
