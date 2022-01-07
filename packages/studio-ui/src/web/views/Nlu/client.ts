@@ -24,6 +24,8 @@ export const makeNLUClient = () => {
     createEntity: (entity: NLU.EntityDefinition): Promise<void> => client.post('/entities/', entity),
     updateEntity: (targetEntityId: string, entity: NLU.EntityDefinition): Promise<void> =>
       client.post(`/entities/${targetEntityId}`, entity),
-    deleteEntity: (entityId: string): Promise<void> => client.post(`/entities/${entityId}/delete`)
+    deleteEntity: (entityId: string): Promise<void> => client.post(`/entities/${entityId}/delete`),
+    startLinting: (lang: string): Promise<string> => client.post(`/lint/${lang}`).then(res => res.data),
+    getLinting: (modelId: string) => client.get(`/lint/${modelId}`).then(res => res.data)
   }
 }

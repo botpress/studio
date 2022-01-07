@@ -163,6 +163,22 @@ export class NLUService {
     void bot.train(language)
   }
 
+  public async lint(botId: string, language: string) {
+    const bot = this._bots[botId]
+    if (!bot) {
+      throw new BotNotMountedError(botId)
+    }
+    return bot.lint(language)
+  }
+
+  public async getLinting(botId: string, modelId: string) {
+    const bot = this._bots[botId]
+    if (!bot) {
+      throw new BotNotMountedError(botId)
+    }
+    return bot.getLinting(modelId)
+  }
+
   private _getWebsocket = () => {
     return async (ts: BpTraining) => {
       const ev: NLUProgressEvent = { type: 'nlu', ...ts }

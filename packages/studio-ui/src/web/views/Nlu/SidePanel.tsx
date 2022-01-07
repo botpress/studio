@@ -1,8 +1,9 @@
 import { NLU } from 'botpress/sdk'
 import { lang, MainLayout, toast, ToolbarButtonProps } from 'botpress/shared'
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
+import { HotKeys } from 'react-hotkeys'
 import { SidePanel } from '~/components/Shared/Interface'
-import { NluItem } from '.'
+import { NluItem, NLUItemType } from '.'
 import { NluClient } from './client'
 import { EntityNameModal } from './entities/EntityNameModal'
 import { EntitySidePanelSection } from './entities/SidePanelSection'
@@ -10,6 +11,29 @@ import IntentNameModal from './intents/NameModal'
 import { IntentSidePanelSection } from './intents/SidePanelSection'
 
 import style from './style.scss'
+
+const TOGGLE_LINTING = 'toggle-linting'
+
+interface Tab {
+  id: string
+  title: string
+}
+
+const INITIAL_TABS: Tab[] = [
+  {
+    id: 'intent',
+    title: lang.tr('nlu.intents.title')
+  },
+  {
+    id: 'entity',
+    title: lang.tr('nlu.entities.title')
+  }
+]
+
+const ISSUE_TAB: Tab = {
+  id: 'linting',
+  title: 'linting'
+}
 
 interface Props {
   contentLang: string
@@ -32,28 +56,23 @@ export const NLUSidePanel: FC<Props> = ({
   reloadIntents,
   reloadEntities
 }) => {
-  const [currentTab, setCurrentTab] = useState('intent')
+  const [currentTab, setCurrentTab] = useState<NLUItemType>('intent')
   const [modalOpen, setModalOpen] = useState(Boolean)
+  const [tabs, setTabs] = useState(INITIAL_TABS)
 
-  const tabs = [
-    {
-      id: 'intent',
-      title: lang.tr('nlu.intents.title')
-    },
-    {
-      id: 'entity',
-      title: lang.tr('nlu.entities.title')
-    }
-  ]
+  useEffect(() => {})
 
-  const buttons: ToolbarButtonProps[] = [
-    {
-      id: 'btn-create',
-      icon: 'plus',
-      onClick: () => setModalOpen(true),
-      tooltip: currentTab === 'intent' ? lang.tr('nlu.intents.new') : lang.tr('nlu.entities.new')
-    }
-  ]
+  const buttons: ToolbarButtonProps[] =
+    currentTab === 'linting'
+      ? []
+      : [
+          {
+            id: 'btn-create',
+            icon: 'plus',
+            onClick: () => setModalOpen(true),
+            tooltip: currentTab === 'intent' ? lang.tr('nlu.intents.new') : lang.tr('nlu.entities.new')
+          }
+        ]
 
   const onEntityCreated = async (entity: NLU.EntityDefinition) => {
     setCurrentItem({ type: 'entity', name: entity.name })
@@ -72,54 +91,68 @@ export const NLUSidePanel: FC<Props> = ({
     }
   }
 
+  const onLintingShortcut = () => {
+    setTabs([...INITIAL_TABS, ISSUE_TAB])
+  }
+
+  const onTabChange = (tab: NLUItemType) => {
+    setCurrentTab(tab)
+    if (tab === 'linting') {
+      setCurrentItem({ name: 'linting', type: 'linting' })
+    }
+  }
+
   return (
     <SidePanel>
-      <MainLayout.Toolbar
-        tabChange={(tab) => setCurrentTab(tab)}
-        tabs={tabs}
-        currentTab={currentTab}
-        buttons={buttons}
-        className={style.headerToolbar}
-      />
-      {currentTab === 'intent' && (
-        <React.Fragment>
-          <IntentSidePanelSection
-            api={api}
-            contentLang={contentLang}
-            intents={intents}
-            currentItem={currentItem}
-            setCurrentItem={setCurrentItem}
-            reloadIntents={reloadIntents}
-          />
-          <IntentNameModal
-            isOpen={modalOpen}
-            toggle={() => setModalOpen(!modalOpen)}
-            onSubmit={onIntentModalSubmit}
-            title={lang.tr('nlu.intents.new')}
-            intents={intents}
-          />
-        </React.Fragment>
-      )}
-      {currentTab === 'entity' && (
-        <React.Fragment>
-          <EntitySidePanelSection
-            api={api}
-            entities={entities}
-            currentItem={currentItem}
-            setCurrentItem={setCurrentItem}
-            reloadEntities={reloadEntities}
-            reloadIntents={reloadIntents}
-          />
-          <EntityNameModal
-            action={'create'}
-            onEntityModified={onEntityCreated}
-            entityIDs={entities.map((e) => e.id)}
-            api={api}
-            isOpen={modalOpen}
-            closeModal={() => setModalOpen(false)}
-          />
-        </React.Fragment>
-      )}
+      <HotKeys keyMap={{ [TOGGLE_LINTING]: 'l i n t' }} handlers={{ [TOGGLE_LINTING]: onLintingShortcut }}>
+        <MainLayout.Toolbar
+          tabChange={tab => setCurrentTab(tab as NLUItemType)}
+          tabs={tabs}
+          currentTab={currentTab}
+          buttons={buttons}
+          className={style.headerToolbar}
+        />
+        {currentTab === 'intent' && (
+          <React.Fragment>
+            <IntentSidePanelSection
+              api={api}
+              contentLang={contentLang}
+              intents={intents}
+              currentItem={currentItem}
+              setCurrentItem={setCurrentItem}
+              reloadIntents={reloadIntents}
+            />
+            <IntentNameModal
+              isOpen={modalOpen}
+              toggle={() => setModalOpen(!modalOpen)}
+              onSubmit={onIntentModalSubmit}
+              title={lang.tr('nlu.intents.new')}
+              intents={intents}
+            />
+          </React.Fragment>
+        )}
+        {currentTab === 'entity' && (
+          <React.Fragment>
+            <EntitySidePanelSection
+              api={api}
+              entities={entities}
+              currentItem={currentItem}
+              setCurrentItem={setCurrentItem}
+              reloadEntities={reloadEntities}
+              reloadIntents={reloadIntents}
+            />
+            <EntityNameModal
+              action={'create'}
+              onEntityModified={onEntityCreated}
+              entityIDs={entities.map(e => e.id)}
+              api={api}
+              isOpen={modalOpen}
+              closeModal={() => setModalOpen(false)}
+            />
+          </React.Fragment>
+        )}
+        {currentTab === 'linting' && <div />}
+      </HotKeys>
     </SidePanel>
   )
 }

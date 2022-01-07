@@ -35,6 +35,11 @@ export class BotState {
     return entry
   }
 
+  public lint = async (language: string): Promise<string> => {
+    const trainset = await this._getTrainSet(language)
+    return this._nluClient.startLinting(this._botId, trainset)
+  }
+
   public cancelTraining = async (language: string) => {
     const trainingState = await this._trainings.get({ botId: this._botId, language })
     if (trainingState) {
@@ -54,6 +59,11 @@ export class BotState {
 
     const modelEntry: ModelEntry = { botId: this._botId, language, modelId, definitionHash }
     return remoteTrainingState && { ...remoteTrainingState, ...modelEntry }
+  }
+
+  // TODO: use actual typings of linting
+  public getLinting = async (modelId: string): Promise<any> => {
+    return this._nluClient.getLinting(this._botId, modelId)
   }
 
   public getModel = async (language: string): Promise<ModelEntry | undefined> => {
@@ -107,6 +117,9 @@ export class BotState {
 
   private _hashTrainSet = (ts: StanTrainInput): string => {
     const content = [...ts.entities, ...ts.intents]
-    return crypto.createHash('sha1').update(JSON.stringify(content)).digest('hex')
+    return crypto
+      .createHash('sha1')
+      .update(JSON.stringify(content))
+      .digest('hex')
   }
 }

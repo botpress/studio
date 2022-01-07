@@ -2,10 +2,12 @@ import {
   Client as StanClient,
   Specifications as StanSpecifications,
   TrainingState as StanTrainingState,
+  TrainingState,
   TrainInput as StanTrainInput
 } from '@botpress/nlu-client'
 import { CloudConfig } from 'botpress/sdk'
 import _ from 'lodash'
+import { mapTrainSet } from './api-mapper'
 import { CloudClient } from './cloud/client'
 
 interface Options {
@@ -75,6 +77,51 @@ export class NLUClient {
     if (!response.success) {
       return this._throwError(response.error)
     }
+  }
+
+  public async startLinting(appId: string, trainInput: StanTrainInput): Promise<string> {
+    const { entities, intents, language } = trainInput
+
+    const contexts = _(intents)
+      .flatMap(i => i.contexts)
+      .uniq()
+      .value()
+
+    // TODO: correctly use the client
+    const { data } = await this._client.axios.post(
+      'lint',
+      {
+        contexts,
+        entities,
+        intents,
+        language
+      },
+      {
+        headers: {
+          'x-app-id': appId
+        }
+      }
+    )
+
+    if (!data.success) {
+      return this._throwError(data.error)
+    }
+
+    return data.modelId
+  }
+
+  public async getLinting(appId: string, modelId: string): Promise<TrainingState | undefined> {
+    // TODO: correctly use the client
+    const { data } = await this._client.axios.get(`lint/${modelId}`, {
+      headers: {
+        'x-app-id': appId
+      }
+    })
+
+    if (!data.success) {
+      return
+    }
+    return data.session
   }
 
   private _throwError(err: string | NLUError): never {
