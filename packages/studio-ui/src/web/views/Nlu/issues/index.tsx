@@ -34,7 +34,7 @@ export const Linting: React.FC<Props> = (props: Props) => {
         <button onClick={startLinting}>Start Linting</button>
         {modelId && !linting && <Spinner className={style.waiting_spinner} size={30} />}
       </div>
-      {linting && <pre className={style.info_body}>{JSON.stringify(linting)}</pre>}
+      {linting && <pre className={style.info_body}>{JSON.stringify(linting, undefined, 2)}</pre>}
     </div>
   )
 }
