@@ -347,7 +347,7 @@
     "trainingPending": "Entraînement en attente",
     "canceling": "Annulation en cours",
     "trainingError": "L'agent ne peut pas être entraîné",
-    "cloudEnabled": "Chatbot activé dans le cloud"
+    "cloudEnabled": "Chatbot configuré pour le cloud"
   },
   "studio": {
     "content": {
