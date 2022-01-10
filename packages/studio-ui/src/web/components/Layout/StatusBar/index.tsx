@@ -1,3 +1,4 @@
+import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
@@ -22,7 +23,7 @@ const StatusBar: FC<Props> = props => {
       <div className={style.item}>
         <span>{window.APP_VERSION}</span>
         <span className={style.botName}>{window.BOT_NAME}</span>
-        {isCloudBot && <span>Cloud Enabled Chatbot</span>}
+        {isCloudBot && <span>{lang.tr('statusBar.cloudEnabled')}</span>}
         <LangSwitcher toggleLangSwitcher={props.toggleLangSwitcher} langSwitcherOpen={props.langSwitcherOpen} />
       </div>
       <div className={style.item}>
