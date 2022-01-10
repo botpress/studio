@@ -323,7 +323,8 @@
     "cancelTraining": "Cancelar entrenamiento",
     "trainingPending": "Entrenamiento pendiente",
     "canceling": "Cancelando",
-    "trainingError": "No se pudo entrenar el Chatbot"
+    "trainingError": "No se pudo entrenar el Chatbot",
+    "cloudEnabled": "Chatbot configurado para la nube"
   },
   "studio": {
     "content": {

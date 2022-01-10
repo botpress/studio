@@ -346,7 +346,8 @@
     "cancelTraining": "Annuler l'entraînement",
     "trainingPending": "Entraînement en attente",
     "canceling": "Annulation en cours",
-    "trainingError": "L'agent ne peut pas être entraîné"
+    "trainingError": "L'agent ne peut pas être entraîné",
+    "cloudEnabled": "Chatbot configuré pour le cloud"
   },
   "studio": {
     "content": {
