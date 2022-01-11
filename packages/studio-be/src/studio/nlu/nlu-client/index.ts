@@ -2,12 +2,11 @@ import {
   Client as StanClient,
   Specifications as StanSpecifications,
   TrainingState as StanTrainingState,
-  TrainingState,
+  LintingState,
   TrainInput as StanTrainInput
 } from '@botpress/nlu-client'
 import { CloudConfig } from 'botpress/sdk'
 import _ from 'lodash'
-import { mapTrainSet } from './api-mapper'
 import { CloudClient } from './cloud/client'
 
 interface Options {
@@ -58,10 +57,15 @@ export class NLUClient {
 
   public async getTraining(appId: string, modelId: string): Promise<StanTrainingState | undefined> {
     const response = await this._client.getTrainingStatus(appId, modelId)
-    if (!response.success) {
+    if (response.success) {
+      return response.session
+    }
+
+    if ((response.error as any).type === 'training_not_found') {
       return
     }
-    return response.session
+
+    return this._throwError(response.error)
   }
 
   public async listModels(appId: string): Promise<string[]> {
@@ -87,41 +91,31 @@ export class NLUClient {
       .uniq()
       .value()
 
-    // TODO: correctly use the client
-    const { data } = await this._client.axios.post(
-      'lint',
-      {
-        contexts,
-        entities,
-        intents,
-        language
-      },
-      {
-        headers: {
-          'x-app-id': appId
-        }
-      }
-    )
-
-    if (!data.success) {
-      return this._throwError(data.error)
-    }
-
-    return data.modelId
-  }
-
-  public async getLinting(appId: string, modelId: string): Promise<TrainingState | undefined> {
-    // TODO: correctly use the client
-    const { data } = await this._client.axios.get(`lint/${modelId}`, {
-      headers: {
-        'x-app-id': appId
-      }
+    const response = await this._client.startLinting(appId, {
+      contexts,
+      entities,
+      intents,
+      language
     })
 
-    if (!data.success) {
+    if (!response.success) {
+      return this._throwError(response.error)
+    }
+
+    return response.modelId
+  }
+
+  public async getLinting(appId: string, modelId: string): Promise<LintingState | undefined> {
+    const response = await this._client.getLintingStatus(appId, modelId)
+    if (response.success) {
+      return response.session
+    }
+
+    if (response.error.type === 'linting_not_found') {
       return
     }
-    return data.session
+
+    return this._throwError(response.error)
   }
 
   private _throwError(err: string | NLUError): never {

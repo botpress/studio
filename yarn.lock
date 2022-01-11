@@ -1371,14 +1371,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@botpress/nlu-client@npm:1.0.0-rc.2":
-  version: 1.0.0-rc.2
-  resolution: "@botpress/nlu-client@npm:1.0.0-rc.2"
+"@botpress/nlu-client@npm:1.0.2-rc.1":
+  version: 1.0.2-rc.1
+  resolution: "@botpress/nlu-client@npm:1.0.2-rc.1"
   dependencies:
     axios: ^0.21.1
     joi: ^17.2.2
     lodash: ^4.17.19
-  checksum: 7db1b910f79f65670f97f0ff3dc8dfdc73fd60a36cef46e72f4983b30ba4f22ec356cdd5a0433e41625af0e48d76d63aca0f9387a0c42452ebe39894c35bcbbd
+  checksum: 2a585bfa929d06f59829d4d1ea2a0e6aeab06935822f8aba48cac330206ce255c59751c68f6754b2a7058f82270b193858cec9903f8a35ca3db4b12e83087d4d
   languageName: node
   linkType: hard
 
@@ -1388,7 +1388,7 @@ __metadata:
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^9.0.9
     "@botpress/native-extensions": "*"
-    "@botpress/nlu-client": 1.0.0-rc.2
+    "@botpress/nlu-client": 1.0.2-rc.1
     "@types/bluebird-global": ^3.5.13
     "@types/bluebird-retry": ^0.11.5
     "@types/express": ^4.17.13
