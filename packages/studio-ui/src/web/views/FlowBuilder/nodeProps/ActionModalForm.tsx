@@ -99,19 +99,19 @@ class ActionModalForm extends Component<Props, State> {
 
   prepareActions() {
     this.setState({
-      avActions: (this.props.actions || [])
-        // hide module actions on cloud-enabled bots
-        .filter(action =>
-          !this.props.isCloudBot ? true : action.name.indexOf('builtin') === 0 || action.name.indexOf('/') === -1
-        )
-        .map(x => {
-          return {
-            label: x.name,
-            value: x.name,
-            metadata: { ...x }
-          }
-        })
+      avActions: (this.props.actions || []).filter(this.isCloudSafeAction).map(x => {
+        return {
+          label: x.name,
+          value: x.name,
+          metadata: { ...x }
+        }
+      })
     })
+  }
+
+  // Only allow builtin actions and internal actions on cloud-enabled bots
+  isCloudSafeAction = (action: LocalActionDefinition) => {
+    return !this.props.isCloudBot || action.name.indexOf('builtin') === 0 || action.name.indexOf('/') === -1
   }
 
   onChangeType = (type: ActionType) => () => {
