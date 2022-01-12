@@ -294,9 +294,8 @@ export class ScopedFlowService {
   }
 
   async insertFlow(flow: FlowView, userEmail: string) {
-    const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
-    const fileToCreate = flowFiles.find(f => f === flow.name)
-    if (fileToCreate) {
+    const isFlowNameValid = await this.isFlowNameValid(flow.name)
+    if (!isFlowNameValid) {
       throw new Error(`Can not create an already existent flow : ${flow.name}`)
     }
 
@@ -380,6 +379,10 @@ export class ScopedFlowService {
     if (!fileToRename) {
       throw new Error(`Can not rename a flow that does not exist: ${previousName}`)
     }
+    const isFlowNameValid = await this.isFlowNameValid(newName)
+    if (!isFlowNameValid) {
+      throw new Error(`New flow name ${newName} is already in use`)
+    }
 
     // TODO: remove this when we improve the cache
     this.invalidateFlow(previousName, undefined, newName)
@@ -411,6 +414,11 @@ export class ScopedFlowService {
       newName,
       userEmail
     })
+  }
+
+  private isFlowNameValid = async (name: string): Promise<Boolean> => {
+    const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
+    return flowFiles.findIndex(f => f.toLowerCase() === name.toLowerCase()) !== -1
   }
 
   private notifyChanges = async (modification: FlowModification) => {
