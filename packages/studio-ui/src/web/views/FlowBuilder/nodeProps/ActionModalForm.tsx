@@ -99,13 +99,18 @@ class ActionModalForm extends Component<Props, State> {
 
   prepareActions() {
     this.setState({
-      avActions: (this.props.actions || []).map(x => {
-        return {
-          label: x.name,
-          value: x.name,
-          metadata: { ...x }
-        }
-      })
+      avActions: (this.props.actions || [])
+        // hide module actions on cloud-enabled bots
+        .filter(action =>
+          !this.props.isCloudBot ? true : action.name.indexOf('builtin') === 0 || action.name.indexOf('/') === -1
+        )
+        .map(x => {
+          return {
+            label: x.name,
+            value: x.name,
+            metadata: { ...x }
+          }
+        })
     })
   }
 
@@ -298,7 +303,8 @@ class ActionModalForm extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  actions: state.skills.actions?.filter(a => a.legacy)
+  actions: state.skills.actions?.filter(a => a.legacy),
+  isCloudBot: Boolean(state.bot?.cloud?.clientId)
 })
 
 export default connect(mapStateToProps, undefined)(ActionModalForm)
