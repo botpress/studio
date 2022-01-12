@@ -62,8 +62,6 @@ const configItem = {
 }
 
 const Sidebar: FC<Props> = props => {
-  const isCloudBot = Boolean(props.botInfo?.cloud?.clientId)
-
   const renderModuleItem = module => {
     const rule = { res: `module.${module.name}`, op: 'write' }
     const path = `/modules/${module.name}`
@@ -119,7 +117,7 @@ const Sidebar: FC<Props> = props => {
         {window.IS_BOT_MOUNTED ? (
           <Fragment>
             {BASIC_MENU_ITEMS.map(renderBasicItem)}
-            {!isCloudBot && props.modules.filter(m => !m.noInterface).map(renderModuleItem)}
+            {!props.isCloudBot && props.modules.filter(m => !m.noInterface).map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         ) : (
@@ -135,8 +133,8 @@ const Sidebar: FC<Props> = props => {
 
 const mapStateToProps = (state: RootReducer) => ({
   viewMode: state.ui.viewMode,
-  botInfo: state.bot,
-  modules: state.modules
+  modules: state.modules,
+  isCloudBot: Boolean(state.bot?.cloud?.clientId)
 })
 
 export default withRouter(connect(mapStateToProps)(Sidebar))
