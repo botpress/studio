@@ -895,6 +895,7 @@ declare module 'botpress/sdk' {
       [lang: string]: string
     }
 
+    isCloudBot?: boolean
     cloud?: CloudConfig
   }
 
