@@ -71,6 +71,5 @@
   "resolutions": {
     "fstream": ">=1.0.12",
     "lodash": ">=4.17.21"
-  },
-  "packageManager": "yarn@3.1.1"
+  }
 }
