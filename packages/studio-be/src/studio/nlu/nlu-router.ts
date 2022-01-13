@@ -23,15 +23,6 @@ export class NLURouter extends CustomStudioRouter {
 
   setupRoutes() {
     this.router.get(
-      '/languages',
-      this.needPermissions('read', 'bot.content'),
-      this.asyncMiddleware(async (req, res) => {
-        const languages = await this.nluService.getLanguages()
-        res.send(languages)
-      })
-    )
-
-    this.router.get(
       '/intents',
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {

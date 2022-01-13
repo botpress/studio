@@ -436,7 +436,8 @@
     "cancelTraining": "Annuler l'entraînement",
     "trainingPending": "Entraînement en attente",
     "canceling": "Annulation en cours",
-    "trainingError": "L'agent ne peut pas être entraîné"
+    "trainingError": "L'agent ne peut pas être entraîné",
+    "cloudEnabled": "Chatbot configuré pour le cloud"
   },
   "studio": {
     "content": {
@@ -485,6 +486,11 @@
       "contentTypeWarning": "Veuillez noter que ce type de contenu n'est pris en charge qu'avec {channels}"
     },
     "flow": {
+      "invalidName": "Nom invalide",
+      "invalidCharacters": "Le nom contient des caractères réservés ou invalides.",
+      "zoomIn": "Agrandir",
+      "zoomOut": "Rapetisser",
+      "zoomToFit": "Ajuster à la taille de l'écran",
       "flowProperties": "Propriétés du flow",
       "addNode": "Ajouter une node",
       "addToLibrary": "Ajouter dans la librairie",
@@ -541,6 +547,8 @@
         "add": "ajouter",
         "addAction": "Ajouter une nouvelle action",
         "cantSeeActions": "Vous ne voyez pas votre action?",
+        "nameAlreadyExists": "Impossible de renommer le node (Ce nom existe déjà)",
+        "emptyName": "Le nom du node ne peut être vide",
         "chatbotExecutes": "L'assistant virtuel exécute",
         "chatbotSays": "L'assistant virtuel dit",
         "triggeredBy": "Le workflow est is déclenché par",

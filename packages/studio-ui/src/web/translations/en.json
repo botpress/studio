@@ -458,7 +458,8 @@
     "cancelTraining": "Cancel Training",
     "trainingPending": "Training Pending",
     "canceling": "Canceling",
-    "trainingError": "Cannot train Chatbot"
+    "trainingError": "Cannot train Chatbot",
+    "cloudEnabled": "Cloud Enabled Chatbot"
   },
   "studio": {
     "content": {
@@ -505,9 +506,15 @@
         "contentUsage": "Content Usage",
         "node": "Node"
       },
-      "contentTypeWarning": "Please note that this content-type is only supported in {channels}"
+      "contentTypeWarning": "Please note that this content-type is only supported in {channels}",
+      "tripleBracesWarning": "To add unescaped / raw text here, use {{{...}}} instead of {{...}}"
     },
     "flow": {
+      "invalidName": "Invalid name",
+      "invalidCharacters": "The name contains reserved or invalid characters.",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "zoomToFit": "Fit to screen",
       "flowProperties": "Flow properties",
       "addNode": "Add Node",
       "addToLibrary": "Add to library",
@@ -564,6 +571,8 @@
         "add": "add",
         "addAction": "Add new action",
         "cantSeeActions": "Can't see your action?",
+        "nameAlreadyExists": "Can't rename node (this name already exists)",
+        "emptyName": "Node name cannot be empty",
         "confirmOverwriteParameters": "Do you want to overwrite existing parameters?",
         "contentPaste": "content_paste",
         "couldNotRetrieveActionServer": "Could not retrieve action servers",

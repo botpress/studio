@@ -125,9 +125,9 @@ export class NLUService {
   }
 
   public mapTrainSession = (ts: TrainingSession): NLU.TrainingSession => {
-    const { botId, language, progress, status } = ts
+    const { botId, language, progress, status, error } = ts
     const key = `training:${botId}:${language}`
-    return { key, language, status, progress }
+    return { key, language, status, progress, error }
   }
 
   onTopicChanged = async ({ botId, oldName, newName }: { botId: string; oldName?: string; newName?: string }) => {

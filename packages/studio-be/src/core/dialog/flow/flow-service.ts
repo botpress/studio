@@ -74,6 +74,7 @@ export class FlowService {
   ) {
     this._listenForCacheInvalidation()
     this.botService.flowService = this
+    this.botService.listenForBotUnmount(this.handleUnmount.bind(this))
   }
 
   @postConstruct()
@@ -83,8 +84,12 @@ export class FlowService {
     this.invalidateFlow = <any>await this.jobService.broadcast<void>(this._localInvalidateFlow.bind(this))
   }
 
+  private async handleUnmount(botId: string) {
+    delete this.scopes[botId]
+  }
+
   private _localInvalidateFlow(botId: string, key: string, flow?: FlowView, newKey?: string) {
-    this.forBot(botId).localInvalidateFlow(key, flow, newKey)
+    return this.forBot(botId).localInvalidateFlow(key, flow, newKey)
   }
 
   private _listenForCacheInvalidation() {
@@ -144,7 +149,7 @@ export class ScopedFlowService {
     this.expectedSavesCache = new LRUCache({ max: 100, maxAge: ms('20s') })
   }
 
-  public localInvalidateFlow(key: string, flow?: FlowView, newKey?: string) {
+  public async localInvalidateFlow(key: string, flow?: FlowView, newKey?: string) {
     if (!this.cache.values().length) {
       return
     }
@@ -165,9 +170,9 @@ export class ScopedFlowService {
     if (!expectedSaves) {
       if (await this.ghost.fileExists(FLOW_DIR, flowPath)) {
         const flow = await this.parseFlow(flowPath)
-        this.localInvalidateFlow(flowPath, flow)
+        await this.localInvalidateFlow(flowPath, flow)
       } else {
-        this.localInvalidateFlow(flowPath, undefined)
+        await this.localInvalidateFlow(flowPath, undefined)
       }
     } else {
       if (!isFromFile) {

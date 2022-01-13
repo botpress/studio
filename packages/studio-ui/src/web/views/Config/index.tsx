@@ -150,7 +150,7 @@ class ConfigView extends Component<Props, State> {
   }
 
   async fetchLanguages(botId: string): Promise<SelectItem[]> {
-    const languagePath = `studio/${botId}/nlu/languages`
+    const languagePath = `studio/${botId}/config/nlu/languages`
     const { data: languages } = await axios.get(languagePath, axiosConfig)
     return (languages as string[]).map(language => ({
       label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),

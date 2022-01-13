@@ -413,7 +413,8 @@
     "cancelTraining": "Cancelar entrenamiento",
     "trainingPending": "Entrenamiento pendiente",
     "canceling": "Cancelando",
-    "trainingError": "No se pudo entrenar el Chatbot"
+    "trainingError": "No se pudo entrenar el Chatbot",
+    "cloudEnabled": "Chatbot configurado para la nube"
   },
   "studio": {
     "content": {
@@ -463,6 +464,9 @@
       "contentTypeWarning": "Tenga en cuenta que este tipo de contenido solo es compatible con {channels}"
     },
     "flow": {
+      "zoomIn": "Agrandar",
+      "zoomOut": "Encogerse",
+      "zoomToFit": "Ajustar a la pantalla",
       "flowProperties": "Propiedades de flujo",
       "addNode": "Añadir nodo",
       "addToLibrary": "Añadir a la biblioteca",
@@ -519,6 +523,8 @@
         "add": "Añadir",
         "addAction": "Añadir nueva acción",
         "cantSeeActions": "No puedes ver tu acción?",
+        "nameAlreadyExists": "No puedo cambiar el nodo (Nombre ya existe)",
+        "emptyName": "Nodo nombre no puede estar vacío",
         "confirmOverwriteParameters": "¿Desea sobrescribir los parámetros existentes?",
         "contentPaste": "content_paste",
         "couldNotRetrieveActionServer": "No se pudieron recuperar servidores de acción",

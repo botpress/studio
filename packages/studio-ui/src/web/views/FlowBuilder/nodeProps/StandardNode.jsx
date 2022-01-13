@@ -1,4 +1,4 @@
-import { lang } from 'botpress/shared'
+import { lang, toast } from 'botpress/shared'
 import React, { Component, Fragment } from 'react'
 
 import { Tabs, Tab, Badge, Panel } from 'react-bootstrap'
@@ -11,13 +11,21 @@ import TransitionSection from './TransitionSection'
 const style = require('./style.scss')
 
 export default class StandardNodePropertiesPanel extends Component {
-  renameNode = text => {
-    if (text) {
-      const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
-      if (!alreadyExists) {
-        this.props.updateNode({ name: text })
-      }
+  onChange = text => {
+    if (!text) {
+      return toast.failure(lang.tr('studio.flow.node.emptyName'))
     }
+
+    if (text === this.props.node.name) {
+      return this.props.node
+    }
+
+    const alreadyExists = this.props.flow.nodes.find(x => x.name === text)
+    if (alreadyExists) {
+      return toast.failure(lang.tr('studio.flow.node.nameAlreadyExists'))
+    }
+
+    this.props.updateNode({ name: text })
   }
 
   transformText(text) {
@@ -38,7 +46,7 @@ export default class StandardNodePropertiesPanel extends Component {
             readOnly={readOnly}
             value={node.name}
             className={style.name}
-            onChanged={this.renameNode}
+            onChanged={this.onChange}
             transform={this.transformText}
           />
         </Panel>
