@@ -418,7 +418,7 @@ export class ScopedFlowService {
 
   private isFlowNameValid = async (name: string): Promise<Boolean> => {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
-    return flowFiles.findIndex(f => f.toLowerCase() === name.toLowerCase()) !== -1
+    return flowFiles.findIndex(f => f.toLowerCase() === name.toLowerCase()) === -1
   }
 
   private notifyChanges = async (modification: FlowModification) => {
