@@ -30,7 +30,7 @@ jobs:
 
       - name: Get Release Details
         id: release_details
-        uses: botpress/gh-actions/get_release_details@master
+        uses: botpress/gh-actions/get_release_details@v1
 
       - name: Fetch Node Packages
         run: yarn
@@ -45,10 +45,10 @@ jobs:
 
       - name: Extract Informations
         id: info
-        uses: botpress/gh-actions/extract_info@master
+        uses: botpress/gh-actions/extract_info@v1
 
       - name: Rename Binary Files
-        uses: botpress/gh-actions/rename_binaries@master
+        uses: botpress/gh-actions/rename_binaries@v1
 
       - name: Publish Binaries
         env:
