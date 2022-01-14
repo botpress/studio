@@ -1,3 +1,12 @@
+## [0.0.46](https://github.com/botpress/studio/compare/v0.0.45...v0.0.46) (2022-01-14)
+
+
+### Bug Fixes
+
+* **flow:** reverse flow name condition ([a613812](https://github.com/botpress/studio/commit/a613812fca07b044d6710f3e41bd86caddcb4b53))
+
+
+
 ## [0.0.45](https://github.com/botpress/studio/compare/v0.0.44...v0.0.45) (2022-01-14)
 
 
