@@ -6,6 +6,8 @@ import SuperInput from '../SuperInput'
 const Wrapper = styled.div`
   display: grid;
   gap: 2rem;
+  width: 100%;
+  max-width: 700px;
 
   h1,
   h2 {

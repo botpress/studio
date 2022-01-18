@@ -1,117 +1,47 @@
 import ReactDOM from 'react-dom'
-import { useCallback } from 'react'
-import styled from 'styled-components'
 import { InfoCardComponent } from './types'
-
-const CardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  hr {
-    border-top: 1.5px solid #d6d6d6;
-    margin: 0;
-  }
-`
-
-const Content = styled.div`
-  padding: 3px 6px;
-`
-
-const Header = styled(Content)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  h3 {
-    font-size: 1.1rem;
-    margin: auto 0;
-  }
-
-  h6 {
-    font-size: 0.65rem;
-    color: #ac0000ff;
-    margin: auto 0 auto 25px;
-  }
-`
-
-const Docs = styled(Content)`
-  p {
-    font-size: 0.8rem;
-  }
-`
-
-const Foot = styled(Content)`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`
-
-const Evals = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  maxwidth: 35px;
-
-  h6 {
-    margin: auto 0;
-    font-size: 0.75rem;
-  }
-
-  div {
-    font-size: 1em;
-    font-weight: bold;
-    color: rgb(83, 109, 255);
-    margin: 2px 4px;
-    background-color: #dddddd;
-    padding: 4px 8px;
-    border-radius: 4px;
-    width: fit-content;
-  }
-`
-
-const LinkBtn = styled.div`
-  background-color: #bcdeff;
-  border-radius: 5px;
-  margin: auto 0;
-  padding: 3.5px 6px;
-  font-size: 1.5rem;
-  cursor: pointer;
-`
+import { Icon, IconSize } from '@blueprintjs/core'
+import './InfoCard.scss'
 
 const InfoCard: InfoCardComponent = ({ key, link, docs, type, evals }) => {
-  const goToLink = (link: string) => {
-    window.open(link, '_blank')
-  }
-
   return () => {
     let dom = document.createElement('div')
+    const evaluatesTo = evalsToStr(evals)
     ReactDOM.render(
-      <CardContainer>
-        <Header>
-          <h3>{key}</h3>
-          <h6>{type}</h6>
-        </Header>
-        <hr />
-        {docs ? (
-          <Docs>
-            <p>{docs}</p>
-          </Docs>
-        ) : null}
-        <Foot>
-          <Evals>
-            {evals ? (
-              <>
-                <h6>Evaluates to: </h6>
-                <div>{evals}</div>
-              </>
-            ) : null}
-          </Evals>
-          {link ? <LinkBtn onMouseDown={() => goToLink(link)}>🔗</LinkBtn> : null}
-        </Foot>
-      </CardContainer>,
+      <div className="infoCard-container">
+        <header>
+          <h5 className="bp3-heading">{key}</h5>
+          {link && (
+            <a className="infoCard-docsLink" href={link} target="_blank" rel="noreferrer">
+              <Icon icon="link" iconSize={IconSize.STANDARD} />
+            </a>
+          )}
+        </header>
+        {type && <span className="bp3-monospace-text bp3-text-small infoCard-type">{type}</span>}
+        {docs && <p className="infoCard-docs bp3-text-small bp3-running-text">{docs}</p>}
+        {evaluatesTo && (
+          <div className="infoCard-evals">
+            <strong className="bp3-text-small">Evaluates to: </strong>
+            <span className="bp3-tag bp3-minimal">{evaluatesTo}</span>
+          </div>
+        )}
+      </div>,
       dom
     )
     return dom
   }
+}
+
+/** Return a string for what selection evaluates to */
+function evalsToStr(x: unknown): string {
+  // hide Evaluates To for objects and funtions
+  if (['object', 'function'].includes(typeof x)) return ''
+
+  if (typeof x === 'boolean') return x ? 'true' : 'false'
+  if (typeof x === 'number') return x.toString()
+  if (x === null) return 'null'
+  if (x === undefined) return 'undefined'
+  return x as string
 }
 
 export default InfoCard

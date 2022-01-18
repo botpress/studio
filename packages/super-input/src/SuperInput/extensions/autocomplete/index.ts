@@ -51,7 +51,7 @@ const makeCompletionFrom = (from: number, glob: any = {}, docTree: DocNode, appl
           type,
           link: docNode?.model.link || null,
           docs: docNode?.model.docs || null,
-          evals: typeof glob[key] === 'object' ? null : glob[key]
+          evals: glob[key]
         }),
         apply: apply ? apply(key) : key
       })
@@ -79,7 +79,7 @@ const globsCompletions = (globs: any) => {
         .replace(']', '')
         .split(/\.|\?\./)
 
-      const from = /[\.\[]/.test(nodeBefore.name) ? nodeBefore.to : nodeBefore.from
+      const from = /[.[]/.test(nodeBefore.name) ? nodeBefore.to : nodeBefore.from
       const varResult = varPath.reduce((accu: any, varStr: string) => (accu = accu[varStr] || {}), globs)
       const cutDocTree = varPath.reduce((accu: any, el: any) => {
         return (

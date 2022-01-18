@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, MutableRefObject } from 'react'
 import { useCodeMirror } from '@uiw/react-codemirror'
-import { defaultHighlightStyle } from '@codemirror/highlight'
+import { classHighlightStyle } from '@codemirror/highlight'
 import { completionKeymap } from '@codemirror/autocomplete'
 import { placeholder as placeholderExt, keymap, EditorView } from '@codemirror/view'
 import { history, historyKeymap } from '@codemirror/history'
@@ -27,7 +27,7 @@ export default function SuperInput(props: IProps) {
     basicSetup: false,
     extensions: [
       EditorView.lineWrapping,
-      defaultHighlightStyle.fallback,
+      classHighlightStyle,
       placeholderExt(placeholder),
       BPLang(),
       hoverInspect(globs),

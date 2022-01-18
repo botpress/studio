@@ -1,5 +1,5 @@
 @import '~@blueprintjs/core/lib/scss/variables';
-@import '../../../ui-shared/src/theme/common/colors';
+@import './colors.scss';
 
 .bp-editor {
   font-family: inherit;
@@ -15,16 +15,22 @@
     background-color: rgba(255, 255, 255, 0.75);
   }
 
-  .ͼq {
-    color: $blue3;
+  /* CodeMirror Syntax Highlight */
+  .cmt-variableName,
+  .cmt-operator {
+    color: $ocean;
   }
 
-  .ͼ13 {
-    color: $green4;
+  .cmt-propertyName {
+    color: $success;
   }
 
-  .ͼu {
-    color: $orange3;
+  .cmt-string {
+    color: $lighthouse;
+  }
+
+  .cmt-number {
+    color: $lighthouse;
   }
 
   .ͼ1 .cm-scroller {
@@ -70,7 +76,7 @@
 
   .ͼ1 .cm-tooltip-autocomplete > ul {
     font-family: inherit;
-    padding: 5px 0;
+    padding: 5px;
   }
 
   .ͼ1 .cm-tooltip-autocomplete > ul > li {
@@ -83,7 +89,16 @@
     }
   }
 
-  // .cm-completionLabel {}
+  .ͼ1 .cm-tooltip.cm-completionInfo {
+    max-width: 250px;
+    min-width: 250px;
+  }
+
+  .cm-options {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
 
   .cm-completionDetail {
     font-size: 12px;
@@ -92,8 +107,8 @@
   }
 
   .cm-tooltip.cm-completionInfo {
-    margin-top: -1px;
     top: 0 !important;
+    padding: 5px;
 
     * {
       margin: 0;
@@ -104,7 +119,12 @@
     transform: scale(1);
     border-radius: 3px;
     background: #ffffff;
-    padding: 0 5px;
+    padding: 0;
+    border: 0;
+  }
+
+  .cm-tooltip-section {
+    padding: 5px;
   }
 
   .cm-completionInfo-right {
@@ -133,9 +153,9 @@
   }
 
   &.valid {
-    background: rgba($green5, 0.25);
+    background: rgba($success, 0.25);
     color: $green1;
-    border: 1px solid $green5;
+    border: 1px solid $success;
   }
 
   &.invalid {

@@ -27,7 +27,7 @@ const theme = {
   base0A: '#f4bf75',
   base0B: '#15b371', // string
   base0C: '#a1efe4',
-  base0D: '#2b95d6', // property
+  base0D: '#3276ea', // property
   base0E: '#ae81ff',
   base0F: '#cc6633'
 }
