@@ -3,10 +3,10 @@ import styled from 'styled-components'
 import Demo from './Demo'
 
 const AppContainer = styled.div`
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  padding: 1rem;
 `
 
 const App = () => {

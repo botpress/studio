@@ -2596,6 +2596,8 @@ __metadata:
     vm-browserify: ^1.1.2
     vm2: ^3.9.5
     web-vitals: ^1.0.1
+  peerDependencies:
+    "@blueprintjs/core": "*"
   languageName: unknown
   linkType: soft
 
