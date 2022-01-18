@@ -140,6 +140,7 @@
   position: absolute;
   top: 100%;
   width: 100%;
+  z-index: 1;
   left: 0;
   height: auto;
   padding: 0.5rem;
@@ -153,13 +154,13 @@
   }
 
   &.valid {
-    background: rgba($success, 0.25);
+    background: mix($success, white, 20%);
     color: $green1;
     border: 1px solid $success;
   }
 
   &.invalid {
-    background: rgba($red5, 0.25);
+    background: mix($red5, white, 20%);
     color: $red1;
     border: 1px solid $red5;
   }
