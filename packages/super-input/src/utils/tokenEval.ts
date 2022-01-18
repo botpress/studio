@@ -23,7 +23,7 @@ export function evalToken(token: string, vars: any = {}) {
   return _evalToken(token, vars)
 }
 
-export function evalString(str: string, vars: any = {}) {
+export function evalStrTempl(str: string, vars: any = {}) {
   let invalid = false
 
   const matches = jsRange(str)
@@ -31,7 +31,7 @@ export function evalString(str: string, vars: any = {}) {
 
   matches.forEach(m => {
     let out = m.replace('{{', '').replace('}}', '')
-    out = evalToken(out, vars)
+    out = _evalToken(out, vars)
     if (!out) invalid = true
     str = str.replace(m, out)
   })

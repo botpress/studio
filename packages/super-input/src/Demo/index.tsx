@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import useStateData from '../hooks/useStateData'
-import SuperInput from '../SuperInput'
+import useStateData from './hooks/useStateData'
+import { SiTemplate } from '../SuperInput'
 
 const Wrapper = styled.div`
   display: grid;
@@ -41,19 +41,20 @@ const Demo = () => {
   }
 
   return (
+
     <Wrapper>
       <h1>Superinput Inspector</h1>
       <Section>
         <h2>Valid</h2>
-        <SuperInput value={code1} maxHeight="100px" globs={globs} />
+        <SiTemplate value={code1} maxHeight="100px" globs={globs} />
       </Section>
       <Section>
         <h2>Invalid</h2>
-        <SuperInput value={code2} maxHeight="100px" globs={globs} />
+        <SiTemplate value={code2} maxHeight="100px" globs={globs} />
       </Section>
       <Section>
         <h2>Something Else</h2>
-        <SuperInput value={code3} maxHeight="300px" globs={globs} />
+        <SiTemplate value={code3} maxHeight="300px" globs={globs} />
       </Section>
     </Wrapper>
   )
