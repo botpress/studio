@@ -99,7 +99,7 @@ class ActionModalForm extends Component<Props, State> {
 
   prepareActions() {
     this.setState({
-      avActions: (this.props.actions || []).map(x => {
+      avActions: (this.props.actions || []).filter(this.isCloudSafeAction).map(x => {
         return {
           label: x.name,
           value: x.name,
@@ -107,6 +107,11 @@ class ActionModalForm extends Component<Props, State> {
         }
       })
     })
+  }
+
+  // Only allow builtin actions and internal actions on cloud-enabled bots
+  isCloudSafeAction = (action: LocalActionDefinition) => {
+    return !this.props.isCloudBot || action.name.indexOf('builtin') === 0 || action.name.indexOf('/') === -1
   }
 
   onChangeType = (type: ActionType) => () => {
@@ -298,7 +303,8 @@ class ActionModalForm extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  actions: state.skills.actions?.filter(a => a.legacy)
+  actions: state.skills.actions?.filter(a => a.legacy),
+  isCloudBot: Boolean(state.bot.isCloudBot)
 })
 
 export default connect(mapStateToProps, undefined)(ActionModalForm)

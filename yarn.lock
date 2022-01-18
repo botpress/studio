@@ -565,6 +565,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-validator-identifier@npm:^7.16.7":
+  version: 7.16.7
+  resolution: "@babel/helper-validator-identifier@npm:7.16.7"
+  checksum: dbb3db9d184343152520a209b5684f5e0ed416109cde82b428ca9c759c29b10c7450657785a8b5c5256aa74acc6da491c1f0cf6b784939f7931ef82982051b69
+  languageName: node
+  linkType: hard
+
 "@babel/helper-validator-option@npm:^7.12.17":
   version: 7.12.17
   resolution: "@babel/helper-validator-option@npm:7.12.17"
@@ -1014,13 +1021,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.16.0, @babel/types@npm:^7.3.3, @babel/types@npm:^7.8.3":
+"@babel/types@npm:^7.16.0, @babel/types@npm:^7.3.3":
   version: 7.16.0
   resolution: "@babel/types@npm:7.16.0"
   dependencies:
     "@babel/helper-validator-identifier": ^7.15.7
     to-fast-properties: ^2.0.0
   checksum: 5b483da5c6e6f2394fba7ee1da8787a0c9cddd33491271c4da702e49e6faf95ce41d7c8bf9a4ee47f2ef06bdb35096f4d0f6ae4b5bea35ebefe16309d22344b7
+  languageName: node
+  linkType: hard
+
+"@babel/types@npm:^7.8.3":
+  version: 7.16.8
+  resolution: "@babel/types@npm:7.16.8"
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.16.7
+    to-fast-properties: ^2.0.0
+  checksum: 4f6a187b2924df70e21d6e6c0822f91b1b936fe060bc92bb477b93bd8a712c88fe41a73f85c0ec53b033353374fe33e773b04ffc340ad36afd8f647dd05c4ee1
   languageName: node
   linkType: hard
 
@@ -1260,13 +1277,19 @@ __metadata:
     js-cookie: ^2.2.0
     jsonlint-mod: ^1.7.6
     lodash: ^4.17.21
+    mobx: ^5.10.1
+    mobx-react: ^6.1.1
     moment: ^2.29.1
+    monaco-editor: ^0.21.2
+    monaco-editor-webpack-plugin: ^2.0.0
     ms: ^2.1.3
+    multer: ^1.4.2
     mustache: ^2.3.0
     nanoid: ^2.0.3
     node-sass: ^4.14.1
     npm: ^6.14.8
     postcss-loader: ^2.0.8
+    prettier: ^1.19.1
     progressbar.js: ^1.0.1
     prop-types: ^15.6.0
     query-string: ^5.1.1
@@ -13929,6 +13952,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"loader-utils@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "loader-utils@npm:2.0.0"
+  dependencies:
+    big.js: ^5.2.2
+    emojis-list: ^3.0.0
+    json5: ^2.1.2
+  checksum: 6856423131b50b6f5f259da36f498cfd7fc3c3f8bb17777cf87fdd9159e797d4ba4288d9a96415fd8da62c2906960e88f74711dee72d03a9003bddcd0d364a51
+  languageName: node
+  linkType: hard
+
 "locate-path@npm:^2.0.0":
   version: 2.0.0
   resolution: "locate-path@npm:2.0.0"
@@ -14971,6 +15005,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mobx-react-lite@npm:^2.2.0":
+  version: 2.2.2
+  resolution: "mobx-react-lite@npm:2.2.2"
+  peerDependencies:
+    mobx: ^4.0.0 || ^5.0.0
+    react: ^16.8.0
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+    react-native:
+      optional: true
+  checksum: 27dac5d088c6ea4148b1d71cf1608376d263dae2e835e8ad725e992af41fcbd8a81bd3330d205e383f22997668fb031c2382332ca60633f5e284d61df6d1eb4c
+  languageName: node
+  linkType: hard
+
+"mobx-react@npm:^6.1.1":
+  version: 6.3.1
+  resolution: "mobx-react@npm:6.3.1"
+  dependencies:
+    mobx-react-lite: ^2.2.0
+  peerDependencies:
+    mobx: ^5.15.4 || ^4.15.4
+    react: ^16.8.0 || 16.9.0-alpha.0
+  checksum: bc8db413f73e4ad1fe75fdb95a415f04fce5ee34fe04df4cf86ce63f45f8d9cd1ed2557e7a0c932c5252b82269b96fb86ec19be23d01b39907663669a8ae1d4a
+  languageName: node
+  linkType: hard
+
+"mobx@npm:^5.10.1":
+  version: 5.15.7
+  resolution: "mobx@npm:5.15.7"
+  checksum: 46aa00c330a256fdde1c030cf8bab0baebc7fdfb23709884400ac486c318ce650acc336fd8f1e629b5c8680d82051f2aed4737406c4ac6fe1b2d9f3d978c4339
+  languageName: node
+  linkType: hard
+
 "modify-values@npm:^1.0.0":
   version: 1.0.1
   resolution: "modify-values@npm:1.0.1"
@@ -14982,6 +15050,25 @@ __metadata:
   version: 2.29.1
   resolution: "moment@npm:2.29.1"
   checksum: 1e14d5f422a2687996be11dd2d50c8de3bd577c4a4ca79ba5d02c397242a933e5b941655de6c8cb90ac18f01cc4127e55b4a12ae3c527a6c0a274e455979345e
+  languageName: node
+  linkType: hard
+
+"monaco-editor-webpack-plugin@npm:^2.0.0":
+  version: 2.1.0
+  resolution: "monaco-editor-webpack-plugin@npm:2.1.0"
+  dependencies:
+    loader-utils: ^2.0.0
+  peerDependencies:
+    monaco-editor: 0.21.x
+    webpack: ^4.5.0 || 5.x
+  checksum: d99b73261ba1e6ae07e1641e7d96b477658518de5340756f4774212f6231c7ed8bc8fffe4f6f027d788487c1648af6f1b14c679936884f516855ccd6d66a9138
+  languageName: node
+  linkType: hard
+
+"monaco-editor@npm:^0.21.2":
+  version: 0.21.3
+  resolution: "monaco-editor@npm:0.21.3"
+  checksum: 449ffcffd668bb19dd68aba07d26f9d2f63cbcedddfbbecff691648c8d31188f492c0abf492970d942f7d3d648c7ad22b281a52721fdcfb8cc943c7a08f42077
   languageName: node
   linkType: hard
 

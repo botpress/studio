@@ -20,6 +20,7 @@ import _ from 'lodash'
 import os from 'os'
 import path from 'path'
 import { NLUService } from 'studio/nlu'
+import hookConfig from '../../builtin/hooks/config.json'
 import { ComponentService } from './component-service'
 
 const CHECKSUM = '//CHECKSUM:'
@@ -311,6 +312,11 @@ export class BotService {
     const hooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
 
     for (const type of hooks) {
+      // Some hooks are only added when migrating
+      if (hookConfig?.[type.relativePath]?.ignoreCloud) {
+        continue
+      }
+
       const content = await fse.readFile(type.absolutePath, 'utf-8')
       await ghost.upsertFile('hooks', type.relativePath, this.addChecksum(content))
     }

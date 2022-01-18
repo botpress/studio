@@ -1,11 +1,7 @@
 /**
- * This is the official Botpress SDK, designed to help our fellow developers to create wonderful modules and
- * extend the world's best chatbot functionality to make it even better! Your module will receives an instance of
- * this SDK (Yes, all those beautiful features!) to kick start your development. Missing something important?
- * Please let us know in our official Github Repo!
+ * This is the Runtime SDk. Some methods are no longer available
  */
-declare module 'botpress/sdk' {
-  import { NextFunction, Request, Response, Router } from 'express'
+declare module 'botpress/runtime-sdk' {
   import Knex from 'knex'
   export interface KnexExtension {
     isLite: boolean
@@ -22,30 +18,6 @@ declare module 'botpress/sdk' {
       idColumnName?: string,
       trx?: Knex.Transaction
     ): Promise<T>
-  }
-
-  export interface Incident {
-    id: string
-    ruleName: string
-    hostName: string
-    startTime: Date
-    endTime?: Date
-    triggerValue: number
-  }
-
-  export type StrategyUser = {
-    id?: number
-    password?: string
-    salt?: string
-    tokenVersion: number
-  } & UserInfo
-
-  export interface UserInfo {
-    email: string
-    strategy: string
-    createdOn?: string
-    updatedOn?: string
-    attributes: any
   }
 
   export type KnexExtended = Knex & KnexExtension
@@ -124,155 +96,6 @@ declare module 'botpress/sdk' {
     critical(message: string, metadata?: any): void
   }
 
-  export type ElementChangedAction = 'create' | 'update' | 'delete'
-
-  /**
-   * The Module Entry Point is used by the module loader to bootstrap the module. It must be present in the index.js file
-   * of the module. The path to the module must also be specified in the global botpress config.
-   */
-  export interface ModuleEntryPoint {
-    /** Additional metadata about the module */
-    definition: ModuleDefinition
-    /** An array of the flow generators used by skills in the module */
-    skills?: Skill[]
-    /** An array of available bot templates when creating a new bot */
-    botTemplates?: BotTemplate[]
-    translations?: { [lang: string]: object }
-    /** Called once the core is initialized. Usually for middlewares / database init */
-    onServerStarted?: (bp: typeof import('botpress/sdk')) => Promise<void>
-    /** This is called once all modules are initialized, usually for routing and logic */
-    onServerReady?: (bp: typeof import('botpress/sdk')) => Promise<void>
-    onBotMount?: (bp: typeof import('botpress/sdk'), botId: string) => Promise<void>
-    onBotUnmount?: (bp: typeof import('botpress/sdk'), botId: string) => Promise<void>
-    /**
-     * Called when the module is unloaded, before being reloaded
-     * onBotUnmount is called for each bots before this one is called
-     */
-    onModuleUnmount?: (bp: typeof import('botpress/sdk')) => Promise<void>
-    /**
-     * Called when a topic is being changed.
-     * If oldName is not set, then the topic `newName` is being created
-     * If newName is not set, then the topic `oldName` is being deleted
-     */
-    onTopicChanged?: (
-      bp: typeof import('botpress/sdk'),
-      botId: string,
-      oldName?: string,
-      newName?: string
-    ) => Promise<void>
-    onFlowChanged?: (bp: typeof import('botpress/sdk'), botId: string, flow: Flow) => Promise<void>
-    onFlowRenamed?: (
-      bp: typeof import('botpress/sdk'),
-      botId: string,
-      previousFlowName: string,
-      newFlowName: string
-    ) => Promise<void>
-    /**
-     * This method is called whenever a content element is created, updated or deleted.
-     * Modules can act on these events if they need to update references, for example.
-     */
-    onElementChanged?: (
-      bp: typeof import('botpress/sdk'),
-      botId: string,
-      action: ElementChangedAction,
-      element: ContentElement,
-      oldElement?: ContentElement
-    ) => Promise<void>
-  }
-
-  /**
-   * Identifies new Bot Template that can be used to speed up the creation of a new bot without
-   * having to start from scratch
-   */
-  export interface BotTemplate {
-    /** Used internally to identify this template  */
-    id: string
-    /** The name that will be displayed in the bot template menu */
-    name: string
-    /** Gives a short description of your module, which is displayed once the template is selected */
-    desc: string
-    /** These are used internally by Botpress when they are registered on startup */
-    readonly moduleId?: string
-    readonly moduleName?: string
-  }
-
-  export interface ModuleDefinition {
-    /** This name should be in lowercase and without special characters (only - and _) */
-    name: string
-    fullName?: string
-    plugins?: ModulePluginEntry[]
-    /** Additional options that can be applied to the module's view */
-    moduleView?: ModuleViewOptions
-    /** If set to true, no menu item will be displayed */
-    noInterface?: boolean
-    /**
-     * An icon to display next to the name, if none is specified, it will receive a default one
-     * There is a separate icon for the admin and the studio, if you set menuIcon to 'icon.svg',
-     * please provide an icon named 'studio_icon.svg' and 'admin_icon.svg'
-     */
-    menuIcon?: string
-    /**
-     * The name displayed on the menu
-     * @deprecated Set the property "fullName" in the translations file for the desired language
-     */
-    menuText?: string
-    /** Optionally specify a link to your page or github repo */
-    homepage?: string
-    /** Whether or not the module is likely to change */
-    experimental?: boolean
-    /** Workspace Apps are accessible on the admin panel */
-    workspaceApp?: {
-      /** Adds a link on the Bots page to access this app for a specific bot */
-      bots?: boolean
-      /** Adds an icon on the menu to access this app without a bot ID */
-      global?: boolean
-    }
-  }
-
-  /**
-   * Skills are loaded automatically when the bot is started. They must be in the module's definition to be loaded.
-   * Each skills must have a flow generator and a view with the same name (skillId)
-   */
-  export interface Skill {
-    /** An identifier for the skill. Use only a-z_- characters. */
-    id: string
-    /** The name that will be displayed in the toolbar for the skill */
-    name: string
-    /** An icon to identify the skill */
-    icon?: string | any
-    /** Name of the parent module. This field is filled automatically when they are loaded */
-    readonly moduleName?: string
-    /**
-     * When adding a new skill on the Flow Editor, the flow is constructed dynamically by this method
-     *
-     * @param skillData Provided by the skill view, those are fields edited by the user on the Flow Editor
-     * @param metadata Some metadata automatically provided, like the bot id
-     * @return The method should return
-     */
-    flowGenerator: (skillData: any, metadata: FlowGeneratorMetadata) => Promise<FlowGenerationResult>
-  }
-
-  export interface FlowGeneratorMetadata {
-    botId: string
-  }
-
-  export interface ModulePluginEntry {
-    entry: 'WebBotpressUIInjection'
-    position: 'overlay'
-  }
-
-  export interface ModuleViewOptions {
-    stretched: boolean
-  }
-
-  export class RealTimePayload {
-    readonly eventName: string
-    readonly payload: any
-    constructor(eventName: string, payload: any)
-    public static forVisitor(visitorId: string, eventName: string, payload: any): RealTimePayload
-    public static forAdmins(eventName: string, payload: any): RealTimePayload
-  }
-
   export namespace NLU {
     /**
      * idle : occures when there are no training sessions for a bot
@@ -293,18 +116,11 @@ declare module 'botpress/sdk' {
       | 'errored'
       | null
 
-    export interface TrainingError {
-      type: string
-      message: string
-      stackTrace?: string
-    }
-
     export interface TrainingSession {
       key: string
       status: TrainingStatus
       language: string
       progress: number
-      error?: TrainingError
     }
 
     export type EntityType = 'system' | 'pattern' | 'list'
@@ -426,6 +242,7 @@ declare module 'botpress/sdk' {
       incomingEventId?: string
       debugger?: boolean
       messageId?: string
+      flags?: any
     }
 
     /**
@@ -494,7 +311,7 @@ declare module 'botpress/sdk' {
 
     export interface EventUnderstanding {
       readonly errored: boolean
-      readonly modelId: string | undefined
+
       readonly predictions?: {
         [context: string]: {
           confidence: number
@@ -752,18 +569,9 @@ declare module 'botpress/sdk' {
   }
 
   export interface ScopedGhostService {
-    /**
-     * Insert or Update the file at the specified location
-     * @param rootFolder - Folder relative to the scoped parent
-     * @param file - The name of the file
-     * @param content - The content of the file
-     */
-    upsertFile(rootFolder: string, file: string, content: string | Buffer, options?: UpsertOptions): Promise<void>
     readFileAsBuffer(rootFolder: string, file: string): Promise<Buffer>
     readFileAsString(rootFolder: string, file: string): Promise<string>
     readFileAsObject<T>(rootFolder: string, file: string): Promise<T>
-    renameFile(rootFolder: string, fromName: string, toName: string): Promise<void>
-    deleteFile(rootFolder: string, file: string): Promise<void>
     /**
      * List all the files matching the ending pattern in the folder.
      * DEPRECATE WARNING: exclude and includedDotFiles must be defined in options in future versions
@@ -846,13 +654,6 @@ declare module 'botpress/sdk' {
     author?: string
     disabled?: boolean
     private?: boolean
-    /**
-     * When true, the studio considers the bot as "standalone"
-     * - Auth Gate is available
-     * - We provide the runtime sdk instead of the full sdk
-     * - We add hooks create short links
-     */
-    standalone?: boolean
     version: string
     imports: {
       /** Defines the list of content types supported by the bot */
@@ -866,32 +667,6 @@ declare module 'botpress/sdk' {
     languages: string[]
     locked: boolean
     pipeline_status: BotPipelineStatus
-    qna: {
-      disabled: boolean
-    }
-    skillChoice: {
-      /**
-       * @default true
-       */
-      matchNumbers: boolean
-      /**
-       * @default true
-       */
-      matchNLU: boolean
-    }
-    skillSendEmail: {
-      /**
-       * Nodemailer2 transport connection string.
-       * @see https://www.npmjs.com/package/nodemailer2
-       *
-       * Alternatively, you can pass an object with any required parameters
-       * @see https://nodemailer.com/smtp/#examples
-       *
-       * @example smtps://user%40gmail.com:pass@smtp.gmail.com
-       * @default <<change me>>
-       */
-      transportConnectionString: string
-    }
 
     /**
      * constant number used to seed nlu random number generators
@@ -901,8 +676,10 @@ declare module 'botpress/sdk' {
     nluModels?: {
       [lang: string]: string
     }
+    qna: {
+      disabled: boolean
+    }
 
-    isCloudBot?: boolean
     cloud?: CloudConfig
   }
 
@@ -1010,19 +787,6 @@ declare module 'botpress/sdk' {
     enableUnsecuredEndpoint: boolean
   }
 
-  export interface ParsedContentType {
-    id: ContentType['id']
-    count: number
-    title: ContentType['title']
-    hidden: ContentType['hidden']
-    schema: {
-      json: ContentType['jsonSchema']
-      ui: ContentType['uiSchema']
-      title: ContentType['title']
-      renderer: ContentType['id']
-    }
-  }
-
   /**
    * A Content Element is a single item of a particular Content Type @see ContentType.
    * Content Types contains many Elements. An Element belongs to a single Content Type.
@@ -1032,7 +796,7 @@ declare module 'botpress/sdk' {
     /** The Id of the Content Type for which the Element belongs to. */
     contentType: string
     /** The raw form data that contains templating that needs to be interpreted. */
-    formData: FormData
+    formData: object
     /** The computed form data that contains the interpreted data. */
     computedData: object
     /** The textual representation of the Content Element, for each supported languages  */
@@ -1040,8 +804,6 @@ declare module 'botpress/sdk' {
     createdOn: Date
     modifiedOn: Date
     createdBy: string
-    schema?: ParsedContentType['schema']
-    botId?: string
   }
 
   /**
@@ -1052,14 +814,13 @@ declare module 'botpress/sdk' {
   export interface ContentType {
     id: string
     title: string
-    group?: string
-    description?: string
+    description: string
     /**
      * Hiding content types prevents users from adding these kind of elements via the Flow Editor.
      * They are still visible in the Content Manager, and it's still possible to use these elements by specifying
      * their name as a property "contentType" to ContentPickerWidget.
      */
-    hidden?: boolean
+    hidden: boolean
     /**
      * The jsonSchema used to validate the form data of the Content Elements.
      */
@@ -1074,12 +835,12 @@ declare module 'botpress/sdk' {
      * @param channel The channel used to communicate, e.g. channel-web, messenger, twilio, etc.
      * @returns Return an array of rendered Content Elements
      */
-    renderElement: (data: object, channel: string) => object[] | object
+    renderElement: (data: object, channel: string) => object[]
     /**
      * Function that computes the visual representation of the text.
      * This function resides in the javascript definition of the Content Type.
      */
-    computePreviewText?: (formData: any) => string
+    computePreviewText?: (formData: object) => string
   }
 
   export type CustomContentType = Omit<Partial<ContentType>, 'id'> & {
@@ -1116,29 +877,17 @@ declare module 'botpress/sdk' {
     label: string
   }
 
-  /**
-   * This interface is used to encapsulate the logic around the creation of a new skill. A skill
-   * is a subflow which can have multiple nodes and custom logic, while being hidden under a single node in the main flow.
-   * The node transitions specified here are applied on the node in the main flow. Once the user enters the node,
-   * the flow takes over
-   */
-  export interface FlowGenerationResult {
-    /**
-     * A partial flow originating from a skill flow generator. Missing pieces will be automatically added
-     * once the flow is sent to Botpress, the final product will be a Flow.
-     */
-    flow: SkillFlow
-    /** An array of possible transitions for the parent node */
-    transitions: NodeTransition[]
-  }
-
-  /**
-   * The partial flow is only used to make some nodes optional. Those left empty will be automatically
-   * generated by the skill service.
-   */
-  export type SkillFlow = Partial<Flow> & Pick<Required<Flow>, 'nodes'>
-
-  export type FlowNodeType = 'standard' | 'skill-call' | 'listen' | 'say_something' | 'execute' | 'router' | 'action'
+  export type FlowNodeType =
+    | 'standard'
+    | 'skill-call'
+    | 'listen'
+    | 'say_something'
+    | 'success'
+    | 'failure'
+    | 'trigger'
+    | 'execute'
+    | 'router'
+    | 'action'
 
   export type FlowNode = {
     id?: string
@@ -1174,99 +923,6 @@ declare module 'botpress/sdk' {
   }
 
   export type FormDataField = any
-
-  export interface FormData {
-    id?: string
-    contentType?: string
-    [key: string]: FormDataField
-  }
-
-  interface FormOption {
-    value: any
-    label: string
-    related?: FormField
-  }
-
-  interface FormContextMenu {
-    type: string
-    label: string
-  }
-
-  // TODO use namespace to group form related interfaces
-  export interface FormDynamicOptions {
-    /** An enpoint to call to get the options */
-    endpoint: string
-    /** Used with _.get() on the data returned by api to get to the list of items */
-    path?: string
-    /** Field from DB to map as the value of the options */
-    valueField: string
-    /** Field from DB to map as the label of the options */
-    labelField: string
-  }
-
-  export type FormFieldType =
-    | 'checkbox'
-    | 'group'
-    | 'number'
-    | 'overridable'
-    | 'select'
-    | 'multi-select'
-    | 'text'
-    | 'text_array'
-    | 'textarea'
-    | 'upload'
-    | 'url'
-    | 'hidden'
-    | 'tag-input'
-    | 'variable'
-
-  export interface FormField {
-    type: FormFieldType
-    key: string
-    label?: string
-    overrideKey?: string
-    placeholder?: string | string[]
-    emptyPlaceholder?: string
-    options?: FormOption[]
-    defaultValue?: FormDataField
-    required?: boolean
-    variableTypes?: string[]
-    customPlaceholder?: boolean
-    max?: number
-    min?: number
-    maxLength?: number
-    valueManipulation?: {
-      regex: string
-      modifier: string
-      replaceChar: string
-    }
-    translated?: boolean
-    dynamicOptions?: FormDynamicOptions
-    fields?: FormField[]
-    moreInfo?: FormMoreInfo
-    /** When specified, indicate if array elements match the provided pattern */
-    validation?: {
-      regex?: RegExp
-      list?: any[]
-      validator?: (items: any[], newItem: any) => boolean
-    }
-    group?: {
-      /** You have to specify the add button label */
-      addLabel?: string
-      addLabelTooltip?: string
-      /** You can specify a minimum so the delete button won't show if there isn't more than the minimum */
-      minimum?: number
-      /** You can specify that there's one item of the group by default even if no minimum */
-      defaultItem?: boolean
-      /** You can add a contextual menu to add extra options */
-      contextMenu?: FormContextMenu[]
-    }
-  }
-
-  export interface FormMoreInfo {
-    label: string
-    url?: string
-  }
 
   /**
    * A Node Action represent all the possible actions that will be executed when the user is on the node. When the user
@@ -1304,54 +960,6 @@ declare module 'botpress/sdk' {
   }
 
   /**
-   * The AxiosBotConfig contains the axios configuration required to call the api of another module.
-   * @example: axios.get('/mod/module', axiosBotConfig)
-   */
-  export interface AxiosBotConfig {
-    /** The base url of the bot.
-     * @example http://localhost:3000/
-     */
-    baseURL: string
-    headers: {
-      'CSRF-Token'?: string
-      Authorization?: string
-      'X-BP-Workspace'?: string
-    }
-  }
-
-  export interface MigrationResult {
-    success: boolean
-    /** Indicates if the migration had to be executed  */
-    hasChanges?: boolean
-    message?: string
-  }
-
-  export interface ModuleMigration {
-    info: {
-      description: string
-      target?: 'core' | 'bot'
-      type: 'database' | 'config' | 'content'
-      canDryRun?: boolean
-    }
-    up: (opts: ModuleMigrationOpts) => Promise<MigrationResult>
-    down?: (opts: ModuleMigrationOpts) => Promise<MigrationResult>
-  }
-
-  export interface ModuleMigrationOpts {
-    bp: typeof import('botpress/sdk')
-    metadata: MigrationMetadata
-    configProvider: any
-    database: any
-    inversify: any
-  }
-
-  /** These are additional information that Botpress may pass down to migrations (for ex: running bot-specific migration) */
-  export interface MigrationMetadata {
-    botId?: string
-    isDryRun?: boolean
-  }
-
-  /**
    * Simple interface to use when paging is required
    */
   export interface Paging {
@@ -1359,62 +967,6 @@ declare module 'botpress/sdk' {
     start: number
     /** How many elements should be returned */
     count: number
-  }
-
-  /**
-   * All available rollout strategies (how users interact with bots of that workspace)
-   * An invite code is permanent, meaning that it will be consumed once and will not be necessary for that user in the future
-   *
-   * anonymous: Anyone can talk to bots
-   * anonymous-invite: Anyone with an invite code can talk to bots
-   * authenticated: Authenticated users will be automatically added to workspace as "chat user" (will then be "authorized")
-   * authenticated-invite: Authenticated users with an invite code will be added to workspace as "chat user" (will then be "authorized")
-   * authorized: Only authenticated users with an existing access to the workspace can talk to bots
-   */
-  export type RolloutStrategy =
-    | 'anonymous'
-    | 'anonymous-invite'
-    | 'authenticated'
-    | 'authenticated-invite'
-    | 'authorized'
-
-  export interface WorkspaceRollout {
-    rolloutStrategy: RolloutStrategy
-    inviteCode?: string
-    allowedUsages?: number
-  }
-  export interface WorkspaceUser {
-    email: string
-    strategy: string
-    role: string
-    workspace: string
-    workspaceName?: string
-  }
-
-  export type WorkspaceUserWithAttributes = {
-    attributes: any
-  } & WorkspaceUser
-
-  export interface GetWorkspaceUsersOptions {
-    attributes: string[] | '*'
-    includeSuperAdmins: boolean
-  }
-
-  export interface WorkspaceUser {
-    email: string
-    strategy: string
-    role: string
-    workspace: string
-    workspaceName?: string
-  }
-
-  export interface AddWorkspaceUserOptions {
-    /** Select an existing custom role for that user. If role, asAdmin and asChatUser are undefined, then it will pick the default role */
-    role?: string
-    /** When enabled, user is added to the workspace as an admin (role is ignored) */
-    asAdmin?: boolean
-    /** When enabled, user is added as a chat user (role is ignored)  */
-    asChatUser?: boolean
   }
 
   export interface RenderPipeline {
@@ -1534,55 +1086,6 @@ declare module 'botpress/sdk' {
   ////////////////
 
   /**
-   * Realtime is used to communicate with the client via websockets
-   */
-  export namespace realtime {
-    /**
-     * Sends a payload to the client via the websocket
-     * @param payload The payload to send
-     */
-    export function sendPayload(payload: RealTimePayload)
-    /**
-     * Returns the corresponding the roomId in the /guest socket io namespace
-     * @param socketId id generated by socket.io
-     */
-    export function getVisitorIdFromGuestSocketId(socketId: string): Promise<undefined | string>
-  }
-
-  // prettier-ignore
-  export type RouterCondition = boolean | ((req: any) => boolean)
-
-  /**
-   * Those are possible options you may enable when creating new routers
-   */
-  export interface RouterOptions {
-    /**
-     * Check if user is authenticated before granting access
-     * @default true
-     */
-    checkAuthentication: RouterCondition
-
-    /**
-     * When checkAuthentication is enabled, set this to true to enforce permissions based on the method.
-     * GET/OPTIONS requests requires READ permissions, while all other requires WRITE permissions
-     * @default true
-     */
-    checkMethodPermissions?: RouterCondition
-
-    /**
-     * Parse the body as JSON when possible
-     * @default true
-     */
-    enableJsonBodyParser?: RouterCondition
-
-    /**
-     * Only parses body which are urlencoded
-     * @default true
-     */
-    enableUrlEncoderBodyParser?: RouterCondition
-  }
-
-  /**
    * Search parameters when querying content elements
    */
   export interface SearchParams {
@@ -1621,91 +1124,11 @@ declare module 'botpress/sdk' {
     desc?: boolean
   }
 
-  export interface AxiosOptions {
-    /** When true, it will return the local url instead of the external url  */
-    localUrl?: boolean
-    /** Temporary property so modules can query studio routes */
-    studioUrl?: boolean
-  }
-
   export interface RedisLock {
     /** Free the lock so other nodes can request it */
     unlock(): Promise<void>
     /** Extend the duration of the lock for the node owning it */
     extend(duration: number): Promise<void>
-  }
-
-  export interface FileContent {
-    name: string
-    content: string | Buffer
-  }
-
-  export namespace http {
-    /**
-     * Create a shortlink to any destination
-     *
-     * @example bp.http.createShortLink('chat', '/lite', {m: 'channel-web', v: 'fullscreen' })
-     * @example http://localhost:3000/s/chat
-     * @param name - The name of the link, must be unique
-     * @param destination - The URL to redirect to. It can be relative or absolute
-     * @param params - An optional query string to add at the end of the url. You may specify an object
-     */
-    export function createShortLink(name: string, destination: string, params?: any): void
-
-    /**
-     * Delete any previously created short link
-     *
-     * @param name - The name of the link to remove
-     */
-    export function deleteShortLink(name): void
-
-    /**
-     * Create a new router for a module. Once created, use them to register new endpoints. Routers created
-     * with this method are accessible via the url /mod/{routerName}
-     *
-     * @example const router = bp.http.createRouterForBot('myModule')
-     * @example router.get('/list', ...)
-     * @example axios.get('/mod/myModule/list')
-     * @param routerName - The name of the router
-     * @param options - Additional options to apply to the router
-     * @param router - The router
-     */
-    export function createRouterForBot(routerName: string, options?: RouterOptions): RouterExtension
-
-    /**
-     * This method is meant to unregister a router before unloading a module. It is meant to be used in a development environment.
-     * It could cause unpredictable behavior in production
-     * @param routerName The name of the router (must have been registered with createRouterForBot)
-     */
-    export function deleteRouterForBot(routerName: string)
-
-    /**
-     * Returns the required configuration to make an API call to another module by specifying only the relative path.
-     * @param botId - The ID of the bot for which to get the configuration
-     * @returns The configuration to use
-     */
-    export function getAxiosConfigForBot(botId: string, options?: AxiosOptions): Promise<AxiosBotConfig>
-
-    /**
-     * Decodes and validates an external authorization token with the public key defined in config file
-     * @param token - The encoded JWT token
-     * @returns The decoded payload
-     */
-    export function decodeExternalToken(token: string): Promise<any>
-
-    /**
-     * This Express middleware tries to decode the X-BP-ExternalAuth header and adds a credentials header in the request if it's valid.
-     */
-    export function extractExternalToken(req: Request, res: Response, next: NextFunction): Promise<void>
-
-    export function needPermission(
-      operation: string,
-      resource: string
-    ): (req: Request, res: Response, next: NextFunction) => Promise<void>
-
-    export function hasPermission(req: any, operation: string, resource: string, noAudit?: boolean): Promise<boolean>
-
-    export type RouterExtension = { getPublicPath(): Promise<string> } & Router
   }
 
   /**
@@ -1854,28 +1277,10 @@ declare module 'botpress/sdk' {
   }
 
   export namespace config {
-    export function getModuleConfig(moduleId: string): Promise<any>
-
-    /**
-     * Returns the configuration values for the specified module and bot.
-     * @param moduleId
-     * @param botId
-     * @param ignoreGlobal Enable this when you want only bot-specific configuration to be possible
-     */
-    export function getModuleConfigForBot(moduleId: string, botId: string, ignoreGlobal?: boolean): Promise<any>
-
     /**
      * Returns the configuration options of Botpress
      */
     export function getBotpressConfig(): Promise<any>
-
-    /**
-     * Merges and saves a bot's config
-     * @param botId
-     * @param partialConfig
-     * @param ignoreLock
-     */
-    export function mergeBotConfig(botId: string, partialConfig: Partial<BotConfig>, ignoreLock?: boolean): Promise<any>
   }
 
   /**
@@ -1972,77 +1377,6 @@ declare module 'botpress/sdk' {
   export namespace bots {
     export function getAllBots(): Promise<Map<string, BotConfig>>
     export function getBotById(botId: string): Promise<BotConfig | undefined>
-    /**
-     * It will extract the bot's folder to an archive (tar.gz).
-     * @param botId The ID of the bot to extract
-     */
-    export function exportBot(botId: string): Promise<Buffer>
-    /**
-     * Allows to import directly an archive (tar.gz) in a new bot.
-     * @param botId The ID of the new bot (or an existing one)
-     * @param archive The buffer of the archive file
-     * @param workspaceId The workspace where the bot will be imported
-     * @param allowOverwrite? If not set, it will throw an error if the folder exists. Otherwise, it will overwrite files already present
-     */
-    export function importBot(
-      botId: string,
-      archive: Buffer,
-      workspaceId: string,
-      allowOverwrite?: boolean
-    ): Promise<void>
-
-    /**
-     * Allows hook developers to list revisions of a bot
-     * @param botId the ID of the target bot
-     */
-    export function listBotRevisions(botId: string): Promise<string[]>
-    /**
-     * Allows hook developers to create a new revision of a bot
-     * @param botId the ID of the target bot
-     */
-    export function createBotRevision(botId: string): Promise<void>
-    /**
-     * Allows hook developers to rollback
-     * @param botId the ID of the target bot
-     * @param revisionId the target revision ID to which you want to revert the chatbot
-     */
-    export function rollbackBotToRevision(botId: string, revisionId: string): Promise<void>
-  }
-
-  export namespace workspaces {
-    export function getBotWorkspaceId(botId: string): Promise<string>
-    export function addUserToWorkspace(
-      email: string,
-      strategy: string,
-      workspaceId: string,
-      options?: AddWorkspaceUserOptions
-    ): Promise<void>
-    /**
-     * Returns the rollout strategy of the requested workspace.
-     * If the workspace ID is unknown, it will be determined from the bot ID
-     * @param workspaceId
-     */
-    export function getWorkspaceRollout(workspaceId: string): Promise<WorkspaceRollout>
-    /**
-     * Consumes an invite code for the specified workspace.
-     * @param workspaceId
-     * @param inviteCode an invite code to compare to
-     * @returns boolean indicating if code was valid & enough usage were left
-     */
-    export function consumeInviteCode(workspaceId: string, inviteCode?: string): Promise<boolean>
-
-    /**
-     * Retreives users in a given workspace
-     * @param workspaceId Desired workspace
-     * @param options Fetch options object
-     * @param options.includeSuperAdmins Whether or not you want to include super admins in the results
-     * @param options.attributes List of user attributes you want to include in the object. Use '*' to include all user attributes. Defaults to [].
-     * @returns All users in desired workspace with specified attributes.
-     */
-    export function getWorkspaceUsers(
-      workspaceId: string,
-      options?: Partial<GetWorkspaceUsersOptions>
-    ): Promise<WorkspaceUser[] | WorkspaceUserWithAttributes[]>
   }
 
   export namespace ghost {
@@ -2090,8 +1424,6 @@ declare module 'botpress/sdk' {
       language?: string
     ): Promise<ContentElement[]>
 
-    export function deleteContentElements(botId: string, contentElementIds: string[]): Promise<void>
-
     export function getAllContentTypes(botId: string): Promise<ContentType[]>
     /**
      * Content Types can produce multiple payloads depending on the channel and the type of message. This method can generate
@@ -2113,27 +1445,6 @@ declare module 'botpress/sdk' {
       args: any,
       eventDestination: IO.EventDestination
     ): Promise<object[]>
-
-    /**
-     * Updates an existing content element, or creates it if its current ID isn't defined
-     *
-     * @param botId The ID of the bot
-     * @param contentTypeId Only used when creating an element (the ID of the content type (renderer))
-     * @param formData The content of your element. May includes translations or not (see language parameter)
-     * @param contentElementId If not specified, will be treated as a new element and will be inserted
-     * @param language When language is set, only that language will be updated on this element. Otherwise, replaces all content
-     */
-    export function createOrUpdateContentElement(
-      botId: string,
-      contentTypeId: string,
-      formData: object,
-      contentElementId?: string,
-      language?: string
-    ): Promise<string>
-
-    export function saveFile(botId: string, fileName: string, content: Buffer): Promise<string>
-    export function readFile(botId, fileName): Promise<Buffer>
-    export function getFilePath(botId: string, fileName: string): string
 
     /**
      * Mustache template to render. Can contain objects, arrays, strings.
@@ -2168,9 +1479,6 @@ declare module 'botpress/sdk' {
    * They will eventually be either removed or moved in another namespace
    */
   export namespace experimental {
-    export function disableHook(hookName: string, hookType: string, moduleName?: string): Promise<boolean>
-    export function enableHook(hookName: string, hookType: string, moduleName?: string): Promise<boolean>
-
     /**
      * WARNING : these payloads do not produce typing indicators yet!
      */

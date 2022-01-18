@@ -19,6 +19,7 @@ import _ from 'lodash'
 
 import { ActionsRouter } from './actions/actions-router'
 import { CMSRouter } from './cms/cms-router'
+import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
@@ -64,6 +65,7 @@ export class StudioRouter extends CustomRouter {
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
   private manageRouter: ManageRouter
+  private codeEditorRouter: CodeEditorRouter
 
   constructor(
     logger: Logger,
@@ -117,6 +119,7 @@ export class StudioRouter extends CustomRouter {
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
+    this.codeEditorRouter = new CodeEditorRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -132,6 +135,7 @@ export class StudioRouter extends CustomRouter {
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
     this.manageRouter.setupRoutes()
+    this.codeEditorRouter.setupRoutes()
 
     app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
     app.use('/api/internal', this.internalRouter.router)
@@ -164,6 +168,7 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
     this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
+    this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
     this.setupUnauthenticatedRoutes(app)
     this.setupStaticRoutes(app)
@@ -210,6 +215,7 @@ export class StudioRouter extends CustomRouter {
               window.BOT_LOCKED = ${!!bot.locked};
               window.WORKSPACE_ID = "${workspaceId}";
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
+              window.IS_CLOUD_BOT = ${bot.isCloudBot}
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
             })(typeof window != 'undefined' ? window : {})
           `
