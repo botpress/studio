@@ -54,7 +54,11 @@ const botpressTheme = EditorView.baseTheme({
     textDecoration: 'none'
   },
   'div.cm-tooltip.cm-completionInfo': {
-    top: '0 !important'
+    top: '0 !important',
+    padding: '0',
+    minWidth: '250px',
+    minHeight: '55px',
+    borderRadius: '7px'
   },
   'div.cm-tooltip-hover': {
     borderRadius: '4px'
