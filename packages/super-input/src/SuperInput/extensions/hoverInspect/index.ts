@@ -10,7 +10,11 @@ const hoverInspect = (globs: any) => {
       // console.log('TEST HERE: ', `[${text[pos - 1]}]`, `[${text[pos]}]`, `[${text[pos + 1]}]`)
       let nodeBefore = syntaxTree(view.state).resolveInner(pos, 0)
       const object = nodeBefore.parent?.getChild('Expression')
-      if (nodeBefore.name in ['VariableName', 'PropertyName'] || nodeBefore.parent?.name !== 'MemberExpression')
+
+      if (
+        !['VariableName', 'PropertyName'].find(el => el === nodeBefore.name) &&
+        !['MemberExpression', 'ExpressionStatement'].find(el => el === nodeBefore.parent?.name)
+      )
         return null
 
       const varPath = view.state
