@@ -47,8 +47,8 @@ export default [
     ]
   },
   {
-    input: 'dist/esm/types/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    input: 'lib/esm/types/src/index.d.ts',
+    output: [{ file: 'lib/index.d.ts', format: 'esm' }],
     external: [/\.s?css$/],
     plugins: [dts()]
   }
