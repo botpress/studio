@@ -1,0 +1,5 @@
+export { default as hoverInspect } from './hoverInspect'
+export { default as BPLang } from './botpressLang'
+export { default as botpressTheme } from './botpressTheme'
+export { default as bpAutocomplete } from './autocomplete'
+export { default as exprDecorator } from './exprDecorator'
