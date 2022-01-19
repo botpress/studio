@@ -19,8 +19,16 @@ function _evalToken(token: string, vars: any = {}) {
   }
 }
 
+export function rmDelim(str: string) {
+  return str.replace('{{', '').replace('}}', '')
+}
+
 export function evalToken(token: string, vars: any = {}) {
   return _evalToken(token, vars)
+}
+
+export function evalMatchToken(token: string, vars: any = {}) {
+  return _evalToken(rmDelim(token), vars)
 }
 
 export function evalStrTempl(str: string, vars: any = {}) {
@@ -30,7 +38,7 @@ export function evalStrTempl(str: string, vars: any = {}) {
   if (!matches) return str
 
   matches.forEach(m => {
-    let out = m.replace('{{', '').replace('}}', '')
+    let out = rmDelim(m)
     out = _evalToken(out, vars)
     if (!out) invalid = true
     str = str.replace(m, out)

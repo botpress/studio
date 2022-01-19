@@ -6,13 +6,22 @@ import { placeholder as placeholderExt, keymap, EditorView } from '@codemirror/v
 import { history, historyKeymap } from '@codemirror/history'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
 import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
-import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, expressDecorator } from './extensions'
-import { evalStrTempl } from '../utils/tokenEval'
-import { IProps } from './types'
 
-export default function SiTemplate(props: IProps) {
-  let { value, maxHeight, globs, onChange, placeholder } = props
-  if (!globs) globs = {}
+import EditorFrame from './EditorFrame'
+import EvalPanel from './EvalPanel'
+import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extensions'
+import { evalStrTempl } from '../utils/tokenEval'
+import { ISiTemplateProps } from './types'
+
+export default function SiTemplate({
+  value,
+  maxHeight,
+  globs,
+  onChange,
+  placeholder,
+  invalEvalMsg,
+  noGlobsEvalMsg
+}: ISiTemplateProps) {
   if (!placeholder) placeholder = 'event.payload !== slots.payload'
   if (!maxHeight) maxHeight = '100px'
   const editor = useRef() as MutableRefObject<HTMLInputElement>
@@ -30,7 +39,7 @@ export default function SiTemplate(props: IProps) {
       hoverInspect(globs),
       oneDarkHighlightStyle,
       bpAutocomplete(globs),
-      // expressDecorator(),
+      exprDecorator(globs),
       history(),
       closeBrackets(),
       botpressTheme,
@@ -38,11 +47,12 @@ export default function SiTemplate(props: IProps) {
     ],
     onUpdate: update => {
       const { view } = update
-      if (update.focusChanged) setPanel(view.hasFocus ? evalStrTempl(update.state.doc.sliceString(0), globs) : '')
-      else if (update.docChanged) {
-        if (onChange) onChange(update.state.doc.sliceString(0))
-        setPanel(evalStrTempl(update.state.doc.sliceString(0), globs))
+      if (globs) {
+        if (update.focusChanged && globs)
+          setPanel(view.hasFocus ? evalStrTempl(update.state.doc.sliceString(0), globs) : '')
+        else if (update.docChanged) setPanel(evalStrTempl(update.state.doc.sliceString(0), globs))
       }
+      if (update.docChanged && onChange) onChange(update.state.doc.sliceString(0))
     }
   })
 
@@ -53,15 +63,14 @@ export default function SiTemplate(props: IProps) {
   }, [editor, setContainer])
 
   return (
-    <div className="bp-editor" ref={editor}>
-      {panel ? (
-        <div
-          className={`bp-editor-panel ${panel === 'INVALID' ? 'invalid' : 'valid'}`}
-          onMouseDown={e => console.log(e)}
-        >
-          <p>{panel}</p>
-        </div>
+    <EditorFrame ref={editor}>
+      {!globs ? (
+        <EvalPanel valid={null} text={noGlobsEvalMsg} />
+      ) : panel === 'INVALID' ? (
+        <EvalPanel valid={false} text={invalEvalMsg} />
+      ) : panel ? (
+        <EvalPanel valid={true} text={panel} />
       ) : null}
-    </div>
+    </EditorFrame>
   )
 }

@@ -2,8 +2,11 @@ import { hoverTooltip } from '@codemirror/tooltip'
 import { syntaxTree } from '@codemirror/language'
 
 import InspectCard from './InspectCard'
+import { fallback } from '../../docsTree.json'
 
 const hoverInspect = (globs: any) => {
+  if (!globs) globs = fallback
+
   return hoverTooltip(
     (view, pos, side) => {
       let { from, to, text } = view.state.doc.lineAt(pos)

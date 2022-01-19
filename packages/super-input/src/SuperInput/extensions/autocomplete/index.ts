@@ -7,7 +7,7 @@ import TreeModel from 'tree-model'
 import InfoCard from './InfoCard'
 import { libs } from '../../../utils/tokenEval'
 import { DocNode } from './types'
-import eventTree from './eventTree.json'
+import { fallback, docTree } from '../../docsTree.json'
 
 const BOOST_KEYS: any = {
   context: 5,
@@ -29,19 +29,19 @@ const DONT_COMPLETE_IN = [
 
 const tree = new TreeModel()
 
-const fullDocTree: DocNode = tree.parse(eventTree as any)
+const fullDocTree: DocNode = tree.parse(docTree as any)
 
-const makeCompletionFrom = (from: number, glob: any = {}, docTree: DocNode, apply?: (key: string) => {}) => {
-  if (typeof glob !== 'object' && typeof glob !== 'function') return null
+const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, apply?: (key: string) => {}) => {
+  if (typeof globs !== 'object' && typeof globs !== 'function') return null
 
   return {
     from,
     span: /^\w{2,}$/,
-    options: Object.keys(glob).reduce((accu: any, key: string) => {
+    options: Object.keys(globs).reduce((accu: any, key: string) => {
       const docNode = docTree.first({ strategy: 'breadth' }, (node: DocNode) => {
         return node.model.key === key
       })
-      const type = docNode?.model.type || typeof glob[key] || 'Unknown'
+      const type = docNode?.model.type || typeof globs[key] || 'Unknown'
       accu.push({
         label: key,
         boost: BOOST_KEYS[key] || 0,
@@ -51,7 +51,7 @@ const makeCompletionFrom = (from: number, glob: any = {}, docTree: DocNode, appl
           type,
           link: docNode?.model.link || null,
           docs: docNode?.model.docs || null,
-          evals: glob[key]
+          evals: globs[key]
         }),
         apply: apply ? apply(key) : key
       })
@@ -61,6 +61,7 @@ const makeCompletionFrom = (from: number, glob: any = {}, docTree: DocNode, appl
 }
 
 const globsCompletions = (globs: any) => {
+  if (!globs) globs = fallback
   globs = {
     ...globs,
     ...libs

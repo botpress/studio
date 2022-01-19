@@ -28,7 +28,7 @@ const ARGS: TJS.PartialArgs = {
 const ROOT_NAME = 'event'
 const ROOT_TYPE = 'IO.IncomingEvent'
 
-const files = glob.sync('sdk/*.ts')
+const files = glob.sync('../studio-be/src/sdk/*.ts')
 const program = TJS.getProgramFromFiles(files)
 const generator = TJS.buildGenerator(program, ARGS) as TJS.JsonSchemaGenerator
 const schema = TJS.generateSchema(program, ROOT_TYPE, ARGS, [], generator)
@@ -129,5 +129,30 @@ const recurseGenerateTree: RecurseGenerateTreeFn = (node, entries) => {
   return node
 }
 
-const result = recurseGenerateTree(root, properties)
-fs.writeFileSync('./eventTree.json', JSON.stringify(result.model))
+function recurseGenerateFallback(node: any): any {
+  let val: any = {}
+  if (node.children)
+    val = node.children.reduce((accu: any, child: DocNode) => {
+      if (child.children) accu[child.key] = recurseGenerateFallback(child)
+      else accu[child.key] = null
+
+      return accu
+    }, {})
+  return val
+}
+
+const docTree = recurseGenerateTree(root, properties).model
+let fallback: any = recurseGenerateFallback(docTree)
+
+fallback = {
+  event: fallback,
+  ...fallback,
+  ...fallback.state
+}
+
+const docs = {
+  docTree,
+  fallback
+}
+
+fs.writeFileSync('./src/SuperInput/docsTree.json', JSON.stringify(docs))

@@ -40,21 +40,25 @@ const Demo = () => {
     ...fakeState.state
   }
 
-  return (
+  const msgs = {
+    invalEvalMsg: 'invalid msg',
+    noGlobsEvalMsg: 'no globs'
+  }
 
+  return (
     <Wrapper>
       <h1>Superinput Inspector</h1>
       <Section>
         <h2>Valid</h2>
-        <SiTemplate value={code1} maxHeight="100px" globs={globs} />
+        <SiTemplate value={code1} maxHeight="100px" globs={globs} {...msgs} />
       </Section>
       <Section>
         <h2>Invalid</h2>
-        <SiTemplate value={code2} maxHeight="100px" globs={globs} />
+        <SiTemplate value={code2} maxHeight="100px" globs={globs} {...msgs} />
       </Section>
       <Section>
         <h2>Something Else</h2>
-        <SiTemplate value={code3} maxHeight="300px" globs={globs} />
+        <SiTemplate value={code3} maxHeight="300px" {...msgs} />
       </Section>
     </Wrapper>
   )
