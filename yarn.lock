@@ -30590,6 +30590,8 @@ __metadata:
     node-sass: ^7.0.1
     parcel: ^2.2.1
     postcss: ^8.4.5
+    react: ^17.0.2
+    react-dom: ^17.0.2
     react-json-tree: ^0.16.0
     rollup: ^2.64.0
     rollup-plugin-browserify-transform: ^1.0.1
