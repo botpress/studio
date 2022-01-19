@@ -5,10 +5,11 @@ import { history, historyKeymap } from '@codemirror/history'
 import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 import { placeholder as placeholderExt, keymap, EditorView } from '@codemirror/view'
 import { useCodeMirror } from '@uiw/react-codemirror'
-import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState, useRef, MutableRefObject } from 'react'
+
 import EditorFrame from './EditorFrame'
 import EvalPanel from './EvalPanel'
-import { BPLang, hoverInspect, bpAutocomplete, exprDecorator, botpressTheme } from './extensions'
+import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extensions'
 import { ISiTemplateProps } from './types'
 import { evalStrTempl } from './utils/tokenEval'
 
@@ -45,7 +46,7 @@ export default function SiTemplate({
       exprDecorator(globs),
       history(),
       closeBrackets(),
-      // botpressTheme,
+      botpressTheme,
       keymap.of([...closeBracketsKeymap, ...historyKeymap, ...completionKeymap])
     ],
     onUpdate: update => {

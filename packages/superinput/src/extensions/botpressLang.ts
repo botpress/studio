@@ -1,7 +1,7 @@
-import { javascriptLanguage, javascript } from '@codemirror/lang-javascript'
-import { LRLanguage, LanguageSupport } from '@codemirror/language'
-import { parseMixed } from '@lezer/common'
 import { parser } from '@lezer/markdown'
+import { parseMixed } from '@lezer/common'
+import { LRLanguage, LanguageSupport } from '@codemirror/language'
+import { javascriptLanguage, javascript } from '@codemirror/lang-javascript'
 
 import jsRange from '../utils/jsRange'
 
@@ -12,7 +12,7 @@ const botpressLang = LRLanguage.define({
       return {
         parser: javascriptLanguage.parser,
         overlay: docInput.doc.text.reduce((accu: any, line: string) => {
-          const matches = jsRange(line)
+          let matches = jsRange(line)
 
           if (!matches) {
             pos += line.length + 1 || 1
