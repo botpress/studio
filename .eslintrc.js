@@ -11,8 +11,7 @@ module.exports = {
       './packages/studio-*/tsconfig.json',
       './packages/ui-shared/tsconfig.json',
       './scripts/tsconfig.json',
-      './packages/super-input/tsconfig.json',
-      './packages/superinput/tsconfig.json'
+      './packages/super-input/tsconfig.json'
     ],
     tsconfigRootDir: __dirname,
     sourceType: 'module'
