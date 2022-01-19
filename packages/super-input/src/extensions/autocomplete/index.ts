@@ -1,7 +1,6 @@
 import { autocompletion, Completion, CompletionContext } from '@codemirror/autocomplete'
 import { cursorSubwordForward } from '@codemirror/commands'
 import { syntaxTree } from '@codemirror/language'
-import { EditorView } from '@codemirror/view'
 import TreeModel from 'tree-model'
 
 import { fallback, docTree } from '../../docsTree.json'
@@ -101,7 +100,7 @@ const globsCompletions = (globs: any) => {
       return makeCompletionFrom(nodeBefore.from, globs, fullDocTree)
     } else if (nodeBefore.name === '{' && nodeBefore.parent?.name === 'Block') {
       return makeCompletionFrom(ctx.pos, globs, fullDocTree, key => {
-        return (view: EditorView, completion: Completion, from: number) => {
+        return (view: Parameters<typeof cursorSubwordForward>[0], completion: Completion, from: number) => {
           const applyStr = ` ${key} `
           view.dispatch({
             changes: { from, insert: applyStr }
@@ -111,7 +110,7 @@ const globsCompletions = (globs: any) => {
       })
     } else if (ctx.explicit && !DONT_COMPLETE_IN.includes(nodeBefore.name)) {
       return makeCompletionFrom(ctx.pos, globs, fullDocTree, key => {
-        return (view: EditorView, completion: Completion, from: number) => {
+        return (view: Parameters<typeof cursorSubwordForward>[0], completion: Completion, from: number) => {
           const applyStr = `{{ ${key} }}`
           view.dispatch({
             changes: { from, insert: applyStr }

@@ -8,7 +8,7 @@ import { useCodeMirror } from '@uiw/react-codemirror'
 import React, { MutableRefObject, useEffect, useRef, useState } from 'react'
 import EditorFrame from './EditorFrame'
 import EvalPanel from './EvalPanel'
-import { BPLang, hoverInspect, bpAutocomplete, exprDecorator, botpressTheme } from './extensions'
+import { BPLang, hoverInspect, bpAutocomplete, exprDecorator } from './extensions'
 import { ISiTemplateProps } from './types'
 import { evalStrTempl } from './utils/tokenEval'
 
@@ -45,8 +45,7 @@ export default function SiTemplate({
       exprDecorator(globs),
       history(),
       closeBrackets(),
-      // botpressTheme,
-      keymap.of([...closeBracketsKeymap, ...historyKeymap, ...completionKeymap])
+      keymap.of([...closeBracketsKeymap, ...historyKeymap, ...completionKeymap] as any)
     ],
     onUpdate: update => {
       const { view } = update
