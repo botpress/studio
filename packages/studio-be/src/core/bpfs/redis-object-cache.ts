@@ -19,7 +19,7 @@ export class RedisObjectCache implements ObjectCache, IInitializeFromConfig {
   private _memCache: MemoryObjectCache
 
   constructor(@inject(TYPES.FileCacheInvalidator) private cacheInvalidator: CacheInvalidators.FileChangedInvalidator) {
-    console.log('Using Redis Cache', process)
+    console.log('Using Redis Cache', process.env)
 
     this.cacheInvalidator.install(this)
     this._memCache = new MemoryObjectCache(cacheInvalidator)
