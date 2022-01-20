@@ -124,7 +124,7 @@ const Sidebar: FC<Props> = (props) => {
         {window.IS_BOT_MOUNTED ? (
           <Fragment>
             {BASIC_MENU_ITEMS.map(renderBasicItem)}
-            {props.modules.filter((m) => !m.noInterface).map(renderModuleItem)}
+            {!props.isCloudBot && props.modules.filter(m => !m.noInterface).map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         ) : (
@@ -140,7 +140,8 @@ const Sidebar: FC<Props> = (props) => {
 
 const mapStateToProps = (state: RootReducer) => ({
   viewMode: state.ui.viewMode,
-  modules: state.modules
+  modules: state.modules,
+  isCloudBot: Boolean(state.bot.isCloudBot)
 })
 
 export default withRouter(connect(mapStateToProps)(Sidebar))
