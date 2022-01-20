@@ -5,7 +5,7 @@ import { cursorSubwordForward } from '@codemirror/commands'
 import TreeModel from 'tree-model'
 
 import InfoCard from './InfoCard'
-import { libs } from '../../../utils/tokenEval'
+import { libs } from '../../utils/tokenEval'
 import { DocNode } from './types'
 import { fallback, docTree } from '../../docsTree.json'
 
