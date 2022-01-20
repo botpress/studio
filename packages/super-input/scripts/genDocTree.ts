@@ -1,6 +1,7 @@
 // @ts-check
 import * as TJS from 'typescript-json-schema'
 import fs from 'fs'
+import { join } from 'path'
 import glob from 'glob'
 import TreeModel from 'tree-model'
 
@@ -155,4 +156,4 @@ const docs = {
   fallback
 }
 
-fs.writeFileSync('./src/SuperInput/docsTree.json', JSON.stringify(docs))
+fs.writeFileSync(join(__dirname, '../src/docsTree.json'), JSON.stringify(docs))
