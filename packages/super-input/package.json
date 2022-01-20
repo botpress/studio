@@ -2,6 +2,12 @@
   "name": "@botpress/superinput",
   "version": "0.1.0",
   "private": true,
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "@codemirror/autocomplete": "^0.19.9",
     "@codemirror/closebrackets": "^0.19.0",
@@ -39,7 +45,8 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "build:doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
   },
   "eslintConfig": {
@@ -63,8 +70,17 @@
     "@blueprintjs/core": "*"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "@rollup/plugin-typescript": "^8.3.0",
     "@types/node": "^17.0.9",
     "glob": "^7.2.0",
+    "rollup": "^2.64.0",
+    "rollup-plugin-dts": "^4.1.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-terser": "^7.0.2",
     "ts-node": "^10.4.0",
     "typescript-json-schema": "^0.53.0"
   }
