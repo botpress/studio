@@ -3,7 +3,7 @@ import { parseMixed } from '@lezer/common'
 import { LRLanguage, LanguageSupport } from '@codemirror/language'
 import { javascriptLanguage, javascript } from '@codemirror/lang-javascript'
 
-import jsRange from '../../utils/jsRange'
+import jsRange from '../utils/jsRange'
 
 const botpressLang = LRLanguage.define({
   parser: parser.configure({

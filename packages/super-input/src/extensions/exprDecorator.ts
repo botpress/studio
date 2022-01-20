@@ -1,7 +1,7 @@
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view'
 
-import jsRange from '../../utils/jsRange'
-import { evalMatchToken } from '../../utils/tokenEval'
+import jsRange from '../utils/jsRange'
+import { evalMatchToken } from '../utils/tokenEval'
 
 const validHighlight = Decoration.mark({ class: 'cm-block valid' })
 const invalidHighlight = Decoration.mark({ class: 'cm-block invalid' })

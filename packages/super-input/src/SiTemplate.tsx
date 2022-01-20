@@ -10,7 +10,7 @@ import { oneDarkHighlightStyle } from '@codemirror/theme-one-dark'
 import EditorFrame from './EditorFrame'
 import EvalPanel from './EvalPanel'
 import { botpressTheme, bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extensions'
-import { evalStrTempl } from '../utils/tokenEval'
+import { evalStrTempl } from './utils/tokenEval'
 import { ISiTemplateProps } from './types'
 
 export default function SiTemplate({
