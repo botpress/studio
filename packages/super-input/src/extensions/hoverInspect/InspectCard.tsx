@@ -1,15 +1,7 @@
+import React from 'react'
 import ReactDOM from 'react-dom'
-import JSONTree from 'react-json-tree'
+import ReactJson from 'react-json-view'
 import './InspectCard.scss'
-
-// const json = {
-//   something: 'thing',
-//   something2: 12345,
-//   booleanstoo: true,
-//   whyNot: {
-//     ooo: 'ahhhh'
-//   }
-// }
 
 const theme = {
   scheme: 'monokai',
@@ -37,14 +29,18 @@ interface IInspectCardProps {
   inspect: any
 }
 
-const InspectCard = (props: IInspectCardProps) => {
-  const { title, inspect } = props
+const InspectCard = ({ title, inspect }: IInspectCardProps) => {
   let dom = document.createElement('div')
   ReactDOM.render(
     <>
-      <h3 className="bp3-ui-text inspectHeader">{title}</h3>
-      <div className="inspectTree">
-        <JSONTree data={inspect} theme={theme} invertTheme={false} />
+      <div className="infoCard-evals">
+        <h5 className="bp3-heading">{title}</h5>
+        <strong className="bp3-text-small">Evaluates to: </strong>
+        {typeof inspect === 'object' ? (
+          <ReactJson name={false} src={inspect} collapsed={1} indentWidth={2} />
+        ) : (
+          <span className="bp3-tag bp3-minimal">{inspect}</span>
+        )}
       </div>
     </>,
     dom

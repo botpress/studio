@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { IPanelProps } from './types'
 
 const EvalPanel = ({ valid, text }: IPanelProps) => {

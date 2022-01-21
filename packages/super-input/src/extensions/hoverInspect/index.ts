@@ -5,15 +5,13 @@ import InspectCard from './InspectCard'
 import { fallback } from '../../docsTree.json'
 
 const hoverInspect = (globs: any) => {
-  if (!globs) globs = fallback
-
   return hoverTooltip(
     (view, pos, side) => {
       let { from, to, text } = view.state.doc.lineAt(pos)
-      // console.log('TEST HERE: ', `[${text[pos - 1]}]`, `[${text[pos]}]`, `[${text[pos + 1]}]`)
       let nodeBefore = syntaxTree(view.state).resolveInner(pos, 0)
       const object = nodeBefore.parent?.getChild('Expression')
 
+      if (!globs) return null
       if (
         !['VariableName', 'PropertyName'].find(el => el === nodeBefore.name) &&
         !['MemberExpression', 'ExpressionStatement'].find(el => el === nodeBefore.parent?.name)
@@ -44,6 +42,7 @@ const hoverInspect = (globs: any) => {
         title = [...varPath, hoverWord].join('.')
       }
 
+      console.log(inspect)
       return {
         pos: start,
         end,

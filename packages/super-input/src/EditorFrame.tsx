@@ -1,3 +1,4 @@
+import React from 'react'
 import { forwardRef } from 'react'
 
 const EditorFrame = forwardRef((props: any, ref: any) => {

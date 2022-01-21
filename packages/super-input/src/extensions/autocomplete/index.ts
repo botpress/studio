@@ -5,7 +5,6 @@ import { cursorSubwordForward } from '@codemirror/commands'
 import TreeModel from 'tree-model'
 
 import InfoCard from './InfoCard'
-import { libs } from '../../utils/tokenEval'
 import { DocNode } from './types'
 import { fallback, docTree } from '../../docsTree.json'
 
@@ -62,10 +61,7 @@ const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, app
 
 const globsCompletions = (globs: any) => {
   if (!globs) globs = fallback
-  globs = {
-    ...globs,
-    ...libs
-  }
+
   return (ctx: CompletionContext) => {
     const nodeBefore = syntaxTree(ctx.state).resolveInner(ctx.pos, -1)
 

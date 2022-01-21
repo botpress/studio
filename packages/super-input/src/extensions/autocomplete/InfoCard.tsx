@@ -1,3 +1,4 @@
+import React from 'react'
 import ReactDOM from 'react-dom'
 import { InfoCardComponent } from './types'
 import { Icon, IconSize } from '@blueprintjs/core'

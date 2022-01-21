@@ -1,20 +1,19 @@
-import { ViewUpdate } from '@codemirror/view'
-
 export interface IPanelProps {
   valid: boolean | null
   text: string
 }
 
-interface ISiProps {
+export enum SI_TYPES {
+  TEMPLATE = 0,
+  EXPRESSION = 1,
+  BOOL = 2
+}
+
+export interface ISiProps {
+  noGlobsEvalMsg: string
+  type?: SI_TYPES
   globs?: any
   value?: string
   placeholder?: string
-  maxHeight?: string
-  invalEvalMsg: string
-  noGlobsEvalMsg: string
   onChange?: (newValue: string) => any
 }
-
-export interface ISiBoolProps extends ISiProps {}
-export interface ISiTemplateProps extends ISiProps {}
-export interface ISiExpressionProps extends ISiProps {}

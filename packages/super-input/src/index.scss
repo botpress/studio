@@ -21,6 +21,10 @@ $pt-border-radius: 3px;
     color: $ocean;
   }
 
+  .cmt-bool {
+    color: $bool;
+  }
+
   .cmt-propertyName {
     color: $success;
   }
@@ -139,13 +143,10 @@ $pt-border-radius: 3px;
     border-radius: 2px;
 
     &.valid {
-      background: rgba(164, 255, 158, 0.8);
+      background: rgba($green5, 0.5);
     }
     &.invalid {
-      background: rgba(255, 149, 149, 0.8);
-    }
-    &.def {
-      background: rgba(255, 245, 158, 0.8);
+      background: rgba($red5, 0.5);
     }
   }
 }
@@ -177,5 +178,11 @@ $pt-border-radius: 3px;
     background: mix($red5, white, 20%);
     color: $red1;
     border: 1px solid $red5;
+  }
+
+  &.no-globs {
+    background: mix($lighthouse, white, 20%);
+    color: $lighthouse;
+    border: 1px solid $lighthouse;
   }
 }

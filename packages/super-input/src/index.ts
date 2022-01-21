@@ -1,7 +1,6 @@
-import SiBool from './SiBool'
-import SiTemplate from './SiTemplate'
-import SiExpression from './SiExpression'
+import Superinput from './Superinput'
+import { SI_TYPES } from './types'
 
 import './index.scss'
 
-export { SiBool, SiTemplate, SiExpression }
+export { Superinput, SI_TYPES }

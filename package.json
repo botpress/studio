@@ -68,7 +68,8 @@
     "packages/studio-ui",
     "packages/studio-be",
     "packages/ui-shared",
-    "packages/ui-shared-lite"
+    "packages/ui-shared-lite",
+    "packages/super-input"
   ],
   "resolutions": {
     "fstream": ">=1.0.12",

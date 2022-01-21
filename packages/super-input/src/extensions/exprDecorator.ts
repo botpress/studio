@@ -1,16 +1,12 @@
 import { EditorView, Decoration, DecorationSet, ViewPlugin, ViewUpdate } from '@codemirror/view'
 
 import jsRange from '../utils/jsRange'
-import { evalMatchToken } from '../utils/tokenEval'
+import { isError, rmDelim, verifyJs, evalToken } from '../utils/tokenEval'
 
 const validHighlight = Decoration.mark({ class: 'cm-block valid' })
 const invalidHighlight = Decoration.mark({ class: 'cm-block invalid' })
-const defHighlight = Decoration.mark({ class: 'cm-block def' })
-const boldText = Decoration.mark({ class: 'cm-block bold' })
 
 const exprDecorator = (globs: any) => {
-  // if (!globs) return []
-
   const highlight = (view: EditorView): DecorationSet => {
     const docStr = view.state.doc.sliceString(0)
     const matches = jsRange(docStr)
@@ -22,9 +18,14 @@ const exprDecorator = (globs: any) => {
       const to = from + match.length
       pos = to
 
-      if (!globs) return defHighlight.range(from, to)
-      if (evalMatchToken(match, globs) !== undefined) return validHighlight.range(from, to)
-      else return invalidHighlight.range(from, to)
+      if (globs) {
+        const res = evalToken(rmDelim(match), globs)
+        if (res && !isError(res)) return validHighlight.range(from, to)
+        else return invalidHighlight.range(from, to)
+      } else {
+        if (verifyJs(rmDelim(match))) return validHighlight.range(from, to)
+        else return invalidHighlight.range(from, to)
+      }
     })
 
     return Decoration.set(decos)

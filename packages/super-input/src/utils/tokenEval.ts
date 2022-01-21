@@ -1,21 +1,53 @@
-import _ from 'lodash'
-import vm from 'vm'
+import * as espree from 'espree'
+import memoize from 'fast-memoize'
 
 import jsRange from './jsRange'
 
-// add libs here
-export const libs = {
-  _,
-  Math
+const sandboxProxies = new WeakMap()
+
+function has(target: any, key: any) {
+  return true
 }
 
-const timeout = 1500 // timeout in ms
+function get(target: any, key: any) {
+  if (key === Symbol.unscopables) return undefined
+  return target[key]
+}
 
-function _evalToken(token: string, vars: any = {}) {
+function _evalToken(token: string, vars: any) {
+  token = token.replace(/ /g, '').replace(/;/g, '')
+  if (!token) return undefined
+  if (!verifyJs(token)) return undefined
+  console.log('varsbiw: ', vars)
+  const src = 'with(sandbox){try{return(' + token + ')}catch(e){return(e)}}'
   try {
-    return vm.runInNewContext(token, { ...vars, ...libs }, { timeout })
-  } catch {
+    // eslint-disable-next-line no-new-func
+    const code = new Function('sandbox', src)
+
+    return (function(sandbox) {
+      if (!sandboxProxies.has(sandbox)) {
+        const sandboxProxy = new Proxy(sandbox, { has, get })
+        sandboxProxies.set(sandbox, sandboxProxy)
+      }
+      return code(sandboxProxies.get(sandbox))
+    })(vars)
+  } catch (e) {
     return undefined
+  }
+}
+export const evalToken = memoize(_evalToken)
+
+export function isError(str: string): boolean {
+  str = String(str)
+  return str.startsWith('TypeError') || str.startsWith('Error')
+}
+
+export function verifyJs(js: string): boolean {
+  try {
+    espree.parse(js)
+    return true
+  } catch {
+    return false
   }
 }
 
@@ -23,26 +55,21 @@ export function rmDelim(str: string) {
   return str.replace('{{', '').replace('}}', '')
 }
 
-export function evalToken(token: string, vars: any = {}) {
-  return _evalToken(token, vars)
-}
-
-export function evalMatchToken(token: string, vars: any = {}) {
-  return _evalToken(rmDelim(token), vars)
-}
-
 export function evalStrTempl(str: string, vars: any = {}) {
-  let invalid = false
+  let invalid = null
 
   const matches = jsRange(str)
   if (!matches) return str
 
   matches.forEach(m => {
     let out = rmDelim(m)
-    out = _evalToken(out, vars)
-    if (!out) invalid = true
+    out = evalToken(out, vars)
+    if (!out) invalid = `Error: ${m} evaluated to undefined`
+    out = String(out)
+    if (isError(out)) invalid = out
+
     str = str.replace(m, out)
   })
 
-  return invalid ? 'INVALID' : str
+  return invalid ? invalid : str
 }
