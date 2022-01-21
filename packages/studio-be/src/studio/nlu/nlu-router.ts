@@ -239,14 +239,14 @@ export class NLURouter extends CustomStudioRouter {
      * #######################################
      */
     this.router.get(
-      '/health',
+      ['/health', '/info'],
       this.asyncMiddleware(async (req, res) => {
-        const health = await this.nluService.app?.getHealth()
+        const info = await this.nluService.app?.getInfo()
 
-        if (!health) {
+        if (!info) {
           return res.status(404).send('NLU Server is unreachable')
         }
-        return res.send(health)
+        return res.send(info)
       })
     )
 

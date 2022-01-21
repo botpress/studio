@@ -1,4 +1,4 @@
-import { Health } from '@botpress/nlu-client'
+import { Specifications } from '@botpress/nlu-client'
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
 
@@ -10,6 +10,11 @@ import { BotConfig } from './typings'
 
 interface Config {
   queueTrainingsOnBotMount: boolean
+}
+
+interface ServerInfo {
+  specs: Specifications
+  languages: string[]
 }
 
 export class NLUApplication {
@@ -28,10 +33,10 @@ export class NLUApplication {
     }
   }
 
-  public async getHealth(): Promise<Health | undefined> {
+  public async getInfo(): Promise<ServerInfo | undefined> {
     try {
-      const { health } = await this._nluClient.getInfo()
-      return health
+      const info = await this._nluClient.getInfo()
+      return info
     } catch (err) {
       this._logger.attachError(err).error('An error occured when fetch info from NLU Server.')
       return
