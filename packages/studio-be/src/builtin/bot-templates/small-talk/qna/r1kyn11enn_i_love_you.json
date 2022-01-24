@@ -36,6 +36,7 @@
     "redirectNode": "node-1fe2",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

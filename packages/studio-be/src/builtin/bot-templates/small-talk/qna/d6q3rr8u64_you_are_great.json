@@ -31,17 +31,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "Thanks, but you should say that to my creators!"
-      ],
-      "fr": [
-        "Merci, vous êtres trop gentil, mais vous devriez garder vos éloges pour mes créateurs!"
-      ]
+      "en": ["Thanks, but you should say that to my creators!"],
+      "fr": ["Merci, vous êtres trop gentil, mais vous devriez garder vos éloges pour mes créateurs!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

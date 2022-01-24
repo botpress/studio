@@ -2,12 +2,8 @@
   "id": "pfd6iuovva_what_are_you_doing",
   "data": {
     "answers": {
-      "en": [
-        "Nothing much. I am just chilling and training natural language models!"
-      ],
-      "fr": [
-        "Pas grand chose, je me détends et j'entraine des models linguistiques naturelles!"
-      ]
+      "en": ["Nothing much. I am just chilling and training natural language models!"],
+      "fr": ["Pas grand chose, je me détends et j'entraine des models linguistiques naturelles!"]
     },
     "questions": {
       "en": [
@@ -40,6 +36,7 @@
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

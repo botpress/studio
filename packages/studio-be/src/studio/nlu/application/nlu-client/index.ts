@@ -10,6 +10,17 @@ interface Options {
   cloud?: CloudConfig
 }
 
+/**
+ * in "@botpress/nlu-client@v1.0.0": typeof response.error === "string"
+ * in "@botpress/nlu-client@v1.0.1": typeof response.error === "object"
+ */
+export interface NLUError {
+  message: string
+  stack?: string
+  type: string
+  code: number
+}
+
 export type TrainListener = (
   tp: TrainingState | undefined
 ) => Promise<{ keepListening: true } | { keepListening: false; err?: Error }>
@@ -100,7 +111,11 @@ export class NLUClient {
     }
   }
 
-  private _throwError(err: string): never {
-    throw new Error(`An error occured in NLU server: ${err}`)
+  private _throwError(err: string | NLUError): never {
+    const prefix = 'An error occured in NLU server'
+    if (_.isString(err)) {
+      throw new Error(`${prefix}: ${err}`)
+    }
+    throw new Error(`${prefix}: ${err.message}`)
   }
 }

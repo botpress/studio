@@ -28,17 +28,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "I am a few days old only, so I'm still learning!"
-      ],
-      "fr": [
-        "J'ai suis né depuis quelques jours seulement, j'apprends encore!"
-      ]
+      "en": ["I am a few days old only, so I'm still learning!"],
+      "fr": ["J'ai suis né depuis quelques jours seulement, j'apprends encore!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }
