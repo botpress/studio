@@ -349,7 +349,7 @@ export class BotService {
       }
 
       await scopedGhost.upsertFile('/', BOT_CONFIG_FILENAME, stringify(mergedConfigs))
-      await scopedGhost.upsertFiles('/', files)
+      await scopedGhost.upsertFiles('/', files, { ignoreLock: true })
 
       await this.addContentTypes(scopedGhost)
       await this.addHooks(scopedGhost)

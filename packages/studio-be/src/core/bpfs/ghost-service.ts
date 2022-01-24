@@ -254,12 +254,12 @@ export class ScopedGhostService {
     }
   }
 
-  async upsertFiles(rootFolder: string, content: FileContent[], options?: UpsertOptions): Promise<void> {
+  async upsertFiles(rootFolder: string, content: FileContent[], options?: UpsertOptions): Promise<void[]> {
     if (options && !options.ignoreLock) {
       await this._assertBotUnlocked(rootFolder)
     }
 
-    await Promise.all(content.map(c => this.upsertFile(rootFolder, c.name, c.content)))
+    return Promise.map(content, c => this.upsertFile(rootFolder, c.name, c.content, options))
   }
 
   public async exportToDirectory(directory: string, excludes?: string | string[]): Promise<string[]> {
