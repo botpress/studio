@@ -1,3 +1,34 @@
+## [0.0.46](https://github.com/botpress/studio/compare/v0.0.45...v0.0.46) (2022-01-14)
+
+
+### Bug Fixes
+
+* **flow:** reverse flow name condition ([a613812](https://github.com/botpress/studio/commit/a613812fca07b044d6710f3e41bd86caddcb4b53))
+
+
+
+## [0.0.45](https://github.com/botpress/studio/compare/v0.0.44...v0.0.45) (2022-01-14)
+
+
+### Bug Fixes
+
+* **copy:** copying skill makes clone but uses same cms content ([79d728e](https://github.com/botpress/studio/commit/79d728e3b959fe649b973e04749651093d97acda))
+* **copy:** imperatively create flows bc side-effect selector out of sync ([b957b5b](https://github.com/botpress/studio/commit/b957b5b1f505a1443b9e8b30bf018891dbab1339))
+* **flow:** tiny z-index css fix ([b97fbf4](https://github.com/botpress/studio/commit/b97fbf4b916f48cc3bda8e33849d9add3e4ed5a8))
+* **layout:** bottom panel maintain size ([3a943a9](https://github.com/botpress/studio/commit/3a943a904cd7ffffd3d305413078907146db2413))
+* **nlu:** trim entity occurences on change ([#223](https://github.com/botpress/studio/issues/223)) ([6588327](https://github.com/botpress/studio/commit/658832766e1346d082de9d567b0868de0cdeab06))
+* **studio:** add content notice translations ([96e4611](https://github.com/botpress/studio/commit/96e461151a8567f82daadfa739efa2e9dd1d6612))
+* **studio:** prevent skills folder with casing ([32823b2](https://github.com/botpress/studio/commit/32823b262baa3133aa7654219ce54f68271801e2))
+* **ui:** remove enterprise callout for enterprise user ([72f26ed](https://github.com/botpress/studio/commit/72f26ed55cca3b081270207795fbbf186eb960f5))
+
+
+### Features
+
+* **content:** add notice when content shared ([ec8ef0c](https://github.com/botpress/studio/commit/ec8ef0cd4cb22029c46087a6cf5c3c375a874e9b))
+* **studio:** add warning when editing shared content ([bb8bc30](https://github.com/botpress/studio/commit/bb8bc30c3c739ae7ddbaba8083d2ae18b9f6f429))
+
+
+
 ## [0.0.44](https://github.com/botpress/studio/compare/v0.0.42...v0.0.44) (2021-12-02)
 
 

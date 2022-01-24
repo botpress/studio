@@ -1,7 +1,7 @@
 name: Pre-Release
 on:
   pull_request:
-    types: [opened, reopened, synchronize, converted_to_draft, ready_for_review]
+    types: [synchronize, review_requested]
 
 jobs:
   pre_release_bin:

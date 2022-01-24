@@ -217,6 +217,7 @@ export class StudioRouter extends CustomRouter {
               window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
               window.IS_CLOUD_BOT = ${bot.isCloudBot}
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
+              window.IS_PRO_ENABLED = ${process.IS_PRO_ENABLED};
             })(typeof window != 'undefined' ? window : {})
           `
 

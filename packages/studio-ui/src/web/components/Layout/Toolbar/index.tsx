@@ -27,11 +27,15 @@ const Toolbar: FC<Props> = props => {
   return (
     <header className={style.toolbar}>
       <div className={style.list}>
-        <Tooltip position="right-bottom" content={lang.tr('studio.flow.toolbar.salesCallToActionDescription')}>
-          <a className={style.cta_btn} target="_blank" href="https://botpress.com/free-trial?ref=bp-studio">
-            {lang.tr('studio.flow.toolbar.salesCallToAction')}
-          </a>
-        </Tooltip>
+        {window.IS_PRO_ENABLED ? (
+          <span />
+        ) : (
+          <Tooltip position="right-bottom" content={lang.tr('studio.flow.toolbar.salesCallToActionDescription')}>
+            <a className={style.cta_btn} target="_blank" href="https://botpress.com/request-trial-from-app">
+              {lang.tr('studio.flow.toolbar.salesCallToAction')}
+            </a>
+          </Tooltip>
+        )}
         <div>
           {!!hasDoc && (
             <Fragment>
