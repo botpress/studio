@@ -86,9 +86,8 @@ export default class Storage {
       utterances[lang] = normalizeQuestions(qnaItem.data.questions[lang])
     }
 
-    const intent = {
+    const intent: sdk.NLU.IntentDefinition = {
       name: intentName,
-      entities: [],
       contexts: qnaItem.data.contexts,
       utterances,
       slots: []

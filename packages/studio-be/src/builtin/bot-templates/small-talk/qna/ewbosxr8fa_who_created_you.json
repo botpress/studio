@@ -30,17 +30,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "I was created by the great team at Botpress"
-      ],
-      "fr": [
-        "J'ai été construit par la merveilleuse équipe chez Botpress!"
-      ]
+      "en": ["I was created by the great team at Botpress"],
+      "fr": ["J'ai été construit par la merveilleuse équipe chez Botpress!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }
