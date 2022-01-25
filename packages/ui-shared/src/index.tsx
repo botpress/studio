@@ -35,7 +35,7 @@ import TreeView from './TreeView'
 import { createDateRangeShortcuts, relativeDates } from './utils/dates'
 import { isInputFocused } from './utils/inputs'
 import { inspect } from './utils/inspect'
-import { controlKey, keyMap } from './utils/keyboardShortcuts'
+import { controlKey, shortControlKey, keyMap } from './utils/keyboardShortcuts'
 
 exports.isOperationAllowed = isOperationAllowed
 exports.Checkbox = Checkbox
@@ -75,7 +75,7 @@ exports.lang = {
   defaultLocale
 }
 exports.toast = toast
-exports.utils = { controlKey, keyMap, isInputFocused, inspect, storage }
+exports.utils = { controlKey, shortControlKey, keyMap, isInputFocused, inspect, storage }
 exports.telemetry = {
   startFallback,
   sendTelemetry

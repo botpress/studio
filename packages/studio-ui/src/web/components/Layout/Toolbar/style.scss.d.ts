@@ -9,7 +9,7 @@ interface CssExports {
   'item': string;
   'itemSpacing': string;
   'label': string;
-  'list': string;
+  'layoutControls': string;
   'shortcut': string;
   'shortcutLabel': string;
   'toolbar': string;

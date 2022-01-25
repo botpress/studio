@@ -1,99 +1,69 @@
-import { Icon, Tooltip } from '@blueprintjs/core'
-import { lang, ShortcutLabel } from 'botpress/shared'
-import classNames from 'classnames'
-import React, { FC, Fragment } from 'react'
+import { Button, Position } from '@blueprintjs/core'
+import { ToolTip, utils } from 'botpress/shared'
+import cx from 'classnames'
+import React, { FC, useEffect } from 'react'
+import { RiLayoutLeftLine, RiLayoutRightLine, RiLayoutBottomLine } from 'react-icons/ri'
 import { connect } from 'react-redux'
-import { AccessControl } from '~/components/Shared/Utils'
+import { toggleBottomPanel } from '~/actions'
 
 import { RootReducer } from '../../../reducers'
+import EnterPriseTrial from './EnterpriseTrial'
+import RightToolBar from './RightToolbar'
 
 import style from './style.scss'
 
-interface OwnProps {
-  isEmulatorOpen: boolean
-  hasDoc: boolean
-  toggleDocs: () => void
-  toggleBottomPanel: () => void
-  onToggleEmulator: () => void
-}
-
-type StateProps = ReturnType<typeof mapStateToProps>
-
-type Props = StateProps & OwnProps
+type Props = ReturnType<typeof mapStateToProps> & typeof mapDispatchToProps
 
 const Toolbar: FC<Props> = props => {
-  const { toggleDocs, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props
+  // YOU ARE AT Toggling the emulator and toggling left panel  (on every page)
+
+  // TODO move this somewhere else, it seems to be all around the app
+  const toggleEmulator = () => {
+    window.botpressWebChat.sendEvent({ type: 'toggle' })
+  }
+
+  useEffect(() => {
+    console.log('bottom panel changes', props.isBottomPanelOpen)
+  }, [props.isBottomPanelOpen])
+
+  // TODO add active / deactive state for each panel
 
   return (
-    <header className={style.toolbar}>
-      <div className={style.list}>
-        {window.IS_PRO_ENABLED ? (
-          <span />
-        ) : (
-          <Tooltip position="right-bottom" content={lang.tr('studio.flow.toolbar.salesCallToActionDescription')}>
-            <a className={style.cta_btn} target="_blank" href="https://botpress.com/request-trial-from-app">
-              {lang.tr('studio.flow.toolbar.salesCallToAction')}
-            </a>
-          </Tooltip>
-        )}
-        <div>
-          {!!hasDoc && (
-            <Fragment>
-              <Tooltip
-                content={
-                  <div className={style.tooltip}>
-                    {lang.tr('toolbar.help')}
-                    <div className={style.shortcutLabel}>
-                      <ShortcutLabel light shortcut="docs-toggle" />
-                    </div>
-                  </div>
-                }
-              >
-                <button className={style.item} onClick={toggleDocs}>
-                  <Icon color="#1a1e22" icon="help" iconSize={16} />
-                </button>
-              </Tooltip>
-              <span className={style.divider}></span>
-            </Fragment>
-          )}
-          <AccessControl resource="bot.logs" operation="read">
-            <Tooltip
-              content={
-                <div className={style.tooltip}>
-                  {lang.tr('toolbar.bottomPanel')}
-                  <div className={style.shortcutLabel}>
-                    <ShortcutLabel light shortcut="bottom-bar" />
-                  </div>
-                </div>
-              }
-            >
-              <button className={style.item} id="toggle-bottom-panel" onClick={toggleBottomPanel}>
-                <Icon color="#1a1e22" icon="console" iconSize={16} />
-              </button>
-            </Tooltip>
-          </AccessControl>
-          {window.IS_BOT_MOUNTED && (
-            <Tooltip content={<ShortcutLabel light shortcut="emulator-focus" />}>
-              <button
-                className={classNames(style.item, style.itemSpacing, { [style.active]: isEmulatorOpen })}
-                onClick={onToggleEmulator}
-                id="statusbar_emulator"
-              >
-                <Icon color="#1a1e22" icon="chat" iconSize={16} />
-                <span className={style.label}>{lang.tr('toolbar.emulator')}</span>
-              </button>
-            </Tooltip>
-          )}
-        </div>
+    <nav className={style.toolbar}>
+      <EnterPriseTrial />
+      <div className={style.layoutControls}>
+        <ToolTip content={`${utils.shortControlKey} B toggle left pannel`} position={Position.BOTTOM}>
+          <Button className={cx({ [style.active]: false })} icon={<RiLayoutLeftLine size={17} />} />
+        </ToolTip>
+        <ToolTip content={`${utils.shortControlKey} J toggle bottom pannel`} position={Position.BOTTOM}>
+          <Button
+            className={cx({ [style.active]: props.isBottomPanelOpen })}
+            icon={<RiLayoutBottomLine size={17} />}
+            onClick={props.toggleBottomPanel}
+          />
+        </ToolTip>
+        <ToolTip content={`${utils.shortControlKey} E toggle Emulator`} position={Position.BOTTOM}>
+          <Button
+            className={cx({ [style.active]: props.isEmulatorOpen })}
+            icon={<RiLayoutRightLine size={17} />}
+            onClick={toggleEmulator}
+          />
+        </ToolTip>
       </div>
-    </header>
+      <RightToolBar />
+    </nav>
   )
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  user: state.user,
   botInfo: state.bot,
-  docHints: state.ui.docHints
+  docHints: state.ui.docHints,
+  isEmulatorOpen: state.ui.emulatorOpen,
+  isBottomPanelOpen: state.ui.bottomPanel
 })
 
-export default connect(mapStateToProps)(Toolbar)
+const mapDispatchToProps = {
+  toggleBottomPanel
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbar)

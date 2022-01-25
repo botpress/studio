@@ -141,6 +141,7 @@ declare module 'botpress/shared' {
 
   export const utils: {
     controlKey: string
+    shortControlKey: string
     keyMap: { [key: string]: string }
     isInputFocused(): boolean
     /** Loads the specified data to the inspector on the bottom panel */
