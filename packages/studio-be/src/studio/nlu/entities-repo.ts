@@ -2,8 +2,8 @@ import * as sdk from 'botpress/sdk'
 import { getEntityId } from 'common/entity-id'
 import { GhostService } from 'core/bpfs'
 import { sanitizeFileName } from 'core/misc/utils'
-import * as CacheManager from '../cache-manager'
-import { NLUService } from '../nlu-service'
+import * as CacheManager from './cache-manager'
+import { NLUService } from './nlu-service'
 
 const ENTITIES_DIR = './entities'
 

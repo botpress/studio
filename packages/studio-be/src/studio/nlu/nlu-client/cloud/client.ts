@@ -1,4 +1,4 @@
-import { Client } from '@botpress/nlu-client'
+import { Client as StanClient } from '@botpress/nlu-client'
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios'
 import qs from 'querystring'
 import { cache } from './cache'
@@ -22,7 +22,7 @@ interface OauthResponse {
 
 type ErrorRetrier = AxiosError & { config: { _retry: boolean } }
 
-export class CloudClient extends Client {
+export class CloudClient extends StanClient {
   constructor(options: OauthClientProps) {
     super({ baseURL: options.baseURL, validateStatus: () => true })
 
