@@ -37,7 +37,6 @@ import {
 } from './Form/FormFields/typings'
 import { FormProps } from './Form/typings'
 
-import { MainContainerProps } from './MainContainer/typings'
 import { HeaderButton, HeaderProps } from './MainLayout/Header/typings'
 import { MenuItem, MenuProps } from './MainLayout/Menu/typings'
 import { RightSidebarProps } from './MainLayout/RightSidebar/typings'
@@ -89,7 +88,6 @@ declare module 'botpress/shared' {
   }
   export function Dropdown(props: DropdownProps): JSX.Element
   export function EmptyState(props: EmptyStateProps): JSX.Element
-  export function MainContainer(props: MainContainerProps): JSX.Element
   export function MarkdownContent(props: MarkdownContentProps): JSX.Element
   export function MoreOptions(props: MoreOptionsProps): JSX.Element
   export function MultiLevelDropdown(props: MultiLevelDropdownProps): JSX.Element

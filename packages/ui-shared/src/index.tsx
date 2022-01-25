@@ -20,7 +20,6 @@ import EmptyState from './EmptyState'
 import FileDisplay from './FileDisplay'
 import Form from './Form'
 import FormFields from './Form/FormFields'
-import MainContainer from './MainContainer'
 import MainLayout from './MainLayout'
 import MarkdownContent from './MarkdownContent'
 import * as ModuleUI from './ModuleUI'
@@ -45,7 +44,6 @@ exports.ContentSection = ContentSection
 exports.Dialog = { Wrapper, Footer, Body }
 exports.Dropdown = Dropdown
 exports.EmptyState = EmptyState
-exports.MainContainer = MainContainer
 exports.FileDisplay = FileDisplay
 exports.Form = Form
 exports.FormFields = FormFields
