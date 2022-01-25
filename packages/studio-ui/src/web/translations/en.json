@@ -25,6 +25,204 @@
     "botId": "Bot Id",
     "copyToClipboard": "Copied to clipboard"
   },
+  "contentTypes": {
+    "permissionDenied": "You don't have permission to upload files for this bot. Talk to your team owner.",
+    "uploadFileChoice": "Or upload a file",
+    "enterUrlChoice": "Or enter the URL",
+    "infoInterpreted": "This information will be interpreted:",
+    "typingIndicator": "Show typing indicators",
+    "useMarkdown": "Use markdown",
+    "markdownHelp": "Refer to this documentation for markdown syntax: ",
+    "disableFreeText": "Disable free text",
+    "actionButton": {
+      "buttonTitle": "Title of the button",
+      "description": "A button that triggers an action, often used in cards",
+      "textTitle": "Enter text or the ID of a content element (ex: #!builtin_text-myid)",
+      "title": "Action Button"
+    },
+    "card": {
+      "description": "A card message with a title with optional subtitle, image and action buttons."
+    },
+    "carousel": {
+      "cards": "Carousel cards",
+      "description": "A carousel is an array of cards",
+      "title": "Carousel"
+    },
+    "image": {
+      "description": "A message showing an image with an optional title",
+      "imageLabel": "Title",
+      "labelDesc": "Some platforms require to name the images.",
+      "title": "Image",
+      "uploadImage": "Upload Image"
+    },
+    "audio": {
+      "description": "A message showing an audio file with an optional title",
+      "audioLabel": "Title",
+      "title": "Audio"
+    },
+    "video": {
+      "description": "A message showing a video file with an optional title",
+      "videoLabel": "Title",
+      "title": "Video"
+    },
+    "file": {
+      "description": "A message showing some file with an optional title",
+      "fileLabel": "Title",
+      "title": "File"
+    },
+    "singleChoice": {
+      "choice": "Choice",
+      "description": "Suggest choices to the user with the intention of picking only one (with an optional message)",
+      "itemTitle": "The title of the choice (this is what gets shown to the user)",
+      "itemValue": "The value that your bot gets when the user picks this choice (usually hidden from the user)",
+      "title": "Single Choice"
+    },
+    "text": {
+      "alternatives": "Alternates",
+      "description": "A regular text message with optional typing indicators and alternates",
+      "message": "Message"
+    },
+    "location": {
+      "title": "Location",
+      "description": "A message showing a location with an optional address and title",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "address": "Address",
+      "label": "Title"
+    },
+    "dropdown": {
+      "allowCreate": "Allow creation of new options",
+      "allowMultiple": "Allow multiple choices",
+      "asKeyboardDesc": "It will be displayed right on top of the composer (like choices)",
+      "asKeyboardTitle": "Display as keyboard",
+      "buttonDesc": "When left blank, the selected option is sent when the dropdown is closed",
+      "buttonText": "The text to display on the button.",
+      "desc": "Displays a list of options to the user",
+      "itemLabel": "The text displayed in the dropdown menu",
+      "itemValue": "The value that the bot will receive (optional)",
+      "optionsList": "List of options",
+      "title": "Dropdown",
+      "widthDesc": "The default size displays the select and the button on one line. Change it to fit your needs",
+      "widthTitle": "The width of the component (in pixels)",
+      "placeholderText": "Dropdown placeholder text",
+      "useMarkdown": "Use markdown"
+    }
+  },
+  "code-editor": {
+    "error": {
+      "cannotOpenFile": "Cannot open a file with that extension",
+      "cannotSaveFile": "Could not save your file",
+      "cannotUploadFile": "Cannot upload your file",
+      "fileUploadDisabled": "File upload disabled by an environment variable.",
+      "invalidJson": "Invalid JSON file: {details}",
+      "lackUploadPermissions": "You do not have sufficient permissions to upload files",
+      "missingParameters": "Missing parameters"
+    },
+    "fileStatus": {
+      "fileInformation": "File Information",
+      "fixThem": "Please make sure to fix {count, plural, one {it} other {them}} before saving.",
+      "thereAreErrors": "There {count, plural, one {is} other {are}} {count} {count, plural, one {error} other {errors}} in your file.",
+      "viewDetails": "View details"
+    },
+    "fullName": "Code Editor",
+    "nameModal": {
+      "chooseNameForFile": "Choose a name for the file",
+      "createNewFile": "Create new file",
+      "fileName": "File Name (including any directory)",
+      "nameAlreadyExists": "A file with that name already exists. Please choose another one or delete it before.",
+      "renameOrMoveFile": "Rename or move file"
+    },
+    "navigator": {
+      "cannotBeEdited": "They cannot be edited directly",
+      "codeSamples": "Those are code samples that you can copy",
+      "codeSamples2": "to add new features to your bots.",
+      "copyExample": "Copy example to my bot",
+      "copyExampleToHooks": "Copy example to global hooks",
+      "duplicateToCurrent": "Duplicate to current bot",
+      "isReadOnly": "This file is read only",
+      "noFilesFound": "No files found in this category",
+      "renameMove": "Rename / Move"
+    },
+    "newFileModal": {
+      "createForCurrent": "Create for the current bot",
+      "createNew": "Create a new {name}",
+      "fileName": "File name",
+      "fileNameHelp": "No special characters allowed. Must end in .js"
+    },
+    "sidePanel": {
+      "actions": "Actions",
+      "bot": "Bot {name}",
+      "botHooks": "Bot Hooks",
+      "conf": "Configurations",
+      "currentBot": "Current Bot",
+      "eventHooks": "Event Hooks",
+      "filterFiles": "Filter files",
+      "generalHooks": "General Hooks",
+      "components": "Components",
+      "global": "Global",
+      "hooks": "Hooks",
+      "moduleConf": "Module Configurations",
+      "pipelineHooks": "Pipeline Hooks",
+      "rawFileEditor": "Raw File Editor",
+      "sharedLibs": "Libraries"
+    },
+    "splash": {
+      "advancedEditor": "Advanced Editor",
+      "basicEditor": "Basic Editor",
+      "bigWarning": "WARNING",
+      "codeEditor": "Code Editor",
+      "commandPalette": "Command Palette",
+      "editorDesc": "Code editor allows you to create and edit actions without leaving botpress studio. It features typings and intelligent code completion. To edit global files, please use the code editor located on the admin panel",
+      "newFile": "New file",
+      "rawEditorDesc": "The raw file editor has no safeguards and you can easily mess important files. Handle with care! You can edit any file contained in the data folder, create new files and move existing files around.",
+      "saveFile": "Save file"
+    },
+    "store": {
+      "alreadyExists": "A file with that name already exists",
+      "chooseName": "Choose the name of your {type}. No special chars. Use camel case",
+      "confirmDeleteFile": "Are you sure you want to delete the file named {file}?",
+      "confirmSaveFile": "Do you want to save the changes you made to {file}?",
+      "fileDeleted": "File deleted successfully!",
+      "fileDisabled": "File disabled successfully!",
+      "fileDuplicated": "File duplicated successfully!",
+      "fileEnabled": "File enabled successfully!",
+      "fileRenamed": "File renamed successfully!",
+      "fileSaved": "File saved successfully!",
+      "fileUploaded": "File uploaded successfully!",
+      "invalidFilename": "Invalid filename",
+      "onlySuperAdmins": "Only Super Admins can use the raw file editor"
+    },
+    "uploadModal": {
+      "completeFilePath": "Complete File Path",
+      "filePathHelp": "Type the complete path to the file, including the extension, relative to /data",
+      "overwrite": "Overwrite existing file",
+      "selectFile": "Select your file",
+      "uploadFile": "Upload File"
+    }
+  },
+  "skills": {
+    "label": "Skills",
+    "callApi": "Call API",
+    "choice": "Choice",
+    "fullName": "Basic Skills",
+    "sendEmail": "Send Email",
+    "slotFilling": "Slot Filling",
+    "authGate": {
+      "title": "Auth Gate",
+      "fullName": "Internal Users",
+      "promptUnauthenticated": "Prompt for login if user is unauthenticated",
+      "whenChecked": "When checked, user will be asked to login if they are not already logged in. Otherwise, it will only act as a simple gate: allow or disallow",
+      "loginPromptMessage": "Login prompt message (required)",
+      "selectContent": "Select a content element",
+      "loginUrl": "Login URL Markdown",
+      "urlTooltip": "Copy and paste that small snippet of code in your text message to display a clickable URL in the chat for users to authenticate",
+      "copiedToClipboard": "Copied to clipboard",
+      "inviteMessage": "Message for invite code (if rollout strategy requires it)",
+      "invitePlaceholder": "Message asking for invite code",
+      "retryLimit": "Retry limit for invite code",
+      "loginLink": "[Login Link]({{temp.login_url}})"
+    }
+  },
   "libraries": {
     "fullName": "Libraries",
     "addLibrary": "Add this library",
@@ -260,7 +458,8 @@
     "cancelTraining": "Cancel Training",
     "trainingPending": "Training Pending",
     "canceling": "Canceling",
-    "trainingError": "Cannot train Chatbot"
+    "trainingError": "Cannot train Chatbot",
+    "cloudEnabled": "Cloud Enabled Chatbot"
   },
   "studio": {
     "content": {
@@ -458,7 +657,6 @@
         "confirmDeleteFlow": "Are you sure you want to delete the flow {name}",
         "createFlow": "Create Flow",
         "createNewFlow": "Create new flow",
-        "createNewTopic": "Create new topic",
         "duplicateFlow": "Duplicate Flow",
         "filterFlows": "Filter flows",
         "filterLibrary": "Filter library",
@@ -471,14 +669,10 @@
         "nameInUseMessage": "A flow with that name already exists. Please choose another one.",
         "node": "Node",
         "renameFlow": "Rename Flow",
-        "importTopic": "Import Topic",
-        "addTopic": "Add Topic",
         "addWorkflow": "Add Workflow",
         "tapIconsToAdd": "Tap icons in the toolbar to import or add your first topic.",
         "renameWorkflow": "Rename Workflow",
-        "renameTopic": "Rename Topic",
-        "nameWorkflow": "Name Workflow",
-        "nameTopic": "Name Topic"
+        "nameWorkflow": "Name Workflow"
       },
       "skills": {
         "couldNotLoad": "Could not load skills view",
@@ -499,45 +693,6 @@
         "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here",
         "salesCallToAction": "Start a free Enterprise trial",
         "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
-      },
-      "topic": "Topic",
-      "topicEditor": {
-        "alreadyExistButDifferent": "These elements already exist but are different",
-        "contentOverview": "Content Overview",
-        "couldNotParseFile": "Could not parse JSON file: {msg}",
-        "createNewTopic": "Create a new topic",
-        "createTopic": "Create topic",
-        "dontExisteWillCreate": "These elements don't exist and will be created",
-        "editTopic": "Edit topic",
-        "importContent": "Import content",
-        "importedSuccessfully": "{detected} imported successfully!",
-        "noChangesToApply": "There are no changes to apply, or everything in the file is identical to the existing content",
-        "overwrite": "Overwrite existing content",
-        "selectJson": "Select your JSON file",
-        "topicName": "Topic Name",
-        "topicNameHelp": "Choose a broad name to represent your topic, for example HR or IT. You can rename it later",
-        "unknownFileType": "Unknown file type or invalid format",
-        "willBeCreated": "This element doesn't exist and will be created",
-        "willBeOverwritten": "An element with that name already exist. Content will be overwritten",
-        "workflowName": "Workflow Name"
-      },
-      "topicList": {
-        "bigWarning": "WARNING:",
-        "confirmDeleteFlow": "Are you sure you want to delete this workflow?",
-        "confirmDeleteTopic": "Are you sure you want to delete this topic? Its Q&A and workflows will be deleted as well.",
-        "createNewWorkflow": "Create new workflow",
-        "defaultWorkflows": "Default Workflows",
-        "deleteTopic": "Delete Topic",
-        "deleteWorkflow": "Delete Workflow",
-        "editQna": "Edit Q&A",
-        "editTopic": "Edit topic",
-        "editWorkflow": "Edit Workflow",
-        "exportTopic": "Export Topic",
-        "flowsAssociatedDelete": "{warning} {count} flows associated with the topic will be deleted",
-        "importExisting": "Import existing workflow",
-        "nbQuestionsInTopic": "Number of questions in that topic",
-        "nbTriggersInWorkflow": "Number of NLU triggers on that workflow",
-        "workflowReceiving": "Workflows referencing this workflow:"
       },
       "transition": "Transition",
       "unauthUpdate": "Unauthorized flow update. You have insufficient role privileges to modify flows.",
@@ -655,19 +810,6 @@
         "expandAll": "Expand All"
       },
       "notAvailable": "Not available",
-      "ndu": {
-        "topTriggers": "Top Triggers",
-        "decisionsTaken": "Decisions Taken",
-        "sendKnowledge": "Send knowledge {x}",
-        "startWorkflow": "Start workflow {x}",
-        "goToNode": "Go to node {x}",
-        "redirectTo": "Redirect to {x}",
-        "continueFlowExecution": "Continue flow execution",
-        "informCurrentPrompt": "Inform current prompt",
-        "cancelCurrentPrompt": "Cancel current prompt",
-        "noResults": "No results",
-        "dialogUnderstanding": "Dialog Understanding"
-      },
       "nlu": {
         "intentsVeryClose": "Predicted intents are very close.",
         "youCanAccountForIt": "You can account for it checking the variable : ",

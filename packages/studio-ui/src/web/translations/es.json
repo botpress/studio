@@ -25,6 +25,185 @@
     "botId": "Bot id",
     "copyToClipboard": "Copiada al portapapeles"
   },
+  "contentTypes": {
+    "permissionDenied": "No tiene permiso para cargar archivos para este bot. Habla con el dueño de tu equipo.",
+    "uploadFileChoice": "O sube una imagen",
+    "enterUrlChoice": "O ingrese la URL de la imagen",
+    "infoInterpreted": "Esta información será interpretada:",
+    "typingIndicator": "Mostrar indicadores de escritura",
+    "markdownHelp": "Consulte esta documentación para conocer la sintaxis de markdown: ",
+    "useMarkdown": "Usar markdown",
+    "disableFreeText": "Deshabilitar el texto libre",
+    "actionButton": {
+      "buttonTitle": "Título del botón",
+      "description": "Un botón que desencadena una acción, a menudo utilizada en tarjetas",
+      "textTitle": "Enter text or the ID of a content element (ex: #!builtin_text-myid)",
+      "title": "Action Button"
+    },
+    "card": {
+      "description": "Un mensaje de tarjeta con un título con subtítulos opcionales, imagen y botones de acción."
+    },
+    "carousel": {
+      "cards": "Tarjetas de carrusel",
+      "description": "Un carrusel es un conjunto de cartas.",
+      "title": "Carrusel"
+    },
+    "image": {
+      "description": "Un mensaje que muestra una imagen con un título opcional.",
+      "imageLabel": "Título (opcional)",
+      "labelDesc": "Algunas plataformas requieren nombrar las imágenes.",
+      "title": "Imagen",
+      "uploadImage": "Cargar imagen"
+    },
+    "audio": {
+      "description": "Un mensaje que muestra un archivo de audio con un título opcional.",
+      "audioLabel": "Título",
+      "title": "Audio"
+    },
+    "video": {
+      "description": "Un mensaje que muestra un archivo de video con un título opcional",
+      "videoLabel": "Título",
+      "title": "Video"
+    },
+    "file": {
+      "description": "Un mensaje que muestra algún archivo con un título opcional",
+      "fileLabel": "Título",
+      "title": "Archivo"
+    },
+    "singleChoice": {
+      "choice": "Elección",
+      "description": "Sugerir opciones al usuario con la intención de seleccionar solo una (con un mensaje opcional)",
+      "itemTitle": "El título de la elección (esto es lo que se muestra al usuario)",
+      "itemValue": "El valor que obtiene el bot cuando el usuario elige esta opción (normalmente oculto al usuario)",
+      "title": "Elección única"
+    },
+    "text": {
+      "alternatives": "Alternativas (opcional)",
+      "description": "Un mensaje de texto regular con indicadores de escritura opcionales y alternativas",
+      "message": "Mensaje"
+    },
+    "location": {
+      "title": "Localización",
+      "description": "Un mensaje que muestra una ubicación con una dirección y un título opcionales",
+      "latitude": "Latitud",
+      "longitude": "Longitud",
+      "address": "Dirección",
+      "label": "Título"
+    },
+    "dropdown": {
+      "allowCreate": "Permitir la creación de nuevas opciones",
+      "allowMultiple": "Permitir múltiples opciones",
+      "asKeyboardDesc": "Se mostrará justo encima del compositor (como opciones)",
+      "asKeyboardTitle": "Mostrar como teclado",
+      "buttonDesc": "Cuando se deja en blanco, la opción seleccionada se envía cuando se cierra el menú desplegable",
+      "buttonText": "El texto que se mostrará en el botón.",
+      "desc": "Muestra una lista de opciones al usuario.",
+      "itemLabel": "El texto que se muestra en el menú desplegable",
+      "itemValue": "El valor que recibirá el bot (opcional)",
+      "optionsList": "Lista de opciones",
+      "title": "Desplegable",
+      "widthDesc": "El tamaño predeterminado muestra la selección y el botón en una línea. Cámbielo para adaptarlo a sus necesidades",
+      "widthTitle": "El ancho del componente (en píxeles)",
+      "useMarkdown": "Usar markdown"
+    }
+  },
+  "code-editor": {
+    "error": {
+      "cannotOpenFile": "Extensión del archivo no válido",
+      "cannotSaveFile": "No se pudo guardar el archivo",
+      "cannotUploadFile": "No se puede cargar su archivo",
+      "fileUploadDisabled": "Carga de archivos inhabilitada por una variable de entorno.",
+      "invalidJson": "JSON no válido: {details}",
+      "lackUploadPermissions": "No tienes permisos suficientes para subir archivos",
+      "missingParameters": "Faltan parámetros"
+    },
+    "fileStatus": {
+      "fileInformation": "Información de archivo",
+      "fixThem": "Por favor, asegúrese de {count, plural, one {arreglarlo} other {arreglarlos}} antes de guardar.",
+      "thereAreErrors": "Hay {count} {count, plural, one {error} other {errores}} en su archivo.",
+      "viewDetails": "Ver detalles"
+    },
+    "fullName": "Editor de código",
+    "nameModal": {
+      "chooseNameForFile": "Elija un nombre para el archivo",
+      "createNewFile": "Crear nuevo archivo",
+      "fileName": "Nombre de archivo (incluido cualquier directorio)",
+      "nameAlreadyExists": "Ya existe un archivo con ese nombre. Por favor, elija otro o elimínelo antes.",
+      "renameOrMoveFile": "Renombrar o mover archivo"
+    },
+    "navigator": {
+      "cannotBeEdited": "No se pueden editar directamente",
+      "codeSamples": "Esos son ejemplos de código que puede copiar",
+      "codeSamples2": "para agregar nuevas características a sus bots.",
+      "copyExample": "Copiar ejemplo a mi bot",
+      "copyExampleToHooks": "Copiar ejemplo a ganchos globales",
+      "duplicateToCurrent": "Duplicar al bot actual",
+      "isReadOnly": "Este archivo es de sólo lectura",
+      "noFilesFound": "No se han encontrado archivos en esta categoría",
+      "renameMove": "Renombrar / Mover"
+    },
+    "newFileModal": {
+      "createForCurrent": "Crear para el bot actual",
+      "createNew": "Crear un nuevo{name}",
+      "fileName": "Nombre de archivo",
+      "fileNameHelp": "No se permiten caracteres especiales. Debe terminar en .js"
+    },
+    "sidePanel": {
+      "actions": "Acciones",
+      "bot": "Bot {name}",
+      "botHooks": "Bot Hooks",
+      "conf": "Configuraciones",
+      "currentBot": "Bot actual",
+      "eventHooks": "Hooks de eventos",
+      "filterFiles": "Filtrar archivos",
+      "generalHooks": " Hooks Generales",
+      "global": "Global",
+      "hooks": "Hooks",
+      "moduleConf": "Configuraciones de módulos",
+      "pipelineHooks": " Hooks de Pipeline",
+      "rawFileEditor": "Editor de archivos sin procesar"
+    },
+    "splash": {
+      "advancedEditor": "Editor avanzado",
+      "basicEditor": "Editor Básico",
+      "bigWarning": "WARNING",
+      "codeEditor": "Editor de código",
+      "commandPalette": "Paleta de comandos",
+      "editorDesc": "Editor de código le permite crear y editar acciones sin salir de smartbots studio. Cuenta con mecanografías y finalización inteligente del código. Para editar archivos globales y contenido generado por módulos, debe habilitarlo editando el archivo de configuración code-editor.json.",
+      "newFile": "Nuevo archivo",
+      "rawEditorDesc": "El editor de archivos sin procesar no tiene medidas de seguridad y puede meterse fácilmente archivos importantes. ¡Manéjalo con cuidado! Puede editar cualquier archivo contenido en la carpeta de datos, crear nuevos archivos y mover los archivos existentes.",
+      "saveFile": "Guardar archivo"
+    },
+    "store": {
+      "alreadyExists": "Ya existe un archivo con ese nombre",
+      "chooseName": "Elija el nombre de su {type}. Sin caracteres especiales.",
+      "confirmDeleteFile": "¿Está seguro de que desea eliminar el archivo nombrado {file}?",
+      "confirmSaveFile": "¿Desea guardar los cambios realizados en{file}?",
+      "fileDeleted": "Archivo eliminado correctamente!",
+      "fileDisabled": "Archivo desactivado correctamente!",
+      "fileDuplicated": "Archivo duplicado con éxito!",
+      "fileEnabled": "¡Archivo habilitado correctamente!",
+      "fileRenamed": "Archivo renombrado correctamente!",
+      "fileSaved": "Archivo guardado correctamente!",
+      "fileUploaded": "¡El archivo ha subido correctamente!",
+      "invalidFilename": "Nombre de archivo no válido",
+      "onlySuperAdmins": "Solo los superadministradores pueden usar el editor de archivos sin procesar"
+    },
+    "uploadModal": {
+      "completeFilePath": "Ruta de archivo completa",
+      "filePathHelp": "Escriba la ruta completa al archivo, incluida la extensión, relativa a / data",
+      "overwrite": "Sobrescribir el archivo existente",
+      "selectFile": "Seleccione su archivo",
+      "uploadFile": "Subir archivo"
+    }   
+  },
+  "skills": {
+    "callApi": "Llamar API",
+    "choice": "Elección",
+    "fullName": "Habilidades Básicas",
+    "sendEmail": "Enviar Email",
+    "slotFilling": "Rellenar Slot"
+  },
   "nlu": {
     "autoTrain": "Auto Entrenamietno",
     "cancelTraining": "Cancelar Entrenamietno",
@@ -234,7 +413,8 @@
     "cancelTraining": "Cancelar entrenamiento",
     "trainingPending": "Entrenamiento pendiente",
     "canceling": "Cancelando",
-    "trainingError": "No se pudo entrenar el Chatbot"
+    "trainingError": "No se pudo entrenar el Chatbot",
+    "cloudEnabled": "Chatbot configurado para la nube"
   },
   "studio": {
     "content": {
@@ -429,7 +609,6 @@
         "confirmDeleteFlow": "¿Está seguro de que desea eliminar el flujo {name}",
         "createFlow": "Crear flujo",
         "createNewFlow": "Crear nuevo flujo",
-        "createNewTopic": "Create new topic",
         "duplicateFlow": "Flujo duplicado",
         "filterFlows": "Filtrar Flujos",
         "filterLibrary": "Filtrar libreria",
@@ -442,14 +621,10 @@
         "nameInUseMessage": "Ya existe un flujo con ese nombre. Por favor, elija otro.",
         "node": "Nodo",
         "renameFlow": "Cambiar el nombre del flujo",
-        "importTopic": "Importar Tema",
-        "addTopic": "Add Tema",
         "addWorkflow": "Agregar flujo de trabajo",
         "tapIconsToAdd": "Toque los iconos de la barra de herramientas para importar o agregar su primer Tema.",
         "renameWorkflow": "Cambiar el nombre del flujo de trabajo",
-        "renameTopic": "Cambiar nombre de Tema",
-        "nameWorkflow": "Nombre de flujo de trabajo ",
-        "nameTopic": "Nombre del Tema"
+        "nameWorkflow": "Nombre de flujo de trabajo "
       },
       "skills": {
         "couldNotLoad": "No se pudo cargar la vista de habilidades",
@@ -470,45 +645,6 @@
         "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí",
         "salesCallToAction": "Prueba Enterprise gratis",
         "salesCallToActionDescription": "Chatbots seguros, escalables y de nivel empresarial"
-      },
-      "topic": "Tema",
-      "topicEditor": {
-        "alreadyExistButDifferent": "Estos elementos ya existen pero son diferentes",
-        "contentOverview": "Resumen de contenido",
-        "couldNotParseFile": "No se pudo analizar el archivo JSON: {msg}",
-        "createNewTopic": "Crea un Tema nuevo",
-        "createTopic": "Crear Tema",
-        "dontExisteWillCreate": "Estos elementos no existen y se crearán",
-        "editTopic": "Editar Tema",
-        "importContent": "Importar contenido",
-        "importedSuccessfully": "{detected} importado correctamente!",
-        "noChangesToApply": "No hay cambios para aplicar, o todo en el archivo es idéntico al contenido existente",
-        "overwrite": "Sobrescribir contenido existente",
-        "selectJson": "Seleccione su archivo JSON",
-        "topicName": "Nombre del Tema",
-        "topicNameHelp": "Elija un nombre amplio para representar su Tema, por ejemplo, RR.HH. o TI. Puedes cambiarle el nombre más tarde",
-        "unknownFileType": "Tipo de archivo desconocido o formato no válido",
-        "willBeCreated": "Este elemento no existe y se creará",
-        "willBeOverwritten": "Ya existe un elemento con ese nombre. El contenido se sobrescribirá",
-        "workflowName": "Nombre del flujo de trabajo"
-      },
-      "topicList": {
-        "bigWarning": "ADVERTENCIA:",
-        "confirmDeleteFlow": "¿Estás seguro de que quieres eliminar este flujo de trabajo?",
-        "confirmDeleteTopic": "¿Estás seguro de que deseas eliminar este Tema? También se eliminarán sus preguntas y respuestas y los flujos de trabajo.",
-        "createNewWorkflow": "Crear nuevo flujo de trabajo",
-        "defaultWorkflows": "Flujos de trabajo predeterminados",
-        "deleteTopic": "Eliminar Tema",
-        "deleteWorkflow": "Eliminar flujo de trabajo",
-        "editQna": "Editar Q&A",
-        "editTopic": "Editar Tema",
-        "editWorkflow": "Editar flujo de trabajo",
-        "exportTopic": "Exportar Tema",
-        "flowsAssociatedDelete": "Se eliminarán {warning} {count} flujos asociados con el Tema",
-        "importExisting": "Importar flujo de trabajo existente",
-        "nbQuestionsInTopic": "Número de preguntas en ese Tema",
-        "nbTriggersInWorkflow": "Número de activadores de NLU en ese flujo de trabajo",
-        "workflowReceiving": "Flujos de trabajo que hacen referencia a este flujo de trabajo:"
       },
       "transition": "Transición",
       "unauthUpdate": "Actualización de flujo no autorizada. No tiene privilegios de rol suficientes para modificar flujos.",
@@ -626,19 +762,6 @@
         "expandAll": "Expandir todo"
       },
       "notAvailable": "No disponible",
-      "ndu": {
-        "topTriggers": "Principales activadores",
-        "DecisionsTaken": "Decisiones tomadas",
-        "sendKnowledge": "Envía conocimientos {x}",
-        "startWorkflow": "Iniciar flujo de trabajo {x}",
-        "goToNode": "Ir al nodo {x}",
-        "redirectTo": "Redirigir a {x}",
-        "continueFlowExecution": "Continuar con la ejecución del flujo",
-        "informCurrentPrompt": "Informar al mensaje actual",
-        "cancelCurrentPrompt": "Cancelar el mensaje actual",
-        "noResults": "Sin resultados",
-        "dialogUnderstanding": "Comprensión del diálogo"
-      },
       "nlu": {
         "intentsVeryClose": "Los intentos previstos están muy cerca",
         "youCanAccountForIt": "Puede contabilizarlo marcando la variable:",

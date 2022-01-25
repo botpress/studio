@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "packageType": "component",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "build": "node ../../builder/bin/entry build",
+    "package": "node ../../builder/bin/entry package"
+  },
+  "dependencies": {}
+}

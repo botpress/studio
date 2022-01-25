@@ -109,7 +109,13 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    const languages = await this.fetchLanguages()
+    if (!this.props.bot) {
+      this.props.fetchBotInformation()
+    }
+
+    const bot = this.props.bot
+
+    const languages = await this.fetchLanguages(bot.id)
     const licensing = await this.fetchLicensing()
 
     const statuses = statusList.map<SelectItem>(x => ({
@@ -117,11 +123,6 @@ class ConfigView extends Component<Props, State> {
       value: x
     }))
 
-    if (!this.props.bot) {
-      this.props.fetchBotInformation()
-    }
-
-    const bot = this.props.bot
     const status = bot.disabled ? 'disabled' : bot.private ? 'private' : 'public'
 
     this.initialFormState = {
@@ -148,11 +149,12 @@ class ConfigView extends Component<Props, State> {
     })
   }
 
-  async fetchLanguages(): Promise<SelectItem[]> {
-    const { data } = await axios.get('admin/management/languages/available', axiosConfig)
-    return _.sortBy(data.languages, 'name').map(language => ({
-      label: lang.tr(`isoLangs.${language.code}.name`),
-      value: language.code
+  async fetchLanguages(botId: string): Promise<SelectItem[]> {
+    const languagePath = `studio/${botId}/config/nlu/languages`
+    const { data: languages } = await axios.get(languagePath, axiosConfig)
+    return (languages as string[]).map(language => ({
+      label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
+      value: language
     }))
   }
 
@@ -471,6 +473,7 @@ class ConfigView extends Component<Props, State> {
               <Button
                 text={lang.tr('saveChanges')}
                 intent="primary"
+                id="btn-submit"
                 icon="floppy-disk"
                 disabled={this.state.isSaving}
                 onClick={this.saveChanges}

@@ -249,6 +249,54 @@ export interface BotpressConfig {
    * @default false
    */
   experimental: boolean
+
+  nlu: {
+    /**
+     * Whether or not to train bots on mount
+     * @optional
+     */
+    queueTrainingOnBotMount?: boolean
+    nluServer?: Partial<NLUServerConfig>
+  }
+}
+
+export interface NLUServerConfig {
+  /**
+   * Weither or not to use system entities
+   * @default true
+   */
+  ducklingEnabled: boolean
+
+  /**
+   * If you want a fully on-prem installation, you can host
+   * Facebook's Duckling on your own infrastructure and change this URL
+   * Only relevant if @see ducklingEnabled is true
+   * @default https://duckling.botpress.io
+   */
+  ducklingURL: string
+
+  /**
+   * The list of sources to load languages from
+   * @default [{ "endpoint": "https://lang-01.botpress.io" }]
+   */
+  languageSources: LanguageSource[]
+
+  /**
+   * Maximum allowed model cache size
+   * @default 850mb
+   */
+  modelCacheSize: string
+
+  /**
+   * Maximum number of concurrent trainings for the NLU Server instance
+   * @optional
+   */
+  maxTraining?: number
+}
+
+export interface LanguageSource {
+  endpoint: string
+  authToken?: string
 }
 
 export type AuthStrategyType = 'basic' | 'saml' | 'ldap' | 'oauth2'

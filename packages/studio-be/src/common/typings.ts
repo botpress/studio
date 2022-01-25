@@ -22,6 +22,8 @@ export interface Workspace {
   id: string
   name: string
   description?: string
+  /** An optional string of characters which must precede the ID of each bots in this workspace */
+  botPrefix?: string
   audience: 'internal' | 'external'
   roles: AuthRole[]
   defaultRole: string
@@ -137,7 +139,6 @@ export interface EventCommonArgs {
   temp: { [property: string]: any }
   bot: { [property: string]: any }
   session: IO.CurrentSession
-  workflow: IO.WorkflowHistory
   // Any other additional property
   [property: string]: any
 }

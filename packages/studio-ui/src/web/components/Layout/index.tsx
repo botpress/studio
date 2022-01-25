@@ -9,6 +9,7 @@ import SplitPane from 'react-split-pane'
 import { setEmulatorOpen, toggleBottomPanel, toggleInspector, trainSessionReceived, viewModeChanged } from '~/actions'
 import SelectContentManager from '~/components/Content/Select/Manager'
 import PluginInjectionSite from '~/components/PluginInjectionSite'
+import CodeEditor from '~/views/CodeEditor'
 import Config from '~/views/Config'
 import Content from '~/views/Content'
 import FlowBuilder from '~/views/FlowBuilder'
@@ -21,8 +22,8 @@ import BottomPanel from './BottomPanel'
 import BotUmountedWarning from './BotUnmountedWarning'
 import CommandPalette from './CommandPalette'
 import GuidedTour from './GuidedTour'
-import LanguageServerHealth from './LangServerHealthWarning'
 import layout from './Layout.scss'
+import LanguageServerHealth from './NLUServerHealthWarning'
 import Sidebar from './Sidebar'
 import StatusBar from './StatusBar'
 import Toolbar from './Toolbar'
@@ -223,6 +224,7 @@ const Layout: FC<Props> = (props: Props) => {
                 <Route exact path="/config" component={Config} />
                 <Route exact path="/nlu" component={NLU} />
                 <Route exact path="/qna" component={QNA} />
+                <Route exact path="/code-editor" component={CodeEditor} />
 
                 <Route exact path="/modules/:moduleName/:componentName?" render={props => <Module {...props} />} />
               </Switch>

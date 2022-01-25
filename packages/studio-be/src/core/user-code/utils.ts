@@ -1,3 +1,4 @@
+import { requireAtPaths } from 'core/modules/utils/require'
 import path from 'path'
 
 export const getBaseLookupPaths = (fullPath: string, lastPathPart: string) => {
@@ -14,6 +15,10 @@ export const getBaseLookupPaths = (fullPath: string, lastPathPart: string) => {
   }
 
   return lookups
+}
+
+export const prepareRequire = (fullPath: string, lookups: string[]) => {
+  return module => requireAtPaths(module, lookups, fullPath)
 }
 
 export const enabled = (filename: string) => !path.basename(filename).startsWith('.')

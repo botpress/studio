@@ -4,7 +4,7 @@ import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import React, { FC, useEffect, useState } from 'react'
-import { AccessControl } from '~/components/Shared/Utils'
+import { AccessControl, Timeout, toastFailure } from '~/components/Shared/Utils'
 
 import style from './style.scss'
 
@@ -13,21 +13,25 @@ interface Props {
   trainSession: NLU.TrainingSession
 }
 
-// TODO change this url for core ?
-const BASE_NLU_URL = `${window.BOT_API_PATH}/mod/nlu`
+const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
 
 const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const { trainSession, dark } = props
 
-  const { status, progress } = trainSession ?? {}
-  const [loading, setLoading] = useState(false)
+  const { status, progress, error } = trainSession ?? {}
 
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
   const onTrainingNeeded = () => setMessage('')
   const onTraingDone = () => setMessage(lang.tr('statusBar.ready'))
   const onCanceling = () => setMessage(lang.tr('statusBar.canceling'))
-  const onError = () => setMessage(lang.tr('statusBar.trainingError'))
+  const onError = (error?: NLU.TrainingError) => {
+    setMessage(lang.tr('statusBar.trainingError'))
+    if (error) {
+      toastFailure(error.message, Timeout.LONG, null, { delayed: 0 })
+    }
+  }
   const onTrainingProgress = (progress: number) => {
     const p = Math.floor(progress * 100)
     setMessage(`${lang.tr('statusBar.training')} ${p}%`)
@@ -37,7 +41,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     if (status === 'training') {
       onTrainingProgress(progress ?? 0)
     } else if (status === 'errored') {
-      onError()
+      onError(error)
     } else if (status === 'canceled') {
       onCanceling()
     } else if (status === 'needs-training') {

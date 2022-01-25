@@ -224,31 +224,6 @@ const doCreateNewFlow = name => {
     }
   ]
 
-  if (window.USE_ONEFLOW) {
-    nodes.push(
-      {
-        id: prettyId(),
-        name: 'success',
-        onEnter: [],
-        onReceive: null,
-        next: [],
-        type: 'success',
-        x: 1000,
-        y: 100
-      },
-      {
-        id: prettyId(),
-        name: 'failure',
-        onEnter: [],
-        onReceive: null,
-        next: [],
-        type: 'failure',
-        x: 1000,
-        y: 200
-      }
-    )
-  }
-
   return {
     version: '0.1',
     name,
@@ -258,7 +233,6 @@ const doCreateNewFlow = name => {
     startNode: 'entry',
     catchAll: {},
     links: [],
-    triggers: [], // TODO: NDU Change to be a node instead
     nodes
   }
 }

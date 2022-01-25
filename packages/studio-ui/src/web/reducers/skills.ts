@@ -12,6 +12,42 @@ import {
   skillsReceived
 } from '~/actions'
 
+const defaultSkills = [
+  {
+    id: 'choice',
+    name: 'skills.choice',
+    icon: 'numbered-list',
+    moduleName: 'basic-skills'
+  },
+  {
+    id: 'CallAPI',
+    name: 'skills.callApi',
+    icon: 'code-block',
+    moduleName: 'basic-skills'
+  },
+  {
+    id: 'Slot',
+    name: 'skills.slotFilling',
+    icon: 'comparison',
+    moduleName: 'basic-skills'
+  },
+  {
+    id: 'SendEmail',
+    name: 'skills.sendEmail',
+    icon: 'envelope',
+    moduleName: 'basic-skills'
+  }
+]
+
+if (!window.IS_CLOUD_BOT) {
+  defaultSkills.push({
+    id: 'AuthGate',
+    name: 'skills.authGate.title',
+    icon: 'shield',
+    moduleName: 'basic-skills'
+  })
+}
+
 const defaultState = {
   installed: [],
   builder: {
@@ -21,13 +57,24 @@ const defaultState = {
     action: null,
     editFlowName: null,
     editNodeId: null,
-    actions: []
+    actions: [],
+    location: undefined
   }
 }
 
 export interface SkillsReducer {
   installed: Skill[]
   actions: LocalActionDefinition[]
+  builder: {
+    opened: boolean
+    data: any
+    skillId?: string
+    action?: string
+    editFlowName?: string
+    editNodeId?: string
+    actions: any[]
+    location: any
+  }
   intents?: NLU.Intent[]
 }
 
@@ -35,7 +82,7 @@ const reducer = handleActions(
   {
     [skillsReceived]: (state, { payload }) => ({
       ...state,
-      installed: payload
+      installed: [...defaultSkills, ...payload]
     }),
 
     [buildNewSkill as any]: (state, { payload }) => ({
