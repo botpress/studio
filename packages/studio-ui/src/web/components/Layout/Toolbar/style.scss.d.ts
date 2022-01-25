@@ -12,8 +12,8 @@ interface CssExports {
   'layoutControls': string;
   'shortcut': string;
   'shortcutLabel': string;
-  'toolbar': string;
   'tooltip': string;
+  'topNav': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;
