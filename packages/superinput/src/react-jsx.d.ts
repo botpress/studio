@@ -1,2 +1,2 @@
-declare module "react-json-tree";
-declare module "espree"
+declare module 'react-json-tree';
+declare module 'espree'
