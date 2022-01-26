@@ -63,10 +63,6 @@ export class ModelEntryRepository {
     return this.table.where(key).del()
   }
 
-  public async query(query: Partial<ModelEntryRow>): Promise<ModelEntryRow[]> {
-    return this.table.where(query).select('*')
-  }
-
   private async _insert(model: ModelEntryRow): Promise<void> {
     return this.table.insert(model)
   }

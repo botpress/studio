@@ -6,6 +6,6 @@ export class BotNotMountedError extends Error {
 
 export class NLUServiceNotInitializedError extends Error {
   constructor() {
-    super('NLU Service not initialized yet.')
+    super('NLU Service not initialized yet. Please Retry.')
   }
 }

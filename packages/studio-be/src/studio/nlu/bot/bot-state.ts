@@ -13,7 +13,6 @@ import { BotDefinition, ConfigResolver } from '../typings'
 export class BotState {
   private _botId: string
   private _seed: number
-  private _languages: string[]
 
   constructor(
     botDef: BotDefinition,
@@ -25,15 +24,6 @@ export class BotState {
   ) {
     this._botId = botDef.botId
     this._seed = botDef.seed
-    this._languages = botDef.languages
-  }
-
-  public get id() {
-    return this._botId
-  }
-
-  public get languages() {
-    return [...this._languages]
   }
 
   public startTraining = async (language: string): Promise<ModelEntry> => {

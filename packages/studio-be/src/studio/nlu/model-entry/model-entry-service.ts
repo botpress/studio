@@ -24,8 +24,4 @@ export class ModelEntryService {
   public async del(key: ModelKey): Promise<void> {
     return this._modelStateRepo.del({ ...key, status })
   }
-
-  public async query(query: Partial<ModelEntry>): Promise<ModelEntry[]> {
-    return this._modelStateRepo.query({ ...query, status })
-  }
 }

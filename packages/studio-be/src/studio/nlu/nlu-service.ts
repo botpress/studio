@@ -10,7 +10,8 @@ import { inject, injectable, tagged } from 'inversify'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import yn from 'yn'
-import { BotFactory, BotStateMachine } from './bot'
+import { Bot } from './bot'
+import { BotFactory } from './bot-factory'
 import { DefinitionsRepository } from './definitions-repository'
 import { EntityRepository } from './entities-repo'
 import { BotNotMountedError, NLUServiceNotInitializedError } from './errors'
@@ -35,7 +36,7 @@ export class NLUService {
   public entities: EntityRepository
   public intents: IntentRepository
 
-  private _bots: _.Dictionary<BotStateMachine> = {}
+  private _bots: _.Dictionary<Bot> = {}
   private _app: SubServices | undefined
 
   constructor(
@@ -145,7 +146,7 @@ export class NLUService {
     return languages
   }
 
-  public getBot(botId: string): BotStateMachine {
+  public getBot(botId: string): Bot {
     const bot = this._bots[botId]
     if (!bot) {
       throw new BotNotMountedError(botId)

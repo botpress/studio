@@ -27,8 +27,4 @@ export class TrainingEntryService {
   public del(key: TrainKey): Promise<void> {
     return this._modelStateRepo.del({ ...key, status })
   }
-
-  public query(query: Partial<TrainEntry>): Promise<TrainEntry[]> {
-    return this._modelStateRepo.query({ ...query, status })
-  }
 }
