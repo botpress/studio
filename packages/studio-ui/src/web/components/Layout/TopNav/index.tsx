@@ -37,7 +37,7 @@ const Toolbar: FC<Props> = props => {
           />
         </ToolTip>
         <ToolTip
-          content={lang.tr('topNav.toggleDebuger', { shortcut: `${utils.shortControlKey} J` })}
+          content={lang.tr('topNav.toggleDebugger', { shortcut: `${utils.shortControlKey} J` })}
           position={Position.BOTTOM}
         >
           <Button
