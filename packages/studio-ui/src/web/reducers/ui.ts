@@ -5,9 +5,10 @@ import {
   addDocumentationHint,
   removeDocumentationHint,
   setEmulatorOpen,
-  toggleBottomPanel,
   toggleBottomPanelExpand,
+  toggleBottomPanel,
   toggleInspector,
+  toggleExplorer,
   updateDocumentationModal,
   updateGlobalStyle,
   viewModeChanged,
@@ -20,6 +21,7 @@ import {
 export interface UiReducer {
   viewMode: any
   docHints: string[]
+  explorerOpen: boolean
   emulatorOpen: boolean
   zoomLevel: number
   bottomPanel: boolean
@@ -30,8 +32,11 @@ export interface UiReducer {
 
 const bottomPanelStorageKey = `bp::${window.BOT_ID}::bottom-panel-open`
 const inspectorEnabledStorageKey = `bp::${window.BOT_ID}::enable-inspector`
+const explorerStorageKey = `bp::${window.BOT_ID}::explorer-open`
+
 const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
 const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
+const defaultExplorerOpen = utils.storage.get<boolean>(explorerStorageKey) === true
 
 const defaultState = {
   viewMode: -1,
@@ -41,6 +46,7 @@ const defaultState = {
   bottomPanel: defaultBottomPanelOpen || false,
   bottomPanelExpanded: false,
   inspectorEnabled: defaultInspectorEnabled,
+  explorerOpen: defaultExplorerOpen,
   emulatorOpen: false,
   zoomLevel: 100
 }
@@ -85,6 +91,14 @@ const reducer = handleActions(
       return {
         ...state,
         inspectorEnabled: value
+      }
+    },
+    [toggleExplorer]: (state, {}) => {
+      const value = !state.explorerOpen
+      localStorage.setItem(explorerStorageKey, value.toString())
+      return {
+        ...state,
+        explorerOpen: value
       }
     },
     [zoomIn]: (state, {}) => {
