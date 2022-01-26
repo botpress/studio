@@ -1,13 +1,13 @@
 import { autocompletion, Completion, CompletionContext } from '@codemirror/autocomplete'
+import { cursorSubwordForward } from '@codemirror/commands'
 import { syntaxTree } from '@codemirror/language'
 import { EditorView } from '@codemirror/view'
-import { cursorSubwordForward } from '@codemirror/commands'
 import TreeModel from 'tree-model'
 
+import { AC_BOOST_KEYS, UNKNOWN_TYPE } from '../../config'
+import { fallback, docTree } from '../../docsTree.json'
 import InfoCard from './InfoCard'
 import { DocNode } from './types'
-import { fallback, docTree } from '../../docsTree.json'
-import { AC_BOOST_KEYS, UNKNOWN_TYPE } from '../../config'
 
 const COMPLETE_AFTER = ['PropertyName', '.', '?.', '[']
 const DONT_COMPLETE_IN = [
@@ -24,7 +24,9 @@ const tree = new TreeModel()
 const fullDocTree: DocNode = tree.parse(docTree as any)
 
 const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, apply?: (key: string) => {}) => {
-  if (typeof globs !== 'object' && typeof globs !== 'function') return null
+  if (typeof globs !== 'object' && typeof globs !== 'function') {
+    return null
+  }
 
   return {
     from,
@@ -53,7 +55,9 @@ const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, app
 }
 
 const globsCompletions = (globs: any) => {
-  if (!globs) globs = fallback
+  if (!globs) {
+    globs = fallback
+  }
 
   return (ctx: CompletionContext) => {
     const nodeBefore = syntaxTree(ctx.state).resolveInner(ctx.pos, -1)
@@ -74,7 +78,9 @@ const globsCompletions = (globs: any) => {
       const cutDocTree = varPath.reduce((accu: any, el: any) => {
         return (
           accu.first({ strategy: 'breadth' }, (node: DocNode) => {
-            if (node.model.key === el || node.model.key === '*') return true
+            if (node.model.key === el || node.model.key === '*') {
+              return true
+            }
           }) || accu
         )
       }, fullDocTree)

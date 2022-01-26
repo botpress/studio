@@ -1,8 +1,8 @@
 import * as espree from 'espree'
 import memoize from 'fast-memoize'
 
-import jsRange from './jsRange'
 import { DELIM_START, DELIM_END } from '../config'
+import jsRange from './jsRange'
 
 const sandboxProxies = new WeakMap()
 
@@ -11,14 +11,20 @@ function has(target: any, key: any) {
 }
 
 function get(target: any, key: any) {
-  if (key === Symbol.unscopables) return undefined
+  if (key === Symbol.unscopables) {
+    return undefined
+  }
   return target[key]
 }
 
 function _evalToken(token: string, vars: any) {
   token = token.replace(/ /g, '').replace(/;/g, '')
-  if (!token) return undefined
-  if (!verifyJs(token)) return undefined
+  if (!token) {
+    return undefined
+  }
+  if (!verifyJs(token)) {
+    return undefined
+  }
 
   const src = 'with(sandbox){try{return(' + token + ')}catch(e){return(e)}}'
   try {
@@ -60,14 +66,20 @@ export function evalStrTempl(str: string, vars: any = {}) {
   let invalid = null
 
   const matches = jsRange(str)
-  if (!matches) return str
+  if (!matches) {
+    return str
+  }
 
   matches.forEach(m => {
     let out = rmDelim(m)
     out = evalToken(out, vars)
-    if (!out) invalid = `Error: ${m} evaluated to undefined`
+    if (!out) {
+      invalid = `Error: ${m} evaluated to undefined`
+    }
     out = String(out)
-    if (isError(out)) invalid = out
+    if (isError(out)) {
+      invalid = out
+    }
 
     str = str.replace(m, out)
   })

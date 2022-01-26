@@ -10,21 +10,29 @@ const exprDecorator = (globs: any) => {
   const highlight = (view: EditorView): DecorationSet => {
     const docStr = view.state.doc.sliceString(0)
     const matches = jsRange(docStr)
-    if (!matches) return Decoration.set([])
+    if (!matches) {
+      return Decoration.set([])
+    }
 
     let pos = 0
-    let decos = matches.map(match => {
+    const decos = matches.map(match => {
       const from = docStr.indexOf(match, pos)
       const to = from + match.length
       pos = to
 
       if (globs) {
         const res = evalToken(rmDelim(match), globs)
-        if (res && !isError(res)) return validHighlight.range(from, to)
-        else return invalidHighlight.range(from, to)
+        if (res && !isError(res)) {
+          return validHighlight.range(from, to)
+        } else {
+          return invalidHighlight.range(from, to)
+        }
       } else {
-        if (verifyJs(rmDelim(match))) return validHighlight.range(from, to)
-        else return invalidHighlight.range(from, to)
+        if (verifyJs(rmDelim(match))) {
+          return validHighlight.range(from, to)
+        } else {
+          return invalidHighlight.range(from, to)
+        }
       }
     })
 
@@ -41,7 +49,9 @@ const exprDecorator = (globs: any) => {
 
       update(update: ViewUpdate) {
         const { docChanged, view } = update
-        if (docChanged) this.decorations = highlight(view)
+        if (docChanged) {
+          this.decorations = highlight(view)
+        }
       }
     },
     {

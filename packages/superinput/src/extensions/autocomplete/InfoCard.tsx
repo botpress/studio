@@ -1,12 +1,12 @@
+import { Icon, IconSize } from '@blueprintjs/core'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { InfoCardComponent } from './types'
-import { Icon, IconSize } from '@blueprintjs/core'
 import './InfoCard.scss'
 
 const InfoCard: InfoCardComponent = ({ key, link, docs, type, evals }) => {
   return () => {
-    let dom = document.createElement('div')
+    const dom = document.createElement('div')
     const evaluatesTo = evalsToStr(evals)
     ReactDOM.render(
       <div className="infoCard-container">
@@ -36,12 +36,22 @@ const InfoCard: InfoCardComponent = ({ key, link, docs, type, evals }) => {
 /** Return a string for what selection evaluates to */
 function evalsToStr(x: unknown): string {
   // hide Evaluates To for objects and funtions
-  if (['object', 'function'].includes(typeof x)) return ''
+  if (['object', 'function'].includes(typeof x)) {
+    return ''
+  }
 
-  if (typeof x === 'boolean') return x ? 'true' : 'false'
-  if (typeof x === 'number') return x.toString()
-  if (x === null) return 'null'
-  if (x === undefined) return 'undefined'
+  if (typeof x === 'boolean') {
+    return x ? 'true' : 'false'
+  }
+  if (typeof x === 'number') {
+    return x.toString()
+  }
+  if (x === null) {
+    return 'null'
+  }
+  if (x === undefined) {
+    return 'undefined'
+  }
   return x as string
 }
 

@@ -6,7 +6,7 @@ const EvalPanel = ({ valid, text }: IPanelProps) => {
   return (
     <div
       className={`bp-editor-panel ${valid === null ? 'no-globs' : valid ? 'valid' : 'invalid'}`}
-      onMouseDown={e => console.log(e)}
+      // onMouseDown={e => {}}
     >
       <p>{text}</p>
     </div>

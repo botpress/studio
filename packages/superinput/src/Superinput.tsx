@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useRef, MutableRefObject } from 'react'
-import { classHighlightStyle } from '@codemirror/highlight'
 import { completionKeymap } from '@codemirror/autocomplete'
-import { placeholder as placeholderExt, keymap, EditorView, ViewUpdate } from '@codemirror/view'
-import { EditorState, Extension } from '@codemirror/state'
-import { history, historyKeymap } from '@codemirror/history'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
+import { classHighlightStyle } from '@codemirror/highlight'
+import { history, historyKeymap } from '@codemirror/history'
 import { javascript } from '@codemirror/lang-javascript'
+import { EditorState, Extension } from '@codemirror/state'
+import { placeholder as placeholderExt, keymap, EditorView, ViewUpdate } from '@codemirror/view'
+import React, { useEffect, useState, useRef, MutableRefObject } from 'react'
 
 import EditorFrame from './EditorFrame'
 import EvalPanel from './EvalPanel'
 import { bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extensions'
-import { isError, evalStrTempl } from './utils/tokenEval'
 import { SI_TYPES, ISiProps } from './types'
+import { isError, evalStrTempl } from './utils/tokenEval'
 
 export default function Superinput({
   value,
@@ -31,10 +31,15 @@ export default function Superinput({
       const { focusChanged, docChanged, view } = update
       const value = update.state.doc.sliceString(0)
 
-      if (!view.hasFocus) setPanel('')
-      else if (focusChanged || docChanged) setPanel(!globs ? noGlobsEvalMsg : evalStrTempl(value, globs) || '')
+      if (!view.hasFocus) {
+        setPanel('')
+      } else if (focusChanged || docChanged) {
+        setPanel(!globs ? noGlobsEvalMsg : evalStrTempl(value, globs) || '')
+      }
 
-      if (docChanged && onChange) onChange(value)
+      if (docChanged && onChange) {
+        onChange(value)
+      }
     }
 
     let typeExt: Extension[] = []
@@ -67,15 +72,21 @@ export default function Superinput({
     const newView = new EditorView({ state, parent: editor.current })
     setView(newView)
 
-    if (autoFocus) newView.focus()
+    if (autoFocus) {
+      newView.focus()
+    }
 
     return () => {
-      if (view) view.destroy()
+      if (view) {
+        view.destroy()
+      }
     }
   }, [])
 
   useEffect(() => {
-    if (!view) return
+    if (!view) {
+      return
+    }
 
     const currentValue = view.state.doc.toString()
     if (value !== currentValue) {

@@ -30,7 +30,7 @@ interface IInspectCardProps {
 }
 
 const InspectCard = ({ title, inspect }: IInspectCardProps) => {
-  let dom = document.createElement('div')
+  const dom = document.createElement('div')
   ReactDOM.render(
     <>
       <div className="infoCard-evals">

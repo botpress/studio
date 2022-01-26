@@ -1,5 +1,5 @@
-import { hoverTooltip } from '@codemirror/tooltip'
 import { syntaxTree, syntaxParserRunning } from '@codemirror/language'
+import { hoverTooltip } from '@codemirror/tooltip'
 
 import InspectCard from './InspectCard'
 
@@ -10,12 +10,15 @@ const hoverInspect = (globs: any) => {
       const nodeBefore = syntaxTree(view.state).topNode.resolveInner(pos, side)
       const object = nodeBefore.parent?.getChild('Expression')
 
-      if (!globs) return null
+      if (!globs) {
+        return null
+      }
       if (
         !['VariableName', 'PropertyName'].find(el => el === nodeBefore.name) &&
         !['MemberExpression', 'ExpressionStatement'].find(el => el === nodeBefore.parent?.name)
-      )
+      ) {
         return null
+      }
 
       const varPath = view.state
         .sliceDoc(object?.from, object?.to)
@@ -25,9 +28,15 @@ const hoverInspect = (globs: any) => {
 
       let start = pos,
         end = pos
-      while (start > from && /\w/.test(text[start - from - 1])) start--
-      while (end < to && /\w/.test(text[end - from])) end++
-      if ((start === pos && side < 0) || (end === pos && side > 0)) return null
+      while (start > from && /\w/.test(text[start - from - 1])) {
+        start--
+      }
+      while (end < to && /\w/.test(text[end - from])) {
+        end++
+      }
+      if ((start === pos && side < 0) || (end === pos && side > 0)) {
+        return null
+      }
 
       const hoverWord = text.slice(start - from, end - from)
 
