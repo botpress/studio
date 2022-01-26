@@ -19,7 +19,7 @@ interface ModelEntryRow extends ModelEntryPrimaryKey {
 }
 
 export class ModelEntryRepository {
-  private _tableName = 'model_state'
+  private _tableName = 'model_entry'
 
   constructor(private _db: sdk.KnexExtended) {}
 

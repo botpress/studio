@@ -4,7 +4,9 @@ import { ModelEntry, ModelKey } from './typings'
 const status = 'ready'
 
 /**
- * Maps a pair [botId, lang] to [modelId, defHash] once training is done
+ * Maps a pair [botId, lang] to [modelId, defHash] once training is done.
+ * This information is also persited in bot.config.json with the exception of the field "definitionHash".
+ * This field is the only reason why some information is dupplicated.
  */
 export class ModelEntryService {
   constructor(private _modelStateRepo: ModelEntryRepository) {}
