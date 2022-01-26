@@ -1,4 +1,3 @@
-import { Superinput, SI_TYPES } from '@botpress/superinput'
 import { lang, Dialog } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
@@ -423,25 +422,13 @@ class ConditionModalForm extends Component<Props, State> {
   }
 
   renderRawExpression() {
-    const msgs = {
-      invalEvalMsg: 'invalid eval',
-      noGlobsEvalMsg: 'no globs'
-    }
-
     return (
-      <Superinput
-        type={SI_TYPES.EXPRESSION}
+      <SmartInput
         placeholder={lang.tr('studio.flow.node.transition.javascriptExpression')}
         value={this.state.condition}
         onChange={this.handleConditionChanged}
-        {...msgs}
+        singleLine={false}
       />
-      // <SmartInput
-      //   placeholder={lang.tr('studio.flow.node.transition.javascriptExpression')}
-      //   value={this.state.condition}
-      //   onChange={this.handleConditionChanged}
-      //   singleLine={false}
-      // />
     )
   }
 

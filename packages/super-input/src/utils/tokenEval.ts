@@ -2,6 +2,7 @@ import * as espree from 'espree'
 import memoize from 'fast-memoize'
 
 import jsRange from './jsRange'
+import { DELIM_START, DELIM_END } from '../config'
 
 const sandboxProxies = new WeakMap()
 
@@ -18,7 +19,7 @@ function _evalToken(token: string, vars: any) {
   token = token.replace(/ /g, '').replace(/;/g, '')
   if (!token) return undefined
   if (!verifyJs(token)) return undefined
-  console.log('varsbiw: ', vars)
+
   const src = 'with(sandbox){try{return(' + token + ')}catch(e){return(e)}}'
   try {
     // eslint-disable-next-line no-new-func
@@ -52,7 +53,7 @@ export function verifyJs(js: string): boolean {
 }
 
 export function rmDelim(str: string) {
-  return str.replace('{{', '').replace('}}', '')
+  return str.replace(DELIM_START, '').replace(DELIM_END, '')
 }
 
 export function evalStrTempl(str: string, vars: any = {}) {

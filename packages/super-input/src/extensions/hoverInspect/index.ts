@@ -1,14 +1,13 @@
 import { hoverTooltip } from '@codemirror/tooltip'
-import { syntaxTree } from '@codemirror/language'
+import { syntaxTree, syntaxParserRunning } from '@codemirror/language'
 
 import InspectCard from './InspectCard'
-import { fallback } from '../../docsTree.json'
 
 const hoverInspect = (globs: any) => {
   return hoverTooltip(
     (view, pos, side) => {
-      let { from, to, text } = view.state.doc.lineAt(pos)
-      let nodeBefore = syntaxTree(view.state).resolveInner(pos, 0)
+      const { from, to, text } = view.state.doc.lineAt(pos)
+      const nodeBefore = syntaxTree(view.state).topNode.resolveInner(pos, side)
       const object = nodeBefore.parent?.getChild('Expression')
 
       if (!globs) return null
@@ -42,7 +41,6 @@ const hoverInspect = (globs: any) => {
         title = [...varPath, hoverWord].join('.')
       }
 
-      console.log(inspect)
       return {
         pos: start,
         end,

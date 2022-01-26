@@ -30,10 +30,10 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "yarn doctree && rollup -c",
     "dev": "rollup -c -w",
     "demo": "parcel demo/index.html",
-    "build:doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
+    "doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
   },
   "eslintConfig": {
     "extends": [

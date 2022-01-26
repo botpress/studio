@@ -7,15 +7,8 @@ import TreeModel from 'tree-model'
 import InfoCard from './InfoCard'
 import { DocNode } from './types'
 import { fallback, docTree } from '../../docsTree.json'
+import { AC_BOOST_KEYS, UNKNOWN_TYPE } from '../../config'
 
-const BOOST_KEYS: any = {
-  context: 5,
-  user: 4,
-  session: 3,
-  temp: 2,
-  state: 1,
-  __stacktrace: -5
-}
 const COMPLETE_AFTER = ['PropertyName', '.', '?.', '[']
 const DONT_COMPLETE_IN = [
   'String',
@@ -40,10 +33,10 @@ const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, app
       const docNode = docTree.first({ strategy: 'breadth' }, (node: DocNode) => {
         return node.model.key === key
       })
-      const type = docNode?.model.type || typeof globs[key] || 'Unknown'
+      const type = docNode?.model.type || typeof globs[key] || UNKNOWN_TYPE
       accu.push({
         label: key,
-        boost: BOOST_KEYS[key] || 0,
+        boost: AC_BOOST_KEYS[key] || 0,
         detail: type,
         info: InfoCard({
           key,
@@ -118,13 +111,13 @@ const globsCompletions = (globs: any) => {
 const bpAutocomplete = (globs: any) => {
   return autocompletion({
     override: [globsCompletions(globs)],
-    icons: false,
-    optionClass: (completion: Completion) => {
-      let className = 'cm-options '
-      if (Object.keys(BOOST_KEYS).includes(completion.label)) className += 'cm-options-common '
-      if (completion.detail === 'function') className += 'cm-option-func '
-      return className
-    }
+    icons: false
+    // optionClass: (completion: Completion) => {
+    //   let className = 'cm-options '
+    //   if (Object.keys(BOOST_KEYS).includes(completion.label)) className += 'cm-options-common '
+    //   if (completion.detail === 'function') className += 'cm-option-func '
+    //   return className
+    // }
   })
 }
 

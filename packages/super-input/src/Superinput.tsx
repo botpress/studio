@@ -13,8 +13,15 @@ import { bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extension
 import { isError, evalStrTempl } from './utils/tokenEval'
 import { SI_TYPES, ISiProps } from './types'
 
-export default function Superinput({ value, type, globs, onChange, placeholder, noGlobsEvalMsg }: ISiProps) {
-  if (!type) type = SI_TYPES.TEMPLATE
+export default function Superinput({
+  value,
+  globs,
+  onChange,
+  placeholder,
+  autoFocus = false,
+  type = SI_TYPES.TEMPLATE,
+  noGlobsEvalMsg = ''
+}: ISiProps) {
   const editor = useRef() as MutableRefObject<HTMLInputElement>
   const [panel, setPanel] = useState('')
   const [view, setView] = useState() as [EditorView, React.Dispatch<React.SetStateAction<EditorView>>]
@@ -34,10 +41,10 @@ export default function Superinput({ value, type, globs, onChange, placeholder, 
     const keymapList = [...closeBracketsKeymap, ...historyKeymap]
 
     if (type === SI_TYPES.TEMPLATE) {
-      typeExt = [BPLang(), hoverInspect(globs), bpAutocomplete(globs), exprDecorator(globs)]
+      typeExt = [BPLang(), exprDecorator(globs)]
       keymapList.push(...completionKeymap)
     } else if (type === SI_TYPES.EXPRESSION || type === SI_TYPES.BOOL) {
-      typeExt = [javascript(), hoverInspect(globs), bpAutocomplete(globs)]
+      typeExt = [javascript()]
     }
 
     const extensions = [
@@ -46,6 +53,8 @@ export default function Superinput({ value, type, globs, onChange, placeholder, 
       classHighlightStyle,
       placeholderExt(placeholder || ''),
       ...typeExt,
+      hoverInspect(globs),
+      bpAutocomplete(globs),
       history(),
       closeBrackets(),
       keymap.of(keymapList)
@@ -57,6 +66,8 @@ export default function Superinput({ value, type, globs, onChange, placeholder, 
     })
     const newView = new EditorView({ state, parent: editor.current })
     setView(newView)
+
+    if (autoFocus) newView.focus()
 
     return () => {
       if (view) view.destroy()

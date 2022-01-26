@@ -5,8 +5,9 @@ import { SI_TYPES } from '../src/types'
 import { data } from './data'
 
 const code0 = 'event.state.user ? "yes" : "sorry unknown user" || true'
-const code1 = '{{event.state.user.language}} text in between {{ _.add(9, 10) }} else if keywords {{ user.language }}'
-const code2 = '{{user.timezone}} is the time zone sir and {{user.language}} is the language!'
+const code1 =
+  'this is: {{event.state.user.language}} text in between {{ _.add(9, 10) }} else if keywords {{ user.language }}'
+const code2 = 'this is for: {{user.timezone}} is the time zone sir and {{user.language}} is the language!'
 const code3 = `I wish you a very happy new year and happy {{ state.session.usename }} birthday!
 
 Math function: {{ Math.round(session.slots.device.confidence) }}
@@ -40,7 +41,7 @@ function App() {
         </section>
         <section>
           <h2>Valid</h2>
-          <Superinput value={code1} globs={globs} {...msgs} />
+          <Superinput value={code1} globs={globs} {...msgs} autoFocus />
         </section>
         <section>
           <h2>Invalid</h2>
@@ -48,7 +49,7 @@ function App() {
         </section>
         <section>
           <h2>Something Else (no globs)</h2>
-          <Superinput value={code3} {...msgs} />
+          <Superinput value={code3} />
         </section>
       </div>
     </div>

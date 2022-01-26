@@ -10,10 +10,11 @@ export enum SI_TYPES {
 }
 
 export interface ISiProps {
-  noGlobsEvalMsg: string
+  value?: string
+  onChange?: (newValue: string) => any
+  placeholder?: string
   type?: SI_TYPES
   globs?: any
-  value?: string
-  placeholder?: string
-  onChange?: (newValue: string) => any
+  noGlobsEvalMsg?: string
+  autoFocus?: boolean
 }

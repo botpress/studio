@@ -157,3 +157,4 @@ const docs = {
 }
 
 fs.writeFileSync(join(__dirname, '../src/docsTree.json'), JSON.stringify(docs))
+console.log(`Generated doctree at ${__dirname + '../src/docsTree.json'}`)

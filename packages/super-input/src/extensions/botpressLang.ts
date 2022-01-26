@@ -1,14 +1,16 @@
 import { parser } from '@lezer/markdown'
-import { parseMixed } from '@lezer/common'
+import { parseMixed, Parser } from '@lezer/common'
 import { LRLanguage, LanguageSupport } from '@codemirror/language'
 import { javascriptLanguage, javascript } from '@codemirror/lang-javascript'
 
 import jsRange from '../utils/jsRange'
+import { DELIM_START, DELIM_END } from '../config'
 
 const botpressLang = LRLanguage.define({
   parser: parser.configure({
     wrap: parseMixed((node: any, docInput: any) => {
       let pos = 0
+
       return {
         parser: javascriptLanguage.parser,
         overlay: docInput.doc.text.reduce((accu: any, line: string) => {
@@ -23,7 +25,7 @@ const botpressLang = LRLanguage.define({
             localPos = line.indexOf(match, localPos)
 
             accu.push({
-              from: pos + localPos + (match === '{{}}' ? 1 : 2),
+              from: pos + localPos + (match === DELIM_START + DELIM_END ? 1 : 2),
               to: pos + localPos + match.length - 1
             })
 
