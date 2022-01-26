@@ -1,20 +1,18 @@
 import { Icon } from '@blueprintjs/core'
-import { MainLayout, lang, ModuleUI } from 'botpress/shared'
+import { MainLayout, lang } from 'botpress/shared'
 import { FileType, HOOK_SIGNATURES } from 'common/code-editor'
 import _ from 'lodash'
 import { inject, observer } from 'mobx-react'
 import React from 'react'
+import { SearchBar, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
 
 import FileStatus from './components/FileStatus'
-import NameModal from './components/NameModal'
 import NewFileModal from './components/NewFileModal'
 import { UploadModal } from './components/UploadModal'
 import FileNavigator from './FileNavigator'
 import { RootStore, StoreDef } from './store'
 import { EditorStore } from './store/editor'
 import { EXAMPLE_FOLDER_LABEL } from './utils/tree'
-
-const { SearchBar, SidePanel, SidePanelSection } = ModuleUI
 
 class PanelContent extends React.Component<Props> {
   private expandedNodes = {}
