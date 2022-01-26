@@ -39,9 +39,7 @@
     "release": "ts-node --dir scripts utils/release",
     "prettier": "cross-env prettier --check './packages/**/*.ts'",
     "eslint": "cross-env eslint packages/ --ext .ts,.tsx",
-    "test": "cross-env jest -i --detectOpenHandles -c jest.config.js",
-    "superinput": "SKIP_PREFLIGHT_CHECK=true yarn workspace @botpress/superinput start",
-    "superinput:doctree": "SKIP_PREFLIGHT_CHECK=true yarn workspace @botpress/superinput build:doctree"
+    "test": "cross-env jest -i --detectOpenHandles -c jest.config.js"
   },
   "devDependencies": {
     "@types/node": "^12.18.1",
