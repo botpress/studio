@@ -1,9 +1,9 @@
 // @ts-check
-import * as TJS from 'typescript-json-schema'
 import fs from 'fs'
-import { join } from 'path'
 import glob from 'glob'
+import { join } from 'path'
 import TreeModel from 'tree-model'
+import * as TJS from 'typescript-json-schema'
 
 interface IDocNode {
   key: string
@@ -33,36 +33,48 @@ const files = glob.sync('../studio-be/src/sdk/*.ts')
 const program = TJS.getProgramFromFiles(files)
 const generator = TJS.buildGenerator(program, ARGS) as TJS.JsonSchemaGenerator
 const schema = TJS.generateSchema(program, ROOT_TYPE, ARGS, [], generator)
-if (!schema) throw new Error('Schema not generated, cannot proceed')
+if (!schema) {
+  throw new Error('Schema not generated, cannot proceed')
+}
 const { properties, definitions } = schema
-if (!properties || !definitions) throw new Error('No properties or definitions, cannot proceed')
+if (!properties || !definitions) {
+  throw new Error('No properties or definitions, cannot proceed')
+}
 
 const linkDelimRegex = /\[\[(.+)\]\]/
 const extractLink = (str: NulStr): string | null => {
-  if (!str) return null
+  if (!str) {
+    return null
+  }
   const token = str.split('\n').pop()
   if (token) {
     const match = token.match(linkDelimRegex)
-    if (match && match[1]) return match[1]
+    if (match && match[1]) {
+      return match[1]
+    }
   }
   return null
 }
 
 const cleanDocs = (str: NulStr): string | null => {
-  if (!str) return null
+  if (!str) {
+    return null
+  }
   str = str.replace(linkDelimRegex, '')
   str = str[str.length - 1] === '\n' ? str.slice(0, str.length - 1) : str
   return str
 }
 
 const snipRef = (str: NulStr): string => {
-  if (!str) return ''
+  if (!str) {
+    return ''
+  }
   return str.split('/').pop() || ''
 }
 
 const tree = new TreeModel()
 
-let rootNode: IDocNode = {
+const rootNode: IDocNode = {
   key: ROOT_NAME,
   type: ROOT_TYPE,
   link: extractLink(schema?.description),
@@ -93,9 +105,12 @@ const recurseGenerateTree: RecurseGenerateTreeFn = (node, entries) => {
       } else if (type) {
         switch (type) {
           case 'array':
-            let items = value?.items as TJS.Definition
-            if (items.$ref) tmpNode.model.type = `${snipRef(items.$ref)}[]`
-            else tmpNode.model.type = type
+            const items = value?.items as TJS.Definition
+            if (items.$ref) {
+              tmpNode.model.type = `${snipRef(items.$ref)}[]`
+            } else {
+              tmpNode.model.type = type
+            }
             break
           case 'object':
             const { properties, additionalProperties } = value
@@ -132,13 +147,17 @@ const recurseGenerateTree: RecurseGenerateTreeFn = (node, entries) => {
 
 function recurseGenerateFallback(node: any): any {
   let val: any = {}
-  if (node.children)
+  if (node.children) {
     val = node.children.reduce((accu: any, child: DocNode) => {
-      if (child.children) accu[child.key] = recurseGenerateFallback(child)
-      else accu[child.key] = null
+      if (child.children) {
+        accu[child.key] = recurseGenerateFallback(child)
+      } else {
+        accu[child.key] = null
+      }
 
       return accu
     }, {})
+  }
   return val
 }
 
@@ -157,4 +176,5 @@ const docs = {
 }
 
 fs.writeFileSync(join(__dirname, '../src/docsTree.json'), JSON.stringify(docs))
+// eslint-disable-next-line
 console.log(`Generated doctree at ${__dirname + '../src/docsTree.json'}`)

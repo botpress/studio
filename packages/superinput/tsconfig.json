@@ -18,5 +18,5 @@
     "declarationDir": "types",
     "emitDeclarationOnly": true
   },
-  "include": ["src"]
+  "include": ["src", "demo", "scripts"]
 }
