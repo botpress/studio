@@ -1,5 +1,5 @@
 import { Icon, Tooltip } from '@blueprintjs/core'
-import { lang, ShortcutLabel } from 'botpress/shared'
+import { lang, ShortcutLabel, utils } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
@@ -31,7 +31,7 @@ const RightToolBar: FC<Props> = props => {
           <Tooltip
             content={
               <div className={style.tooltip}>
-                {lang.tr('toolbar.help')}
+                {lang.tr('topNav.help')}
                 <div className={style.shortcutLabel}>
                   <ShortcutLabel light shortcut="docs-toggle" />
                 </div>
@@ -54,7 +54,9 @@ const RightToolBar: FC<Props> = props => {
             id="statusbar_emulator"
           >
             <Icon color="#1a1e22" icon="chat" iconSize={16} />
-            <span className={style.label}>{lang.tr('toolbar.emulator')}</span>
+            <span className={style.label}>
+              {lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}
+            </span>
           </button>
         </Tooltip>
       )}
@@ -68,22 +70,3 @@ const mapStateToProps = (state: RootReducer) => ({
 })
 
 export default connect(mapStateToProps)(RightToolBar)
-
-/**
- *     <AccessControl resource="bot.logs" operation="read">
-      <Tooltip
-        content={
-          <div className={style.tooltip}>
-            {lang.tr('toolbar.bottomPanel')}
-            <div className={style.shortcutLabel}>
-              <ShortcutLabel light shortcut="bottom-bar" />
-            </div>
-          </div>
-        }
-      >
-        <button className={style.item} id="toggle-bottom-panel" onClick={toggleBottomPanel}>
-          <Icon color="#1a1e22" icon="console" iconSize={16} />
-        </button>
-      </Tooltip>
-    </AccessControl>
- */

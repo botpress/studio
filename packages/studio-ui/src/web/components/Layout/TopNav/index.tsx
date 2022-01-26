@@ -1,5 +1,5 @@
 import { Button, Position } from '@blueprintjs/core'
-import { ToolTip, utils } from 'botpress/shared'
+import { lang, ToolTip, utils } from 'botpress/shared'
 import cx from 'classnames'
 import React, { FC } from 'react'
 import { RiLayoutLeftLine, RiLayoutRightLine, RiLayoutBottomLine } from 'react-icons/ri'
@@ -26,14 +26,20 @@ const Toolbar: FC<Props> = props => {
     <nav className={style.topNav}>
       <EnterPriseTrial />
       <div className={style.layoutControls}>
-        <ToolTip content={`${utils.shortControlKey} B toggle left pannel`} position={Position.BOTTOM}>
+        <ToolTip
+          content={lang.tr('topNav.toggleExplorer', { shortcut: `${utils.shortControlKey} B` })}
+          position={Position.BOTTOM}
+        >
           <Button
             onClick={props.toggleExplorer}
             className={cx({ [style.active]: props.explorerOpen })}
             icon={<RiLayoutLeftLine size={17} />}
           />
         </ToolTip>
-        <ToolTip content={`${utils.shortControlKey} J toggle bottom pannel`} position={Position.BOTTOM}>
+        <ToolTip
+          content={lang.tr('topNav.toggleDebuger', { shortcut: `${utils.shortControlKey} J` })}
+          position={Position.BOTTOM}
+        >
           <Button
             onClick={props.toggleBottomPanel}
             className={cx({ [style.active]: props.isBottomPanelOpen })}
@@ -41,7 +47,10 @@ const Toolbar: FC<Props> = props => {
           />
         </ToolTip>
         {window.IS_BOT_MOUNTED && (
-          <ToolTip content={`${utils.shortControlKey} E toggle Emulator`} position={Position.BOTTOM}>
+          <ToolTip
+            content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}
+            position={Position.BOTTOM}
+          >
             <Button
               onClick={toggleEmulator}
               className={cx({ [style.active]: props.emulatorOpen })}
