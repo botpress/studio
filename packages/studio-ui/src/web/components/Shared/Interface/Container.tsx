@@ -15,11 +15,6 @@ type DispatchProps = typeof mapDispatchToProps
 const Container = (props: ContainerProps & StateProps & DispatchProps) => {
   const width = props.sidePanelWidth ? props.sidePanelWidth : 300
 
-  // TODO
-  // legacy need to check if this is still used and remove if need be
-  // add translations to top nav
-  window.toggleSidePanel = props.toggleExplorer
-
   const keyHandlers = {
     ...(props.keyHandlers || {}),
     'toggle-sidepanel': props.toggleExplorer

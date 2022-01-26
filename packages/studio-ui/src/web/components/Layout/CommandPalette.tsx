@@ -2,7 +2,7 @@ import { Commander, lang, QuickShortcut } from 'botpress/shared'
 import React, { FC, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { fetchBotIds, fetchContentCategories, toggleBottomPanel } from '~/actions'
+import { fetchBotIds, fetchContentCategories, toggleBottomPanel, toggleExplorer } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -69,7 +69,7 @@ const CommandPalette: FC<Props> = props => {
         category: 'command',
         shortcut: 'ctrl+b',
         type: 'execute',
-        method: () => window.toggleSidePanel()
+        method: () => props.toggleExplorer()
       },
       ...props.bots.map(bot => ({
         label: lang.tr('commander.switchBot', { name: getBotDisplayName(bot) }),
@@ -101,6 +101,6 @@ const mapStateToProps = (state: RootReducer) => ({
   user: state.user
 })
 
-const mapDispatchToProps = { fetchContentCategories, fetchBotIds, toggleBottomPanel }
+const mapDispatchToProps = { fetchContentCategories, fetchBotIds, toggleBottomPanel, toggleExplorer }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CommandPalette))
