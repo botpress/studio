@@ -1,4 +1,4 @@
-import { NLU } from 'botpress/sdk'
+import { Training } from 'common/nlu-training'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
@@ -8,7 +8,7 @@ import SingleLang from './SingleLang'
 
 interface Props {
   languages: string[]
-  trainSessions: { [lang: string]: NLU.TrainingSession }
+  trainSessions: { [lang: string]: Training }
 }
 
 const TrainingStatusComponent: FC<Props> = (props: Props) => {

@@ -1,7 +1,7 @@
 import { Icon, Popover, Position } from '@blueprintjs/core'
-import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
+import { Training } from 'common/nlu-training'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
@@ -11,7 +11,7 @@ import style from './style.scss'
 
 interface Props {
   languages: string[]
-  trainSessions: { [lang: string]: NLU.TrainingSession }
+  trainSessions: { [lang: string]: Training }
 }
 
 const TrainingStatusCenter: FC<Props> = (props: Props) => {

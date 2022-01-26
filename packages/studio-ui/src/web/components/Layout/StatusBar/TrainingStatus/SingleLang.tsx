@@ -3,10 +3,18 @@ import axios from 'axios'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import { Training, TrainError } from 'common/nlu-training'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { AccessControl, Timeout, toastFailure } from '~/components/Shared/Utils'
 
 import style from './style.scss'
+
+const usePrevious = <T extends any>(value: T): T | undefined => {
+  const ref = useRef<T>()
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
 
 interface Props {
   dark?: boolean
@@ -27,7 +35,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const onTraingDone = () => setMessage(lang.tr('statusBar.ready'))
   const onCanceling = () => setMessage(lang.tr('statusBar.canceling'))
   const onTrainingError = (error: TrainError) => {
-    setMessage(lang.tr('statusBar.trainingError'))
+    setMessage('')
     toastFailure(error.message, Timeout.LONG, null, { delayed: 0 })
   }
   const onTrainingProgress = (progress: number) => {
@@ -35,10 +43,11 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     setMessage(`${lang.tr('statusBar.training')} ${p}%`)
   }
 
+  const prevStatus = usePrevious(status)
   useEffect(() => {
     if (status === 'training') {
       onTrainingProgress(progress ?? 0)
-    } else if (error) {
+    } else if (error && (prevStatus === 'training' || prevStatus === 'training-pending')) {
       onTrainingError(error)
     } else if (status === 'needs-training') {
       onTrainingNeeded()

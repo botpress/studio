@@ -50,6 +50,7 @@ export class BotFactory {
       this._defRepo,
       modelService,
       trainService,
+      this._logger,
       this._webSocket
     )
   }

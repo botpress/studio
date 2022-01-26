@@ -1,4 +1,4 @@
-import { ListenHandle } from 'botpress/sdk'
+import { ListenHandle, Logger } from 'botpress/sdk'
 import { Training as BpTraining } from 'common/nlu-training'
 import _ from 'lodash'
 import { DefinitionsRepository } from '../definitions-repository'
@@ -27,6 +27,7 @@ export class Bot {
     private _defRepo: DefinitionsRepository,
     _models: ModelEntryService,
     _trainings: TrainingEntryService,
+    private _logger: Logger,
     private _webSocket: TrainListener
   ) {
     this._botState = new BotState(botDef, _configResolver, _nluClient, _defRepo, _models, _trainings)
@@ -56,41 +57,30 @@ export class Bot {
 
   public train = async (language: string): Promise<void> => {
     await this._botState.startTraining(language)
-    const needsTraining: BpTraining = { status: 'needs-training', progress: 0, language, botId: this._botId }
-    const doneTraining: BpTraining = { status: 'done', progress: 1, language, botId: this._botId }
+    try {
+      await poll(async () => {
+        const ts = await this.syncAndGetState(language)
+        this._webSocket(ts)
+        const isStillTraining = ts.status === 'training' || ts.status === 'training-pending'
+        return isStillTraining ? 'keep-polling' : 'stop-polling'
+      }, TRAIN_POLL_INTERVAL)
+    } catch (thrown) {
+      const err = thrown instanceof Error ? thrown : new Error(`${thrown}`)
+      this._logger.attachError(err).error('An error occured when training')
 
-    return poll(async () => {
-      const training = await this._botState.getTraining(language)
-      if (!training) {
-        return 'stop-polling'
-      }
-
-      if (training.status === 'training' || training.status === 'training-pending') {
-        const { status, progress } = training
-        this._webSocket({ status, progress, language, botId: this._botId })
-        return 'keep-polling'
-      }
-
-      if (training.status === 'done') {
-        await this._botState.setModel(language, training)
-        this._webSocket(doneTraining)
-        return 'stop-polling'
-      }
-
-      const { error } = training
-      this._webSocket({ ...needsTraining, error })
-      return 'stop-polling'
-    }, TRAIN_POLL_INTERVAL)
+      const needsTraining = this._needsTraining(language)
+      this._webSocket({ ...needsTraining, error: { message: err.message, type: 'internal' } })
+    }
   }
 
   public syncAndGetState = async (language: string): Promise<BpTraining> => {
-    const needsTraining: BpTraining = { status: 'needs-training', progress: 0, language, botId: this._botId }
-    const doneTraining: BpTraining = { status: 'done', progress: 1, language, botId: this._botId }
+    const needsTraining = this._needsTraining(language)
+    const doneTraining = this._doneTraining(language)
 
     const training = await this._botState.getTraining(language)
     if (training) {
       if (training.status === 'done') {
-        await this._botState.setModel(language, training)
+        await this._botState.setModel(language, training) // erases the training
         return doneTraining
       }
 
@@ -99,17 +89,17 @@ export class Bot {
         return { status, progress, language, botId: this._botId }
       }
 
-      // if error or canceled we fallback on model
+      // canceled or error
+      const { error } = training
+      return { ...needsTraining, error }
     }
 
     const model = await this._botState.getModel(language)
-    if (!model) {
-      return needsTraining
-    }
-
-    const isDirty = await this._botState.isDirty(language, model)
-    if (!isDirty) {
-      return doneTraining
+    if (model) {
+      const isDirty = await this._botState.isDirty(language, model)
+      if (!isDirty) {
+        return doneTraining
+      }
     }
 
     return needsTraining
@@ -132,4 +122,18 @@ export class Bot {
       })
     })
   }
+
+  private _needsTraining = (language: string): BpTraining => ({
+    status: 'needs-training',
+    progress: 0,
+    language,
+    botId: this._botId
+  })
+
+  private _doneTraining = (language: string): BpTraining => ({
+    status: 'done',
+    progress: 1,
+    language,
+    botId: this._botId
+  })
 }
