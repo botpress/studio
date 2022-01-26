@@ -978,9 +978,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@botpress/superinput@workspace:packages/super-input":
+"@botpress/superinput@workspace:packages/superinput":
   version: 0.0.0-use.local
-  resolution: "@botpress/superinput@workspace:packages/super-input"
+  resolution: "@botpress/superinput@workspace:packages/superinput"
   dependencies:
     "@codemirror/autocomplete": ^0.19.9
     "@codemirror/closebrackets": ^0.19.0
