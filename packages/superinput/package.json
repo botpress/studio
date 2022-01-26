@@ -35,11 +35,6 @@
     "demo": "parcel demo/index.html",
     "doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
