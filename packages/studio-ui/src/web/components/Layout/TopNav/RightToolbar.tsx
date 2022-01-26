@@ -47,16 +47,14 @@ const RightToolBar: FC<Props> = props => {
       )}
 
       {window.IS_BOT_MOUNTED && (
-        <Tooltip content={<ShortcutLabel light shortcut="emulator-focus" />}>
+        <Tooltip content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}>
           <button
             className={classNames(style.item, style.itemSpacing, { [style.active]: props.isEmulatorOpen })}
             onClick={toggleEmulator}
             id="statusbar_emulator"
           >
             <Icon color="#1a1e22" icon="chat" iconSize={16} />
-            <span className={style.label}>
-              {lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}
-            </span>
+            <span className={style.label}>{lang.tr('topNav.emulator')}</span>
           </button>
         </Tooltip>
       )}

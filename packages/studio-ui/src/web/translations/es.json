@@ -662,6 +662,7 @@
   },
   "topNav": {
     "help": "Ayuda",
+    "emulator": "Emulador",
     "readDoc": "Documentación",
     "toggleEmulator": "{shortcut} Alternar Emulador",
     "toggleExplorer": "{shortcut} Alternar Explorador",

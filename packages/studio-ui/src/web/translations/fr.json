@@ -685,6 +685,7 @@
   },
   "topNav": {
     "help": "Aide",
+    "emulator": "Émulateur",
     "readDoc": "Lire la documentation",
     "toggleEmulator": "{shortcut} Changer l'état de l'Émulateur",
     "toggleExplorer": "{shortcut} Changer l'état de l'Explorateurmulateur",

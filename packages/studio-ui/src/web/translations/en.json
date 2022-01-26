@@ -710,6 +710,7 @@
   },
   "topNav": {
     "help": "Help",
+    "emulator": "Emulator",
     "readDoc": "Read Documentation",
     "toggleEmulator": "{shortcut} Toggle Emulator",
     "toggleExplorer": "{shortcut} Toggle Explorer",

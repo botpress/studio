@@ -7,9 +7,9 @@ export default () => {
   return window.IS_PRO_ENABLED ? (
     <span />
   ) : (
-    <Tooltip position="right-bottom" content={lang.tr('studio.flow.toolbar.salesCallToActionDescription')}>
+    <Tooltip position="right-bottom" content={lang.tr('topNav.salesCallToActionDescription')}>
       <a className={style.cta_btn} target="_blank" href="https://botpress.com/request-trial-from-app">
-        {lang.tr('studio.flow.toolbar.salesCallToAction')}
+        {lang.tr('topNav.salesCallToAction')}
       </a>
     </Tooltip>
   )
