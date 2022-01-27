@@ -1,16 +1,24 @@
 import { Button, Spinner } from '@blueprintjs/core'
 import axios from 'axios'
-import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
-import React, { FC, useEffect, useState } from 'react'
+import { Training, TrainError } from 'common/nlu-training'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { AccessControl, Timeout, toastFailure } from '~/components/Shared/Utils'
 
 import style from './style.scss'
 
+const usePrevious = <T extends any>(value: T): T | undefined => {
+  const ref = useRef<T>()
+  useEffect(() => {
+    ref.current = value
+  })
+  return ref.current
+}
+
 interface Props {
   dark?: boolean
-  trainSession: NLU.TrainingSession
+  trainSession: Training
 }
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
@@ -26,27 +34,24 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const onTrainingNeeded = () => setMessage('')
   const onTraingDone = () => setMessage(lang.tr('statusBar.ready'))
   const onCanceling = () => setMessage(lang.tr('statusBar.canceling'))
-  const onError = (error?: NLU.TrainingError) => {
-    setMessage(lang.tr('statusBar.trainingError'))
-    if (error) {
-      toastFailure(error.message, Timeout.LONG, null, { delayed: 0 })
-    }
+  const onTrainingError = (error: TrainError) => {
+    setMessage('')
+    toastFailure(error.message, Timeout.LONG, null, { delayed: 0 })
   }
   const onTrainingProgress = (progress: number) => {
     const p = Math.floor(progress * 100)
     setMessage(`${lang.tr('statusBar.training')} ${p}%`)
   }
 
+  const prevStatus = usePrevious(status)
   useEffect(() => {
     if (status === 'training') {
       onTrainingProgress(progress ?? 0)
-    } else if (status === 'errored') {
-      onError(error)
-    } else if (status === 'canceled') {
-      onCanceling()
+    } else if (error && (prevStatus === 'training' || prevStatus === 'training-pending')) {
+      onTrainingError(error)
     } else if (status === 'needs-training') {
       onTrainingNeeded()
-    } else if (status === 'idle' || status === 'done') {
+    } else if (status === 'done') {
       onTraingDone()
     }
   }, [props.trainSession])
@@ -57,7 +62,8 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     try {
       await axios.post(`${BASE_NLU_URL}/train/${trainSession.language}`)
     } catch (err) {
-      onError()
+      const errMsg = err instanceof Error ? err.message : `Error occured: ${err}`
+      toastFailure(errMsg, Timeout.LONG, null, { delayed: 0 })
     } finally {
       setLoading(false)
     }

@@ -195,7 +195,7 @@
       "overwrite": "Sobrescribir el archivo existente",
       "selectFile": "Seleccione su archivo",
       "uploadFile": "Subir archivo"
-    }   
+    }
   },
   "skills": {
     "callApi": "Llamar API",
@@ -413,7 +413,6 @@
     "cancelTraining": "Cancelar entrenamiento",
     "trainingPending": "Entrenamiento pendiente",
     "canceling": "Cancelando",
-    "trainingError": "No se pudo entrenar el Chatbot",
     "cloudEnabled": "Chatbot configurado para la nube"
   },
   "studio": {

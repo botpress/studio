@@ -88,6 +88,7 @@
     "@types/lodash": "4.14.123",
     "@types/node": "^12.18.1",
     "@types/proper-lockfile": "^4.1.2",
-    "@types/verror": "^1.10.3"
+    "@types/verror": "^1.10.3",
+    "ts-node": "^10.4.0"
   }
 }

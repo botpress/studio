@@ -1,6 +1,6 @@
-import * as sdk from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import cx from 'classnames'
+import { Training } from 'common/nlu-training'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 import { connect } from 'react-redux'
@@ -36,7 +36,7 @@ interface OwnProps {
   location: any
   history: any
   setEmulatorOpen: (state: boolean) => void
-  trainSessionReceived: (ts: sdk.NLU.TrainingSession) => void
+  trainSessionReceived: (ts: Training) => void
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>

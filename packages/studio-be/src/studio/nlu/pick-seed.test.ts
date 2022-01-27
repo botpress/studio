@@ -1,7 +1,7 @@
 import _ from 'lodash'
 
 import pickSeed from './pick-seed'
-import { BotConfig } from 'botpress/sdk'
+import { BotConfig } from './typings'
 
 test('make seed with defined seed should not generate one', () => {
   const actual = pickSeed({ id: 'testy', nluSeed: 42 } as BotConfig)

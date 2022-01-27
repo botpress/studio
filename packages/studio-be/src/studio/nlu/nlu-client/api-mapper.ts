@@ -1,19 +1,24 @@
 import {
-  TrainInput,
-  ListEntityDefinition,
-  PatternEntityDefinition,
+  TrainInput as StanTrainInput,
+  ListEntityDefinition as StanListEntityDefinition,
+  PatternEntityDefinition as StanPatternEntityDefinition,
   EntityDefinition as StanEntityDefinition,
   SlotDefinition as StanSlotDefinition,
   IntentDefinition as StanIntentDefinition
 } from '@botpress/nlu-client'
 
-import { NLU as SDKNLU } from 'botpress/sdk'
+import { NLU } from 'botpress/sdk'
 import _ from 'lodash'
-import { TrainingSet as BpTrainingSet } from '../typings'
 
-type BpSlotDefinition = SDKNLU.SlotDefinition
-type BpIntentDefinition = SDKNLU.IntentDefinition
-type BpEntityDefinition = SDKNLU.EntityDefinition
+type BpSlotDefinition = NLU.SlotDefinition
+type BpIntentDefinition = NLU.IntentDefinition
+type BpEntityDefinition = NLU.EntityDefinition
+interface BpTrainInput {
+  intentDefs: NLU.IntentDefinition[]
+  entityDefs: NLU.EntityDefinition[]
+  languageCode: string
+  seed: number
+}
 
 /**
  * ################
@@ -51,7 +56,7 @@ const makeIntentMapper = (lang: string) => (intent: BpIntentDefinition): StanInt
   }
 }
 
-const mapList = (listDef: BpEntityDefinition): ListEntityDefinition => {
+const mapList = (listDef: BpEntityDefinition): StanListEntityDefinition => {
   const { name, fuzzy, occurrences, examples } = listDef
 
   return {
@@ -62,7 +67,7 @@ const mapList = (listDef: BpEntityDefinition): ListEntityDefinition => {
   }
 }
 
-const mapPattern = (patternDef: BpEntityDefinition): PatternEntityDefinition => {
+const mapPattern = (patternDef: BpEntityDefinition): StanPatternEntityDefinition => {
   const { name, pattern, matchCase, examples } = patternDef
 
   return {
@@ -78,8 +83,13 @@ const mapEntityDefinition = (e: BpEntityDefinition): StanEntityDefinition => {
   return isPatternEntity(e) ? mapPattern(e) : mapList(e)
 }
 
-export const mapTrainSet = (bpTrainSet: BpTrainingSet): TrainInput => {
+export const mapTrainSet = (bpTrainSet: BpTrainInput): StanTrainInput & { contexts: string[] } => {
   const { intentDefs, entityDefs, languageCode, seed } = bpTrainSet
+
+  const contexts = _(intentDefs)
+    .flatMap(i => i.contexts)
+    .uniq()
+    .value()
 
   const entities = entityDefs.filter(isCustomEntity).map(mapEntityDefinition)
 
@@ -88,6 +98,7 @@ export const mapTrainSet = (bpTrainSet: BpTrainingSet): TrainInput => {
 
   return {
     intents,
+    contexts,
     entities,
     language: languageCode,
     seed
