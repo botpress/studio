@@ -1,8 +1,5 @@
-const semver = require('semver')
+const { execute } = require('./exec')
 const yargs = require('yargs')
-const fse = require('fs-extra')
-const { spawn } = require('child_process')
-const path = require('path')
 const changelog = require('./changelog')
 const logger = require('./logger')
 
@@ -15,16 +12,11 @@ yargs
     })
 
     try {
-      const version = (await fse.readJSON(path.join('package.json'))).version
-      const newVersion = semver.inc(version, argv.releaseType)
+      const bumpCommand = `version ${argv.releaseType}`
+      await execute(`yarn ${bumpCommand}`, undefined, { silent: true })
 
-      spawn('yarn', ['version', '--new-version', newVersion, '--no-git-tag-version'], {
-        stdio: 'inherit',
-        shell: true
-      }).on('close', async () => {
-        const changes = await changelog.build({ writeToFile: true })
-        logger.info(`Change Log:\n\n${changes}`)
-      })
+      const changes = await changelog.build({ writeToFile: true })
+      logger.info(`Change Log:\n\n${changes}`)
     } catch (err) {
       logger.error(err)
     }
