@@ -93,12 +93,13 @@ export class FlowService {
   private _listenForCacheInvalidation() {
     this.cache.events.on('invalidation', async key => {
       try {
-        const matches = key.match(/^([A-Z0-9-_]+)::bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
+        const matches = key.match(/^([A-Z0-9-_]+)::(?:data\/)?bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
 
         if (matches && matches.length >= 2) {
-          const [key, type, botId, flowName] = matches
+          console.log('flow-service - matched', key)
+          const [_key, type, botId, flowName] = matches
           if (type === 'file' || type === 'object') {
-            await this.forBot(botId).handleInvalidatedCache(flowName, type === 'file')
+            await this.forBot(botId).handleInvalidatedCache(flowName)
           }
         }
       } catch (err) {
@@ -128,7 +129,6 @@ export class FlowService {
 
 export class ScopedFlowService {
   private cache: ArrayCache<string, FlowView>
-  private expectedSavesCache: LRUCache<string, number>
 
   constructor(
     private botId: string,
@@ -142,9 +142,8 @@ export class ScopedFlowService {
   ) {
     this.cache = new ArrayCache<string, FlowView>(
       x => x.name,
-      (x, prevKey, newKey) => ({ ...x, name: newKey, location: newKey })
+      (x, _prevKey, newKey) => ({ ...x, name: newKey, location: newKey })
     )
-    this.expectedSavesCache = new LRUCache({ max: 100, maxAge: ms('20s') })
   }
 
   public async localInvalidateFlow(key: string, flow?: FlowView, newKey?: string) {
@@ -169,31 +168,20 @@ export class ScopedFlowService {
     }
   }
 
-  public async handleInvalidatedCache(flowName: string, isFromFile: boolean) {
+  public async handleInvalidatedCache(flowName: string) {
     const flowPath = this.toFlowPath(flowName)
-    const expectedSaves = this.expectedSavesCache.get(flowPath)
 
-    if (!expectedSaves) {
-      // fix an issue when creating a bot where the .flow.json is written but not the .ui.json because of the locking mechanism
-      if (!(await this.ghost.fileExists(FLOW_DIR, this.toUiPath(flowPath)))) {
-        return
-      }
-
-      if (await this.ghost.fileExists(FLOW_DIR, flowPath)) {
-        const flow = await this.parseFlow(flowPath)
-        await this.localInvalidateFlow(flowPath, flow)
-      } else {
-        await this.localInvalidateFlow(flowPath, undefined)
-      }
-    } else {
-      if (!isFromFile) {
-        this.expectedSavesCache.set(flowPath, expectedSaves - 1)
-      }
+    // fix an issue when creating a bot where the .flow.json is written but not the .ui.json because of the locking mechanism
+    if (!(await this.ghost.fileExists(FLOW_DIR, this.toUiPath(flowPath)))) {
+      return
     }
-  }
 
-  private setExpectedSaves(flowName: string, amount: number) {
-    this.expectedSavesCache.set(flowName, amount)
+    if (await this.ghost.fileExists(FLOW_DIR, flowPath)) {
+      const flow = await this.parseFlow(flowPath)
+      await this.localInvalidateFlow(flowPath, flow)
+    } else {
+      await this.localInvalidateFlow(flowPath, undefined)
+    }
   }
 
   async loadAll(): Promise<FlowView[]> {
@@ -340,14 +328,8 @@ export class ScopedFlowService {
 
     const isNew = !flowFiles.find(x => flow.location === x)
 
-    // TODO: remove this when we improve the cache
-    // the onFlowChange function called inside prepareSaveFlow can cause
-    // cache events to be fired. We aren't interested in catching any of those
-    this.setExpectedSaves(flow.name, 999999)
     const { flowPath, uiPath, flowContent, uiContent } = await this.prepareSaveFlow(flow, isNew)
 
-    // TODO: remove this when we improve the cache
-    this.setExpectedSaves(flow.name, 2)
     this.invalidateFlow(flow.name, flow)
 
     await Promise.all([
@@ -365,9 +347,7 @@ export class ScopedFlowService {
 
     const uiPath = this.toUiPath(fileToDelete)
 
-    // TODO: remove this when we improve the cache
     this.invalidateFlow(flowName)
-    this.setExpectedSaves(flowName, 2)
 
     await Promise.all([this.ghost.deleteFile(FLOW_DIR, fileToDelete!), this.ghost.deleteFile(FLOW_DIR, uiPath)])
 
@@ -386,9 +366,7 @@ export class ScopedFlowService {
       throw new Error(`Can not rename a flow that does not exist: ${previousName}`)
     }
 
-    // TODO: remove this when we improve the cache
     this.invalidateFlow(previousName, undefined, newName)
-    this.setExpectedSaves(newName, 2)
 
     const previousUiName = this.toUiPath(fileToRename)
     const newUiName = this.toUiPath(newName)
