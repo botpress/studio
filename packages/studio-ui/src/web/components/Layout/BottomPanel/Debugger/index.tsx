@@ -81,7 +81,7 @@ export class Debugger extends React.Component<Props, State> {
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps: Props) {
     if (prevProps.messageId !== this.props.messageId) {
       await this.loadEvent(this.props.messageId)
     }
