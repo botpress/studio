@@ -96,7 +96,6 @@ export class FlowService {
         const matches = key.match(/^([A-Z0-9-_]+)::(?:data\/)?bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
 
         if (matches && matches.length >= 2) {
-          console.log('flow-service - matched', key)
           const [_key, type, botId, flowName] = matches
           if (type === 'file' || type === 'object') {
             await this.forBot(botId).handleInvalidatedCache(flowName)
