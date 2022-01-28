@@ -1,6 +1,6 @@
-import Superinput from './Superinput'
+import SuperInput from './SuperInput'
 import { SI_TYPES } from './types'
 
 import './index.scss'
 
-export { Superinput, SI_TYPES }
+export { SuperInput, SI_TYPES }

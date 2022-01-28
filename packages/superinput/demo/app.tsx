@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Superinput } from '../src'
+import { SuperInput } from '../src'
 import { SI_TYPES } from '../src/types'
 import { data } from './data'
 
@@ -33,23 +33,23 @@ function App() {
         <h1>Superinput Inspector</h1>
         <section>
           <h2>expression</h2>
-          <Superinput type={SI_TYPES.EXPRESSION} value={code0} globs={globs} {...msgs} />
+          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} globs={globs} {...msgs} />
         </section>
         <section>
           <h2>expression (no globs)</h2>
-          <Superinput type={SI_TYPES.EXPRESSION} value={code0} {...msgs} />
+          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} {...msgs} />
         </section>
         <section>
           <h2>Valid</h2>
-          <Superinput value={code1} globs={globs} {...msgs} autoFocus />
+          <SuperInput value={code1} globs={globs} {...msgs} autoFocus />
         </section>
         <section>
           <h2>Invalid</h2>
-          <Superinput value={code2} globs={globs} {...msgs} />
+          <SuperInput value={code2} globs={globs} {...msgs} />
         </section>
         <section>
           <h2>Something Else (no globs)</h2>
-          <Superinput value={code3} />
+          <SuperInput value={code3} />
         </section>
       </div>
     </div>

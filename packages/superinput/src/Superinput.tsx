@@ -13,7 +13,7 @@ import { bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extension
 import { SI_TYPES, ISiProps } from './types'
 import { isError, evalStrTempl } from './utils/tokenEval'
 
-export default function Superinput({
+export default function SuperInput({
   value,
   globs,
   onChange,
