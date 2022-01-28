@@ -77,9 +77,7 @@ export default function SuperInput({
     }
 
     return () => {
-      if (view) {
-        view.destroy()
-      }
+      view?.destroy()
     }
   }, [])
 
