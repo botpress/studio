@@ -8,7 +8,9 @@ const originalRequire = Module.prototype.require
 const platformFolders: string[] = []
 const nativeBindingsPaths: string[] = []
 
-const nativeExBaseFolder = syspath.resolve(require.resolve('@botpress/native-extensions'), '../../bin')
+const nativeExBaseFolder =
+  (process.core_env.NATIVE_EXTENSIONS_DIR && syspath.resolve(process.env.NATIVE_EXTENSIONS_DIR!)) ||
+  syspath.resolve(require.resolve('@botpress/native-extensions'), '../../bin')
 
 if (process.distro.os === 'linux') {
   platformFolders.push('linux/default')
