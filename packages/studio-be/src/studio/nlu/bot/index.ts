@@ -56,8 +56,11 @@ export class Bot {
   }
 
   public train = async (language: string): Promise<void> => {
-    await this._botState.startTraining(language)
     try {
+      const pending = this._trainPending(language)
+      this._webSocket(pending)
+
+      await this._botState.startTraining(language)
       await poll(async () => {
         const ts = await this.syncAndGetState(language)
         this._webSocket(ts)
@@ -125,6 +128,13 @@ export class Bot {
 
   private _needsTraining = (language: string): BpTraining => ({
     status: 'needs-training',
+    progress: 0,
+    language,
+    botId: this._botId
+  })
+
+  private _trainPending = (language: string): BpTraining => ({
+    status: 'training-pending',
     progress: 0,
     language,
     botId: this._botId
