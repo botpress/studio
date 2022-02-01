@@ -5,6 +5,7 @@
   "version": "12.26.3",
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
+  "name": "Learn Botpress",
   "imports": {
     "modules": [],
     "incomingMiddleware": [],
