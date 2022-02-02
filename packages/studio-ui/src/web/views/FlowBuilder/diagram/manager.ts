@@ -2,6 +2,7 @@ import { FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
 import { DefaultLinkModel, DiagramEngine, DiagramModel, DiagramWidget, PointModel } from 'storm-react-diagrams'
 import { hashCode } from '~/util'
+import { ZOOM_MIN, ZOOM_MAX, ZOOM_SPEED_SCALAR, ZOOM_IN_OUT_AMT, DIAGRAM_PADDING } from './constants'
 
 import { FlowNode } from './debugger'
 import { BlockModel } from './nodes/Block'
@@ -9,11 +10,6 @@ import { BlockModel } from './nodes/Block'
 interface NodeProblem {
   nodeName: string
   missingPorts: any
-}
-
-interface DiagramContainerSize {
-  width: number
-  height: number
 }
 
 type ExtendedDiagramModel = {
@@ -31,7 +27,6 @@ const passThroughNodeProps: string[] = [
   'content',
   'activeWorkflow'
 ]
-export const DIAGRAM_PADDING: number = 100
 
 // Must be identified by the deleteSelectedElement logic to know it needs to delete something
 export const nodeTypes = ['standard', 'trigger', 'skill-call', 'say_something', 'execute', 'listen', 'router', 'action']
@@ -52,13 +47,14 @@ export class DiagramManager {
   private diagramEngine: DiagramEngine
   private activeModel: ExtendedDiagramModel
   private diagramWidget: DiagramWidget
+  private diagramWidgetEl: HTMLDivElement
   private highlightedNodes?: FlowNode[] = []
   private highlightedLinks?: string[] = []
   private highlightFilter?: string
   private currentFlow: FlowView
   private isReadOnly: boolean
-  private diagramContainerSize: DiagramContainerSize
   private storeDispatch
+  private zoomLevelFloat: number
 
   constructor(engine, storeActions) {
     this.diagramEngine = engine
@@ -83,16 +79,89 @@ export class DiagramManager {
     nodes.forEach(node => this._createNodeLinks(node, nodes, this.currentFlow.links))
 
     this.diagramEngine.setDiagramModel(this.activeModel)
-    this._updateZoomLevel(nodes)
+
+    // initial center & zoom
+    this.zoomToFit()
+    this.zoomLevelFloat = this.activeModel.getZoomLevel()
 
     // Setting the initial links hash when changing flow
     this.getLinksRequiringUpdate()
     this.highlightLinkedNodes()
   }
 
-  updateZoomLevel() {
-    const nodes = this.getBlockModelFromFlow(this.currentFlow)
-    this._updateZoomLevel(nodes)
+  /** Sets the internal zoom level, and returns a "safe" zoom level */
+  setZoomLevelFloat = (delta: number) => {
+    const zoom = Math.min(Math.max(this.zoomLevelFloat + delta, ZOOM_MIN), ZOOM_MAX)
+    const safeZoom = Math.round(zoom)
+    // Update internal zoom state
+    this.zoomLevelFloat = zoom
+    return safeZoom
+  }
+
+  handleDiagramWheel = (e: WheelEvent) => {
+    if (!this.diagramWidget.props.allowCanvasZoom) {
+      return
+    }
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    const previousZoom = this.activeModel.getZoomLevel()
+
+    const delta = (this.diagramWidget.props.inverseZoom ? -e.deltaY : e.deltaY) / ZOOM_SPEED_SCALAR
+    const currentZoom = this.setZoomLevelFloat(delta)
+
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+
+      // Recenter
+      const { left, top } = this.diagramWidgetEl.getBoundingClientRect()
+      this.centerDiagramAfterZoom(previousZoom, currentZoom, { x: e.clientX - left, y: e.clientY - top })
+    }
+  }
+
+  centerDiagramAfterZoom = (previousZoom: number, currentZoom: number, centerOn?: { x: number; y: number }) => {
+    const { width, height } = this.diagramWidgetEl.getBoundingClientRect()
+    const previousZoomFactor = previousZoom / 100
+    const zoomFactor = currentZoom / 100
+    const widthDiff = width * zoomFactor - width * previousZoomFactor
+    const heightDiff = height * zoomFactor - height * previousZoomFactor
+
+    const center = centerOn || { x: width / 2, y: height / 2 }
+
+    const xFactor = (center.x - this.activeModel.getOffsetX()) / previousZoomFactor / width
+    const yFactor = (center.y - this.activeModel.getOffsetY()) / previousZoomFactor / height
+    this.activeModel.setOffset(
+      this.activeModel.getOffsetX() - widthDiff * xFactor,
+      this.activeModel.getOffsetY() - heightDiff * yFactor
+    )
+    this.diagramEngine.enableRepaintEntities([])
+    this.diagramWidget.forceUpdate()
+  }
+
+  zoomIn = () => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(ZOOM_IN_OUT_AMT)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
+  }
+
+  zoomOut = () => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(-ZOOM_IN_OUT_AMT)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
+  }
+
+  zoomToLevel = (zoom: number) => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(zoom - previousZoom)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
   }
 
   getBlockModelFromFlow(flow: FlowView) {
@@ -335,9 +404,9 @@ export class DiagramManager {
     this.isReadOnly = readOnly
   }
 
-  setDiagramContainer(diagramWidget, diagramContainerSize: DiagramContainerSize) {
-    this.diagramContainerSize = diagramContainerSize
+  setDiagramContainer(diagramWidget, diagramWidgetEl) {
     this.diagramWidget = diagramWidget
+    this.diagramWidgetEl = diagramWidgetEl
   }
 
   getSelectedNode() {
@@ -462,8 +531,9 @@ export class DiagramManager {
     })
   }
 
-  private _updateZoomLevel(nodes) {
-    const { width: diagramWidth, height: diagramHeight } = this.diagramContainerSize
+  zoomToFit() {
+    const nodes = this.getBlockModelFromFlow(this.currentFlow)
+    const { width: diagramWidth, height: diagramHeight } = this.diagramWidgetEl.getBoundingClientRect()
     const totalFlowWidth = _.max(_.map(nodes, 'x')) - _.min(_.map(nodes, 'x')) || 0
     const totalFlowHeight = _.max(_.map(nodes, 'y')) - _.min(_.map(nodes, 'y')) || 0
     const zoomLevelX = Math.min(1, diagramWidth / (totalFlowWidth + 2 * DIAGRAM_PADDING))

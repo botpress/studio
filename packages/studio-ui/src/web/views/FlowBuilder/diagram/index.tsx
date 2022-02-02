@@ -35,10 +35,11 @@ import {
   zoomToLevel
 } from '~/actions'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
+import { DIAGRAM_PADDING } from './constants'
 
 import { prepareEventForDiagram } from './debugger'
 import DiagramToolbar from './DiagramToolbar'
-import { defaultTransition, DiagramManager, DIAGRAM_PADDING, nodeTypes, Point } from './manager'
+import { defaultTransition, DiagramManager, nodeTypes, Point } from './manager'
 import { BlockModel, BlockProps, BlockWidgetFactory } from './nodes/Block'
 import { DeletableLinkFactory } from './nodes/LinkWidget'
 import NodeToolbar from './NodeToolbar'
@@ -216,42 +217,33 @@ class Diagram extends Component<Props> {
   componentDidMount() {
     this.props.fetchFlows()
     this.setState({ expandedNodes: getExpandedNodes() })
+    const diagramWidgetEl = ReactDOM.findDOMNode(this.diagramWidget) as HTMLDivElement
+    diagramWidgetEl.addEventListener('click', this.onDiagramClick)
+    diagramWidgetEl.addEventListener('mousedown', this.onMouseDown)
+    diagramWidgetEl.addEventListener('dblclick', this.onDiagramDoubleClick)
+    diagramWidgetEl.addEventListener('wheel', this.manager.handleDiagramWheel)
 
-    ReactDOM.findDOMNode(this.diagramWidget).addEventListener('click', this.onDiagramClick)
-    ReactDOM.findDOMNode(this.diagramWidget).addEventListener('mousedown', this.onMouseDown)
-    ReactDOM.findDOMNode(this.diagramWidget).addEventListener('dblclick', this.onDiagramDoubleClick)
-    document.getElementById('diagramContainer').addEventListener('keydown', this.onKeyDown)
+    this.diagramContainer.addEventListener('keydown', this.onKeyDown)
+    this.manager.setDiagramContainer(this.diagramWidget, diagramWidgetEl)
   }
 
   componentWillUnmount() {
-    ReactDOM.findDOMNode(this.diagramWidget).removeEventListener('click', this.onDiagramClick)
-    ReactDOM.findDOMNode(this.diagramWidget).removeEventListener('mousedown', this.onMouseDown)
-    ReactDOM.findDOMNode(this.diagramWidget).removeEventListener('dblclick', this.onDiagramDoubleClick)
-    document.getElementById('diagramContainer').removeEventListener('keydown', this.onKeyDown)
+    const diagramWidgetEl = ReactDOM.findDOMNode(this.diagramWidget) as HTMLDivElement
+    diagramWidgetEl.removeEventListener('click', this.onDiagramClick)
+    diagramWidgetEl.removeEventListener('mousedown', this.onMouseDown)
+    diagramWidgetEl.removeEventListener('dblclick', this.onDiagramDoubleClick)
+    diagramWidgetEl.addEventListener('wheel', this.manager.handleDiagramWheel)
+
+    this.diagramContainer.removeEventListener('keydown', this.onKeyDown)
   }
 
   componentDidUpdate(prevProps, prevState) {
     this.manager.setCurrentFlow(this.props.currentFlow)
     this.manager.setReadOnly(this.props.readOnly)
 
-    if (this.diagramContainer) {
-      this.manager.setDiagramContainer(this.diagramWidget, {
-        width: this.diagramContainer.offsetWidth,
-        height: this.diagramContainer.offsetHeight
-      })
-    }
-
     if (this.dragPortSource && !prevProps.currentFlowNode && this.props.currentFlowNode) {
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       this.linkCreatedNode()
-    }
-
-    if (prevProps.zoomLevel !== this.props.zoomLevel) {
-      if (this.props.zoomLevel === -1) {
-        this.manager.updateZoomLevel()
-      } else {
-        this.diagramEngine.diagramModel.setZoomLevel(this.props.zoomLevel)
-      }
     }
 
     if (prevProps.debuggerEvent !== this.props.debuggerEvent) {
@@ -748,7 +740,12 @@ class Diagram extends Component<Props> {
             maxNumberPointsPerLink={MAX_NUMBER_OF_POINTS_PER_LINK}
             inverseZoom
           />
-          <ZoomToolbar />
+          <ZoomToolbar
+            zoomIn={this.manager.zoomIn.bind(this.manager)}
+            zoomOut={this.manager.zoomOut.bind(this.manager)}
+            zoomToLevel={this.manager.zoomToLevel.bind(this.manager)}
+            zoomToFit={this.manager.zoomToFit.bind(this.manager)}
+          />
           {canAdd && <NodeToolbar />}
           <TriggerEditor
             node={this.state.currentTriggerNode}
