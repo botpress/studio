@@ -51,7 +51,7 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
 
       {value && !isUrlOrRelativePath(value) && (
         <div className={localStyle.expressionWrapper}>
-          {lang.tr('module.builtin.types.infoInterpreted')} <span className={localStyle.italic}>{value}</span>
+          {lang.tr('contentTypes.infoInterpreted')} <span className={localStyle.italic}>{value}</span>
           <div className={localStyle.expressionWrapperActions}>
             <Tooltip content={lang.tr('delete')} position={Position.TOP}>
               <Button minimal small intent={Intent.DANGER} icon="trash" onClick={onDelete}></Button>
