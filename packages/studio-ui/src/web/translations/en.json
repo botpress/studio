@@ -458,7 +458,6 @@
     "cancelTraining": "Cancel Training",
     "trainingPending": "Training Pending",
     "canceling": "Canceling",
-    "trainingError": "Cannot train Chatbot",
     "cloudEnabled": "Cloud Enabled Chatbot"
   },
   "studio": {

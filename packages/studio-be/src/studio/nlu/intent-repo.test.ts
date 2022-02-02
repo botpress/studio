@@ -1,4 +1,4 @@
-import { trimUtterances } from './utils'
+import { trimUtterances } from './intent-repo'
 
 describe('trimUtterances', () => {
   const testcases: any[] = [

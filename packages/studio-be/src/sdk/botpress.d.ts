@@ -274,39 +274,6 @@ declare module 'botpress/sdk' {
   }
 
   export namespace NLU {
-    /**
-     * idle : occures when there are no training sessions for a bot
-     * done : when a training is complete
-     * needs-training : when current chatbot model differs from training data
-     * training-pending : when a training was launched, but the training process is not started yet
-     * training: when a chatbot is currently training
-     * canceled: when a user cancels a training and the training is being canceled
-     * errored: when a chatbot failed to train
-     */
-    export type TrainingStatus =
-      | 'idle'
-      | 'done'
-      | 'needs-training'
-      | 'training-pending'
-      | 'training'
-      | 'canceled'
-      | 'errored'
-      | null
-
-    export interface TrainingError {
-      type: string
-      message: string
-      stackTrace?: string
-    }
-
-    export interface TrainingSession {
-      key: string
-      status: TrainingStatus
-      language: string
-      progress: number
-      error?: TrainingError
-    }
-
     export type EntityType = 'system' | 'pattern' | 'list'
 
     export interface EntityDefOccurrence {

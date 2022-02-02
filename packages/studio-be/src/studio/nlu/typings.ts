@@ -1,4 +1,5 @@
-import { CloudConfig, NLU as SDKNLU } from 'botpress/sdk'
+import { CloudConfig } from 'botpress/sdk'
+import { Training as BpTraining } from 'common/nlu-training'
 
 export interface BotConfig {
   id: string
@@ -16,27 +17,9 @@ export interface BotDefinition {
   seed: number
 }
 
-export interface TrainingState {
-  status: SDKNLU.TrainingStatus
-  progress: number
-  error?: SDKNLU.TrainingError
-}
-
-export interface TrainingId {
-  botId: string
-  language: string
-}
-
-export interface TrainingSession extends TrainingId, TrainingState {}
-
-export interface TrainingSet {
-  intentDefs: SDKNLU.IntentDefinition[]
-  entityDefs: SDKNLU.EntityDefinition[]
-  languageCode: string
-  seed: number
-}
-
 export interface ConfigResolver {
   getBotById(botId: string): Promise<BotConfig | undefined>
   mergeBotConfig(botId: string, partialConfig: Partial<BotConfig>, ignoreLock?: boolean): Promise<any>
 }
+
+export type TrainListener = (training: BpTraining) => void

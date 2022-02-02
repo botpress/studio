@@ -1,22 +1,22 @@
-import * as sdk from 'botpress/sdk'
+import { Logger } from 'botpress/sdk'
 import _ from 'lodash'
 import { Bot } from './bot'
 import { DefinitionsRepository } from './definitions-repository'
-import { ModelStateService } from './model-state'
+import { ModelEntryService, TrainingEntryService, ModelEntryRepository } from './model-entry'
 import { NLUClient } from './nlu-client'
 import pickSeed from './pick-seed'
 
-import { BotDefinition, BotConfig, TrainingSession, ConfigResolver } from './typings'
+import { BotDefinition, BotConfig, ConfigResolver, TrainListener } from './typings'
 
 const CLOUD_NLU_ENDPOINT = process.env.CLOUD_NLU_ENDPOINT || 'https://nlu.botpress.dev'
 
 export class BotFactory {
   constructor(
     private _configResolver: ConfigResolver,
-    private _logger: sdk.Logger,
+    private _logger: Logger,
     private _defRepo: DefinitionsRepository,
-    private _modelStateService: ModelStateService,
-    private _webSocket: (ts: TrainingSession) => void,
+    private _modelStateRepo: ModelEntryRepository,
+    private _webSocket: TrainListener,
     private _nluEndpoint: string
   ) {}
 
@@ -41,14 +41,17 @@ export class BotFactory {
       seed: pickSeed(botConfig)
     }
 
+    const modelService = new ModelEntryService(this._modelStateRepo)
+    const trainService = new TrainingEntryService(this._modelStateRepo)
     return new Bot(
       botDefinition,
       this._configResolver,
       nluClient,
       this._defRepo,
-      this._modelStateService,
-      this._webSocket,
-      this._logger
+      modelService,
+      trainService,
+      this._logger,
+      this._webSocket
     )
   }
 }

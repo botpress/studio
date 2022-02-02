@@ -237,7 +237,12 @@ export class HTTPServer {
       )
     }
 
-    this.app.use('/assets/studio/ui', this.guardWhiteLabel(), express.static(resolveStudioAsset('')))
+    this.app.use(
+      '/assets/studio/ui',
+      this.guardWhiteLabel(),
+      express.static(resolveStudioAsset(''), { fallthrough: false })
+    )
+
     this.app.use(`${BASE_API_PATH}/studio/modules`, this.modulesRouter.router)
 
     await this.studioRouter.setupRoutes(this.app)

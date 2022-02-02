@@ -2,12 +2,9 @@ import _ from 'lodash'
 import { BotConfig } from './typings'
 
 const MAX_SEED = 10000
-
 const BYTES_PER_NUMBER = 8 // 64 bits floats === 8 bytes
 const NIBBLES_PER_NUMBER = BYTES_PER_NUMBER * 2 // 0xff takes 2 nibbles
-
 const BASE = 16
-
 const DEFAULT_SEED = 42
 
 const _hashToNumber = (text: string): number => {

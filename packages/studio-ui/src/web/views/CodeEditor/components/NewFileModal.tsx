@@ -102,7 +102,7 @@ const NewFileModal: FC<Props> = props => {
           <div className={Classes.DIALOG_FOOTER_ACTIONS}>
             <Button
               type="submit"
-              id="btn-submit"
+              id="btn-submit-new-file"
               text={lang.tr('submit')}
               intent={Intent.PRIMARY}
               onClick={submit}

@@ -3,9 +3,9 @@ import { GhostService } from 'core/bpfs'
 import { EntityRepository } from './entities-repo'
 import { IntentRepository } from './intent-repo'
 
-export type FileListener = (fileName: string) => Promise<void>
+type FileListener = (fileName: string) => Promise<void>
 
-export interface TrainDefinitions {
+interface TrainDefinitions {
   intentDefs: sdk.NLU.IntentDefinition[]
   entityDefs: sdk.NLU.EntityDefinition[]
 }
@@ -17,7 +17,6 @@ export class DefinitionsRepository {
     private ghost: GhostService
   ) {}
 
-  // TODO: use the actual repo with the ghost, not an HTTP call
   public async getTrainDefinitions(botId: string): Promise<TrainDefinitions> {
     const intentDefs = await this.intentRepo.getIntents(botId)
     const entityDefs = await this.entityRepo.listEntities(botId)

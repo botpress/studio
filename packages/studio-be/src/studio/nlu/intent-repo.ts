@@ -1,13 +1,18 @@
 import * as sdk from 'botpress/sdk'
-import { FlowView } from 'common/typings'
+
 import { GhostService } from 'core/bpfs'
 import { sanitizeFileName } from 'core/misc/utils'
 import _ from 'lodash'
 
-import { NLUService } from '../nlu-service'
-import { trimUtterances } from '../utils'
+import { NLUService } from './nlu-service'
 
 const INTENTS_DIR = './intents'
+
+export const trimUtterances = (intent: sdk.NLU.IntentDefinition) => {
+  for (const lang of Object.keys(intent.utterances)) {
+    intent.utterances[lang] = intent.utterances[lang].map(u => u.trim())
+  }
+}
 
 export class IntentRepository {
   constructor(private ghostService: GhostService, private nluService: NLUService) {}

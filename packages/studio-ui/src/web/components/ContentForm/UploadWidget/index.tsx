@@ -64,7 +64,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
     <AccessControl
       operation="write"
       resource="bot.media"
-      fallback={<em>{lang.tr('module.builtin.types.permissionDenied')}</em>}
+      fallback={<em>{lang.tr('contentTypes.permissionDenied')}</em>}
     >
       <Fragment>
         {!enterUrlManually && (
@@ -84,9 +84,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
         {!value && (
           <div className={localStyle.fieldContainer}>
             <a className={localStyle.toggleLink} onClick={handleToggleManually}>
-              {!enterUrlManually
-                ? lang.tr('module.builtin.types.enterUrlChoice')
-                : lang.tr('module.builtin.types.uploadFileChoice')}
+              {!enterUrlManually ? lang.tr('contentTypes.enterUrlChoice') : lang.tr('contentTypes.uploadFileChoice')}
             </a>
 
             {error && <p className={cn(style.fieldError, localStyle.fieldError)}>{error}</p>}
