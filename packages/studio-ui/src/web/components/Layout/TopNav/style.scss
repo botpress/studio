@@ -24,21 +24,15 @@
 
   .layoutControls {
     button {
-      background-color: transparent !important;
-      background-image: none;
-      border: none !important;
-      box-shadow: none !important;
-      border-radius: 5px;
-      margin: 0 var(--spacing-x-small);
-      color: var(--c-text--disabled) !important;
+      color: var(--c-text--disabled);
 
       &:hover,
       &.active {
-        color: var(--shark) !important;
+        color: var(--shark);
       }
 
       &:hover {
-        background: var(--bg) !important;
+        background: var(--bg);
       }
     }
   }

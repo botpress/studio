@@ -12,7 +12,7 @@ interface Props {
   isEmulatorOpen: boolean
 }
 
-const RightToolBar: FC<Props> = props => {
+const RightToolBar = (props: Props) => {
   const toggleEmulator = () => {
     window.botpressWebChat.sendEvent({ type: 'toggle' })
   }
