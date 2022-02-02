@@ -9,11 +9,11 @@ interface CssExports {
   'item': string;
   'itemSpacing': string;
   'label': string;
-  'list': string;
+  'layoutControls': string;
   'shortcut': string;
   'shortcutLabel': string;
-  'toolbar': string;
   'tooltip': string;
+  'topNav': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;

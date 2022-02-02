@@ -641,9 +641,7 @@
         "somebodyIsEditing": "Alguien está editando otro flujo",
         "whenDiscussionTimeouts": "Cuando se espera un tiempo de espera de discusión (el usuario no responde en el marco temporal configurado) será redirigido aquí.",
         "whenConversationEnds": "Cuando finalice una conversación (sin transición), será redirigido aquí.",
-        "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí",
-        "salesCallToAction": "Prueba Enterprise gratis",
-        "salesCallToActionDescription": "Chatbots seguros, escalables y de nivel empresarial"
+        "whenErrorEncountered": "Cuando se encuentra un error en el flujo, el usuario se redirige aquí"
       },
       "transition": "Transición",
       "unauthUpdate": "Actualización de flujo no autorizada. No tiene privilegios de rol suficientes para modificar flujos.",
@@ -661,15 +659,15 @@
       "nlu": "Comprensión del lenguaje"
     }
   },
-  "toolbar": {
-    "emulator": "Emulador",
+  "topNav": {
     "help": "Ayuda",
-    "logsPanel": "Panel de Log",
+    "emulator": "Emulador",
     "readDoc": "Documentación",
-    "showEmulator": "Mostrar Emulador",
-    "toggleLogsPanel": "Mostrar Logs",
-    "toggleEmulator": "Activar Emulador",
-    "toggleSidePanel": "Activar panel lateral"
+    "toggleEmulator": "{shortcut} Alternar Emulador",
+    "toggleExplorer": "{shortcut} Alternar Explorador",
+    "toggleDebugger": "{shortcut} Alternar Depurador",
+    "salesCallToAction": "Prueba Enterprise gratis",
+    "salesCallToActionDescription": "Chatbots seguros, escalables y de nivel empresarial"
   },
   "bottomPanel": {
     "inspector": {

@@ -321,6 +321,7 @@ export const removeDocumentationHint = createAction('UI/REMOVE_DOCUMENTATION_HIN
 export const updateDocumentationModal = createAction('UI/UPDATE_DOCUMENTATION_MODAL')
 export const toggleBottomPanel = createAction('UI/TOGGLE_BOTTOM_PANEL')
 export const toggleInspector = createAction('UI/TOGGLE_INSPECTOR')
+export const toggleExplorer = createAction('UI/TOGGLE_EXPLORER')
 export const toggleBottomPanelExpand = createAction('UI/TOGGLE_BOTTOM_PANEL_EXPAND')
 export const zoomIn = createAction('UI/ZOOM_IN_DIAGRAM')
 export const zoomOut = createAction('UI/ZOOM_OUT_DIAGRAM')

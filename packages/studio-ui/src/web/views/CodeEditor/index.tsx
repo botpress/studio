@@ -1,14 +1,13 @@
-import { ModuleUI } from 'botpress/shared'
 import { configure } from 'mobx'
 import { Provider } from 'mobx-react'
 import React from 'react'
+import { Container } from '~/components/Shared/Interface'
 
 import Editor from './Editor'
 import SidePanel from './SidePanel'
 import { RootStore } from './store'
 
 configure({ enforceActions: 'observed' })
-const { Container } = ModuleUI
 
 export default class CodeEditor extends React.Component {
   private store: RootStore

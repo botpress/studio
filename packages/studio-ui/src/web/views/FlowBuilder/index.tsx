@@ -1,4 +1,4 @@
-import { lang, MainContainer, utils } from 'botpress/shared'
+import { lang, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
@@ -14,6 +14,7 @@ import {
   setDiagramAction,
   switchFlow
 } from '~/actions'
+import { Container } from '~/components/Shared/Interface'
 import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
 import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
 import { RootReducer } from '~/reducers'
@@ -155,7 +156,7 @@ const FlowBuilder = (props: Props) => {
   }
 
   return (
-    <MainContainer keyHandlers={keyHandlers}>
+    <Container keyHandlers={keyHandlers}>
       <SidePanel
         onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
         readOnly={readOnly}
@@ -185,7 +186,7 @@ const FlowBuilder = (props: Props) => {
       </div>
 
       <SkillsBuilder />
-    </MainContainer>
+    </Container>
   )
 }
 

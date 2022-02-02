@@ -55,6 +55,7 @@ jobs:
         run: yarn build
         env:
           NODE_ENV: production
+          NODE_OPTIONS: --max-old-space-size=6144
 
       - name: Package Binaries
         run: yarn package

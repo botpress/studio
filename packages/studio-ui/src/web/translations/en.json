@@ -689,9 +689,7 @@
         "somebodyIsEditing": "Somebody is editing another flow",
         "whenDiscussionTimeouts": "When a discussion timeouts (user doesn't answer in the configured timeframe) he will be redirected here.",
         "whenConversationEnds": "When a conversation ends (no transition) he will be redirected here.",
-        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here",
-        "salesCallToAction": "Start a free Enterprise trial",
-        "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
+        "whenErrorEncountered": "When an error is encountered in the flow, the user is redirected here"
       },
       "transition": "Transition",
       "unauthUpdate": "Unauthorized flow update. You have insufficient role privileges to modify flows.",
@@ -709,15 +707,15 @@
       "nlu": "Natural language understanding"
     }
   },
-  "toolbar": {
-    "emulator": "Emulator",
+  "topNav": {
     "help": "Help",
-    "bottomPanel": "Bottom Panel",
+    "emulator": "Emulator",
     "readDoc": "Read Documentation",
-    "showEmulator": "Show Emulator",
-    "toggleBottomPanel": "Toggle Bottom Panel",
-    "toggleEmulator": "Toggle Emulator",
-    "toggleSidePanel": "Toggle Side Panel"
+    "toggleEmulator": "{shortcut} Toggle Emulator",
+    "toggleExplorer": "{shortcut} Toggle Explorer",
+    "toggleDebugger": "{shortcut} Toggle Debugger",
+    "salesCallToAction": "Start a free Enterprise trial",
+    "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
   },
   "bottomPanel": {
     "inspector": {

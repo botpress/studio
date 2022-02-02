@@ -26,7 +26,7 @@ import layout from './Layout.scss'
 import LanguageServerHealth from './NLUServerHealthWarning'
 import Sidebar from './Sidebar'
 import StatusBar from './StatusBar'
-import Toolbar from './Toolbar'
+import TopNav from './TopNav'
 import { TrainingStatusService } from './training-status-service'
 
 const { isInputFocused } = utils
@@ -195,12 +195,7 @@ const Layout: FC<Props> = (props: Props) => {
       <HotKeys handlers={keyHandlers} id="mainLayout" className={layout.mainLayout}>
         <Sidebar />
         <div className={layout.container}>
-          <Toolbar
-            hasDoc={props.docHints?.length}
-            toggleDocs={toggleDocs}
-            onToggleEmulator={toggleEmulator}
-            toggleBottomPanel={props.toggleBottomPanel}
-          />
+          <TopNav toggleDocs={toggleDocs} onToggleEmulator={toggleEmulator} />
           <SplitPane
             split={'horizontal'}
             defaultSize={bottomPanelDefaultSize}
