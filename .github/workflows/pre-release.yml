@@ -5,6 +5,9 @@ on:
 
 jobs:
   pre_release_bin:
+    # Do not run on dependabot branches
+    if: startsWith(github.head_ref, 'dependabot/') != true
+
     name: Pre Release Binaries
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +52,7 @@ jobs:
         uses: botpress/gh-actions/get_release_details@v1
 
       - name: Fetch Node Packages
-        run: yarn
+        run: yarn --immutable
 
       - name: Build Project
         run: yarn build
