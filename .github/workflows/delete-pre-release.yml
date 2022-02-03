@@ -3,7 +3,8 @@ on: delete
 
 jobs:
   remove:
-    if: github.event.ref_type == 'branch'
+    # Do not run on dependabot branches
+    if: github.event.ref_type == 'branch' && startsWith(github.event.ref, 'dependabot/') != true
     name: Delete Pre Release Binaries
     runs-on: ubuntu-latest
     steps:
