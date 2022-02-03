@@ -17,4 +17,4 @@ jobs:
           yarn --immutable
       - name: Run tests
         run: |
-          yarn test --coverage --verbose
+          yarn test:unit --coverage --verbose
