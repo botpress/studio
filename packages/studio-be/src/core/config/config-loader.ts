@@ -33,8 +33,9 @@ export class ConfigProvider {
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.ObjectCache) private cache: ObjectCache
   ) {
-    this.cache.events.on('invalidation', async key => {
-      if (key === 'object::data/global/botpress.config.json' || key === 'file::data/global/botpress.config.json') {
+    this.cache.events.on('invalidation', async (key: string) => {
+      const re = /(object|file)::(?:data\/)?global\/botpress\.config\.json/g
+      if (key.match(re)) {
         this._botpressConfigCache = undefined
         const config = await this.getBotpressConfig()
 

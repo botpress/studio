@@ -55,10 +55,6 @@ class LangSwitcher extends React.Component<Props> {
     }
   }
 
-  componentWillUnmount() {
-    this.elems = null
-  }
-
   handleKeyDown = (l, e) => {
     if (e.key === 'Enter') {
       this.switchLang(l)

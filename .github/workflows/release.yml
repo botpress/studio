@@ -20,7 +20,7 @@ jobs:
           yarn
       - name: Get Release Details
         id: release_details
-        uses: botpress/gh-actions/get_release_details@master
+        uses: botpress/gh-actions/get_release_details@v1
       - name: Fix Change Log
         id: changelog
         run: |
