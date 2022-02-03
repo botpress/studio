@@ -48,17 +48,21 @@ export default (user: UserReducer): void => {
   })
 }
 
-function trackEvent(eventName: string, payload?: any, options?: any, callback?: (...params: any[]) => any) {
+function trackEvent(eventName: string, payload?: any, options?: any, callback?: (...params: any[]) => any): void {
   if (analytics) {
     // analytics only defined if window.SEND_USAGE_STATS is true
-    return analytics.track(eventName, payload, options, callback)
+    analytics.track(eventName, payload, options, callback).catch(e => {
+      console.error('Analytics error - event', e)
+    })
   }
 }
 
-function trackPage(data?: PageData, options?: any, callback?: (...params: any[]) => any) {
+function trackPage(data?: PageData, options?: any, callback?: (...params: any[]) => any): void {
   if (analytics) {
     // analytics only defined if window.SEND_USAGE_STATS is true
-    return analytics.page(data, options, callback)
+    analytics.page(data, options, callback).catch(e => {
+      console.error('Analytics error - page', e)
+    })
   }
 }
 
