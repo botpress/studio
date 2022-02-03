@@ -29,7 +29,9 @@ export interface Hint {
   parentObject?: string
 }
 
-const invalidationFilePrefix = 'string::data/'
+// Matches strings::data/* and strings::*
+// And capture what is after
+const invalidationFilePrefix = /^string::(?:data\/)?(.+)$/
 
 @injectable()
 export class HintsService {
@@ -50,15 +52,16 @@ export class HintsService {
   }
 
   private _listenForCacheInvalidation() {
-    this.cache.events.on('invalidation', async key => {
-      if (!key.startsWith(invalidationFilePrefix)) {
+    this.cache.events.on('invalidation', async (key: string) => {
+      const matches = key.match(invalidationFilePrefix)
+      if (!matches || matches.length < 2) {
         return
       }
 
       // We let invalidation happens first
       // This is necessary because the ghost relies on the cache when reading file content
       await Promise.delay(100)
-      const filePath = key.substr(invalidationFilePrefix.length)
+      const filePath = matches[1]
       this.hints[filePath] = await this.indexFile(filePath)
     })
   }
