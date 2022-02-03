@@ -1,5 +1,5 @@
 {
-  "name": "studio-be",
+  "name": "@botpress/studio-be",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Botpress, Inc.",
@@ -10,13 +10,13 @@
   },
   "scripts": {
     "start": "cd ./out && cross-env NODE_PATH=./ cross-env BP_MODULES_PATH=B:/bp18/modules node index.js",
-    "build": "node ../../scripts/write_metadata && yarn tsc --build",
-    "clean": "node ./node_modules/rimraf/bin.js ./out",
-    "watch": "yarn tsc --build --watch"
+    "build": "ts-node  --dir ../../scripts write_metadata && tsc --build",
+    "clean": "rimraf ./out",
+    "watch": "tsc --build --watch"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.7",
-    "@botpress/native-extensions": "0.0.1",
+    "@botpress/native-extensions": "*",
     "axios": "^0.21.1",
     "bluebird": "^3.7.2",
     "bluebird-global": "^1.0.1",

@@ -1,5 +1,5 @@
-const fs = require('fs')
-const minimist = require('minimist')
+import fs from 'fs'
+import minimist from 'minimist'
 
 const DEFAULT_INTERNAL_PASSWORD = '$YOUR_INTERNAL_PASSWORD'
 const DEFAULT_BP_PATH = '$YOUR_BP_PATH'

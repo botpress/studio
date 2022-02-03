@@ -37,6 +37,10 @@ export default class Summary extends React.Component<Props> {
       return null
     }
 
+    if (!this.props.event.processing?.completed) {
+      return null
+    }
+
     return (
       <div className={style.sectionContainer}>
         <Dialog

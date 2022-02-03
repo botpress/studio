@@ -16,7 +16,7 @@ import 'expose-loader?ReactBootstrap!react-bootstrap'
 import 'expose-loader?Reactstrap!reactstrap' // TODO Remove me once we migrated to blueprint
 import 'expose-loader?BlueprintJsCore!@blueprintjs/core'
 import 'expose-loader?BlueprintJsSelect!@blueprintjs/select'
-import 'expose-loader?BotpressShared!ui-shared'
+import 'expose-loader?BotpressShared!@botpress/ui-shared'
 import 'expose-loader?BotpressContentTypePicker!~/components/Content/Select'
 import 'expose-loader?BotpressContentPicker!~/components/Content/Select/Widget'
 import 'expose-loader?SmartInput!~/components/SmartInput'
@@ -31,10 +31,10 @@ import { initializeTranslations } from './translations'
 import { utils, auth, telemetry } from 'botpress/shared'
 import store from './store'
 
-import 'ui-shared/dist/theme.css'
-require('bootstrap/dist/css/bootstrap.css')
-require('storm-react-diagrams/dist/style.min.css')
-require('./theme.scss')
+import '@botpress/ui-shared/dist/theme.css'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'storm-react-diagrams/dist/style.min.css'
+import './theme.scss'
 
 const token = auth.getToken()
 if (token) {

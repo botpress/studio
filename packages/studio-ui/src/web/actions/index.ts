@@ -2,7 +2,9 @@ import axios from 'axios'
 import * as sdk from 'botpress/sdk'
 import { FlowPoint, FlowView, NodeProblem } from 'common/typings'
 import _ from 'lodash'
+import nanoid from 'nanoid'
 import { createAction } from 'redux-actions'
+import { copyName } from '~/util/flows'
 
 import { getDeletedFlows, getDirtyFlows, getModifiedFlows, getNewFlows } from '../reducers/selectors'
 
@@ -117,7 +119,6 @@ const wrapAction = (
   errorAction = errorSaveFlows
 ) => (payload?: any) => (dispatch, getState) => {
   dispatch(requestAction(payload))
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   asyncCallback(payload, getState(), dispatch)
     .then(() => dispatch(receiveAction()))
     .catch(err => dispatch(errorAction(err)))
@@ -191,7 +192,40 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
   }
 })
 
-export const pasteFlowNode: ({ x, y }) => void = wrapAction(requestPasteFlowNode, async (payload, state, dispatch) => {
+export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispatch, getState) => {
+  const state = getState()
+  const skills = state.flows.buffer.nodes.filter(node => node.skill)
+  const nonSkills = state.flows.buffer.nodes.filter(node => !node.skill)
+  const currentFlowNodeNames = state.flows.flowsByName[state.flows.currentFlow].nodes.map(({ name }) => name)
+
+  // Create new flows for all skills
+  for (const node of skills) {
+    let { skillData } = state.flows.flowsByName[node.flow]
+    const randomId = nanoid(10)
+    skillData = { ...skillData, randomId }
+    const { moduleName } = _.find(state.skills.installed, { id: node.skill })
+    const { data } = await axios.post(
+      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
+      skillData
+    )
+    dispatch(
+      requestInsertNewSkill({
+        skillId: node.skill,
+        data: skillData,
+        location: payload,
+        generatedFlow: data.flow,
+        transitions: data.transitions,
+        nodeName: copyName(currentFlowNodeNames, node.name)
+      })
+    )
+    const flows = getState().flows
+    const flowsByName = flows.flowsByName
+    const newFlowKey = Object.keys(flowsByName).find(key => flowsByName[key].skillData?.randomId === randomId)
+    await FlowsAPI.createFlow(flows, newFlowKey)
+  }
+
+  // Paste non-skills
+  dispatch(requestPasteFlowNode({ ...payload, nodes: nonSkills }))
   await updateCurrentFlow(payload, state)
   dispatch(refreshFlowsLinks())
 
@@ -200,7 +234,7 @@ export const pasteFlowNode: ({ x, y }) => void = wrapAction(requestPasteFlowNode
       await onTriggerEvent('create', node.conditions, state)
     }
   }
-})
+}
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
 // actions that do not modify flow

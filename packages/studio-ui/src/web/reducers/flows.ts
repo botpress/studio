@@ -38,6 +38,7 @@ import {
   updateFlowProblems
 } from '~/actions'
 import { hashCode, prettyId } from '~/util'
+import { copyName } from '~/util/flows'
 
 export interface FlowReducer {
   currentFlow?: string
@@ -180,23 +181,6 @@ const popHistory = stackName => state => {
   return {
     ...newState,
     currentHashes
-  }
-}
-
-const copyName = (siblingNames, nameToCopy) => {
-  const copies = siblingNames.filter(name => name.startsWith(`${nameToCopy}-copy`))
-
-  if (!copies.length) {
-    return `${nameToCopy}-copy`
-  }
-
-  let i = 1
-  while (true) {
-    if (!copies.find(name => name === `${nameToCopy}-copy-${i}`)) {
-      return `${nameToCopy}-copy-${i}`
-    } else {
-      i += 1
-    }
   }
 }
 
@@ -534,7 +518,7 @@ reducer = reduceReducers(
           id: `skill-${flowRandomId}`,
           type: 'skill-call',
           skill: skillId,
-          name: `${skillId}-${flowRandomId}`,
+          name: payload.nodeName ?? `${skillId}-${flowRandomId}`,
           flow: flowName,
           next: payload.transitions || [],
           onEnter: null,
@@ -741,14 +725,15 @@ reducer = reduceReducers(
         }
       },
 
-      [requestPasteFlowNode]: (state, { payload: { x, y } }) => {
-        if (!state.buffer.nodes?.length) {
+      [requestPasteFlowNode]: (state, { payload: { x, y, nodes } }) => {
+        const nodesToPaste = nodes || state.buffer.nodes
+        if (!nodesToPaste?.length) {
           return state
         }
 
         const currentFlow = state.flowsByName[state.currentFlow]
         const siblingNames = currentFlow.nodes.map(({ name }) => name)
-        const newNodes = _.cloneDeep(state.buffer.nodes).map(node => {
+        const newNodes = _.cloneDeep(nodesToPaste).map(node => {
           const newNodeId = prettyId()
           const newName = copyName(siblingNames, node.name)
           return { ...node, id: newNodeId, newName, lastModified: new Date() }

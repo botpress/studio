@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noImplicitAny": false,
+    "target": "es2019",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "baseUrl": "."
+  }
+}
