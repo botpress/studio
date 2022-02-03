@@ -1,13 +1,30 @@
 name: Pre-Release
 on:
   pull_request:
-    types: [review_requested]
+    types: [synchronize, review_requested]
 
 jobs:
   pre_release_bin:
+    if: github.event.pull_request.draft == false
     name: Build and Publish Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Get Branch Name
+        id: branch
+        run: |
+          echo "::set-output name=branch_name::$(echo ${GITHUB_HEAD_REF})"
+
+      - name: Extract Informations
+        id: info
+        uses: botpress/gh-actions/extract_info@v1
+        with:
+          branch: ${{ steps.branch.outputs.branch_name }}
+
+      - name: Debug
+        run: |
+          echo if this action succeeds a binary will be available at
+          echo s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
+
       - name: Checkout Code
         uses: actions/checkout@master
 
@@ -24,13 +41,12 @@ jobs:
       - name: Install Tools
         run: |
           pip install awscli
-
       - name: Git Unshallow
         run: git fetch --prune --unshallow
 
       - name: Get Release Details
         id: release_details
-        uses: botpress/gh-actions/get_release_details@v1
+        uses: botpress/gh-actions/get_release_details@master
 
       - name: Fetch Node Packages
         run: yarn
@@ -43,12 +59,10 @@ jobs:
       - name: Package Binaries
         run: yarn package
 
-      - name: Extract Informations
-        id: info
-        uses: botpress/gh-actions/extract_info@v1
-
       - name: Rename Binary Files
-        uses: botpress/gh-actions/rename_binaries@v1
+        uses: botpress/gh-actions/rename_binaries@master
+        with:
+          subname: ${{ steps.info.outputs.branch_sanitized }}
 
       - name: Publish Binaries
         env:
