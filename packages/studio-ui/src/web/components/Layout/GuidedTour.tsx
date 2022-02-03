@@ -2,6 +2,7 @@ import { Button } from '@blueprintjs/core'
 import { utils } from 'botpress/shared'
 import React from 'react'
 import Tour from 'reactour'
+import { trackEvent } from '~/util/InjectSegment'
 
 // Change this key to display the tour the next time a user opens Botpress
 const TOUR_KEY = 'guidedTour11_9_0'
@@ -23,6 +24,19 @@ export default class GuidedTour extends React.Component<Props> {
     console.error('Error while processing guided tour', error)
   }
 
+  getCurrentStep = (current_step: number) => {
+    trackEvent('general_tour_step', { current_step })
+  }
+
+  onAfterOpen = () => {
+    trackEvent('general_tour_open')
+  }
+
+  onRequestClose = () => {
+    trackEvent('general_tour_close')
+    this.props.onToggle()
+  }
+
   render() {
     const steps = [
       {
@@ -30,9 +44,12 @@ export default class GuidedTour extends React.Component<Props> {
         content: 'Welcome to Botpress! This is a quick tour of the most important features.'
       },
       {
+        selector: '#statusbar_tutorial',
+        content: 'You can re-open the tutorial at any time by clicking this button.'
+      },
+      {
         selector: '#bp-menu_flows',
-        content:
-          'The Flows screen is the main interface where you can see and edit your conversation flows.'
+        content: 'The Flows screen is the main interface where you can see and edit your conversation flows.'
       },
       {
         selector: '#bp-menu_nlu',
@@ -45,8 +62,7 @@ export default class GuidedTour extends React.Component<Props> {
       },
       {
         selector: '#statusbar_emulator',
-        content:
-          'Use the emulator to try out your bot at any time! You can also use it to troubleshoot.'
+        content: 'Use the emulator to try out your bot at any time! You can also use it to troubleshoot.'
       },
       {
         selector: '#bp-menu_admin',
@@ -54,16 +70,23 @@ export default class GuidedTour extends React.Component<Props> {
       },
       {
         selector: '',
-        content: 'All done. Enjoy building bots! For more information, please refer to the guide on botpress.com/docs'
+        content: 'All done. Enjoy building bots! For more information, please refer to the guides on botpress.com/docs'
       }
     ]
+
+    // resets tutorial to first step when re-opened
+    if (!this.props.isDisplayed) {
+      return null
+    }
 
     return (
       <Tour
         steps={steps}
         isOpen={this.props.isDisplayed}
-        onRequestClose={this.props.onToggle}
+        onRequestClose={this.onRequestClose}
+        onAfterOpen={this.onAfterOpen}
         showNumber={false}
+        getCurrentStep={this.getCurrentStep}
       />
     )
   }
