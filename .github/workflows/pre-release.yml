@@ -5,7 +5,7 @@ on:
 
 jobs:
   pre_release_bin:
-    name: Build and Publish Binaries
+    name: Pre Release Binaries
     runs-on: ubuntu-latest
     steps:
       - name: Get Branch Name
@@ -27,9 +27,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@master
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: '12.18.1'
+          cache: 'yarn'
 
       - name: Install python3
         uses: actions/setup-python@v1
@@ -45,7 +46,7 @@ jobs:
 
       - name: Get Release Details
         id: release_details
-        uses: botpress/gh-actions/get_release_details@master
+        uses: botpress/gh-actions/get_release_details@v1
 
       - name: Fetch Node Packages
         run: yarn
@@ -59,7 +60,7 @@ jobs:
         run: yarn package
 
       - name: Rename Binary Files
-        uses: botpress/gh-actions/rename_binaries@master
+        uses: botpress/gh-actions/rename_binaries@v1
         with:
           subname: ${{ steps.info.outputs.branch_sanitized }}
 
