@@ -4,9 +4,25 @@ on: delete
 jobs:
   remove:
     if: github.event.ref_type == 'branch'
-    name: Remove Branch Release
+    name: Delete Pre Release Binaries
     runs-on: ubuntu-latest
     steps:
+      - name: Get Branch Name
+        id: branch
+        run: |
+          echo "::set-output name=branch_name::$(echo ${GITHUB_HEAD_REF})"
+
+      - name: Extract Informations
+        id: info
+        uses: botpress/gh-actions/extract_info@v1
+        with:
+          branch: ${{ steps.branch.outputs.branch_name }}
+
+      - name: Debug
+        run: |
+          echo if this action succeeds this binary will be deleted
+          echo s3://botpress-dev-bins/studio/${{ steps.info.outputs.branch_sanitized }}
+
       - name: Install python3
         uses: actions/setup-python@v1
         with:
@@ -16,12 +32,6 @@ jobs:
       - name: Install Tools
         run: |
           pip install awscli
-
-      - name: Extract Informations
-        id: info
-        uses: botpress/gh-actions/extract_info@v1
-        with:
-          branch: ${{ github.event.ref }}
 
       - name: Delete Binaries
         env:
