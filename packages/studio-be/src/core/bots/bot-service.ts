@@ -308,12 +308,12 @@ export class BotService {
     return contentTypes.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
   }
 
-  private async addHooks(ghost: ScopedGhostService): Promise<string[]> {
+  private async addHooks(ghost: ScopedGhostService, isCloudBot?: boolean): Promise<string[]> {
     const hooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
 
     for (const type of hooks) {
-      // Some hooks are only added when migrating
-      if (hookConfig?.[type.relativePath]?.ignoreCloud) {
+      // Disable hook not supported by cloud ready bots
+      if (isCloudBot && hookConfig?.[type.relativePath]?.ignoreCloud) {
         continue
       }
 
@@ -337,7 +337,7 @@ export class BotService {
       }
 
       const templateConfig = JSON.parse(await fse.readFile(templateConfigPath, 'utf-8'))
-      const mergedConfigs = {
+      const mergedConfigs: BotConfig = {
         ...DEFAULT_BOT_CONFIGS,
         ...templateConfig,
         ...botConfig,
@@ -349,10 +349,10 @@ export class BotService {
       }
 
       await scopedGhost.upsertFile('/', BOT_CONFIG_FILENAME, stringify(mergedConfigs))
-      await scopedGhost.upsertFiles('/', files)
+      await scopedGhost.upsertFiles('/', files, { ignoreLock: true })
 
       await this.addContentTypes(scopedGhost)
-      await this.addHooks(scopedGhost)
+      await this.addHooks(scopedGhost, mergedConfigs.isCloudBot)
 
       const flowActions = await this.flowService.forBot(botConfig.id).getAllFlowActions()
       await this.addLocalBotActions(botConfig.id, flowActions)

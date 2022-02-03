@@ -5,7 +5,6 @@ import {
   Collapse,
   Colors,
   ControlGroup,
-  Dialog,
   Icon,
   InputGroup,
   Popover,
@@ -14,13 +13,11 @@ import {
 } from '@blueprintjs/core'
 import cx from 'classnames'
 import _ from 'lodash'
-import React, { FC, useState } from 'react'
-import { HotKeys } from 'react-hotkeys'
-import SplitPane from 'react-split-pane'
+import React, { useState } from 'react'
 
+import Container from './Container'
 import style from './style.scss'
 import {
-  ContainerProps,
   InfoTooltipProps,
   ItemListProps,
   KeyboardShortcutsProps,
@@ -34,40 +31,7 @@ import {
 } from './typings'
 import { buildMenu, showContextMenu } from './utils'
 
-export const Container = (props: ContainerProps) => {
-  const [sidePanelVisible, setSidePanelVisible] = useState(!props.sidePanelHidden)
-  const width = props.sidePanelWidth ? props.sidePanelWidth : 300
-
-  const toggleSidePanel = () => setSidePanelVisible(!sidePanelVisible)
-  window.toggleSidePanel = toggleSidePanel
-
-  const keyHandlers = {
-    ...(props.keyHandlers || {}),
-    'toggle-sidepanel': toggleSidePanel
-  }
-
-  const children = React.Children.toArray(props.children)
-
-  return (
-    <HotKeys handlers={keyHandlers} keyMap={props.keyMap || {}} className={style.fullsize} focused>
-      <div className={cx(style.container, { [style.sidePanel_hidden]: !sidePanelVisible })}>
-        <SplitPane
-          split={'vertical'}
-          defaultSize={width}
-          size={sidePanelVisible ? width : 0}
-          pane2Style={{
-            overflowX: 'auto'
-          }}
-        >
-          {children[0]}
-          <div className={cx(style.fullsize, { [style.yOverflowScroll]: props.yOverflowScroll })}>
-            {children.slice(1)}
-          </div>
-        </SplitPane>
-      </div>
-    </HotKeys>
-  )
-}
+export { Container }
 
 export const SidePanelSection = (props: SidePanelSectionProps) => {
   const [isOpen, setOpen] = useState(!props.collapsed)
@@ -168,7 +132,7 @@ export const SidePanel = (props: SidePanelProps) => (
   <div className={style.sidePanel} style={props.style}>
     {props.children}
   </div>
-  )
+)
 
 export const KeyboardShortcut = (props: KeyboardShortcutsProps) => {
   const ACTION_KEY = navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? 'cmd' : 'ctrl'

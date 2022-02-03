@@ -28,17 +28,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "Absolutely, you are number 132 in line. I'll let you know when it's your turn!"
-      ],
-      "fr": [
-        "Certainement, vous êtes numéro 132 dans la file. Je vous laisse savoir lorsque ce sera votre tour!"
-      ]
+      "en": ["Absolutely, you are number 132 in line. I'll let you know when it's your turn!"],
+      "fr": ["Certainement, vous êtes numéro 132 dans la file. Je vous laisse savoir lorsque ce sera votre tour!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

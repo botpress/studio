@@ -145,7 +145,7 @@ class FileNavigator extends React.Component<Props, State> {
       ContextMenu.show(
         <Menu>
           <MenuItem
-            id="btn-delete"
+            id="btn-menu-delete-file"
             icon="delete"
             text={lang.tr('delete')}
             onClick={() => this.props.deleteFile(file)}
@@ -210,7 +210,12 @@ class FileNavigator extends React.Component<Props, State> {
         ) : (
           <MenuItem id="btn-rename" icon="edit" text={lang.tr('rename')} onClick={() => this.renameTreeNode(node)} />
         )}
-        <MenuItem id="btn-delete" icon="delete" text={lang.tr('delete')} onClick={() => this.props.deleteFile(file)} />
+        <MenuItem
+          id="btn-delete-file"
+          icon="delete"
+          text={lang.tr('delete')}
+          onClick={() => this.props.deleteFile(file)}
+        />
         <MenuDivider />
         <MenuItem
           id="btn-duplicate"

@@ -30,17 +30,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "C U later! :) Bye."
-      ],
-      "fr": [
-        "À la prochaine!"
-      ]
+      "en": ["C U later! :) Bye."],
+      "fr": ["À la prochaine!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

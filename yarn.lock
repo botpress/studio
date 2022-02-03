@@ -804,6 +804,7 @@ __metadata:
     sqlite3: 4.2.0
     tar: ^6.1.0
     tmp: ^0.2.1
+    ts-node: ^10.4.0
     typescript: ^4.4.4
     unzipper: ^0.10.3
     verror: ^1.10.0
@@ -910,7 +911,7 @@ __metadata:
     react-ga: ^2.7.0
     react-highlight-words: ^0.16.0
     react-hotkeys: ^1.1.4
-    react-icons: ^3.8.0
+    react-icons: ^4.3.1
     react-intl: ^3.12.1
     react-json-tree: ^0.11.2
     react-jsonschema-form: ^1.8.1
@@ -20389,14 +20390,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:^3.8.0":
-  version: 3.11.0
-  resolution: "react-icons@npm:3.11.0"
-  dependencies:
-    camelcase: ^5.0.0
+"react-icons@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "react-icons@npm:4.3.1"
   peerDependencies:
     react: "*"
-  checksum: 2d45d47387aa85692ee431abe814c3984bc303b0ff25146de86a3cecf7f144c75bc9755df296c626bf133a05622b812fbf95d99776d9a92c7edd90fa7fbbead1
+  checksum: 2cc608acdd3e906aa3aaee290b8398220639677c949382d86e554020e5dab6a9f1ed7484418aa5272cb5c5c018e1fc9a323d433d901697a76530029f9ecb1263
   languageName: node
   linkType: hard
 

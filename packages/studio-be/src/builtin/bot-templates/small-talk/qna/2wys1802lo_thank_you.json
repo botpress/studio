@@ -29,17 +29,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "You're welcome :-)"
-      ],
-      "fr": [
-        "Ça fait plaisir!"
-      ]
+      "en": ["You're welcome :-)"],
+      "fr": ["Ça fait plaisir!"]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

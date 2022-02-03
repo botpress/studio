@@ -28,17 +28,14 @@
       ]
     },
     "answers": {
-      "en": [
-        "I'm a computer program, so I live inside a boring server."
-      ],
-      "fr": [
-        "Je suis un logiciel informatique, donc j'existe à l'intérieur d'un serveur."
-      ]
+      "en": ["I'm a computer program, so I live inside a boring server."],
+      "fr": ["Je suis un logiciel informatique, donc j'existe à l'intérieur d'un serveur."]
     },
     "redirectFlow": "",
     "redirectNode": "",
     "action": "text",
     "category": "global",
-    "enabled": true
+    "enabled": true,
+    "contexts": ["global"]
   }
 }

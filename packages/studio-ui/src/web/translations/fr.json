@@ -436,7 +436,6 @@
     "cancelTraining": "Annuler l'entraînement",
     "trainingPending": "Entraînement en attente",
     "canceling": "Annulation en cours",
-    "trainingError": "L'agent ne peut pas être entraîné",
     "cloudEnabled": "Chatbot configuré pour le cloud"
   },
   "studio": {
@@ -665,9 +664,7 @@
         "somebodyIsEditing": "Quelqu'un modifie un autre flow",
         "whenDiscussionTimeouts": "Lors d'un délai d'attente de discussion (l'utilisateur ne répond pas dans le délai configuré), il sera redirigé ici.",
         "whenConversationEnds": "Lorsqu'une conversation se termine (pas de transition), il sera redirigé ici.",
-        "whenErrorEncountered": "Lorsqu'une erreur est rencontrée dans le flux, l'utilisateur est redirigé ici",
-        "salesCallToAction": "Essayez Entreprise gratuitement",
-        "salesCallToActionDescription": "Chatbots sécurisés, évolutifs et de qualité entreprise"
+        "whenErrorEncountered": "Lorsqu'une erreur est rencontrée dans le flux, l'utilisateur est redirigé ici"
       },
       "transition": "Transition",
       "unauthUpdate": "Mise à jour de flow non autorisée. Vous ne disposez pas des privilèges de rôle suffisants pour modifier les flows.",
@@ -685,15 +682,15 @@
       "nlu": "Compréhension du langage naturel"
     }
   },
-  "toolbar": {
-    "emulator": "Émulateur",
+  "topNav": {
     "help": "Aide",
-    "bottomPanel": "Panneau inférieur",
+    "emulator": "Émulateur",
     "readDoc": "Lire la documentation",
-    "showEmulator": "Afficher l'émulateur",
-    "toggleBottomPanel": "Basculer le panneau inférieur",
-    "toggleEmulator": "Basculer l'émulateur",
-    "toggleSidePanel": "Basculer le panneau latéral"
+    "toggleEmulator": "{shortcut} Changer l'état de l'Émulateur",
+    "toggleExplorer": "{shortcut} Changer l'état de l'Explorateurmulateur",
+    "toggleDebugger": "{shortcut} Changer l'état du Débogueur",
+    "salesCallToAction": "Essayez Entreprise gratuitement",
+    "salesCallToActionDescription": "Chatbots sécurisés, évolutifs et de qualité entreprise"
   },
   "bottomPanel": {
     "inspector": {

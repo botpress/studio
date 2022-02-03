@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios'
-import { NLUProgressEvent } from 'studio/nlu'
+import { NLUProgressEvent } from 'common/nlu-training'
 
 const { CORE_PORT, ROOT_PATH, INTERNAL_PASSWORD } = process.core_env
 

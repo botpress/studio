@@ -2,7 +2,7 @@ import { Commander, lang, QuickShortcut } from 'botpress/shared'
 import React, { FC, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
-import { fetchBotIds, fetchContentCategories, toggleBottomPanel } from '~/actions'
+import { fetchBotIds, fetchContentCategories, toggleBottomPanel, toggleExplorer } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -50,27 +50,6 @@ const CommandPalette: FC<Props> = props => {
         type: 'popup',
         url: `${window.location.origin}/s/${window.BOT_ID}`
       },
-      {
-        label: lang.tr('toolbar.toggleBottomPanel'),
-        category: 'command',
-        shortcut: 'ctrl+j',
-        type: 'execute',
-        method: props.toggleBottomPanel
-      },
-      {
-        label: lang.tr('toolbar.toggleEmulator'),
-        category: 'command',
-        shortcut: 'ctrl+e',
-        type: 'execute',
-        method: props.toggleEmulator
-      },
-      {
-        label: lang.tr('toolbar.toggleSidePanel'),
-        category: 'command',
-        shortcut: 'ctrl+b',
-        type: 'execute',
-        method: () => window.toggleSidePanel()
-      },
       ...props.bots.map(bot => ({
         label: lang.tr('commander.switchBot', { name: getBotDisplayName(bot) }),
         type: 'redirect' as any,
@@ -101,6 +80,6 @@ const mapStateToProps = (state: RootReducer) => ({
   user: state.user
 })
 
-const mapDispatchToProps = { fetchContentCategories, fetchBotIds, toggleBottomPanel }
+const mapDispatchToProps = { fetchContentCategories, fetchBotIds, toggleBottomPanel, toggleExplorer }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(CommandPalette))

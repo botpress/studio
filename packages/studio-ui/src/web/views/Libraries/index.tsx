@@ -1,7 +1,8 @@
 import { Button } from '@blueprintjs/core'
 import axios from 'axios'
-import { confirmDialog, lang, toast, ModuleUI } from 'botpress/shared'
+import { confirmDialog, lang, toast } from 'botpress/shared'
 import React, { useEffect, useState } from 'react'
+import { Container, ItemList, SidePanel, SidePanelSection, SplashScreen } from '~/components/Shared/Interface'
 
 import AddLibrary from './AddLibrary'
 import style from './style.scss'
@@ -10,8 +11,6 @@ export interface InstalledLibrary {
   name: string
   version: string
 }
-
-const { Container, ItemList, SidePanel, SidePanelSection, SplashScreen } = ModuleUI
 
 const MainView = props => {
   const [libraries, setLibraries] = useState([])
