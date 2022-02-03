@@ -7,16 +7,11 @@ jobs:
     name: Delete Pre Release Binaries
     runs-on: ubuntu-latest
     steps:
-      - name: Get Branch Name
-        id: branch
-        run: |
-          echo "::set-output name=branch_name::$(echo ${GITHUB_HEAD_REF})"
-
       - name: Extract Informations
         id: info
         uses: botpress/gh-actions/extract_info@v1
         with:
-          branch: ${{ steps.branch.outputs.branch_name }}
+          branch: ${{ github.event.ref }}
 
       - name: Debug
         run: |
