@@ -84,9 +84,7 @@ export class SafeCodeSandbox {
         code,
         path.join(
           path.resolve(this.tmpPath, 'builtin'), // TODO: use the correct module path
-          `${Math.random()
-            .toString()
-            .substr(2, 6)}.js`
+          `${Math.random().toString().substr(2, 6)}.js`
         )
       ) // Await cause if it returns a promise we await it
     } catch (e) {

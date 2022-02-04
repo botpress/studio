@@ -75,7 +75,7 @@ export default [
     description: 'An array of the contexts (strings) included by the engine',
     name: 'event.nlu.includedContexts'
   }
-].map(hint => ({
+].map((hint) => ({
   ...defaultProperties,
   ...hint
 }))

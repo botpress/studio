@@ -9,7 +9,7 @@ import { Debug } from './debug'
 import getos from './getos'
 import metadata from './metadata.json'
 
-const printPlainError = err => {
+const printPlainError = (err) => {
   /* eslint-disable no-console */
   console.log('Error starting botpress')
   console.log(err)
@@ -23,10 +23,10 @@ global.printErrorDefault = printPlainError
 
 const originalWrite = process.stdout.write
 
-const shouldDiscardError = message =>
+const shouldDiscardError = (message) =>
   !![
     '[DEP0005]' // Buffer() deprecation warning
-  ].find(e => message.indexOf(e) >= 0)
+  ].find((e) => message.indexOf(e) >= 0)
 
 function stripDeprecationWrite(buffer: string, encoding: string, cb?: Function | undefined): boolean
 function stripDeprecationWrite(buffer: string | Buffer, cb?: Function | undefined): boolean
@@ -35,7 +35,7 @@ function stripDeprecationWrite(this: Function): boolean {
     return (arguments[2] || arguments[1])()
   }
 
-  return originalWrite.apply(this, (arguments as never) as [string])
+  return originalWrite.apply(this, arguments as never as [string])
 }
 
 if (process.env.APP_DATA_PATH) {
@@ -65,7 +65,7 @@ process.on('unhandledRejection', (err: any) => {
   }
 })
 
-process.on('uncaughtException', err => {
+process.on('uncaughtException', (err) => {
   global.printErrorDefault(err)
   if (!process.IS_FAILSAFE) {
     process.exit(1)
@@ -101,7 +101,7 @@ try {
           type: 'string'
         }
       },
-      async argv => {
+      async (argv) => {
         if (process.env.BP_DATA_FOLDER) {
           process.DATA_LOCATION = process.env.BP_DATA_FOLDER
           process.IS_STANDALONE = yn(process.env.IS_STANDALONE) || false

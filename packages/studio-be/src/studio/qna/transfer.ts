@@ -83,7 +83,7 @@ export const prepareExport = async (storage: Storage, cmsService: CMSService) =>
   const qnas = await storage.fetchQNAs()
   const contentElementIds = await storage.getAllContentElementIds()
 
-  const contentElements = await Promise.mapSeries(contentElementIds, async id => {
+  const contentElements = await Promise.mapSeries(contentElementIds, async (id) => {
     const data = await cmsService.getContentElement(storage.botId, id.replace('#!', ''))
     return _.pick(data, ['id', 'contentType', 'formData', 'previews'])
   })

@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   async checkToken(jwtToken: string, csrfToken: string, audience?: string): Promise<TokenUser> {
-    return Promise.fromCallback<TokenUser>(cb => {
+    return Promise.fromCallback<TokenUser>((cb) => {
       jsonwebtoken.verify(jwtToken, process.APP_SECRET, { audience }, async (err, user) => {
         const tokenUser = user as TokenUser
 

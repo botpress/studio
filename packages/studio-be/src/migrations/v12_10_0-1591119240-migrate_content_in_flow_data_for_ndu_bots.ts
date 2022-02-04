@@ -12,9 +12,11 @@ async function migrateFlow(
   contentMap: _.Dictionary<sdk.ContentElement>
 ): Promise<FlowView | undefined> {
   const contentIds = _.chain(flow.nodes)
-    .filter(n => n.type === 'say_something')
-    .flatMap(n => n.onEnter)
-    .filter(instruction => instruction && typeof instruction === 'string' && (instruction as string).startsWith('say'))
+    .filter((n) => n.type === 'say_something')
+    .flatMap((n) => n.onEnter)
+    .filter(
+      (instruction) => instruction && typeof instruction === 'string' && (instruction as string).startsWith('say')
+    )
     .map((instruction: string) => instruction.split('#!')[1])
     .value()
 
@@ -45,7 +47,7 @@ async function migrateFlow(
 
 async function getBotContentMap(ghost: sdk.ScopedGhostService): Promise<_.Dictionary<sdk.ContentElement>> {
   const contentFiles = await ghost.directoryListing(CONTENT_DIR, '*.json')
-  return Promise.map(contentFiles, f => ghost.readFileAsObject<sdk.ContentElement[]>(CONTENT_DIR, f)).reduce(
+  return Promise.map(contentFiles, (f) => ghost.readFileAsObject<sdk.ContentElement[]>(CONTENT_DIR, f)).reduce(
     (elems, next) => {
       for (const elem of next) {
         elems[elem.id] = elem
@@ -75,7 +77,7 @@ const migration: Migration = {
       const contentMap = await getBotContentMap(ghost)
 
       const flows = await flowService.forBot(botId).loadAll()
-      return Promise.map(flows, async flow => {
+      return Promise.map(flows, async (flow) => {
         try {
           const updatedFlow = await migrateFlow(flow, contentMap)
           if (!updatedFlow) {
@@ -85,16 +87,13 @@ const migration: Migration = {
           // Taken from FlowService
           const flowContent = {
             ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'triggers', 'label', 'description']),
-            nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
+            nodes: flow.nodes.map((node) => _.omit(node, 'x', 'y', 'lastModified'))
           }
           await ghost.upsertFile('./flows', flow.location!, JSON.stringify(flowContent, undefined, 2), {
             ignoreLock: true
           })
         } catch (err) {
-          logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not migrate say node data')
+          logger.forBot(botId).attachError(err).error('Could not migrate say node data')
         }
       })
     }

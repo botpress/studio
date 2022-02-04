@@ -121,8 +121,8 @@ export class LoggerFilePersister {
     }
 
     const logStream = fs.createWriteStream(this._getLogFilePath(), { flags: 'a' })
-    this.currentPromise = Promise.fromCallback(cb =>
-      logStream.write(content, err => {
+    this.currentPromise = Promise.fromCallback((cb) =>
+      logStream.write(content, (err) => {
         logStream.end(cb)
       })
     ).finally(() => {

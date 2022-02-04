@@ -90,7 +90,7 @@ export const getCommonShortcuts = () => {
       category: 'external',
       url: 'https://botpress.io/docs/introduction/'
     },
-    ...adminShortcuts.map(x => ({ ...x, category: 'admin', location: 'admin' as any }))
+    ...adminShortcuts.map((x) => ({ ...x, category: 'admin', location: 'admin' as any }))
   ]
 
   return shortcuts

@@ -18,7 +18,7 @@ import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './
  * These properties should not be considered when calculating the config hash
  * They are always read from the configuration file and can be dynamically changed
  */
-const removeDynamicProps = config => _.omit(config, ['superAdmins'])
+const removeDynamicProps = (config) => _.omit(config, ['superAdmins'])
 
 @injectable()
 export class ConfigProvider {
@@ -110,12 +110,12 @@ export class ConfigProvider {
         content = await this.ghostService
           .forBot(botId)
           .readFileAsString('/', fileName)
-          .catch(_err => this.ghostService.forBot(botId).readFileAsString('/', fileName))
+          .catch((_err) => this.ghostService.forBot(botId).readFileAsString('/', fileName))
       } else {
         content = await this.ghostService
           .global()
           .readFileAsString('/', fileName)
-          .catch(_err => this.ghostService.global().readFileAsString('/', fileName))
+          .catch((_err) => this.ghostService.global().readFileAsString('/', fileName))
       }
 
       if (!content) {

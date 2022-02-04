@@ -37,7 +37,7 @@ export const sendSuccess = <T extends {}>(res: Response, message: string = 'Succ
  * fileUploadMulter(['*'], '1gb)
  */
 export const fileUploadMulter = (allowedMimeTypes: string[] = [], maxFileSize?: string) => {
-  const allowedMimeTypesRegex = allowedMimeTypes.map(mimeType => {
+  const allowedMimeTypesRegex = allowedMimeTypes.map((mimeType) => {
     // '*' is not a valid regular expression
     if (mimeType === '*') {
       mimeType = '.*'
@@ -50,9 +50,9 @@ export const fileUploadMulter = (allowedMimeTypes: string[] = [], maxFileSize?: 
     fileFilter: (_req, file, cb) => {
       const extMimeType = mime.lookup(file.originalname)
       if (
-        allowedMimeTypesRegex.some(regex => regex.test(file.mimetype)) &&
+        allowedMimeTypesRegex.some((regex) => regex.test(file.mimetype)) &&
         extMimeType &&
-        allowedMimeTypesRegex.some(regex => regex.test(extMimeType))
+        allowedMimeTypesRegex.some((regex) => regex.test(extMimeType))
       ) {
         return cb(null, true)
       }

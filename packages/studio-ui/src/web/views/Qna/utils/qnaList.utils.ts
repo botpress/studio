@@ -34,7 +34,7 @@ export interface FormErrors {
 export const hasPopulatedLang = (data: { [lang: string]: string[] }): boolean => {
   return !!Object.values(data)
     .reduce((acc, arr) => [...acc, ...arr], [])
-    .filter(entry => !!entry.trim().length).length
+    .filter((entry) => !!entry.trim().length).length
 }
 
 export const itemHasError = (qnaItem: QnaItem, currentLang: string): string[] => {
@@ -43,7 +43,7 @@ export const itemHasError = (qnaItem: QnaItem, currentLang: string): string[] =>
 
   const hasDuplicateQuestions =
     data.questions[currentLang]?.filter((item, index) =>
-      [...data.questions[currentLang].slice(0, index).filter(item2 => item2.length)].includes(item)
+      [...data.questions[currentLang].slice(0, index).filter((item2) => item2.length)].includes(item)
     ) || []
 
   if (!hasPopulatedLang(data.questions)) {
@@ -84,13 +84,13 @@ export const dispatchMiddleware = async (dispatch, action) => {
           action,
           answers: {
             ...Object.keys(answers).reduce(
-              (acc, lang) => ({ ...acc, [lang]: [...answers[lang].filter(entry => !!entry.trim().length)] }),
+              (acc, lang) => ({ ...acc, [lang]: [...answers[lang].filter((entry) => !!entry.trim().length)] }),
               {}
             )
           },
           questions: {
             ...Object.keys(questions).reduce(
-              (acc, lang) => ({ ...acc, [lang]: [...questions[lang].filter(entry => !!entry.trim().length)] }),
+              (acc, lang) => ({ ...acc, [lang]: [...questions[lang].filter((entry) => !!entry.trim().length)] }),
               {}
             )
           }

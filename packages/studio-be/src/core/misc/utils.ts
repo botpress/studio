@@ -61,9 +61,9 @@ const getCircularReplacer = () => {
 
 export const safeStringify = (obj: any, spaces?: number) => JSON.stringify(obj, getCircularReplacer(), spaces || 0)
 
-export const stringify = content => JSON.stringify(content, undefined, 2)
+export const stringify = (content) => JSON.stringify(content, undefined, 2)
 
-export const forceForwardSlashes = path => path.replace(/\\/g, '/')
+export const forceForwardSlashes = (path) => path.replace(/\\/g, '/')
 
 /** Case-insensitive "startsWith" */
 export const startsWithI = (a: string, b: string) => a.toLowerCase().startsWith(b.toLowerCase())
@@ -99,16 +99,12 @@ export const asBytes = (size: string) => {
 }
 
 export function filterByGlobs<T>(array: T[], iteratee: (value: T) => string, globs: string[]): T[] {
-  const rules: { regex: RegExp }[] = globs.map(g => globrex(g, { globstar: true }))
+  const rules: { regex: RegExp }[] = globs.map((g) => globrex(g, { globstar: true }))
 
-  return array.filter(x => _.every(rules, rule => !rule.regex.test(iteratee(x))))
+  return array.filter((x) => _.every(rules, (rule) => !rule.regex.test(iteratee(x))))
 }
 
-export const calculateHash = (content: string) =>
-  crypto
-    .createHash('sha256')
-    .update(content)
-    .digest('hex')
+export const calculateHash = (content: string) => crypto.createHash('sha256').update(content).digest('hex')
 
 const regex = {
   illegalFile: /[\/\?<>\\:\*\|"]/g,
