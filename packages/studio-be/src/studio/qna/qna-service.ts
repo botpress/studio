@@ -58,8 +58,8 @@ export class QNAService {
     const questions = await storage.getQuestions({}, { limit: 0, offset: 0 })
 
     const updatedItems = questions.items
-      .filter(q => q.data.redirectFlow === previousFlowName)
-      .map(q => {
+      .filter((q) => q.data.redirectFlow === previousFlowName)
+      .map((q) => {
         q.data.redirectFlow = nextFlowName
         return q
       })
@@ -110,8 +110,8 @@ export class QNAService {
         // Update all questions that refer to the old node name
         if (oldNode.id === newNode.id && oldNode.name !== newNode.name) {
           const updatedItems = questions.items
-            .filter(q => q.data.redirectFlow === flow.name && q.data.redirectNode === oldNode.name)
-            .map(q => {
+            .filter((q) => q.data.redirectFlow === flow.name && q.data.redirectNode === oldNode.name)
+            .map((q) => {
               q.data.redirectNode = newNode.name
               return q
             })

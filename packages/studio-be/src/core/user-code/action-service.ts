@@ -46,7 +46,7 @@ export class ActionService {
       return this._scopedActions.get(botId)!
     }
 
-    const service = new Promise<ScopedActionService>(async cb => {
+    const service = new Promise<ScopedActionService>(async (cb) => {
       if (!(await this.botService.botExists(botId, true))) {
         throw new NotFoundError('This bot does not exist')
       }
@@ -84,7 +84,7 @@ export class ScopedActionService {
     const userActions = [...globalActions, ...localActions]
 
     // We ignore builtin actions when they already exists for the bot locally
-    return [...userActions, ..._.differenceBy(builtinActions, userActions, x => x.name)]
+    return [...userActions, ..._.differenceBy(builtinActions, userActions, (x) => x.name)]
   }
 
   public async listBuiltinActions() {
@@ -94,7 +94,7 @@ export class ScopedActionService {
 
     const actionFiles = await listDir(getBuiltinPath('actions'))
 
-    const actions = await Promise.map(actionFiles, async file => {
+    const actions = await Promise.map(actionFiles, async (file) => {
       const name = file.relativePath.replace(/\.js|\.http\.js$/i, '')
       const legacy = !file.relativePath.includes('.http.js')
       const script = await fse.readFile(file.absolutePath, 'utf-8')
@@ -114,7 +114,7 @@ export class ScopedActionService {
     const actionFiles = (await this.ghost.forBot(this.botId).directoryListing('actions', '*.js', EXCLUDES)).filter(
       enabled
     )
-    const actions = await Promise.map(actionFiles, async file => this._getActionDefinition(file, 'bot'))
+    const actions = await Promise.map(actionFiles, async (file) => this._getActionDefinition(file, 'bot'))
 
     this._localActionsCache = actions
     return actions
@@ -126,7 +126,7 @@ export class ScopedActionService {
     }
 
     const actionFiles = (await this.ghost.global().directoryListing('actions', '*.js', EXCLUDES)).filter(enabled)
-    const actions = await Promise.map(actionFiles, async file => this._getActionDefinition(file, 'global'))
+    const actions = await Promise.map(actionFiles, async (file) => this._getActionDefinition(file, 'global'))
 
     this._globalActionsCache = actions
     return actions
@@ -135,7 +135,7 @@ export class ScopedActionService {
   private _listenForCacheInvalidation() {
     const clearDebounce = _.debounce(this._clearCache.bind(this), DEBOUNCE_DELAY, { leading: true, trailing: false })
 
-    this.cache.events.on('invalidation', key => {
+    this.cache.events.on('invalidation', (key) => {
       if (key.toLowerCase().indexOf('/actions') > -1) {
         clearDebounce()
       }

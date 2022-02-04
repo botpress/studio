@@ -84,7 +84,7 @@ export class LibrariesService {
     // Necessary for post install scripts when running from the binary
     args.push('--scripts-prepend-node-path')
 
-    return args.map(x => sanitizeArg(x))
+    return args.map((x) => sanitizeArg(x))
   }
 
   async syncLocalPackage(botId: string) {
@@ -120,10 +120,10 @@ export class LibrariesService {
 
     const resultBuffer: string[] = []
 
-    spawned.stdout.on('data', msg => resultBuffer.push(msg.toString()))
-    spawned.stderr.on('data', msg => resultBuffer.push(msg.toString()))
+    spawned.stdout.on('data', (msg) => resultBuffer.push(msg.toString()))
+    spawned.stderr.on('data', (msg) => resultBuffer.push(msg.toString()))
 
-    await Promise.fromCallback(cb => spawned.stdout.on('close', cb))
+    await Promise.fromCallback((cb) => spawned.stdout.on('close', cb))
     const result = resultBuffer.join('')
 
     if (result.indexOf('ERR!') === -1) {
@@ -219,7 +219,7 @@ export class LibrariesService {
     if (!(await fse.pathExists(npmAppPath))) {
       const modPath = path.resolve(path.dirname(require.main?.path || ''), '../../node_modules/npm')
 
-      await Promise.fromCallback(cb => ncp(modPath, npmAppPath, cb))
+      await Promise.fromCallback((cb) => ncp(modPath, npmAppPath, cb))
       debug('Extracted NPM %o', { npmAppPath, modPath })
     }
 

@@ -19,7 +19,7 @@ export interface ChoiceConfig {
   variableName: string
 }
 
-const setup = async bp => {
+const setup = async (bp) => {
   const router = bp.http.createRouterForBot('basic-skills')
 
   router.get('/choice/config', async (req, res) => {
@@ -30,7 +30,7 @@ const setup = async bp => {
   const config = await bp.config.getModuleConfig('basic-skills')
 
   const checkCategoryAvailable = async () => {
-    const categories = await bp.cms.getAllContentTypes().map(c => c.id)
+    const categories = await bp.cms.getAllContentTypes().map((c) => c.id)
 
     if (!categories.includes(config.defaultContentElement)) {
       bp.logger.warn(`Configured to use Content Element "${config.defaultContentElement}", but it was not found.`)
@@ -135,7 +135,7 @@ const generateFlow = async (data: ChoiceData): Promise<sdk.FlowGenerationResult>
 }
 
 const createTransitions = (data, randomId) => {
-  const transitions: sdk.NodeTransition[] = Object.keys(data.keywords).map(choice => {
+  const transitions: sdk.NodeTransition[] = Object.keys(data.keywords).map((choice) => {
     const choiceShort = choice.length > 8 ? choice.substr(0, 7) + '...' : choice
 
     return {

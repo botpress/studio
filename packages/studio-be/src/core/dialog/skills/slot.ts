@@ -21,7 +21,7 @@ const createTransitions = (): sdk.NodeTransition[] => {
   ]
 }
 
-const createNodes = data => {
+const createNodes = (data) => {
   const runValidationActions = data.validationAction
     ? [
         {

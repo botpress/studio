@@ -33,7 +33,7 @@ const contentType: ContentType = {
     }
   },
 
-  computePreviewText: formData => {
+  computePreviewText: (formData) => {
     if (!formData.image) {
       return ''
     }
@@ -49,7 +49,7 @@ const contentType: ContentType = {
     }
   },
 
-  renderElement: data => utils.extractPayload('image', data)
+  renderElement: (data) => utils.extractPayload('image', data)
 }
 
 export default contentType

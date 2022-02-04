@@ -89,7 +89,7 @@ export class ComponentService {
       this._botTranslations[botId] = {}
     }
 
-    Object.keys(translations!).map(lang => {
+    Object.keys(translations!).map((lang) => {
       _.merge(this._botTranslations[botId], {
         [lang]: {
           component: {

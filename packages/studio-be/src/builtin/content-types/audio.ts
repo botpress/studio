@@ -33,7 +33,7 @@ const contentType: ContentType = {
     }
   },
 
-  computePreviewText: formData => {
+  computePreviewText: (formData) => {
     if (!formData.audio) {
       return ''
     }
@@ -49,7 +49,7 @@ const contentType: ContentType = {
     }
   },
 
-  renderElement: data => utils.extractPayload('audio', data)
+  renderElement: (data) => utils.extractPayload('audio', data)
 }
 
 export default contentType

@@ -55,7 +55,7 @@ export class MigrationService {
     const migrations = await this.getAllMigrations()
 
     if (process.env.TESTMIG_ALL || process.env.TESTMIG_NEW) {
-      const versions = migrations.map(x => x.version).sort(semver.compare)
+      const versions = migrations.map((x) => x.version).sort(semver.compare)
       this.targetVersion = _.last(versions)!
     }
 
@@ -84,7 +84,7 @@ export class MigrationService {
     const coreMigrations = this._getMigrations(path.join(__dirname, '../../migrations'), true)
 
     const migrations = [...coreMigrations]
-    migrations.map(file => {
+    migrations.map((file) => {
       if (!this.loadedMigrations[file.filename]) {
         this.loadedMigrations[file.filename] = require(file.location).default
       }
@@ -99,7 +99,7 @@ export class MigrationService {
     }
 
     return _.orderBy(
-      glob.sync('**/*.js', { cwd: rootPath }).map(filepath => {
+      glob.sync('**/*.js', { cwd: rootPath }).map((filepath) => {
         const [rawVersion, timestamp, title] = path.basename(filepath).split('-')
         return {
           filename: path.basename(filepath),
@@ -126,13 +126,13 @@ export class MigrationService {
       ? `>${this.targetVersion} <= ${currentVersion}`
       : `>${currentVersion} <= ${this.targetVersion}`
 
-    const filteredFiles = files.filter(file => semver.satisfies(file.version, comparator))
+    const filteredFiles = files.filter((file) => semver.satisfies(file.version, comparator))
 
     if (_.isEmpty(this.loadedMigrations)) {
       return filteredFiles
     }
 
-    return filteredFiles.filter(file => {
+    return filteredFiles.filter((file) => {
       const content = this.loadedMigrations[file.filename]
 
       return (

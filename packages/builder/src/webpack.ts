@@ -3,14 +3,14 @@ import path from 'path'
 import webpack from 'webpack'
 import { error, normal } from './log'
 
-const libraryTarget = mod => `botpress = typeof botpress === "object" ? botpress : {}; botpress["${mod}"]`
+const libraryTarget = (mod) => `botpress = typeof botpress === "object" ? botpress : {}; botpress["${mod}"]`
 
 export function config(projectPath) {
   const packageJson = require(path.join(projectPath, 'package.json'))
 
   const full: webpack.Configuration = {
     mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-    devtool: process.argv.find(x => x.toLowerCase() === '--nomap') ? false : 'source-map',
+    devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
     entry: ['./src/ui/index.tsx'],
     output: {
       path: path.resolve(projectPath, './dist/ui'),
@@ -100,7 +100,7 @@ export function watch(projectPath: string) {
 export async function build(projectPath: string): Promise<void> {
   const confs = config(projectPath)
 
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     webpack(confs, (err, stats) => writeStats(err, stats, true, resolve, path.basename(projectPath)))
   })
 }

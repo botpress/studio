@@ -5,22 +5,22 @@ describe('getLock', () => {
     const fn = jest.fn()
 
     const lock = Locker()
-    lock('key')
-    lock('key').then(() => {
+    void lock('key')
+    void lock('key').then(() => {
       fn()
     })
 
-    await new Promise(r => setTimeout(r, 100))
+    await new Promise((r) => setTimeout(r, 100))
 
     expect(fn).not.toHaveBeenCalled()
   })
 
-  it('should wait for lock before updating value', async done => {
+  it('should wait for lock before updating value', async () => {
     const lock = Locker()
 
     let value = ''
 
-    lock('key').then(unlock =>
+    void lock('key').then((unlock) =>
       setTimeout(() => {
         value = 'unexpected'
         unlock()
@@ -35,9 +35,11 @@ describe('getLock', () => {
     value = 'expected'
     expect(value).toEqual('expected')
 
-    setTimeout(() => {
-      expect(value).toEqual('expected')
-      done!()
-    }, 200)
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        expect(value).toEqual('expected')
+        resolve()
+      }, 200)
+    })
   })
 })

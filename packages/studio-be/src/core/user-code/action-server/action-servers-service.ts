@@ -56,14 +56,14 @@ export class ActionServersService {
 
   public async getServer(serverId: string): Promise<ActionServer | undefined> {
     const servers = await this._getServers()
-    return servers.find(s => s.id === serverId)
+    return servers.find((s) => s.id === serverId)
   }
 
   private async _getServers(): Promise<ActionServer[]> {
     const { remotes, local } = (await this.configProvider.getBotpressConfig()).actionServers
     const { enabled, port } = local
 
-    const actionServers = [...remotes].filter(r => {
+    const actionServers = [...remotes].filter((r) => {
       const { error } = joi.validate(r, ActionServerSchema)
 
       if (error) {
@@ -90,7 +90,7 @@ export class ActionServersService {
       const { error } = validate(data, HttpActionSchema)
       if (error && error.name === 'ValidationError') {
         this.logger.error(
-          `Action Server ${actionServer.id} returned invalid Action definitions: ${error.details.map(d => d.message)}`
+          `Action Server ${actionServer.id} returned invalid Action definitions: ${error.details.map((d) => d.message)}`
         )
       } else {
         actionDefinitions = data

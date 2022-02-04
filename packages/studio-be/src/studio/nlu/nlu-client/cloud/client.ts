@@ -34,26 +34,29 @@ export class CloudClient extends StanClient {
     })
 
     const tokenCache = cache(oauthTokenClient, {
-      getExpiryInMs: res => res.expires_in * 1000,
-      getToken: res => res.access_token
+      getExpiryInMs: (res) => res.expires_in * 1000,
+      getToken: (res) => res.access_token
     })
 
     this.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this))
     this.axios.interceptors.response.use(undefined, this._errorInterceptor(this.axios, tokenCache).bind(this))
   }
 
-  private _createOauthTokenClient = (
-    axios: AxiosInstance,
-    oauthTokenClientProps: OauthTokenClientProps
-  ) => async () => {
-    const { oauthUrl, clientId, clientSecret } = oauthTokenClientProps
-    const res = await axios.post(
-      oauthUrl,
-      qs.stringify({ client_id: clientId, client_secret: clientSecret, grant_type: 'client_credentials', scope: 'nlu' })
-    )
+  private _createOauthTokenClient =
+    (axios: AxiosInstance, oauthTokenClientProps: OauthTokenClientProps) => async () => {
+      const { oauthUrl, clientId, clientSecret } = oauthTokenClientProps
+      const res = await axios.post(
+        oauthUrl,
+        qs.stringify({
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: 'client_credentials',
+          scope: 'nlu'
+        })
+      )
 
-    return res.data as OauthResponse
-  }
+      return res.data as OauthResponse
+    }
 
   private _requestInterceptor = (authenticate: () => Promise<string>) => async (config: AxiosRequestConfig) => {
     const token = await authenticate()
@@ -61,17 +64,16 @@ export class CloudClient extends StanClient {
     return config
   }
 
-  private _errorInterceptor = (instance: AxiosInstance, authenticate: () => Promise<string>) => async (
-    error: ErrorRetrier
-  ) => {
-    if (error.response?.status === 401 && !error.config._retry) {
-      error.config._retry = true
-      const token = await authenticate()
-      const config = error.config
-      config.headers.Authorization = `Bearer ${token}`
-      return instance.request(config)
-    }
+  private _errorInterceptor =
+    (instance: AxiosInstance, authenticate: () => Promise<string>) => async (error: ErrorRetrier) => {
+      if (error.response?.status === 401 && !error.config._retry) {
+        error.config._retry = true
+        const token = await authenticate()
+        const config = error.config
+        config.headers.Authorization = `Bearer ${token}`
+        return instance.request(config)
+      }
 
-    return Promise.reject(error)
-  }
+      return Promise.reject(error)
+    }
 }

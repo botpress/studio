@@ -13,7 +13,9 @@ import BatchRunner from './BatchRunner'
 
 export default function debounceAction(action: any, delay: number, options?: _.DebounceSettings) {
   const debounced = _.debounce((dispatch, actionArgs) => dispatch(action(...actionArgs)), delay, options)
-  return (...actionArgs) => dispatch => debounced(dispatch, actionArgs)
+  return (...actionArgs) =>
+    (dispatch) =>
+      debounced(dispatch, actionArgs)
 }
 
 // Flows
@@ -22,7 +24,7 @@ export const receiveFlowsModification = createAction('FLOWS/MODIFICATIONS/RECEIV
 const MUTEX_UNLOCK_SECURITY_FACTOR = 1.25
 const mutexHandles: _.Dictionary<number> = {}
 
-export const handleReceiveFlowsModification = modification => (dispatch, getState) => {
+export const handleReceiveFlowsModification = (modification) => (dispatch, getState) => {
   const dirtyFlows = getDirtyFlows(getState())
   const amIModifyingTheSameFlow = dirtyFlows.includes(modification.name)
   if (amIModifyingTheSameFlow) {
@@ -37,7 +39,7 @@ export const handleReceiveFlowsModification = modification => (dispatch, getStat
   }
 }
 
-const startMutexCountDown = (flow: FlowView) => dispatch => {
+const startMutexCountDown = (flow: FlowView) => (dispatch) => {
   const { name, currentMutex } = flow
   if (!currentMutex || !currentMutex.remainingSeconds) {
     return
@@ -57,11 +59,11 @@ export const clearFlowMutex = createAction('FLOWS/MODIFICATIONS/CLEAR_MUTEX')
 export const requestFlows = createAction('FLOWS/REQUEST')
 export const receiveFlows = createAction(
   'FLOWS/RECEIVE',
-  flows => flows,
+  (flows) => flows,
   () => ({ receiveAt: new Date() })
 )
 
-export const fetchFlows = () => dispatch => {
+export const fetchFlows = () => (dispatch) => {
   dispatch(requestFlows())
 
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -72,7 +74,7 @@ export const fetchFlows = () => dispatch => {
       dispatch(receiveFlows(flows))
       return flows
     })
-    .then(flows => {
+    .then((flows) => {
       for (const flow of _.values(flows)) {
         dispatch(startMutexCountDown(flow))
       }
@@ -81,7 +83,7 @@ export const fetchFlows = () => dispatch => {
 
 export const receiveSaveFlows = createAction(
   'FLOWS/SAVE/RECEIVE',
-  flows => flows,
+  (flows) => flows,
   () => ({ receiveAt: new Date() })
 )
 export const errorSaveFlows = createAction('FLOWS/SAVE/ERROR')
@@ -101,25 +103,28 @@ export const requestRemoveFlowNode = createAction('FLOWS/FLOW/REMOVE')
 export const requestPasteFlowNode = createAction('FLOWS/NODE/PASTE')
 export const requestPasteFlowNodeElement = createAction('FLOWS/NODE_ELEMENT/PASTE')
 
-const wrapAction = (
-  requestAction,
-  asyncCallback: (payload, state, dispatch) => Promise<any>,
-  receiveAction = receiveSaveFlows,
-  errorAction = errorSaveFlows
-) => (payload?: any) => (dispatch, getState) => {
-  dispatch(requestAction(payload))
-  asyncCallback(payload, getState(), dispatch)
-    .then(() => dispatch(receiveAction()))
-    .catch(err => dispatch(errorAction(err)))
-}
+const wrapAction =
+  (
+    requestAction,
+    asyncCallback: (payload, state, dispatch) => Promise<any>,
+    receiveAction = receiveSaveFlows,
+    errorAction = errorSaveFlows
+  ) =>
+  (payload?: any) =>
+  (dispatch, getState) => {
+    dispatch(requestAction(payload))
+    asyncCallback(payload, getState(), dispatch)
+      .then(() => dispatch(receiveAction()))
+      .catch((err) => dispatch(errorAction(err)))
+  }
 
 const updateCurrentFlow = async (_payload, state) => {
   const flowState = state.flows
   return FlowsAPI.updateFlow(flowState, flowState.currentFlow)
 }
 
-const saveDirtyFlows = async state => {
-  const dirtyFlows = getModifiedFlows(state).filter(name => !!state.flows.flowsByName[name])
+const saveDirtyFlows = async (state) => {
+  const dirtyFlows = getModifiedFlows(state).filter((name) => !!state.flows.flowsByName[name])
 
   const promises = []
   for (const flow of dirtyFlows) {
@@ -161,9 +166,8 @@ export const duplicateFlow: (flow: { flowNameToDuplicate: string; name: string }
 
 type AllPartialNode = Partial<sdk.FlowNode> & Partial<FlowPoint>
 
-export const updateFlowNode: (
-  props: AllPartialNode | (AllPartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]
-) => void = wrapAction(requestUpdateFlowNode, updateCurrentFlow)
+export const updateFlowNode: (props: AllPartialNode | (AllPartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]) => void =
+  wrapAction(requestUpdateFlowNode, updateCurrentFlow)
 
 export const createFlowNode: (props: AllPartialNode) => void = wrapAction(requestCreateFlowNode, updateCurrentFlow)
 
@@ -179,8 +183,8 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
 
 export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispatch, getState) => {
   const state = getState()
-  const skills = state.flows.buffer.nodes.filter(node => node.skill)
-  const nonSkills = state.flows.buffer.nodes.filter(node => !node.skill)
+  const skills = state.flows.buffer.nodes.filter((node) => node.skill)
+  const nonSkills = state.flows.buffer.nodes.filter((node) => !node.skill)
   const currentFlowNodeNames = state.flows.flowsByName[state.flows.currentFlow].nodes.map(({ name }) => name)
 
   // Create new flows for all skills
@@ -205,7 +209,7 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     )
     const flows = getState().flows
     const flowsByName = flows.flowsByName
-    const newFlowKey = Object.keys(flowsByName).find(key => flowsByName[key].skillData?.randomId === randomId)
+    const newFlowKey = Object.keys(flowsByName).find((key) => flowsByName[key].skillData?.randomId === randomId)
     await FlowsAPI.createFlow(flows, newFlowKey)
   }
 
@@ -250,26 +254,28 @@ export const setDebuggerEvent = createAction('FLOWS/SET_DEBUGGER_EVENT')
 
 // Content
 export const receiveContentCategories = createAction('CONTENT/CATEGORIES/RECEIVE')
-export const fetchContentCategories = () => dispatch =>
+export const fetchContentCategories = () => (dispatch) =>
   axios.get(`${window.STUDIO_API_PATH}/cms/types`).then(({ data }) => {
     dispatch(receiveContentCategories(data))
   })
 
 export const receiveContentItems = createAction('CONTENT/ITEMS/RECEIVE')
-export const fetchContentItems = ({
-  contentType,
-  ...query
-}: {
-  contentType: string
-} & sdk.SearchParams) => dispatch => {
-  const type = contentType && contentType !== 'all' ? `${contentType}/` : ''
+export const fetchContentItems =
+  ({
+    contentType,
+    ...query
+  }: {
+    contentType: string
+  } & sdk.SearchParams) =>
+  (dispatch) => {
+    const type = contentType && contentType !== 'all' ? `${contentType}/` : ''
 
-  return axios
-    .post(`${window.STUDIO_API_PATH}/cms/${type}elements`, query)
-    .then(({ data }) => dispatch(receiveContentItems(data)))
-}
+    return axios
+      .post(`${window.STUDIO_API_PATH}/cms/${type}elements`, query)
+      .then(({ data }) => dispatch(receiveContentItems(data)))
+  }
 
-const getBatchedContentItems = ids =>
+const getBatchedContentItems = (ids) =>
   axios.post(`${window.STUDIO_API_PATH}/cms/elements`, { ids }).then(({ data }) =>
     data.reduce((acc, item) => {
       acc[item.id] = item
@@ -281,36 +287,38 @@ const getBatchedContentRunner = BatchRunner(getBatchedContentItems)
 
 const getBatchedContentItem = (id, dispatch) => getBatchedContentRunner.add(id, dispatch)
 
-const getSingleContentItem = id => axios.get(`${window.STUDIO_API_PATH}/cms/element/${id}`).then(({ data }) => data)
+const getSingleContentItem = (id) => axios.get(`${window.STUDIO_API_PATH}/cms/element/${id}`).then(({ data }) => data)
 
 export const receiveContentItemsBatched = createAction('CONTENT/ITEMS/RECEIVE_BATCHED')
 export const receiveContentItem = createAction('CONTENT/ITEMS/RECEIVE_ONE')
-export const fetchContentItem = (id: string, { force = false, batched = false } = {}) => (dispatch, getState) => {
-  if (!id || (!force && getState().content.itemsById[id])) {
-    return Promise.resolve()
+export const fetchContentItem =
+  (id: string, { force = false, batched = false } = {}) =>
+  (dispatch, getState) => {
+    if (!id || (!force && getState().content.itemsById[id])) {
+      return Promise.resolve()
+    }
+
+    return batched
+      ? getBatchedContentItem(id, dispatch)
+      : getSingleContentItem(id).then((data) => {
+          data && dispatch(receiveContentItem(data))
+        })
   }
 
-  return batched
-    ? getBatchedContentItem(id, dispatch)
-    : getSingleContentItem(id).then(data => {
-        data && dispatch(receiveContentItem(data))
-      })
-}
-
 export const receiveContentItemsCount = createAction('CONTENT/ITEMS/RECEIVE_COUNT')
-export const fetchContentItemsCount = (contentType = 'all') => dispatch =>
-  axios
-    .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
-    .then(data => dispatch(receiveContentItemsCount(data)))
+export const fetchContentItemsCount =
+  (contentType = 'all') =>
+  (dispatch) =>
+    axios
+      .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
+      .then((data) => dispatch(receiveContentItemsCount(data)))
 
-export const upsertContentItem = ({
-  contentType,
-  formData,
-  modifyId
-}: Pick<sdk.ContentElement, 'contentType' | 'formData'> & { modifyId: string }) => () =>
-  axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
+export const upsertContentItem =
+  ({ contentType, formData, modifyId }: Pick<sdk.ContentElement, 'contentType' | 'formData'> & { modifyId: string }) =>
+  () =>
+    axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
 
-export const deleteContentItems = data => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
+export const deleteContentItems = (data) => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
 export const deleteMedia = (data: sdk.FormData) => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
 
 // UI
@@ -331,39 +339,39 @@ export const setEmulatorOpen = createAction('EMULATOR_OPENED')
 
 // User
 export const userReceived = createAction('USER/RECEIVED')
-export const fetchUser = () => dispatch => {
+export const fetchUser = () => (dispatch) => {
   if (window.IS_STANDALONE) {
     return dispatch(userReceived({ email: 'admin', isSuperAdmin: true }))
   }
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/admin/user/profile`).then(res => {
+  axios.get(`${window.API_PATH}/admin/user/profile`).then((res) => {
     dispatch(userReceived(res.data?.payload))
   })
 }
 
 // Bot
 export const botInfoReceived = createAction('BOT/INFO_RECEIVED')
-export const fetchBotInformation = () => dispatch => {
+export const fetchBotInformation = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/config`).then(information => {
+  axios.get(`${window.STUDIO_API_PATH}/config`).then((information) => {
     dispatch(botInfoReceived(information.data))
   })
 }
 
 // Modules
 export const modulesReceived = createAction('MODULES/RECEIVED')
-export const fetchModules = () => dispatch => {
+export const fetchModules = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules`).then(res => {
+  axios.get(`${window.API_PATH}/studio/modules`).then((res) => {
     dispatch(modulesReceived(res.data))
   })
 }
 
 // Skills
 export const skillsReceived = createAction('SKILLS/RECEIVED')
-export const fetchSkills = () => dispatch => {
+export const fetchSkills = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/skills`).then(res => {
+  axios.get(`${window.API_PATH}/studio/modules/skills`).then((res) => {
     dispatch(skillsReceived(res.data))
   })
 }
@@ -381,7 +389,7 @@ export const insertNewSkill = wrapAction(requestInsertNewSkill, async (payload, 
   await createNewFlows(state)
 })
 
-const createNewFlows = async state => {
+const createNewFlows = async (state) => {
   const newFlows: string[] = getNewFlows(state)
   for (const newFlow of newFlows) {
     await FlowsAPI.createFlow(state.flows, newFlow)
@@ -400,7 +408,7 @@ export const updateSkill = wrapAction(requestUpdateSkill, async (payload, state)
 })
 
 export const editSkill = createAction('SKILLS/EDIT')
-export const requestEditSkill = nodeId => (dispatch, getState) => {
+export const requestEditSkill = (nodeId) => (dispatch, getState) => {
   const state = getState()
   const node = _.find(state.flows.flowsByName[state.flows.currentFlow].nodes, { id: nodeId })
   const flow = node && state.flows.flowsByName[node.flow]
@@ -417,25 +425,25 @@ export const requestEditSkill = nodeId => (dispatch, getState) => {
 }
 
 // Language
-export const changeContentLanguage = createAction('LANGUAGE/CONTENT_LANGUAGE', contentLang => ({ contentLang }))
+export const changeContentLanguage = createAction('LANGUAGE/CONTENT_LANGUAGE', (contentLang) => ({ contentLang }))
 
 // Hints
 export const hintsReceived = createAction('HINTS/RECEIVED')
-export const refreshHints = () => dispatch => {
+export const refreshHints = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/hints`).then(res => {
+  axios.get(`${window.STUDIO_API_PATH}/hints`).then((res) => {
     dispatch(hintsReceived(res.data))
   })
 }
 
 export const actionsReceived = createAction('ACTIONS/RECEIVED')
-export const refreshActions = () => dispatch => {
+export const refreshActions = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.STUDIO_API_PATH}/actions`).then(({ data }) => {
     dispatch(
       actionsReceived(
         _.sortBy(
-          data.filter(action => !action.hidden),
+          data.filter((action) => !action.hidden),
           ['category', 'name']
         )
       )
@@ -444,7 +452,7 @@ export const refreshActions = () => dispatch => {
 }
 
 export const intentsReceived = createAction('INTENTS/RECEIVED')
-export const refreshIntents = () => dispatch => {
+export const refreshIntents = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.STUDIO_API_PATH}/nlu/intents`).then(({ data }) => {
     dispatch(intentsReceived(data))
@@ -462,14 +470,14 @@ export const refreshLibrary = () => (dispatch, getState) => {
   })
 }
 
-export const addElementToLibrary = (elementId: string) => dispatch => {
+export const addElementToLibrary = (elementId: string) => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}`).then(() => {
     dispatch(refreshLibrary())
   })
 }
 
-export const removeElementFromLibrary = (elementId: string) => dispatch => {
+export const removeElementFromLibrary = (elementId: string) => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}/delete`).then(() => {
     dispatch(refreshLibrary())
@@ -477,7 +485,7 @@ export const removeElementFromLibrary = (elementId: string) => dispatch => {
 }
 
 export const receiveQNAContentElement = createAction('QNA/CONTENT_ELEMENT')
-export const getQNAContentElementUsage = () => dispatch => {
+export const getQNAContentElementUsage = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.STUDIO_API_PATH}/qna/contentElementUsage`).then(({ data }) => {
     dispatch(receiveQNAContentElement(data))
@@ -485,7 +493,7 @@ export const getQNAContentElementUsage = () => dispatch => {
 }
 
 export const receiveModuleTranslations = createAction('LANG/TRANSLATIONS')
-export const getModuleTranslations = () => dispatch => {
+export const getModuleTranslations = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.API_PATH}/studio/modules/translations?botId=${window.BOT_ID}`).then(({ data }) => {
     dispatch(receiveModuleTranslations(data))
@@ -493,9 +501,9 @@ export const getModuleTranslations = () => dispatch => {
 }
 
 export const botsReceived = createAction('BOTS/RECEIVED')
-export const fetchBotIds = () => dispatch => {
+export const fetchBotIds = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/workspaceBotsIds`).then(res => {
+  axios.get(`${window.BOT_API_PATH}/workspaceBotsIds`).then((res) => {
     dispatch(botsReceived(res.data))
   })
 }

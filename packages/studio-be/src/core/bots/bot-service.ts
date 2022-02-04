@@ -45,18 +45,10 @@ const DEFAULT_BOT_CONFIGS = {
 }
 
 const BotCreationSchema = Joi.object().keys({
-  id: Joi.string()
-    .regex(BOTID_REGEX)
-    .max(50)
-    .required(),
-  name: Joi.string()
-    .max(50)
-    .allow('')
-    .optional(),
+  id: Joi.string().regex(BOTID_REGEX).max(50).required(),
+  name: Joi.string().max(50).allow('').optional(),
   category: Joi.string().allow(null),
-  description: Joi.string()
-    .max(500)
-    .allow(''),
+  description: Joi.string().max(500).allow(''),
   pipeline_status: {
     current_stage: {
       promoted_by: Joi.string(),
@@ -146,10 +138,7 @@ export class BotService {
         const bot = await this.findBotById(botId)
         bot && bots.set(botId, bot)
       } catch (err) {
-        this.logger
-          .forBot(botId)
-          .attachError(err)
-          .error(`Bot configuration file not found for bot "${botId}"`)
+        this.logger.forBot(botId).attachError(err).error(`Bot configuration file not found for bot "${botId}"`)
       }
     }
 
@@ -257,7 +246,7 @@ export class BotService {
     const destGhost = this.ghostService.forBot(destBotId)
     const botContent = await sourceGhost.directoryListing('/')
     await Promise.all(
-      botContent.map(async file => destGhost.upsertFile('/', file, await sourceGhost.readFileAsBuffer('/', file)))
+      botContent.map(async (file) => destGhost.upsertFile('/', file, await sourceGhost.readFileAsBuffer('/', file)))
     )
     // const workspaceId = await this.workspaceService.getBotWorkspaceId(sourceBotId)
     // await this.workspaceService.addBotRef(destBotId, workspaceId)
@@ -268,14 +257,14 @@ export class BotService {
     const builtinPath = getBuiltinPath('bot-templates')
     const templates = await fse.readdir(builtinPath)
 
-    const detailed = await templates.map(id => {
+    const detailed = await templates.map((id) => {
       try {
         const details = require(path.join(builtinPath, id, 'bot.config.json'))
         return { id, name: details.name, desc: details.desc, moduleId: 'builtin', moduleName: 'Botpress Builtin' }
       } catch (err) {}
     })
 
-    return detailed.filter(x => x !== undefined) as BotTemplate[]
+    return detailed.filter((x) => x !== undefined) as BotTemplate[]
   }
 
   async makeBotId(botId: string, workspaceId: string) {
@@ -305,7 +294,7 @@ export class BotService {
       await ghost.upsertFile('content-types', type.relativePath, this.addChecksum(content))
     }
 
-    return contentTypes.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
+    return contentTypes.map((x) => x.relativePath.replace('.js', '')).filter((x) => !x.startsWith('_'))
   }
 
   private async addHooks(ghost: ScopedGhostService, isCloudBot?: boolean): Promise<string[]> {
@@ -321,7 +310,7 @@ export class BotService {
       await ghost.upsertFile('hooks', type.relativePath, this.addChecksum(content))
     }
 
-    return hooks.map(x => x.relativePath.replace('.js', '')).filter(x => !x.startsWith('_'))
+    return hooks.map((x) => x.relativePath.replace('.js', '')).filter((x) => !x.startsWith('_'))
   }
 
   private async _createBotFromTemplate(botConfig: BotConfig, template: BotTemplate): Promise<BotConfig | undefined> {
@@ -371,7 +360,7 @@ export class BotService {
     const templateFiles = await listDir(templatePath, { ignores: [startsWithADot, new RegExp(BOT_CONFIG_FILENAME)] })
 
     return templateFiles.map(
-      f =>
+      (f) =>
         <FileContent>{
           name: f.relativePath,
           content: fse.readFileSync(f.absolutePath)
@@ -395,11 +384,11 @@ export class BotService {
     const botActions = await this.ghostService.forBot(botId).directoryListing('actions', '*.*')
 
     const missingLocalActions = flowActions
-      .filter(x => !IGNORED_ACTION.includes(x))
+      .filter((x) => !IGNORED_ACTION.includes(x))
       // We ignore actions from modules because they may need access to their node_modules
-      .filter(fileName => COPY_LOCAL_FOLDERS.includes(path.dirname(fileName)))
-      .map(x => `${x}.js`)
-      .filter(x => !botActions.find(b => x === b))
+      .filter((fileName) => COPY_LOCAL_FOLDERS.includes(path.dirname(fileName)))
+      .map((x) => `${x}.js`)
+      .filter((x) => !botActions.find((b) => x === b))
 
     for (const actionName of missingLocalActions) {
       const builtinActionsPath = path.resolve(getBuiltinPath('actions'), actionName)
@@ -421,7 +410,7 @@ export class BotService {
     return (await this.getBotsIds(ignoreCache)).includes(botId)
   }
 
-  @WrapErrorsWith(args => `Could not delete bot '${args[0]}'`, { hideStackTrace: true })
+  @WrapErrorsWith((args) => `Could not delete bot '${args[0]}'`, { hideStackTrace: true })
   async deleteBot(botId: string) {
     if (!(await this.botExists(botId))) {
       throw new Error(`Bot "${botId}" doesn't exist`)
@@ -467,10 +456,7 @@ export class BotService {
       this._invalidateBotIds()
       return true
     } catch (err) {
-      this.logger
-        .forBot(botId)
-        .attachError(err)
-        .critical(`Cannot mount bot "${botId}"`)
+      this.logger.forBot(botId).attachError(err).critical(`Cannot mount bot "${botId}"`)
 
       return false
     } finally {

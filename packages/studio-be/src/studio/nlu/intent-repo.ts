@@ -10,7 +10,7 @@ const INTENTS_DIR = './intents'
 
 export const trimUtterances = (intent: sdk.NLU.IntentDefinition) => {
   for (const lang of Object.keys(intent.utterances)) {
-    intent.utterances[lang] = intent.utterances[lang].map(u => u.trim())
+    intent.utterances[lang] = intent.utterances[lang].map((u) => u.trim())
   }
 }
 
@@ -23,7 +23,7 @@ export class IntentRepository {
 
   public async getIntents(botId: string): Promise<sdk.NLU.IntentDefinition[]> {
     const intentNames = await this.ghostService.forBot(botId).directoryListing(INTENTS_DIR, '*.json')
-    return Promise.map(intentNames, n => this.getIntent(botId, n))
+    return Promise.map(intentNames, (n) => this.getIntent(botId, n))
   }
 
   public async getIntent(botId: string, intentName: string): Promise<sdk.NLU.IntentDefinition> {
@@ -49,8 +49,8 @@ export class IntentRepository {
     _.chain(intent.slots)
       .flatMap('entities')
       .uniq()
-      .forEach(entity => {
-        if (!availableEntities.find(e => e.name === entity)) {
+      .forEach((entity) => {
+        if (!availableEntities.find((e) => e.name === entity)) {
           throw Error(`"${entity}" is neither a system entity nor a custom entity`)
         }
       })
@@ -87,9 +87,9 @@ export class IntentRepository {
 
   // ideally this would be a filewatcher
   public async updateIntentsSlotsEntities(botId: string, prevEntityName: string, newEntityName: string): Promise<void> {
-    _.each(await this.getIntents(botId), async intent => {
+    _.each(await this.getIntents(botId), async (intent) => {
       let modified = false
-      _.each(intent.slots, slot => {
+      _.each(intent.slots, (slot) => {
         _.forEach(slot.entities, (e, index, arr) => {
           if (e === prevEntityName) {
             arr[index] = newEntityName

@@ -107,9 +107,6 @@ export class BotState {
 
   private _hashTrainSet = (ts: StanTrainInput): string => {
     const content = [...ts.entities, ...ts.intents]
-    return crypto
-      .createHash('sha1')
-      .update(JSON.stringify(content))
-      .digest('hex')
+    return crypto.createHash('sha1').update(JSON.stringify(content)).digest('hex')
   }
 }

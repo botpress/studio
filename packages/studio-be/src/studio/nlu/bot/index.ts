@@ -113,13 +113,13 @@ export class Bot {
   }
 
   private _registerNeedsTrainingWatcher = () => {
-    return this._defRepo.onFileChanged(this._botId, async filePath => {
+    return this._defRepo.onFileChanged(this._botId, async (filePath) => {
       const hasPotentialNLUChange = filePath.includes('/intents/') || filePath.includes('/entities/')
       if (!hasPotentialNLUChange) {
         return
       }
 
-      await Promise.map(this._languages, async l => {
+      await Promise.map(this._languages, async (l) => {
         const state = await this.syncAndGetState(l)
         this._webSocket(state)
       })

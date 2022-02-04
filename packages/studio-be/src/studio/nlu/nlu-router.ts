@@ -12,7 +12,7 @@ const removeSlotsFromUtterances = (utterances: { [key: string]: any }, slotNames
   _.fromPairs(
     Object.entries(utterances).map(([key, val]) => {
       const regex = new RegExp(`\\[([^\\[\\]\\(\\)]+?)\\]\\((${slotNames.join('|')})\\)`, 'gi')
-      return [key, val.map(u => u.replace(regex, '$1'))]
+      return [key, val.map((u) => u.replace(regex, '$1'))]
     })
   )
 
@@ -51,10 +51,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.nluService.intents.deleteIntent(botId, intent)
           res.sendStatus(204)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not delete intent')
+          this.logger.forBot(botId).attachError(err).error('Could not delete intent')
           res.status(400).send(err.message)
         }
       })
@@ -74,10 +71,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(200)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .warn('Cannot create intent')
+          this.logger.forBot(botId).attachError(err).warn('Cannot create intent')
           res.status(400).send(err.message)
         }
       })
@@ -92,10 +86,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.nluService.intents.updateIntent(botId, intentName, req.body)
           res.sendStatus(200)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not update intent')
+          this.logger.forBot(botId).attachError(err).error('Could not update intent')
           res.sendStatus(400)
         }
       })
@@ -108,7 +99,7 @@ export class NLURouter extends CustomStudioRouter {
         const botId = req.params.botId
         const intents = await this.nluService.intents.getIntents(botId)
         const ctxs = _.chain(intents)
-          .flatMap(i => i.contexts)
+          .flatMap((i) => i.contexts)
           .uniq()
           .value()
 
@@ -124,9 +115,9 @@ export class NLURouter extends CustomStudioRouter {
         const { ignoreSystem } = req.query
 
         const entities = await this.nluService.entities.listEntities(botId)
-        const mapped = entities.map(x => ({ ...x, label: `${x.type}.${x.name}` }))
+        const mapped = entities.map((x) => ({ ...x, label: `${x.type}.${x.name}` }))
 
-        res.json(yn(ignoreSystem) ? mapped.filter(x => x.type !== 'system') : mapped)
+        res.json(yn(ignoreSystem) ? mapped.filter((x) => x.type !== 'system') : mapped)
       })
     )
 
@@ -139,10 +130,7 @@ export class NLURouter extends CustomStudioRouter {
           const entity = await this.nluService.entities.getEntity(botId, entityName)
           res.send(entity)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error(`Could not get entity ${entityName}`)
+          this.logger.forBot(botId).attachError(err).error(`Could not get entity ${entityName}`)
           res.sendStatus(400)
         }
       })
@@ -162,10 +150,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(200)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .warn('Cannot create entity')
+          this.logger.forBot(botId).attachError(err).warn('Cannot create entity')
           res.status(400).send(err.message)
         }
       })
@@ -184,10 +169,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.nluService.entities.updateEntity(botId, id, entityDef)
           res.sendStatus(200)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not update entity')
+          this.logger.forBot(botId).attachError(err).error('Could not update entity')
           res.status(400).send(err.message)
         }
       })
@@ -201,22 +183,22 @@ export class NLURouter extends CustomStudioRouter {
         try {
           await this.nluService.entities.deleteEntity(botId, id)
 
-          const affectedIntents = (await this.nluService.intents.getIntents(botId)).filter(intent =>
-            intent.slots.some(slot => slot.entities.includes(id))
+          const affectedIntents = (await this.nluService.intents.getIntents(botId)).filter((intent) =>
+            intent.slots.some((slot) => slot.entities.includes(id))
           )
 
-          await Promise.map(affectedIntents, intent => {
-            const [affectedSlots, unaffectedSlots] = _.partition(intent.slots, slot => slot.entities.includes(id))
-            const [slotsToDelete, slotsToKeep] = _.partition(affectedSlots, slot => slot.entities.length === 1)
+          await Promise.map(affectedIntents, (intent) => {
+            const [affectedSlots, unaffectedSlots] = _.partition(intent.slots, (slot) => slot.entities.includes(id))
+            const [slotsToDelete, slotsToKeep] = _.partition(affectedSlots, (slot) => slot.entities.length === 1)
             const updatedIntent = {
               ...intent,
               slots: [
                 ...unaffectedSlots,
-                ...slotsToKeep.map(slot => ({ ...slot, entities: _.without(slot.entities, id) }))
+                ...slotsToKeep.map((slot) => ({ ...slot, entities: _.without(slot.entities, id) }))
               ],
               utterances: removeSlotsFromUtterances(
                 intent.utterances,
-                slotsToDelete.map(slot => slot.name)
+                slotsToDelete.map((slot) => slot.name)
               )
             }
             return this.nluService.intents.saveIntent(botId, updatedIntent)
@@ -224,10 +206,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(204)
         } catch (err) {
-          this.logger
-            .forBot(botId)
-            .attachError(err)
-            .error('Could not delete entity')
+          this.logger.forBot(botId).attachError(err).error('Could not delete entity')
           res.status(404).send(err.message)
         }
       })
@@ -313,10 +292,7 @@ export class NLURouter extends CustomStudioRouter {
     }
 
     const msg = 'An unexpected error occured.'
-    this.logger
-      .forBot(botId)
-      .attachError(error)
-      .error(msg)
+    this.logger.forBot(botId).attachError(error).error(msg)
     return res.status(500).send(msg)
   }
 }

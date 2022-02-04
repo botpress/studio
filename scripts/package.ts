@@ -1,23 +1,48 @@
-import { ExecException } from 'child_process'
-import fse from 'fs-extra'
-import path from 'path'
+import fs from 'fs'
 import { execute } from './utils/exec'
+import logger from './utils/logger'
+import { getProjectVersion, formatVersion } from './utils/version'
+
+const outputPath = './bin'
+
+const installBindings = async () => {
+  const platforms = ['darwin', 'win32', 'linux']
+
+  for (const platform of platforms) {
+    await execute(
+      `./node_modules/.bin/node-pre-gyp install --directory=./node_modules/sqlite3 --target_platform=${platform} --target_arch=x64`,
+      undefined,
+      { silent: true }
+    )
+  }
+}
+
+const renameBinaries = async () => {
+  const formattedVersion = formatVersion(getProjectVersion())
+  const mappings = [
+    ['studio-win.exe', `studio-v${formattedVersion}-win-x64.exe`],
+    ['studio-linux', `studio-v${formattedVersion}-linux-x64`],
+    ['studio-macos', `studio-v${formattedVersion}-darwin-x64`]
+  ]
+
+  for (const [oldPath, newPath] of mappings) {
+    await new Promise((resolve, reject) =>
+      fs.rename(`${outputPath}/${oldPath}`, `${outputPath}/${newPath}`, err => (err ? reject(err) : resolve(undefined)))
+    )
+  }
+}
 
 const packageApp = async () => {
-  const version = require(path.join(__dirname, '../package.json')).version.replace(/\./g, '_')
-
   try {
-    await execute('yarn', { cwd: './packages/studio-be' })
-    await execute('cross-env pkg package.json', undefined, { silent: true })
+    await installBindings()
 
-    await fse.rename('./bin/studio-win.exe', `./bin/studio-v${version}-win-x64.exe`)
-    await fse.rename('./bin/studio-linux', `./bin/studio-v${version}-linux-x64`)
-    await fse.rename('./bin/studio-macos', `./bin/studio-v${version}-darwin-x64`)
+    await execute(`pkg --out-path ${outputPath} package.json`, undefined, { silent: true })
+
+    await renameBinaries()
+
+    logger.info(`Binaries produced successfully and can be found inside the '${outputPath}' folder`)
   } catch (err) {
-    if (err instanceof Error) {
-      const error = err as ExecException
-      console.error('Error running: ', error.cmd, '\nMessage: ', error['stderr'], err)
-    }
+    logger.error('Error while packaging app', err as Error)
   }
 }
 

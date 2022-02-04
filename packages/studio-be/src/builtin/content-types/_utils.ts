@@ -1,7 +1,7 @@
 import path from 'path'
 import url from 'url'
 
-const isBpUrl = str => {
+const isBpUrl = (str) => {
   const re = /^\/api\/.*\/bots\/.*\/media\/.*/
   return re.test(str)
 }
@@ -10,7 +10,7 @@ export default {
   formatURL: (baseUrl, url) => {
     return isBpUrl(url) ? `${baseUrl}${url}` : url
   },
-  isUrl: str => {
+  isUrl: (str) => {
     try {
       new url.URL(str)
       return true
@@ -33,13 +33,10 @@ export default {
 
     return payload
   },
-  extractFileName: file => {
+  extractFileName: (file) => {
     let fileName = path.basename(file)
     if (fileName.includes('-')) {
-      fileName = fileName
-        .split('-')
-        .slice(1)
-        .join('-')
+      fileName = fileName.split('-').slice(1).join('-')
     }
 
     return fileName

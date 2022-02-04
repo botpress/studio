@@ -82,8 +82,8 @@ const contentType: ContentType = {
       'ui:field': 'i18n_array'
     }
   },
-  computePreviewText: formData => formData.message && 'Dropdown: ' + formData.message,
-  renderElement: data => utils.extractPayload('dropdown', data)
+  computePreviewText: (formData) => formData.message && 'Dropdown: ' + formData.message,
+  renderElement: (data) => utils.extractPayload('dropdown', data)
 }
 
 export default contentType
