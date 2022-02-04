@@ -2,7 +2,7 @@
 
 Currently, it is not recommended to run the studio on its own. Therefore, you must start the Botpress Server, which will provide a couple of required parameters so the studio can work smoothly with the server.
 
-We use Yarn v2 in this repository, so if you have errors while trying to build the repository, ensure you have the latest version installed: `npm install -g yarn`
+We use Yarn v3 in this repository, so if you have errors while trying to build the repository, ensure you have the latest version installed: `npm install -g yarn`
 
 - Type `yarn`
 - Build everything using `yarn build`
