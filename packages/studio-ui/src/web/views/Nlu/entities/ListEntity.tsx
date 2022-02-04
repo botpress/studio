@@ -25,12 +25,7 @@ interface EntityState {
   occurrences: NLU.EntityDefOccurrence[]
 }
 
-interface Action {
-  type: 'setStateFromEntity' | 'setFuzzy' | 'setOccurrences'
-  data: any
-}
-
-function EntityContentReducer(state: EntityState, action: Action): EntityState {
+function EntityContentReducer(state: EntityState, action): EntityState {
   const { type, data } = action
   if (type === 'setStateFromEntity') {
     const entity: NLU.EntityDefinition = data.entity
@@ -75,35 +70,31 @@ export const ListEntityEditor: React.FC<Props> = props => {
       .some(({ occurrences }) => occurrences.some(({ name, synonyms }) => [name, ...synonyms].includes(newElement)))
 
   const addOccurrence = () => {
-    const trimmed = newOccurrence.trim()
-    if (trimmed.length === 0) {
+    if (isNewOccurrenceEmpty()) {
       return
     }
-
-    if (!isUniqueInEntity(trimmed)) {
+    if (!isUniqueInEntity(newOccurrence)) {
       toast.failure('Occurence duplication within the same entity not allowed')
       return
     }
 
     dispatch({
       type: 'setOccurrences',
-      data: { occurrences: [...state.occurrences, { name: trimmed, synonyms: [] }] }
+      data: { occurrences: [...state.occurrences, { name: newOccurrence, synonyms: [] }] }
     })
-
     setNewOccurrence('')
   }
 
   const editOccurrence = (idx: number, occurrence: NLU.EntityDefOccurrence) => {
-    const oldOccurence = state.occurrences[idx]
-    const synonymAdded = oldOccurence.synonyms.length < occurrence.synonyms.length
-
-    if (synonymAdded) {
-      const newSynonym = occurrence.synonyms.pop()
-      const trimmed = newSynonym.trim()
-      if (!isUniqueInEntity(trimmed)) {
+    const synonymAdded = () => {
+      const oldOccurence = state.occurrences[idx]
+      return oldOccurence.synonyms.length < occurrence.synonyms.length
+    }
+    if (synonymAdded()) {
+      const newSynonym = _.last(occurrence.synonyms)
+      if (!isUniqueInEntity(newSynonym)) {
         return toast.failure('Synonym duplication within the same entity not allowed')
       }
-      occurrence.synonyms.push(trimmed)
     }
 
     const occurrences = [...state.occurrences.slice(0, idx), occurrence, ...state.occurrences.slice(idx + 1)]

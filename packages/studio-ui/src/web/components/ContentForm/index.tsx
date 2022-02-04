@@ -11,7 +11,6 @@ import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 import withLanguage from '../Util/withLanguage'
 
 import ArrayFieldTemplate from './ArrayFieldTemplate'
-import ContentNotice from './ContentNotice'
 import FlowPickWidget from './FlowPickWidget'
 import ArrayMl from './i18n/Array'
 import renderWrapped from './i18n/I18nWrapper'
@@ -183,22 +182,19 @@ const ContentForm: FC<Props> = props => {
   }
 
   return (
-    <>
-      <ContentNotice />
-      <Form<FormData>
-        {...props}
-        formData={currentFormData}
-        formContext={context}
-        safeRenderCompletion
-        widgets={widgets}
-        fields={fields}
-        ArrayFieldTemplate={ArrayFieldTemplate}
-        onChange={handleOnChange}
-        schema={translatePropsRecursive(schema)}
-      >
-        {props.children}
-      </Form>
-    </>
+    <Form<FormData>
+      {...props}
+      formData={currentFormData}
+      formContext={context}
+      safeRenderCompletion
+      widgets={widgets}
+      fields={fields}
+      ArrayFieldTemplate={ArrayFieldTemplate}
+      onChange={handleOnChange}
+      schema={translatePropsRecursive(schema)}
+    >
+      {props.children}
+    </Form>
   )
 }
 

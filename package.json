@@ -6,8 +6,8 @@
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "yarn workspaces foreach -ptiv run build",
-    "watch": "yarn workspaces foreach -piv run watch",
+    "build": "yarn workspaces foreach --exclude @botpress/superinput -ptiv run build",
+    "watch": "yarn workspaces foreach --exclude @botpress/superinput -piv run watch",
     "clean": "yarn workspaces foreach -piv run clean",
     "start": "ts-node -T --dir scripts start_studio",
     "setup": "ts-node -T --dir scripts create_default_env --location ./.env.debug",
@@ -63,7 +63,8 @@
     "packages/studio-ui",
     "packages/studio-be",
     "packages/ui-shared",
-    "packages/ui-shared-lite"
+    "packages/ui-shared-lite",
+    "packages/superinput"
   ],
   "engines": {
     "node": "12.18.1"

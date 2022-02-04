@@ -16,7 +16,7 @@ declare global {
     BOT_API_PATH: string
     API_PATH: string
     SEGMENT_WRITE_KEY: string
-    IS_PRO_ENABLED: boolean
+
     ROOT_PATH: string
     BOT_NAME: string
     BOT_ID: string
