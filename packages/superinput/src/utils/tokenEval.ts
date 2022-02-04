@@ -31,7 +31,7 @@ function _evalToken(token: string, vars: any) {
     // eslint-disable-next-line no-new-func
     const code = new Function('sandbox', src)
 
-    return (function(sandbox) {
+    return (function (sandbox) {
       if (!sandboxProxies.has(sandbox)) {
         const sandboxProxy = new Proxy(sandbox, { has, get })
         sandboxProxies.set(sandbox, sandboxProxy)
@@ -70,7 +70,7 @@ export function evalStrTempl(str: string, vars: any = {}) {
     return str
   }
 
-  matches.forEach(m => {
+  matches.forEach((m) => {
     let out = rmDelim(m)
     out = evalToken(out, vars)
     if (!out) {

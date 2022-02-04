@@ -14,8 +14,8 @@ const hoverInspect = (eventState: any) => {
         return null
       }
       if (
-        !['VariableName', 'PropertyName'].find(el => el === nodeBefore.name) &&
-        !['MemberExpression', 'ExpressionStatement'].find(el => el === nodeBefore.parent?.name)
+        !['VariableName', 'PropertyName'].find((el) => el === nodeBefore.name) &&
+        !['MemberExpression', 'ExpressionStatement'].find((el) => el === nodeBefore.parent?.name)
       ) {
         return null
       }

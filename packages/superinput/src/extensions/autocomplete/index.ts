@@ -89,7 +89,7 @@ const eventStateCompletions = (eventState: any) => {
     } else if (nodeBefore.name === 'VariableName' || nodeBefore.name === 'Script') {
       return makeCompletionFrom(nodeBefore.from, eventState, fullDocTree)
     } else if (nodeBefore.name === '{' && nodeBefore.parent?.name === 'Block') {
-      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, key => {
+      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, (key) => {
         return (view: EditorView, completion: Completion, from: number) => {
           const applyStr = ` ${key} `
           view.dispatch({
@@ -99,7 +99,7 @@ const eventStateCompletions = (eventState: any) => {
         }
       })
     } else if (ctx.explicit && !DONT_COMPLETE_IN.includes(nodeBefore.name)) {
-      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, key => {
+      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, (key) => {
         return (view: EditorView, completion: Completion, from: number) => {
           const applyStr = `{{ ${key} }}`
           view.dispatch({

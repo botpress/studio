@@ -15,7 +15,7 @@ const exprDecorator = (eventState: any) => {
     }
 
     let pos = 0
-    const decos = matches.map(match => {
+    const decos = matches.map((match) => {
       const from = docStr.indexOf(match, pos)
       const to = from + match.length
       pos = to
@@ -55,7 +55,7 @@ const exprDecorator = (eventState: any) => {
       }
     },
     {
-      decorations: v => v.decorations
+      decorations: (v) => v.decorations
     }
   )
   return [exprDecoratorsPlugin]

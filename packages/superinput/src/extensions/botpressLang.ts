@@ -21,7 +21,7 @@ const botpressLang = LRLanguage.define({
             return accu
           }
           let localPos = 0
-          matches.forEach(match => {
+          matches.forEach((match) => {
             localPos = line.indexOf(match, localPos)
 
             accu.push({
