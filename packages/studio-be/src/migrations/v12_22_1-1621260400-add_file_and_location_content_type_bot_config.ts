@@ -15,7 +15,7 @@ const migration: Migration = {
       const newTypes = ['builtin_file', 'builtin_location']
       const contentTypes = botConfig.imports.contentTypes || []
 
-      const hasMissingTypes = !newTypes.every(type => contentTypes.find(x => x === type))
+      const hasMissingTypes = !newTypes.every((type) => contentTypes.find((x) => x === type))
 
       if (contentTypes.length && hasMissingTypes) {
         hasChanges = true

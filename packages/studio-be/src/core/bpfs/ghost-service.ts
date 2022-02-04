@@ -196,8 +196,8 @@ export class ScopedGhostService {
     return forceForwardSlashes(path.join(folder, sanitize(path.basename(fullPath))))
   }
 
-  objectCacheKey = str => `object::${str}`
-  bufferCacheKey = str => `buffer::${str}`
+  objectCacheKey = (str) => `object::${str}`
+  bufferCacheKey = (str) => `buffer::${str}`
 
   private async _invalidateFile(fileName: string) {
     await this.cache.invalidate(this.objectCacheKey(fileName))
@@ -211,7 +211,7 @@ export class ScopedGhostService {
 
   async ensureDirs(rootFolder: string, directories: string[]): Promise<void> {
     if (!this.useDbDriver) {
-      await Promise.mapSeries(directories, d => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
+      await Promise.mapSeries(directories, (d) => this.diskDriver.createDir(this._normalizeFileName(rootFolder, d)))
     }
   }
 
@@ -259,13 +259,13 @@ export class ScopedGhostService {
       await this._assertBotUnlocked(rootFolder)
     }
 
-    return Promise.map(content, c => this.upsertFile(rootFolder, c.name, c.content, options))
+    return Promise.map(content, (c) => this.upsertFile(rootFolder, c.name, c.content, options))
   }
 
   public async exportToDirectory(directory: string, excludes?: string | string[]): Promise<string[]> {
     const allFiles = await this.directoryListing('./', '*.*', excludes, true)
 
-    for (const file of allFiles.filter(x => x !== 'revisions.json')) {
+    for (const file of allFiles.filter((x) => x !== 'revisions.json')) {
       const content = await this.primaryDriver.readFile(this._normalizeFileName('./', file))
       const outPath = path.join(directory, file)
       mkdirp.sync(path.dirname(outPath))
@@ -285,7 +285,7 @@ export class ScopedGhostService {
   public async importFromDirectory(directory: string) {
     const filenames = await this.diskDriver.absoluteDirectoryListing(directory)
 
-    const files = filenames.map(file => {
+    const files = filenames.map((file) => {
       return {
         name: file,
         content: fse.readFileSync(path.join(directory, file))
@@ -398,9 +398,9 @@ export class ScopedGhostService {
     }
 
     const remoteFiles = await this.dbDriver.directoryListing(this._normalizeFolderName(rootFolder))
-    const filePath = filename => this._normalizeFileName(rootFolder, filename)
+    const filePath = (filename) => this._normalizeFileName(rootFolder, filename)
 
-    await Promise.mapSeries(remoteFiles, async file =>
+    await Promise.mapSeries(remoteFiles, async (file) =>
       this.diskDriver.upsertFile(filePath(file), await this.dbDriver.readFile(filePath(file)))
     )
   }
@@ -471,7 +471,7 @@ export class ScopedGhostService {
   }
 
   onFileChanged(callback: (filePath: string) => void): ListenHandle {
-    const cb = file => callback && callback(file)
+    const cb = (file) => callback && callback(file)
     this.events.on('changed', cb)
     return { remove: () => this.events.off('changed', cb) }
   }

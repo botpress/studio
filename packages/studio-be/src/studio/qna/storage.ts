@@ -10,21 +10,18 @@ export const NLU_PREFIX = '__qna__'
 
 const safeId = (length = 10) => nanoid('1234567890abcdefghijklmnopqrsuvwxyz', length)
 
-const slugify = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '_')
+const slugify = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '_')
 
-const getIntentId = id => `${NLU_PREFIX}${id}`
+const getIntentId = (id) => `${NLU_PREFIX}${id}`
 
 const makeID = (qna: QnaEntry) => {
   const firstQuestion = qna.questions[Object.keys(qna.questions)[0]][0]
-  return `${safeId()}_${slugify(firstQuestion)
-    .replace(/^_+/, '')
-    .substring(0, 50)
-    .replace(/_+$/, '')}`
+  return `${safeId()}_${slugify(firstQuestion).replace(/^_+/, '').substring(0, 50).replace(/_+$/, '')}`
 }
 
 const normalizeQuestions = (questions: string[]) =>
   questions
-    .map(q =>
+    .map((q) =>
       q
         .replace(/[\r\n]+/g, ' ')
         .replace(/\s+/g, ' ')
@@ -60,16 +57,16 @@ export default class Storage {
     const leftOverQnaIntents = allIntents.filter(
       (intent: sdk.NLU.IntentDefinition) =>
         intent.name.startsWith(NLU_PREFIX) &&
-        !_.find(allQuestions, q => getIntentId(q.id).toLowerCase() === intent.name)
+        !_.find(allQuestions, (q) => getIntentId(q.id).toLowerCase() === intent.name)
     )
     await Promise.map(leftOverQnaIntents, (intent: sdk.NLU.IntentDefinition) =>
       this.nluService.intents.deleteIntent(this.botId, intent.name)
     )
 
     const qnaItemsToSync = allQuestions.filter(
-      qnaItem => qnaItem.data.enabled && !_.find(allIntents, i => i.name === getIntentId(qnaItem.id).toLowerCase())
+      (qnaItem) => qnaItem.data.enabled && !_.find(allIntents, (i) => i.name === getIntentId(qnaItem.id).toLowerCase())
     )
-    await Promise.map(qnaItemsToSync, item => this.createNLUIntentFromQnaItem(item, false))
+    await Promise.map(qnaItemsToSync, (item) => this.createNLUIntentFromQnaItem(item, false))
   }
 
   private async createNLUIntentFromQnaItem(qnaItem: QnaItem, create: boolean): Promise<void> {
@@ -127,7 +124,7 @@ export default class Storage {
     const items = _.isArray(item) ? item : [item]
     const qnaMap: { [key: string]: QnaEntry } = {}
 
-    items.forEach(async item => {
+    items.forEach(async (item) => {
       if (item.id in qnaMap) {
         this.logger.warn(`Duplicate IDs found in input while batch importing: ${item.id}`)
         qnaMap[makeID(item.data)] = item.data
@@ -155,15 +152,15 @@ export default class Storage {
   }
 
   private async checkForDuplicatedQuestions(newItem: QnaEntry, editingQnaId?: string) {
-    const qnaItems = (await this.fetchQNAs()).filter(q => !editingQnaId || q.id !== editingQnaId)
+    const qnaItems = (await this.fetchQNAs()).filter((q) => !editingQnaId || q.id !== editingQnaId)
 
     const newQuestions = Object.values(newItem.questions).reduce((a, b) => a.concat(b), [])
     const dupes = qnaItems
-      .map(item => ({
+      .map((item) => ({
         id: item.id,
         questions: Object.values(item.data.questions).reduce((acc, arr) => [...acc, ...arr], [])
       }))
-      .filter(existingQuestion => !!existingQuestion.questions.filter(q => newQuestions.includes(q)).length)
+      .filter((existingQuestion) => !!existingQuestion.questions.filter((q) => newQuestions.includes(q)).length)
 
     if (dupes.length) {
       this.logger
@@ -198,7 +195,7 @@ export default class Storage {
         questions = questions.slice(opts.start, opts.start + opts.count)
       }
 
-      return Promise.map(questions, itemName => this.getQnaItem(itemName.replace(/\.json$/i, '')))
+      return Promise.map(questions, (itemName) => this.getQnaItem(itemName.replace(/\.json$/i, '')))
     } catch (err) {
       this.logger.warn(`Error while reading questions. ${err}`)
       return []
@@ -207,7 +204,7 @@ export default class Storage {
 
   async filterByContextsAndQuestion(question: string, filteredContexts: string[]) {
     const allQuestions = await this.fetchQNAs()
-    const filteredQuestions = allQuestions.filter(q => {
+    const filteredQuestions = allQuestions.filter((q) => {
       const { questions, contexts } = q.data
 
       const hasMatch =
@@ -253,14 +250,14 @@ export default class Storage {
 
   async getAllContentElementIds(list?: QnaItem[]): Promise<string[]> {
     const qnas = list || (await this.fetchQNAs())
-    const allAnswers = _.flatMapDeep(qnas, qna => Object.values(qna.data.answers))
-    return _.uniq(_.filter(allAnswers as string[], x => _.isString(x) && x.startsWith('#!')))
+    const allAnswers = _.flatMapDeep(qnas, (qna) => Object.values(qna.data.answers))
+    return _.uniq(_.filter(allAnswers as string[], (x) => _.isString(x) && x.startsWith('#!')))
   }
 
   async getCountByTopic(): Promise<{ [context: string]: number }> {
     const qnas = await this.fetchQNAs()
 
-    return _.countBy(qnas, x => x.data.contexts)
+    return _.countBy(qnas, (x) => x.data.contexts)
   }
 
   async getContentElementUsage(): Promise<any> {
@@ -271,7 +268,7 @@ export default class Storage {
       (result, qna) => {
         const answers = _.flatMap(Object.values(qna.data.answers))
 
-        _.filter(answers, x => x.startsWith('#!')).forEach(answer => {
+        _.filter(answers, (x) => x.startsWith('#!')).forEach((answer) => {
           const values = result[answer]
           if (values) {
             values.count++

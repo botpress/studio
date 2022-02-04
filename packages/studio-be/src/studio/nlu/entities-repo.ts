@@ -24,7 +24,7 @@ const SYSTEM_ENTITIES = [
 ]
 
 const getSystemEntities = (): sdk.NLU.EntityDefinition[] => {
-  return [...SYSTEM_ENTITIES, 'any'].map(name => {
+  return [...SYSTEM_ENTITIES, 'any'].map((name) => {
     const entityDef: sdk.NLU.EntityDefinition = { name, type: 'system', id: getEntityId(name) }
     return entityDef
   })
@@ -39,7 +39,7 @@ export class EntityRepository {
 
   public async getCustomEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
     const intentNames = await this.ghostService.forBot(botId).directoryListing(ENTITIES_DIR, '*.json')
-    return Promise.mapSeries(intentNames, n => this.getEntity(botId, n))
+    return Promise.mapSeries(intentNames, (n) => this.getEntity(botId, n))
   }
 
   public async listEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {

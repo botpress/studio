@@ -12,7 +12,8 @@ const config: Config.InitialOptions = {
       transform: {
         ...tsjPreset.transform
       },
-      clearMocks: true
+      clearMocks: true,
+      moduleDirectories: ['node_modules', '<rootDir>']
     }
   ]
 }

@@ -48,7 +48,7 @@ export class WorkspaceService {
   async getBotRefs(workspaceId?: string): Promise<string[]> {
     if (!workspaceId) {
       const workspace = await this.getWorkspaces()
-      return _.flatten(workspace.map(x => x.bots))
+      return _.flatten(workspace.map((x) => x.bots))
     } else {
       const workspace = await this.findWorkspace(workspaceId)
       return (workspace && workspace.bots) || []
@@ -58,7 +58,7 @@ export class WorkspaceService {
   async findWorkspace(workspaceId: string): Promise<Workspace> {
     const workspaces = await this.getWorkspaces()
 
-    const workspace = workspaces.find(x => x.id === workspaceId)
+    const workspace = workspaces.find((x) => x.id === workspaceId)
     if (!workspace) {
       throw new NotFoundError('Unknown workspace')
     }
@@ -75,13 +75,13 @@ export class WorkspaceService {
 
   async findWorkspaceName(workspaceId: string): Promise<string> {
     const all = await this.getWorkspaces()
-    const workspace = all.find(x => x.id === workspaceId)
+    const workspace = all.find((x) => x.id === workspaceId)
     return (workspace && workspace.name) || workspaceId
   }
 
   async findUser(email: string, strategy: string, workspace: string) {
     const list = await this.workspaceRepo.getUserWorkspaces(email, strategy)
-    return list.find(x => x.workspace === workspace)
+    return list.find((x) => x.workspace === workspace)
   }
 
   async save(workspaces: Workspace[]): Promise<void> {
@@ -105,7 +105,7 @@ export class WorkspaceService {
 
   async findRole(roleId: string, workspaceId: string): Promise<AuthRole> {
     const workspace = await this.findWorkspace(workspaceId)
-    const role = [...workspace.roles, CHAT_USER_ROLE].find(r => r.id === roleId)
+    const role = [...workspace.roles, CHAT_USER_ROLE].find((r) => r.id === roleId)
 
     if (!role) {
       throw new NotFoundError(`Role "${roleId}" does not exist in workspace "${workspace.name}"`)
@@ -115,7 +115,7 @@ export class WorkspaceService {
 
   async getBotWorkspaceId(botId: string) {
     const workspaces = await this.getWorkspaces()
-    const workspace = workspaces.find(x => !!x.bots.find(bot => bot === botId))
+    const workspace = workspaces.find((x) => !!x.bots.find((bot) => bot === botId))
     return workspace?.id ?? 'default'
   }
 
