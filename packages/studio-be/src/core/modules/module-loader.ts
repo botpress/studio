@@ -54,28 +54,28 @@ export class ModuleLoader {
   public getDialogConditions(): Condition[] {
     const modules = Array.from(this.entryPoints.values())
     const conditions = _.flatMap(
-      modules.filter(module => module.dialogConditions),
-      x => x.dialogConditions
+      modules.filter((module) => module.dialogConditions),
+      (x) => x.dialogConditions
     ) as Condition[]
 
-    return _.orderBy(conditions, x => x?.displayOrder)
+    return _.orderBy(conditions, (x) => x?.displayOrder)
   }
 
   public getLoadedModules(): ModuleDefinition[] {
-    return Array.from(this.entryPoints.values()).map(x => x.definition)
+    return Array.from(this.entryPoints.values()).map((x) => x.definition)
   }
 
   public getFlowGenerator(moduleName: string, skillId: string): Function | undefined {
     const module = this.getModule(moduleName)
-    const skill = _.find(module.skills, x => x.id === skillId)
+    const skill = _.find(module.skills, (x) => x.id === skillId)
     return skill?.flowGenerator
   }
 
   public async getAllSkills(): Promise<Partial<Skill>[]> {
     const skills = Array.from(this.entryPoints.values())
-      .filter(module => module.skills)
-      .map(module =>
-        module.skills!.map(skill => ({
+      .filter((module) => module.skills)
+      .map((module) =>
+        module.skills!.map((skill) => ({
           id: skill.id,
           name: skill.name,
           icon: skill.icon,
@@ -90,9 +90,9 @@ export class ModuleLoader {
     const allTranslations = {}
 
     Array.from(this.entryPoints.values())
-      .filter(module => module.translations)
-      .forEach(mod => {
-        Object.keys(mod.translations!).map(lang => {
+      .filter((module) => module.translations)
+      .forEach((mod) => {
+        Object.keys(mod.translations!).map((lang) => {
           _.merge(allTranslations, {
             [lang]: {
               module: {

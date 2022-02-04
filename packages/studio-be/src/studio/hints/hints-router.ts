@@ -14,7 +14,7 @@ export class HintsRouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const allHints = this.hintsService.getHintsForBot(botId)
-        res.send({ inputs: allHints.filter(x => x.scope === 'inputs') })
+        res.send({ inputs: allHints.filter((x) => x.scope === 'inputs') })
       })
     )
   }

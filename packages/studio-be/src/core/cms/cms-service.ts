@@ -75,7 +75,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   private async prepareDb() {
-    await this.memDb.createTableIfNotExists(this.contentTable, table => {
+    await this.memDb.createTableIfNotExists(this.contentTable, (table) => {
       table.string('id')
       table.string('botId')
       table.primary(['id', 'botId'])
@@ -99,7 +99,7 @@ export class CMSService implements IDisposeOnExit {
           .forBot(botId)
           .readFileAsObject<ContentElement[]>(this.elementsDir, fileName)
 
-        fileContentElements.forEach(el => Object.assign(el, { contentType }))
+        fileContentElements.forEach((el) => Object.assign(el, { contentType }))
         contentElements = _.concat(contentElements, fileContentElements)
       } catch (err) {
         throw new Error(`while processing elements of "${fileName}": ${err}`)
@@ -113,10 +113,10 @@ export class CMSService implements IDisposeOnExit {
     try {
       const contentElements = await this.getAllElements(botId)
 
-      const elements = await Promise.map(contentElements, element => {
+      const elements = await Promise.map(contentElements, (element) => {
         return this.memDb(this.contentTable)
           .insert(this.transformItemApiToDb(botId, element))
-          .catch(err => {
+          .catch((err) => {
             // ignore duplicate key errors
             // TODO: Knex error handling
           })
@@ -131,15 +131,13 @@ export class CMSService implements IDisposeOnExit {
   }
 
   async clearElementsFromCache(botId: string) {
-    await this.memDb(this.contentTable)
-      .where({ botId })
-      .delete()
+    await this.memDb(this.contentTable).where({ botId }).delete()
   }
 
   private async _loadContentTypesFromFiles(): Promise<void> {
     const fileNames = await this.ghost.global().directoryListing(this.typesDir, '*.js')
 
-    const codeFiles = await Promise.map(fileNames, async filename => {
+    const codeFiles = await Promise.map(fileNames, async (filename) => {
       const content = <string>await this.ghost.global().readFileAsString(this.typesDir, filename)
       const folder = path.dirname(filename)
       return <CodeFile>{ code: content, folder, relativePath: path.basename(filename) }
@@ -192,20 +190,20 @@ export class CMSService implements IDisposeOnExit {
     }
 
     if (searchTerm) {
-      query = query.andWhere(builder =>
+      query = query.andWhere((builder) =>
         builder.where('formData', 'like', `%${searchTerm}%`).orWhere('id', 'like', `%${searchTerm}%`)
       )
     }
 
     if (ids) {
-      query = query.andWhere(builder => builder.whereIn('id', ids))
+      query = query.andWhere((builder) => builder.whereIn('id', ids))
     }
 
-    filters?.forEach(filter => {
+    filters?.forEach((filter) => {
       query = query.andWhere(filter.column, 'like', `%${filter.value}%`)
     })
 
-    sortOrder?.forEach(sort => {
+    sortOrder?.forEach((sort) => {
       query = query.orderBy(sort.column, sort.desc ? 'desc' : 'asc')
     })
 
@@ -216,23 +214,21 @@ export class CMSService implements IDisposeOnExit {
     const dbElements = await query.offset(from)
     const elements: ContentElement[] = dbElements.map(this.transformDbItemToApi)
 
-    return Promise.map(elements, el => (language ? this._translateElement(el, language) : el))
+    return Promise.map(elements, (el) => (language ? this._translateElement(el, language) : el))
   }
 
   async getContentElement(botId: string, id: string, language?: string): Promise<ContentElement> {
-    const element = await this.memDb(this.contentTable)
-      .where({ botId, id })
-      .first()
+    const element = await this.memDb(this.contentTable).where({ botId, id }).first()
 
     const deserialized = this.transformDbItemToApi(element)
     return language ? this._translateElement(deserialized, language) : deserialized
   }
 
   async getContentElements(botId: string, ids: string[], language?: string): Promise<ContentElement[]> {
-    const elements = await this.memDb(this.contentTable).where(builder => builder.where({ botId }).whereIn('id', ids))
+    const elements = await this.memDb(this.contentTable).where((builder) => builder.where({ botId }).whereIn('id', ids))
 
     const apiElements: ContentElement[] = elements.map(this.transformDbItemToApi)
-    return Promise.map(apiElements, el => (language ? this._translateElement(el, language) : el))
+    return Promise.map(apiElements, (el) => (language ? this._translateElement(el, language) : el))
   }
 
   async countContentElements(botId?: string): Promise<number> {
@@ -245,7 +241,7 @@ export class CMSService implements IDisposeOnExit {
     return query
       .count('* as count')
       .first()
-      .then(row => (row && Number(row.count)) || 0)
+      .then((row) => (row && Number(row.count)) || 0)
   }
 
   async countContentElementsForContentType(botId: string, contentType: string): Promise<number> {
@@ -254,12 +250,12 @@ export class CMSService implements IDisposeOnExit {
       .andWhere({ contentType })
       .count('* as count')
       .first()
-      .then(row => (row && Number(row.count)) || 0)
+      .then((row) => (row && Number(row.count)) || 0)
   }
 
   async deleteContentElements(botId: string, ids: string[]): Promise<void> {
     const elements = await this.getContentElements(botId, ids)
-    await Promise.map(elements, el =>
+    await Promise.map(elements, (el) =>
       coreActions.onModuleEvent('onElementChanged', { botId, action: 'delete', element: el })
     )
 
@@ -268,7 +264,7 @@ export class CMSService implements IDisposeOnExit {
     this.deleteMedia(botId, elements)
 
     const contentTypes = _.uniq(_.map(elements, 'contentType'))
-    await Promise.mapSeries(contentTypes, contentTypeId => this._writeElementsToFile(botId, contentTypeId))
+    await Promise.mapSeries(contentTypes, (contentTypeId) => this._writeElementsToFile(botId, contentTypeId))
   }
 
   getMediaFiles(formData): string[] {
@@ -277,7 +273,7 @@ export class CMSService implements IDisposeOnExit {
       if (key.startsWith('image') && value && value.includes(media)) {
         result.push(value.substr(value.indexOf(media) + media.length))
       } else if (key.startsWith('items$') && value.length) {
-        value.forEach(e => _.reduce(e, iterator, result))
+        value.forEach((e) => _.reduce(e, iterator, result))
       }
       return result
     }
@@ -286,9 +282,9 @@ export class CMSService implements IDisposeOnExit {
 
   deleteMedia(botId: string, elements: ContentElement[]) {
     const mediaService = this.mediaServiceProvider.forBot(botId)
-    _.map(elements, 'formData').forEach(formData => {
+    _.map(elements, 'formData').forEach((formData) => {
       const filesToDelete = this.getMediaFiles(formData)
-      filesToDelete.forEach(f => mediaService.deleteFile(f))
+      filesToDelete.forEach((f) => mediaService.deleteFile(f))
     })
   }
 
@@ -314,7 +310,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   getContentType(contentTypeId: string): ContentType {
-    const type = this.contentTypes.find(x => x.id === contentTypeId)
+    const type = this.contentTypes.find((x) => x.id === contentTypeId)
     if (!type) {
       throw new Error(`Content type "${contentTypeId}" is not a valid registered content type ID`)
     }
@@ -327,9 +323,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   async elementIdExists(botId: string, id: string): Promise<boolean> {
-    const element = await this.memDb(this.contentTable)
-      .where({ botId, id })
-      .first()
+    const element = await this.memDb(this.contentTable).where({ botId, id }).first()
 
     return !!element
   }
@@ -394,7 +388,7 @@ export class CMSService implements IDisposeOnExit {
     return contentElementId
   }
 
-  resolveRefs = data => {
+  resolveRefs = (data) => {
     if (!data) {
       return data
     }
@@ -415,7 +409,7 @@ export class CMSService implements IDisposeOnExit {
       return this.memDb(this.contentTable)
         .select('formData')
         .where('id', m[1])
-        .then(result => {
+        .then((result) => {
           if (!result || !result.length) {
             throw new Error(`Error resolving reference: ID ${m[1]} not found.`)
           }
@@ -429,7 +423,7 @@ export class CMSService implements IDisposeOnExit {
 
   private async _writeElementsToFile(botId: string, contentTypeId: string) {
     const params = { ...DefaultSearchParams, count: UNLIMITED_ELEMENTS }
-    const elements = (await this.listContentElements(botId, contentTypeId, params)).map(element =>
+    const elements = (await this.listContentElements(botId, contentTypeId, params)).map((element) =>
       _.pick(element, 'id', 'formData', 'createdBy', 'createdOn', 'modifiedOn')
     )
     const fileName = this.filesById[contentTypeId]
@@ -501,7 +495,7 @@ export class CMSService implements IDisposeOnExit {
               .where('id', element.id)
               .andWhere({ botId })
               .update(this.transformItemApiToDb(botId, element))
-              .catch(err => {
+              .catch((err) => {
                 throw new VError(err, `Could not update the element for ID "${element.id}"`)
               })
           })
@@ -523,7 +517,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   private computePreviews(contentTypeId, formData, languages, defaultLang) {
-    const contentType = this.contentTypes.find(x => x.id === contentTypeId)
+    const contentType = this.contentTypes.find((x) => x.id === contentTypeId)
 
     if (!contentType) {
       throw new Error(`Unknown content type ${contentTypeId}`)
@@ -562,7 +556,7 @@ export class CMSService implements IDisposeOnExit {
       } else {
         // When switching default language, we make sure that the default one has all content elements
         if (!this._hasTranslation(el.formData, toLang)) {
-          const contentType = this.contentTypes.find(x => x.id === el.contentType)
+          const contentType = this.contentTypes.find((x) => x.id === el.contentType)
           const originalProps = this.getOriginalProps(el.formData, contentType!, fromLang)
           const translatedProps = this.getTranslatedProps(originalProps, toLang)
 
@@ -573,7 +567,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   private _hasTranslation(formData: object, lang: string) {
-    return Object.keys(formData).find(x => x.endsWith(`$${lang}`))
+    return Object.keys(formData).find((x) => x.endsWith(`$${lang}`))
   }
 
   // This methods finds the translated property and returns the original properties
@@ -615,10 +609,7 @@ export class CMSService implements IDisposeOnExit {
    * Important! Do not use directly. Needs to be broadcasted.
    */
   private async local__removeElementsFromCache(botId: string, elementIds: string[]): Promise<void> {
-    await this.memDb(this.contentTable)
-      .where({ botId })
-      .whereIn('id', elementIds)
-      .del()
+    await this.memDb(this.contentTable).where({ botId }).whereIn('id', elementIds).del()
   }
 
   /**

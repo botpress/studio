@@ -16,14 +16,14 @@ const BatchRunner = (execute, { maxQueue = 100, maxInterval = 20 } = {}) => {
     queue = []
 
     execute(ids)
-      .then(resources => {
+      .then((resources) => {
         for (const id of ids) {
           promises[id].resolve(resources[id])
           delete promises[id]
         }
         dispatcher(receiveContentItemsBatched(resources))
       })
-      .catch(err => {
+      .catch((err) => {
         for (const id of ids) {
           promises[id].reject(err)
           delete promises[id]

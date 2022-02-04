@@ -30,7 +30,7 @@ export const showBanner = (config: BannerConfig) => {
     buildMetadata = `Build ${moment(metadata.date).format('YYYYMMDD-HHmm')}_${builtFrom}${branchInfo}`
   } catch (err) {}
 
-  const infos = [`Version ${version}`, buildMetadata].filter(x => x !== undefined)
+  const infos = [`Version ${version}`, buildMetadata].filter((x) => x !== undefined)
   const border = _.repeat('=', bannerWidth)
 
   logger.info(`${border}

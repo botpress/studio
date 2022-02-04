@@ -77,10 +77,10 @@ export class DiagramManager {
     }
 
     const nodes = this.getBlockModelFromFlow(currentFlow)
-    this.activeModel.addListener({ zoomUpdated: e => this.storeDispatch.zoomToLevel?.(Math.floor(e.zoom)) })
+    this.activeModel.addListener({ zoomUpdated: (e) => this.storeDispatch.zoomToLevel?.(Math.floor(e.zoom)) })
 
     this.activeModel.addAll(...nodes)
-    nodes.forEach(node => this._createNodeLinks(node, nodes, this.currentFlow.links))
+    nodes.forEach((node) => this._createNodeLinks(node, nodes, this.currentFlow.links))
 
     this.diagramEngine.setDiagramModel(this.activeModel)
     this._updateZoomLevel(nodes)
@@ -118,7 +118,7 @@ export class DiagramManager {
     }
 
     const matchNodeName = !!this.highlightedNodes?.find(
-      x => x.flow === this.currentFlow?.name && node.name?.includes(x.node)
+      (x) => x.flow === this.currentFlow?.name && node.name?.includes(x.node)
     )
 
     let matchCorpus
@@ -145,7 +145,7 @@ export class DiagramManager {
     const snapshot = _.once(this._serialize)
 
     // Remove nodes that have been deleted
-    _.keys(this.activeModel.getNodes()).forEach(nodeId => {
+    _.keys(this.activeModel.getNodes()).forEach((nodeId) => {
       if (!_.find(this.currentFlow.nodes, { id: nodeId })) {
         this._deleteNode(nodeId)
       }
@@ -193,8 +193,8 @@ export class DiagramManager {
   disconnectPorts(model: any) {
     const ports = model.getPorts()
 
-    Object.keys(ports).forEach(p => {
-      _.values(ports[p].links).forEach(link => {
+    Object.keys(ports).forEach((p) => {
+      _.values(ports[p].links).forEach((link) => {
         this.activeModel.removeLink(link)
         ports[p].removeLink(link)
       })
@@ -204,13 +204,13 @@ export class DiagramManager {
   highlightLinkedNodes() {
     this.highlightedLinks = []
 
-    const nodeNames = this.highlightedNodes.filter(x => x.flow === this.currentFlow?.name).map(x => x.node)
+    const nodeNames = this.highlightedNodes.filter((x) => x.flow === this.currentFlow?.name).map((x) => x.node)
     if (!nodeNames) {
       return
     }
 
     const links = _.values(this.activeModel.getLinks())
-    links.forEach(link => {
+    links.forEach((link) => {
       const outPort = link.getSourcePort().name.startsWith('out') ? link.getSourcePort() : link.getTargetPort()
       const targetPort = link.getSourcePort().name.startsWith('out') ? link.getTargetPort() : link.getSourcePort()
 
@@ -230,7 +230,7 @@ export class DiagramManager {
     // 1) All links are connected to ONE [out] and [in] port
     // 2) All ports have only ONE outbound link
     const links = _.values(this.activeModel.getLinks())
-    links.forEach(link => {
+    links.forEach((link) => {
       // If there's not two ports attached to the link
       if (!link.getSourcePort() || !link.getTargetPort()) {
         link.remove()
@@ -251,7 +251,7 @@ export class DiagramManager {
 
       // If ports have more than one output link
       const ports = [link.getSourcePort(), link.getTargetPort()]
-      ports.forEach(port => {
+      ports.forEach((port) => {
         if (!port) {
           return
         }
@@ -287,20 +287,20 @@ export class DiagramManager {
   }
 
   cleanPortLinks() {
-    const allLinkIds = _.values(this.activeModel.getLinks()).map(x => x.getID())
+    const allLinkIds = _.values(this.activeModel.getLinks()).map((x) => x.getID())
 
     // Loops through all nodes to extract all their ports
     const allPorts = _.flatten(
       _.values(this.activeModel.getNodes())
-        .map(x => x.ports)
+        .map((x) => x.ports)
         .map(_.values)
     )
 
     // For each ports, if it has an invalid link, it will be removed
-    allPorts.map(port =>
+    allPorts.map((port) =>
       Object.keys(port.links)
-        .filter(x => !allLinkIds.includes(x))
-        .map(x => port.links[x].remove())
+        .filter((x) => !allLinkIds.includes(x))
+        .map((x) => port.links[x].remove())
     )
   }
 
@@ -345,25 +345,25 @@ export class DiagramManager {
   }
 
   unselectAllElements() {
-    this.activeModel.getSelectedItems().map(x => x.setSelected(false))
+    this.activeModel.getSelectedItems().map((x) => x.setSelected(false))
   }
 
   getNodeProblems(): NodeProblem[] {
     const nodes = this.activeModel.getNodes()
     return Object.keys(nodes)
-      .map(node => ({
+      .map((node) => ({
         nodeName: (nodes[node] as BlockModel).name,
-        missingPorts: (nodes[node] as BlockModel).next.filter(n => n.node === '').length
+        missingPorts: (nodes[node] as BlockModel).next.filter((n) => n.node === '').length
       }))
-      .filter(x => x.missingPorts > 0)
+      .filter((x) => x.missingPorts > 0)
   }
 
   private _deleteNode(nodeId: string) {
     const ports = this.activeModel.getNode(nodeId).getPorts()
     this.activeModel.removeNode(nodeId)
 
-    _.values(ports).forEach(port => {
-      _.values(port.getLinks()).forEach(link => {
+    _.values(ports).forEach((port) => {
+      _.values(port.getLinks()).forEach((link) => {
         this.activeModel.removeLink(link)
       })
     })
@@ -402,8 +402,8 @@ export class DiagramManager {
     model.setPosition(node.x, node.y)
 
     const ports = model.getOutPorts()
-    ports.forEach(port => {
-      _.values(port.links).forEach(link => {
+    ports.forEach((port) => {
+      _.values(port.links).forEach((link) => {
         this.activeModel.removeLink(link)
         port.removeLink(link)
       })
@@ -451,7 +451,7 @@ export class DiagramManager {
 
         if (existingLink) {
           link.setPoints(
-            existingLink.points.map(pt => {
+            existingLink.points.map((pt) => {
               return new PointModel(link, { x: pt.x, y: pt.y })
             })
           )
@@ -515,13 +515,13 @@ export class DiagramManager {
   private _serializeLinks() {
     const diagram = this.activeModel.serializeDiagram()
 
-    const links = diagram.links.map(link => {
+    const links = diagram.links.map((link) => {
       const instance = this.activeModel.getLink(link.id)
       const model = {
         source: link.source,
         sourcePort: instance.getSourcePort().name,
         target: link.target,
-        points: link.points.map(pt => ({ x: Math.floor(pt.x), y: Math.floor(pt.y) }))
+        points: link.points.map((pt) => ({ x: Math.floor(pt.x), y: Math.floor(pt.y) }))
       }
 
       if (instance.getSourcePort().name === 'in') {
