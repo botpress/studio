@@ -1,11 +1,10 @@
-// @ts-check
 import fs from 'fs'
 import glob from 'glob'
 import { join } from 'path'
 import TreeModel from 'tree-model'
 import * as TJS from 'typescript-json-schema'
 
-interface IDocNode {
+interface DocNodeData {
   key: string
   type: string | null
   link: string | null
@@ -13,7 +12,7 @@ interface IDocNode {
 }
 
 type NulStr = string | null | undefined
-type DocNode = TreeModel.Node<IDocNode>
+type DocNode = TreeModel.Node<DocNodeData>
 type RecurseGenerateTreeFn = (
   node: DocNode,
   entries: {
@@ -74,7 +73,7 @@ const snipRef = (str: NulStr): string => {
 
 const tree = new TreeModel()
 
-const rootNode: IDocNode = {
+const rootNode: DocNodeData = {
   key: ROOT_NAME,
   type: ROOT_TYPE,
   link: extractLink(schema?.description),
@@ -84,7 +83,7 @@ const rootNode: IDocNode = {
 const root: DocNode = tree.parse(rootNode)
 
 const recurseGenerateTree: RecurseGenerateTreeFn = (node, entries) => {
-  Object.entries(entries).forEach(entry => {
+  Object.entries(entries).forEach((entry) => {
     const [key, value] = entry
     let tmpNode: DocNode = tree.parse({
       key,

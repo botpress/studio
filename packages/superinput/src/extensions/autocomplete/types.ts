@@ -10,11 +10,11 @@ export interface InfoCardProps {
 
 export type InfoCardComponent = (props: InfoCardProps) => () => HTMLDivElement
 
-export interface IDocNode {
+export interface DocNodeData {
   key: string
   link: string | null
   docs: string | null
   type: string | null
 }
 
-export type DocNode = TreeModel.Node<IDocNode>
+export type DocNode = TreeModel.Node<DocNodeData>

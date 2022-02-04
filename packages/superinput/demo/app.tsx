@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { SuperInput } from '../src'
-import { SI_TYPES } from '../src/types'
+import { SiTypes } from '../src/types'
 import { data } from './data'
 
 const code0 = 'event.state.user ? "yes" : "sorry unknown user" || true'
@@ -33,11 +33,11 @@ function App() {
         <h1>Superinput Inspector</h1>
         <section>
           <h2>expression</h2>
-          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} eventState={eventState} {...msgs} />
+          <SuperInput type={SiTypes.EXPRESSION} value={code0} eventState={eventState} {...msgs} />
         </section>
         <section>
           <h2>expression (no eventState)</h2>
-          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} {...msgs} />
+          <SuperInput type={SiTypes.EXPRESSION} value={code0} {...msgs} />
         </section>
         <section>
           <h2>Valid</h2>

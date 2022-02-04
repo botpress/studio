@@ -1,13 +1,10 @@
 import React from 'react'
 
-import { IPanelProps } from './types'
+import { PanelProps } from './types'
 
-const EvalPanel = ({ valid, text }: IPanelProps) => {
+const EvalPanel = ({ valid, text }: PanelProps) => {
   return (
-    <div
-      className={`bp-editor-panel ${valid === null ? 'no-eventState' : valid ? 'valid' : 'invalid'}`}
-      // onMouseDown={e => {}}
-    >
+    <div className={`bp-editor-panel ${valid === null ? 'no-eventState' : valid ? 'valid' : 'invalid'}`}>
       <p>{text}</p>
     </div>
   )

@@ -10,7 +10,7 @@ import React, { useEffect, useState, useRef, MutableRefObject } from 'react'
 import EditorFrame from './EditorFrame'
 import EvalPanel from './EvalPanel'
 import { bpAutocomplete, BPLang, hoverInspect, exprDecorator } from './extensions'
-import { SI_TYPES, ISiProps } from './types'
+import { SiTypes, SiProps } from './types'
 import { isError, evalStrTempl } from './utils/tokenEval'
 
 export default function SuperInput({
@@ -19,12 +19,12 @@ export default function SuperInput({
   onChange,
   placeholder,
   autoFocus = false,
-  type = SI_TYPES.TEMPLATE,
+  type = SiTypes.TEMPLATE,
   noGlobsEvalMsg = ''
-}: ISiProps) {
+}: SiProps) {
   const editor = useRef() as MutableRefObject<HTMLInputElement>
   const [panel, setPanel] = useState('')
-  const [view, setView] = useState() as [EditorView, React.Dispatch<React.SetStateAction<EditorView>>]
+  const [view, setView] = useState<EditorView>()
 
   useEffect(() => {
     const onUpdate = (update: ViewUpdate) => {
@@ -45,10 +45,10 @@ export default function SuperInput({
     let typeExt: Extension[] = []
     const keymapList = [...closeBracketsKeymap, ...historyKeymap]
 
-    if (type === SI_TYPES.TEMPLATE) {
+    if (type === SiTypes.TEMPLATE) {
       typeExt = [BPLang(), exprDecorator(eventState)]
       keymapList.push(...completionKeymap)
-    } else if (type === SI_TYPES.EXPRESSION || type === SI_TYPES.BOOL) {
+    } else if (type === SiTypes.EXPRESSION || type === SiTypes.BOOL) {
       typeExt = [javascript()]
     }
 

@@ -1,19 +1,19 @@
-export interface IPanelProps {
+export interface PanelProps {
   valid: boolean | null
   text: string
 }
 
-export enum SI_TYPES {
-  TEMPLATE = 0,
-  EXPRESSION = 1,
-  BOOL = 2
+export enum SiTypes {
+  TEMPLATE = 'template',
+  EXPRESSION = 'expression',
+  BOOL = 'bool'
 }
 
-export interface ISiProps {
+export interface SiProps {
   value?: string
   onChange?: (newValue: string) => any
   placeholder?: string
-  type?: SI_TYPES
+  type?: SiTypes
   eventState?: any
   noGlobsEvalMsg?: string
   autoFocus?: boolean
