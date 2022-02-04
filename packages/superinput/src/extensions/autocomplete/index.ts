@@ -23,19 +23,19 @@ const tree = new TreeModel()
 
 const fullDocTree: DocNode = tree.parse(docTree as any)
 
-const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, apply?: (key: string) => {}) => {
-  if (typeof globs !== 'object' && typeof globs !== 'function') {
+const makeCompletionFrom = (from: number, eventState: any = {}, docTree: DocNode, apply?: (key: string) => {}) => {
+  if (typeof eventState !== 'object' && typeof eventState !== 'function') {
     return null
   }
 
   return {
     from,
     span: /^\w{2,}$/,
-    options: Object.keys(globs).reduce((accu: any, key: string) => {
+    options: Object.keys(eventState).reduce((accu: any, key: string) => {
       const docNode = docTree.first({ strategy: 'breadth' }, (node: DocNode) => {
         return node.model.key === key
       })
-      const type = docNode?.model.type || typeof globs[key] || UNKNOWN_TYPE
+      const type = docNode?.model.type || typeof eventState[key] || UNKNOWN_TYPE
       accu.push({
         label: key,
         boost: AC_BOOST_KEYS[key] || 0,
@@ -45,7 +45,7 @@ const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, app
           type,
           link: docNode?.model.link || null,
           docs: docNode?.model.docs || null,
-          evals: globs[key]
+          evals: eventState[key]
         }),
         apply: apply ? apply(key) : key
       })
@@ -54,9 +54,9 @@ const makeCompletionFrom = (from: number, globs: any = {}, docTree: DocNode, app
   }
 }
 
-const globsCompletions = (globs: any) => {
-  if (!globs) {
-    globs = fallback
+const eventStateCompletions = (eventState: any) => {
+  if (!eventState) {
+    eventState = fallback
   }
 
   return (ctx: CompletionContext) => {
@@ -74,7 +74,7 @@ const globsCompletions = (globs: any) => {
         .split(/\.|\?\./)
 
       const from = /[.[]/.test(nodeBefore.name) ? nodeBefore.to : nodeBefore.from
-      const varResult = varPath.reduce((accu: any, varStr: string) => (accu = accu[varStr] || {}), globs)
+      const varResult = varPath.reduce((accu: any, varStr: string) => (accu = accu[varStr] || {}), eventState)
       const cutDocTree = varPath.reduce((accu: any, el: any) => {
         return (
           accu.first({ strategy: 'breadth' }, (node: DocNode) => {
@@ -87,9 +87,9 @@ const globsCompletions = (globs: any) => {
 
       return makeCompletionFrom(from, varResult, cutDocTree)
     } else if (nodeBefore.name === 'VariableName' || nodeBefore.name === 'Script') {
-      return makeCompletionFrom(nodeBefore.from, globs, fullDocTree)
+      return makeCompletionFrom(nodeBefore.from, eventState, fullDocTree)
     } else if (nodeBefore.name === '{' && nodeBefore.parent?.name === 'Block') {
-      return makeCompletionFrom(ctx.pos, globs, fullDocTree, key => {
+      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, key => {
         return (view: EditorView, completion: Completion, from: number) => {
           const applyStr = ` ${key} `
           view.dispatch({
@@ -99,7 +99,7 @@ const globsCompletions = (globs: any) => {
         }
       })
     } else if (ctx.explicit && !DONT_COMPLETE_IN.includes(nodeBefore.name)) {
-      return makeCompletionFrom(ctx.pos, globs, fullDocTree, key => {
+      return makeCompletionFrom(ctx.pos, eventState, fullDocTree, key => {
         return (view: EditorView, completion: Completion, from: number) => {
           const applyStr = `{{ ${key} }}`
           view.dispatch({
@@ -114,9 +114,9 @@ const globsCompletions = (globs: any) => {
   }
 }
 
-const bpAutocomplete = (globs: any) => {
+const bpAutocomplete = (eventState: any) => {
   return autocompletion({
-    override: [globsCompletions(globs)],
+    override: [eventStateCompletions(eventState)],
     icons: false
     // optionClass: (completion: Completion) => {
     //   let className = 'cm-options '

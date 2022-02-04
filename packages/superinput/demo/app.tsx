@@ -17,10 +17,10 @@ Object Demo: {{ Object.keys({hello: "world"}) }}
 This is the end.`
 
 const msgs = {
-  noGlobsEvalMsg: 'no globs'
+  noGlobsEvalMsg: 'no eventState'
 }
 
-const globs = {
+const eventState = {
   event: data,
   ...data,
   ...data.state
@@ -33,22 +33,22 @@ function App() {
         <h1>Superinput Inspector</h1>
         <section>
           <h2>expression</h2>
-          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} globs={globs} {...msgs} />
+          <SuperInput type={SI_TYPES.EXPRESSION} value={code0} eventState={eventState} {...msgs} />
         </section>
         <section>
-          <h2>expression (no globs)</h2>
+          <h2>expression (no eventState)</h2>
           <SuperInput type={SI_TYPES.EXPRESSION} value={code0} {...msgs} />
         </section>
         <section>
           <h2>Valid</h2>
-          <SuperInput value={code1} globs={globs} {...msgs} autoFocus />
+          <SuperInput value={code1} eventState={eventState} {...msgs} autoFocus />
         </section>
         <section>
           <h2>Invalid</h2>
-          <SuperInput value={code2} globs={globs} {...msgs} />
+          <SuperInput value={code2} eventState={eventState} {...msgs} />
         </section>
         <section>
-          <h2>Something Else (no globs)</h2>
+          <h2>Something Else (no eventState)</h2>
           <SuperInput value={code3} />
         </section>
       </div>

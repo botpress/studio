@@ -15,7 +15,7 @@ import { isError, evalStrTempl } from './utils/tokenEval'
 
 export default function SuperInput({
   value,
-  globs,
+  eventState,
   onChange,
   placeholder,
   autoFocus = false,
@@ -34,7 +34,7 @@ export default function SuperInput({
       if (!view.hasFocus) {
         setPanel('')
       } else if (focusChanged || docChanged) {
-        setPanel(!globs ? noGlobsEvalMsg : evalStrTempl(value, globs) || '')
+        setPanel(!eventState ? noGlobsEvalMsg : evalStrTempl(value, eventState) || '')
       }
 
       if (docChanged && onChange) {
@@ -46,7 +46,7 @@ export default function SuperInput({
     const keymapList = [...closeBracketsKeymap, ...historyKeymap]
 
     if (type === SI_TYPES.TEMPLATE) {
-      typeExt = [BPLang(), exprDecorator(globs)]
+      typeExt = [BPLang(), exprDecorator(eventState)]
       keymapList.push(...completionKeymap)
     } else if (type === SI_TYPES.EXPRESSION || type === SI_TYPES.BOOL) {
       typeExt = [javascript()]
@@ -58,8 +58,8 @@ export default function SuperInput({
       classHighlightStyle,
       placeholderExt(placeholder || ''),
       ...typeExt,
-      hoverInspect(globs),
-      bpAutocomplete(globs),
+      hoverInspect(eventState),
+      bpAutocomplete(eventState),
       history(),
       closeBrackets(),
       keymap.of(keymapList)
@@ -99,7 +99,7 @@ export default function SuperInput({
       {isError(panel) ? (
         <EvalPanel valid={false} text={panel} />
       ) : panel ? (
-        <EvalPanel valid={globs ? true : null} text={panel} />
+        <EvalPanel valid={eventState ? true : null} text={panel} />
       ) : null}
     </EditorFrame>
   )

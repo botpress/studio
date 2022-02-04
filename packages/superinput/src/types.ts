@@ -14,7 +14,7 @@ export interface ISiProps {
   onChange?: (newValue: string) => any
   placeholder?: string
   type?: SI_TYPES
-  globs?: any
+  eventState?: any
   noGlobsEvalMsg?: string
   autoFocus?: boolean
 }

@@ -3,14 +3,14 @@ import { hoverTooltip } from '@codemirror/tooltip'
 
 import InspectCard from './InspectCard'
 
-const hoverInspect = (globs: any) => {
+const hoverInspect = (eventState: any) => {
   return hoverTooltip(
     (view, pos, side) => {
       const { from, to, text } = view.state.doc.lineAt(pos)
       const nodeBefore = syntaxTree(view.state).topNode.resolveInner(pos, side)
       const object = nodeBefore.parent?.getChild('Expression')
 
-      if (!globs) {
+      if (!eventState) {
         return null
       }
       if (
@@ -24,7 +24,7 @@ const hoverInspect = (globs: any) => {
         .sliceDoc(object?.from, object?.to)
         .replace('?', '')
         .split(/\.|\?\./)
-      const varResult = varPath.reduce((accu: any, varStr: string) => (accu = accu[varStr] || {}), globs)
+      const varResult = varPath.reduce((accu: any, varStr: string) => (accu = accu[varStr] || {}), eventState)
 
       let start = pos,
         end = pos

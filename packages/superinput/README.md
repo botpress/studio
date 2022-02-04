@@ -75,7 +75,7 @@ enum SI_TYPES { // types of superinput
 }
 
 export interface ISiProps {
-  globs?: any // variables to pull eval info from, must be IO.IncomingEvent
+  eventState?: any // variables to pull eval info from, must be IO.IncomingEvent
   value?: string
   type?: SI_TYPES // Type of superinput, see above
   autoFocus?: boolean // If true superinput will autofocus on initial load

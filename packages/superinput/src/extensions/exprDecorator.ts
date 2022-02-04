@@ -6,7 +6,7 @@ import { isError, rmDelim, verifyJs, evalToken } from '../utils/tokenEval'
 const validHighlight = Decoration.mark({ class: 'cm-block valid' })
 const invalidHighlight = Decoration.mark({ class: 'cm-block invalid' })
 
-const exprDecorator = (globs: any) => {
+const exprDecorator = (eventState: any) => {
   const highlight = (view: EditorView): DecorationSet => {
     const docStr = view.state.doc.sliceString(0)
     const matches = jsRange(docStr)
@@ -20,8 +20,8 @@ const exprDecorator = (globs: any) => {
       const to = from + match.length
       pos = to
 
-      if (globs) {
-        const res = evalToken(rmDelim(match), globs)
+      if (eventState) {
+        const res = evalToken(rmDelim(match), eventState)
         if (res && !isError(res)) {
           return validHighlight.range(from, to)
         } else {
