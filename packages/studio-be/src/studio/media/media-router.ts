@@ -28,7 +28,7 @@ class MediaRouter extends CustomStudioRouter {
       this.checkTokenHeader,
       this.needPermissions('write', 'bot.media'),
       this.asyncMiddleware(async (req, res) => {
-        mediaUploadMulter(req, res, async err => {
+        mediaUploadMulter(req, res, async (err) => {
           const email = req.tokenUser!.email
           if (err) {
             debugMedia(`failed (${email} from ${req.ip})`, err.message)
@@ -61,7 +61,7 @@ class MediaRouter extends CustomStudioRouter {
         const files = this.cmsService.getMediaFiles(req.body)
         const mediaService = this.mediaServiceProvider.forBot(botId)
 
-        await Promise.map(files, async f => {
+        await Promise.map(files, async (f) => {
           await mediaService.deleteFile(f)
           debugMedia(`successful deletion (${email} from ${req.ip}). file: ${f}`)
         })

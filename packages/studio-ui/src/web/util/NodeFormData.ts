@@ -23,7 +23,7 @@ export const getFormData = (
   return translatedData
 }
 
-export const isFormEmpty = formData => Object.values(formData).every(consideredEmtpyValue)
+export const isFormEmpty = (formData) => Object.values(formData).every(consideredEmtpyValue)
 
 const consideredEmtpyValue = (value: any) => {
   // Undefined, booleans and array of empty obj are considered empty
@@ -38,7 +38,7 @@ const getFormDataForLang = (contentItem: NodeData, language: string) => {
   // I left this check there in case there is a reason for it
   const returnedContentType = contentType ? { contentType } : {}
 
-  const languageKeys = Object.keys(formData).filter(x => x.includes('$' + language))
+  const languageKeys = Object.keys(formData).filter((x) => x.includes('$' + language))
 
   const data: any = languageKeys.reduce((obj, key) => {
     obj[key.replace('$' + language, '')] = formData[key]

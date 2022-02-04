@@ -27,7 +27,7 @@ export const prepareEventForDiagram = (event: sdk.IO.IncomingEvent, flows: FlowV
   const getNode = (workflow: string, node: string): NodeDebugInfo => {
     workflow = workflow.replace('.flow.json', '')
 
-    const existing = nodes.find(x => x.workflow === workflow && x.node === node)
+    const existing = nodes.find((x) => x.workflow === workflow && x.node === node)
     if (existing) {
       return existing
     }
@@ -57,9 +57,9 @@ const processErrors = (event: sdk.IO.IncomingEvent, getNode: (flow: string, node
   }
 
   Object.values(event.processing)
-    .filter(x => x.errors?.length)
+    .filter((x) => x.errors?.length)
     .forEach(({ errors }) => {
-      errors.forEach(error => {
+      errors.forEach((error) => {
         console.error(error)
         if (error.flowName && error.nodeName) {
           getNode(error.flowName, error.nodeName).hasError = true
@@ -96,5 +96,5 @@ const processStackTrace = (
     currentFlow = trace.flow
   })
 
-  return traces.map(x => _.pick(x, ['flow', 'node']))
+  return traces.map((x) => _.pick(x, ['flow', 'node']))
 }

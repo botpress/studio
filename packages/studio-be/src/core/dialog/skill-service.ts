@@ -54,7 +54,7 @@ export class SkillService {
       next: []
     }
 
-    _.forEach(partialFlow.nodes, node => {
+    _.forEach(partialFlow.nodes, (node) => {
       defaultNode.id = nanoid('1234567890', 6)
       node = _.defaults(node, defaultNode)
     })

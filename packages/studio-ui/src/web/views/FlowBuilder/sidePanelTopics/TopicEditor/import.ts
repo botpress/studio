@@ -15,7 +15,7 @@ export const analyzeTopicFile = async (file: ExportedTopic, flows: FlowView[]) =
     const { data: questions } = await axios.get(`${window.STUDIO_API_PATH}/qna/questions`)
 
     for (const question of file.knowledge) {
-      const existing = questions.items.find(x => x.id === question.id)
+      const existing = questions.items.find((x) => x.id === question.id)
       importActions.push({
         type: ElementType.Knowledge,
         name: question.id,
@@ -31,7 +31,7 @@ export const analyzeTopicFile = async (file: ExportedTopic, flows: FlowView[]) =
   try {
     for (const workflow of file.workflows) {
       const actions = await analyzeWorkflowFile(workflow, flows)
-      const existing: any = flows.find(x => x.name === workflow.name)
+      const existing: any = flows.find((x) => x.name === workflow.name)
 
       importActions.push(...actions)
       importActions.push(getWorkflowAction(workflow, existing))
@@ -44,7 +44,7 @@ export const analyzeTopicFile = async (file: ExportedTopic, flows: FlowView[]) =
 }
 
 export const executeTopicActions = async (actions: ImportAction[]) => {
-  const getActionType = type => actions.filter(x => x.type === type && !x.identical)
+  const getActionType = (type) => actions.filter((x) => x.type === type && !x.identical)
   try {
     await Promise.each(getActionType('knowledge'), ({ data: { id, data } }) =>
       axios.post(`${window.STUDIO_API_PATH}/qna/questions/${id}`, data)
@@ -66,14 +66,14 @@ export const executeTopicActions = async (actions: ImportAction[]) => {
 }
 
 export const renameTopic = (newName: string, exportedTopic: ExportedTopic) => {
-  exportedTopic.workflows.forEach(el => {
+  exportedTopic.workflows.forEach((el) => {
     const name = `${newName}${el.name.substr(el.name.indexOf('/'))}`
     el.name = name
     el.location = name
   })
 }
 
-export const detectFileType = content => {
+export const detectFileType = (content) => {
   if (content.name && content.knowledge && content.workflows) {
     return ElementType.Topic
   }

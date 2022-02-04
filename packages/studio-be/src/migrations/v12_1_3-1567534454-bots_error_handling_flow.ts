@@ -60,7 +60,7 @@ const migration: Migration = {
       modifiedOn: new Date()
     })
 
-    const updateBot = async botId => {
+    const updateBot = async (botId) => {
       const bpfs = ghostService.forBot(botId)
 
       if (await bpfs.fileExists(FLOW_DIR, ERROR_FLOW)) {

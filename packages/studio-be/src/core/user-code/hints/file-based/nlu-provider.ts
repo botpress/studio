@@ -10,7 +10,7 @@ export default class NLUProvider implements FileBasedHintProvider {
     try {
       const intent = JSON.parse(content)
       return _.flatten(
-        intent.slots.map(x =>
+        intent.slots.map((x) =>
           [
             {
               description: 'An extracted slot',
@@ -37,7 +37,7 @@ export default class NLUProvider implements FileBasedHintProvider {
               name: `session.slots.${x.name}.entity.type`,
               partial: false
             }
-          ].map(hint => ({
+          ].map((hint) => ({
             ...hint,
             category: 'VARIABLES',
             source: 'Extracted from intents',

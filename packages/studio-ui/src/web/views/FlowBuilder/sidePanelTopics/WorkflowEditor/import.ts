@@ -7,7 +7,7 @@ import { ElementType } from '..'
 import { ExportedFlow, ImportAction } from '../typings'
 
 export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[]) => {
-  const ids = file.content.map(x => x.id)
+  const ids = file.content.map((x) => x.id)
   const { data: elements } = await axios.post(`${window.STUDIO_API_PATH}/cms/elements`, { ids })
 
   const importActions: ImportAction[] = []
@@ -17,7 +17,7 @@ export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[])
 
     for (const action of file.actions) {
       const existing = [...actions['bot.actions'], ...actions['global.actions']].find(
-        x => x.location === `${action.actionName}.js`
+        (x) => x.location === `${action.actionName}.js`
       )
       if (existing) {
         const { data } = await axios.post(`${window.BOT_API_PATH}/mod/code-editor/readFile`, existing)
@@ -41,7 +41,7 @@ export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[])
     const { data: intents } = await axios.get(`${window.BOT_API_PATH}/nlu/intents`)
 
     for (const intent of file.intents) {
-      const existing = intents.find(x => x.name === intent.name)
+      const existing = intents.find((x) => x.name === intent.name)
 
       importActions.push({
         type: ElementType.Intent,
@@ -56,7 +56,7 @@ export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[])
   }
 
   for (const content of file.content) {
-    const existing = elements.find(x => x.id === content.id)
+    const existing = elements.find((x) => x.id === content.id)
 
     importActions.push({
       type: ElementType.Content,
@@ -68,7 +68,7 @@ export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[])
   }
 
   for (const flow of file.skills) {
-    const existing = flows.find(x => x.name === flow.name)
+    const existing = flows.find((x) => x.name === flow.name)
 
     importActions.push({
       type: ElementType.Flow,
@@ -88,7 +88,7 @@ export const analyzeWorkflowFile = async (file: ExportedFlow, flows: FlowView[])
 export const executeWorkflowActions = async (actions: ImportAction[]) => {
   const botId = window.BOT_ID
 
-  const getActionsForType = type => actions.filter(x => x.type === type && !x.identical)
+  const getActionsForType = (type) => actions.filter((x) => x.type === type && !x.identical)
 
   try {
     await Promise.each(getActionsForType('content'), ({ data: { contentType, formData, id } }) =>
@@ -135,7 +135,7 @@ export const executeWorkflowActions = async (actions: ImportAction[]) => {
   }
 }
 
-export const cleanFlowProperties = flow => _.omit(flow, ['content', 'actions', 'intents', 'skills', 'currentMutex'])
+export const cleanFlowProperties = (flow) => _.omit(flow, ['content', 'actions', 'intents', 'skills', 'currentMutex'])
 
 export const getWorkflowAction = (newWorkflow: ExportedFlow, existingWorkflow: FlowView): ImportAction => {
   return {
