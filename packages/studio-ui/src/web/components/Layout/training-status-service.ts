@@ -20,7 +20,7 @@ export class TrainingStatusService {
     EventBus.default.off('statusbar.event', this._onStatusBarEvent)
   }
 
-  private _onStatusBarEvent = async event => {
+  private _onStatusBarEvent = async (event) => {
     const isNLUEvent = event.botId === window.BOT_ID
     if (isNLUEvent) {
       this.callback(event.trainSession)

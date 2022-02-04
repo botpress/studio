@@ -5,7 +5,7 @@ import path from 'path'
 
 export type CopyFilter = (path: string) => boolean
 
-const defaultFilter: CopyFilter = path => true
+const defaultFilter: CopyFilter = (path) => true
 
 export async function copyDir(src: string, dest: string, filter: CopyFilter = defaultFilter) {
   if (!path.isAbsolute(dest)) {
@@ -20,8 +20,8 @@ export async function copyDir(src: string, dest: string, filter: CopyFilter = de
     files = files.filter(filter)
   }
 
-  return Promise.mapSeries(files, f =>
-    Promise.fromCallback(async cb => {
+  return Promise.mapSeries(files, (f) =>
+    Promise.fromCallback(async (cb) => {
       const fileDest = path.join(dest, f)
       const fileDir = path.dirname(fileDest)
 
@@ -29,7 +29,7 @@ export async function copyDir(src: string, dest: string, filter: CopyFilter = de
         ensureDirSync(fileDir)
       }
 
-      const buffer = await Promise.fromCallback(cb => {
+      const buffer = await Promise.fromCallback((cb) => {
         fs.readFile(path.join(src, f), cb)
       })
 

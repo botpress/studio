@@ -51,7 +51,7 @@ export default (user: UserReducer): void => {
 function trackEvent(eventName: string, payload?: any, options?: any, callback?: (...params: any[]) => any): void {
   if (analytics) {
     // analytics only defined if window.SEND_USAGE_STATS is true
-    analytics.track(eventName, payload, options, callback).catch(e => {
+    analytics.track(eventName, payload, options, callback).catch((e) => {
       console.error('Analytics error - event', e)
     })
   }
@@ -60,7 +60,7 @@ function trackEvent(eventName: string, payload?: any, options?: any, callback?: 
 function trackPage(data?: PageData, options?: any, callback?: (...params: any[]) => any): void {
   if (analytics) {
     // analytics only defined if window.SEND_USAGE_STATS is true
-    analytics.page(data, options, callback).catch(e => {
+    analytics.page(data, options, callback).catch((e) => {
       console.error('Analytics error - page', e)
     })
   }

@@ -70,9 +70,9 @@ export class HintsService {
     let content: string | undefined = undefined
 
     return _.flatten(
-      await Promise.mapSeries(FileBasedProviders, async provider => {
+      await Promise.mapSeries(FileBasedProviders, async (provider) => {
         const patterns = Array.isArray(provider.filePattern) ? provider.filePattern : [provider.filePattern]
-        const matched = _.some(patterns, p => minimatch(filePath, p, { nocase: true, nonull: true, dot: true }))
+        const matched = _.some(patterns, (p) => minimatch(filePath, p, { nocase: true, nonull: true, dot: true }))
 
         if (!matched) {
           return []
@@ -101,11 +101,11 @@ export class HintsService {
     hints['global/base'] = BaseProvider
 
     const files = [
-      ...(await this.ghost.global().directoryListing('/')).map(x => 'global/' + x),
-      ...(await this.ghost.bots().directoryListing('/')).map(x => 'bots/' + x)
+      ...(await this.ghost.global().directoryListing('/')).map((x) => 'global/' + x),
+      ...(await this.ghost.bots().directoryListing('/')).map((x) => 'bots/' + x)
     ]
 
-    await Promise.mapSeries(files, async file => (hints[file] = await this.indexFile(file)))
+    await Promise.mapSeries(files, async (file) => (hints[file] = await this.indexFile(file)))
 
     this.hints = hints
   }

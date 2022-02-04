@@ -128,7 +128,7 @@ export class Botpress {
 
     const bots = await this.botService.getBots()
 
-    const disabledBots = [...bots.values()].filter(b => b.disabled).map(b => b.id)
+    const disabledBots = [...bots.values()].filter((b) => b.disabled).map((b) => b.id)
     const botsToMount = _.without(botsRef, ...disabledBots, ...deleted)
 
     this.logger.info(
@@ -138,7 +138,7 @@ export class Botpress {
     )
 
     const maxConcurrentMount = parseInt(process.env.MAX_CONCURRENT_MOUNT || '5')
-    await Promise.map(botsToMount, botId => this.botService.mountBot(botId), { concurrency: maxConcurrentMount })
+    await Promise.map(botsToMount, (botId) => this.botService.mountBot(botId), { concurrency: maxConcurrentMount })
   }
 
   private async initializeServices() {

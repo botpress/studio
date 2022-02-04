@@ -7,7 +7,7 @@ export const sendTelemetry = async (events: TelemetryEvent[]) => {
   try {
     await axios.post(
       window.TELEMETRY_URL,
-      events.map(e => ({ ...e, source: 'client' }))
+      events.map((e) => ({ ...e, source: 'client' }))
     )
     return true
   } catch (err) {
@@ -44,6 +44,6 @@ const getSavedEvents = async (api: AxiosInstance): Promise<TelemetryEvent[]> => 
 }
 
 const sendFeedback = async (api: AxiosInstance, events: TelemetryEvent[], success: boolean): Promise<void> => {
-  const payload = { events: events.map(e => e.uuid), success }
+  const payload = { events: events.map((e) => e.uuid), success }
   return api.post('/telemetry/feedback', payload)
 }

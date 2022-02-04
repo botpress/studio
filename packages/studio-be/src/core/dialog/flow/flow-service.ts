@@ -30,9 +30,7 @@ const MUTEX_LOCK_DELAY_SECONDS = 30
 
 export const TopicSchema = Joi.object().keys({
   name: Joi.string().required(),
-  description: Joi.string()
-    .optional()
-    .allow('')
+  description: Joi.string().optional().allow('')
 })
 
 interface FlowModification {
@@ -56,8 +54,8 @@ export class MutexError extends Error {
 @injectable()
 export class FlowService {
   private scopes: { [botId: string]: ScopedFlowService } = {}
-  private invalidateFlow: (botId: string, key: string, flow?: FlowView, newKey?: string) => void = this
-    ._localInvalidateFlow
+  private invalidateFlow: (botId: string, key: string, flow?: FlowView, newKey?: string) => void =
+    this._localInvalidateFlow
 
   constructor(
     @inject(TYPES.Logger)
@@ -91,7 +89,7 @@ export class FlowService {
   }
 
   private _listenForCacheInvalidation() {
-    this.cache.events.on('invalidation', async key => {
+    this.cache.events.on('invalidation', async (key) => {
       try {
         const matches = key.match(/^([A-Z0-9-_]+)::(?:data\/)?bots\/([A-Z0-9-_]+)\/flows\/([\s\S]+(flow)\.json)/i)
 
@@ -140,7 +138,7 @@ export class ScopedFlowService {
     private invalidateFlow: (key: string, flow?: FlowView, newKey?: string) => void
   ) {
     this.cache = new ArrayCache<string, FlowView>(
-      x => x.name,
+      (x) => x.name,
       (x, _prevKey, newKey) => ({ ...x, name: newKey, location: newKey })
     )
   }
@@ -209,10 +207,7 @@ export class ScopedFlowService {
         return flows
       }
     } catch (err) {
-      this.logger
-        .forBot(this.botId)
-        .attachError(err)
-        .error('Could not load flows')
+      this.logger.forBot(this.botId).attachError(err).error('Could not load flows')
       return []
     }
   }
@@ -226,13 +221,13 @@ export class ScopedFlowService {
   private addParentsToFlows(flows: FlowView[]): FlowView[] {
     const tree = new TreeSearch(PATH_SEPARATOR)
 
-    flows.forEach(f => {
+    flows.forEach((f) => {
       const filename = f.name.replace('.flow.json', '')
       // the value we are looking for is the parent filename
       tree.insert(filename, filename)
     })
 
-    return flows.map(f => {
+    return flows.map((f) => {
       const filename = f.name.replace('.flow.json', '')
 
       return {
@@ -253,7 +248,7 @@ export class ScopedFlowService {
     const uiEq = await this.ghost.readFileAsObject<FlowView>(FLOW_DIR, this.toUiPath(flowPath))
     let unplacedIndex = -1
 
-    const nodeViews: NodeView[] = flow.nodes.map(node => {
+    const nodeViews: NodeView[] = flow.nodes.map((node) => {
       const position = _.get(_.find(uiEq.nodes, { id: node.id }), 'position')
       unplacedIndex = position ? unplacedIndex : unplacedIndex + 1
       return {
@@ -324,7 +319,7 @@ export class ScopedFlowService {
   private async _upsertFlow(flow: FlowView) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '**/*.json')
 
-    const isNew = !flowFiles.find(x => flow.location === x)
+    const isNew = !flowFiles.find((x) => flow.location === x)
 
     const { flowPath, uiPath, flowContent, uiContent } = await this.prepareSaveFlow(flow, isNew)
 
@@ -338,7 +333,7 @@ export class ScopedFlowService {
 
   async deleteFlow(flowName: string, userEmail: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
-    const fileToDelete = flowFiles.find(f => f === flowName)
+    const fileToDelete = flowFiles.find((f) => f === flowName)
     if (!fileToDelete) {
       throw new Error(`Can not delete a flow that does not exist: ${flowName}`)
     }
@@ -359,7 +354,7 @@ export class ScopedFlowService {
 
   async renameFlow(previousName: string, newName: string, userEmail: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
-    const fileToRename = flowFiles.find(f => f === previousName)
+    const fileToRename = flowFiles.find((f) => f === previousName)
     if (!fileToRename) {
       throw new Error(`Can not rename a flow that does not exist: ${previousName}`)
     }
@@ -400,7 +395,7 @@ export class ScopedFlowService {
 
   private isFlowNameValid = async (name: string): Promise<Boolean> => {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
-    return flowFiles.findIndex(f => f.toLowerCase() === name.toLowerCase()) === -1
+    return flowFiles.findIndex((f) => f.toLowerCase() === name.toLowerCase()) === -1
   }
 
   private notifyChanges = async (modification: FlowModification) => {
@@ -458,14 +453,14 @@ export class ScopedFlowService {
     }
 
     const uiContent = {
-      nodes: flow.nodes.map(node => ({ id: node.id, position: _.pick(node, 'x', 'y') })),
+      nodes: flow.nodes.map((node) => ({ id: node.id, position: _.pick(node, 'x', 'y') })),
       links: flow.links
     }
 
     const flowContent = {
       // TODO: NDU Remove triggers
       ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'triggers', 'label', 'description']),
-      nodes: flow.nodes.map(node => _.omit(node, 'x', 'y', 'lastModified'))
+      nodes: flow.nodes.map((node) => _.omit(node, 'x', 'y', 'lastModified'))
     }
 
     const flowPath = flow.location
@@ -490,7 +485,7 @@ export class ScopedFlowService {
 
   public async deleteTopic(topicName: string) {
     let topics = await this.getTopics()
-    topics = topics.filter(x => x.name !== topicName)
+    topics = topics.filter((x) => x.name !== topicName)
 
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
 
@@ -504,7 +499,7 @@ export class ScopedFlowService {
 
   public async createTopic(topic: Topic) {
     let topics = await this.getTopics()
-    topics = _.uniqBy([...topics, topic], x => x.name)
+    topics = _.uniqBy([...topics, topic], (x) => x.name)
 
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
 
@@ -518,7 +513,7 @@ export class ScopedFlowService {
 
   public async updateTopic(topic: Topic, topicName: string) {
     let topics = await this.getTopics()
-    topics = _.uniqBy([...topics.filter(x => x.name !== topicName), topic], x => x.name)
+    topics = _.uniqBy([...topics.filter((x) => x.name !== topicName), topic], (x) => x.name)
 
     await this.ghost.upsertFile('ndu', 'topics.json', JSON.stringify(topics, undefined, 2))
 
@@ -530,7 +525,7 @@ export class ScopedFlowService {
 
       const flows = await this.loadAll()
 
-      for (const flow of flows.filter(f => f.name.startsWith(`${topicName}/`))) {
+      for (const flow of flows.filter((f) => f.name.startsWith(`${topicName}/`))) {
         await this.renameFlow(flow.name, flow.name.replace(`${topicName}/`, `${topic.name}/`), 'server')
       }
     }

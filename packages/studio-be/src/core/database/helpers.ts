@@ -12,9 +12,7 @@ export const patchKnex = (knex: Knex): KnexExtended => {
   }
 
   const dateFormat = (date: Date) => {
-    const iso = moment(date)
-      .toDate()
-      .toISOString()
+    const iso = moment(date).toDate().toISOString()
     return dateParse(`'${iso}'`)
   }
 
@@ -31,7 +29,7 @@ export const patchKnex = (knex: Knex): KnexExtended => {
   }
 
   const createTableIfNotExists = async (tableName: string, cb: Knex.KnexCallback): Promise<boolean> => {
-    return knex.schema.hasTable(tableName).then(exists => {
+    return knex.schema.hasTable(tableName).then((exists) => {
       if (exists) {
         return false
       }
@@ -62,7 +60,7 @@ export const patchKnex = (knex: Knex): KnexExtended => {
 
   const date: Knex.Date = {
     set: (date?: Date) => (date ? date.toISOString() : undefined),
-    get: date => new Date(date),
+    get: (date) => new Date(date),
 
     format: dateFormat,
     now: () => (isLite ? knex.raw("strftime('%Y-%m-%dT%H:%M:%fZ', 'now')") : knex.raw('now()')),
@@ -114,12 +112,12 @@ export const patchKnex = (knex: Knex): KnexExtended => {
   const bool: Knex.Bool = {
     true: () => (isLite ? 1 : true),
     false: () => (isLite ? 0 : false),
-    parse: value => (isLite ? !!value : value)
+    parse: (value) => (isLite ? !!value : value)
   }
 
   const json: Knex.Json = {
-    set: obj => (isLite ? obj && JSON.stringify(obj) : obj),
-    get: obj => (isLite ? obj && JSON.parse(obj) : obj)
+    set: (obj) => (isLite ? obj && JSON.stringify(obj) : obj),
+    get: (obj) => (isLite ? obj && JSON.parse(obj) : obj)
   }
 
   const extensions: KnexExtension = {
