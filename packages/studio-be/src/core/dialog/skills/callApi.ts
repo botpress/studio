@@ -13,7 +13,7 @@ const generateFlow = async (data: any, metadata: sdk.FlowGeneratorMetadata): Pro
   }
 }
 
-const createNodes = data => {
+const createNodes = (data) => {
   const nodes: sdk.FlowNode[] = [
     {
       name: 'entry',

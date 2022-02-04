@@ -21,10 +21,10 @@ export async function buildBackend(modulePath: string) {
   const start = Date.now()
 
   const tsConfigFile = ts.findConfigFile(modulePath, ts.sys.fileExists, 'tsconfig.json')
-  const skipCheck = process.argv.find(x => x.toLowerCase() === '--skip-check')
+  const skipCheck = process.argv.find((x) => x.toLowerCase() === '--skip-check')
 
   // By default you don't want it to fail when watching, hence the flag
-  const failOnError = process.argv.find(x => x.toLowerCase() === '--fail-on-error')
+  const failOnError = process.argv.find((x) => x.toLowerCase() === '--fail-on-error')
 
   let validCode = true
   if (!skipCheck && tsConfigFile) {

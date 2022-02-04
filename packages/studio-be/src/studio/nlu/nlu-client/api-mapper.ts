@@ -46,15 +46,17 @@ const mapInputSlot = (slot: BpSlotDefinition): StanSlotDefinition => {
   }
 }
 
-const makeIntentMapper = (lang: string) => (intent: BpIntentDefinition): StanIntentDefinition => {
-  const { contexts, name, utterances, slots } = intent
-  return {
-    contexts,
-    name,
-    utterances: utterances[lang],
-    slots: slots.map(mapInputSlot)
+const makeIntentMapper =
+  (lang: string) =>
+  (intent: BpIntentDefinition): StanIntentDefinition => {
+    const { contexts, name, utterances, slots } = intent
+    return {
+      contexts,
+      name,
+      utterances: utterances[lang],
+      slots: slots.map(mapInputSlot)
+    }
   }
-}
 
 const mapList = (listDef: BpEntityDefinition): StanListEntityDefinition => {
   const { name, fuzzy, occurrences, examples } = listDef
@@ -87,7 +89,7 @@ export const mapTrainSet = (bpTrainSet: BpTrainInput): StanTrainInput & { contex
   const { intentDefs, entityDefs, languageCode, seed } = bpTrainSet
 
   const contexts = _(intentDefs)
-    .flatMap(i => i.contexts)
+    .flatMap((i) => i.contexts)
     .uniq()
     .value()
 

@@ -66,9 +66,9 @@ const contentType: ContentType = {
       'ui:field': 'i18n_array'
     }
   },
-  computePreviewText: formData =>
+  computePreviewText: (formData) =>
     formData.choices && formData.text && `Choices (${formData.choices.length}) ${formData.text}`,
-  renderElement: data => utils.extractPayload('single-choice', data),
+  renderElement: (data) => utils.extractPayload('single-choice', data),
   hidden: true
 }
 

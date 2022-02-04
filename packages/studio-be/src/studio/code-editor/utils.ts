@@ -6,7 +6,7 @@ import _ from 'lodash'
 import { FILENAME_REGEX } from './editor'
 
 export const getBuiltinExclusion = () => {
-  return _.flatMap(BUILTIN_MODULES, mod => [`${mod}/*`, `*/${mod}/*`])
+  return _.flatMap(BUILTIN_MODULES, (mod) => [`${mod}/*`, `*/${mod}/*`])
 }
 
 export const getFileLocation = (file: EditableFile): { folder: string; filename: string } => {
@@ -98,14 +98,14 @@ export const buildRestrictedProcessVars = () => {
   return `
   declare var process: RestrictedProcess;
   interface RestrictedProcess {
-    ${root.map(x => {
+    ${root.map((x) => {
       return `/** Current value: ${x.value} */
 ${x.name}: ${x.type}
 `
     })}
 
     env: {
-      ${exposed.map(x => {
+      ${exposed.map((x) => {
         return `/** Current value: ${x.value} */
 ${x.name}: ${x.type}
 `
@@ -114,8 +114,8 @@ ${x.name}: ${x.type}
   }`
 }
 
-const extractInfo = keys => {
-  return Object.keys(keys).map(name => {
+const extractInfo = (keys) => {
+  return Object.keys(keys).map((name) => {
     return { name, value: keys[name], type: typeof keys[name] }
   })
 }

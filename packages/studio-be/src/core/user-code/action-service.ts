@@ -84,7 +84,7 @@ export class ScopedActionService {
     const userActions = [...globalActions, ...localActions]
 
     // We ignore builtin actions when they already exists for the bot locally
-    return [...userActions, ..._.differenceBy(builtinActions, userActions, x => x.name)]
+    return [...userActions, ..._.differenceBy(builtinActions, userActions, (x) => x.name)]
   }
 
   public async listBuiltinActions() {
@@ -94,7 +94,7 @@ export class ScopedActionService {
 
     const actionFiles = await listDir(getBuiltinPath('actions'))
 
-    const actions = await Promise.map(actionFiles, async file => {
+    const actions = await Promise.map(actionFiles, async (file) => {
       const name = file.relativePath.replace(/\.js|\.http\.js$/i, '')
       const legacy = !file.relativePath.includes('.http.js')
       const script = await fse.readFile(file.absolutePath, 'utf-8')

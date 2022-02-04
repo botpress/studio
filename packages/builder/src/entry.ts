@@ -6,12 +6,12 @@ import packageCmd from './package'
 import watchCmd from './watch'
 
 require('yargs')
-  .command('build', 'builds a botpress module', {}, argv => {
+  .command('build', 'builds a botpress module', {}, (argv) => {
     configure(argv.verbose)
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     buildCmd(argv)
   })
-  .command('watch', 'watches and rebuilds a module', {}, argv => {
+  .command('watch', 'watches and rebuilds a module', {}, (argv) => {
     configure(argv.verbose)
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     watchCmd(argv)
@@ -26,7 +26,7 @@ require('yargs')
         default: './%name%.tgz'
       }
     },
-    argv => {
+    (argv) => {
       configure(argv.verbose)
       // eslint-disable-next-line @typescript-eslint/no-floating-promises
       packageCmd(argv)

@@ -37,8 +37,8 @@ const contentType: ContentType = {
   jsonSchema: cardSchema,
   uiSchema: {},
 
-  computePreviewText: formData => formData.title && `Card: ${formData.title}`,
-  renderElement: data => utils.extractPayload('card', data)
+  computePreviewText: (formData) => formData.title && `Card: ${formData.title}`,
+  renderElement: (data) => utils.extractPayload('card', data)
 }
 
 export default contentType

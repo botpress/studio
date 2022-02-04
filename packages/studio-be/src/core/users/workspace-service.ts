@@ -68,7 +68,7 @@ export class WorkspaceService {
 
   async getPipeline(workspaceId: string): Promise<Pipeline | undefined> {
     const workspaces = await this.getWorkspaces()
-    const workspace = workspaces.find(x => x.id === workspaceId)
+    const workspace = workspaces.find((x) => x.id === workspaceId)
 
     return workspace?.pipeline
   }
@@ -90,7 +90,7 @@ export class WorkspaceService {
 
   async addBotRef(botId: string, workspaceId: string): Promise<void> {
     const workspaces = await this.getWorkspaces()
-    const workspace = workspaces.find(x => x.id === workspaceId)
+    const workspace = workspaces.find((x) => x.id === workspaceId)
 
     if (!workspace) {
       throw new Error(`Specified workspace "${workspaceId}" doesn't exist`)

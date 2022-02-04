@@ -40,8 +40,8 @@ const contentType: ContentType = {
       }
     }
   },
-  computePreviewText: formData => formData.text,
-  renderElement: data => {
+  computePreviewText: (formData) => formData.text,
+  renderElement: (data) => {
     return utils.extractPayload('text', data)
   }
 }

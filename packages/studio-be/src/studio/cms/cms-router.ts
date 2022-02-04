@@ -81,7 +81,7 @@ export class CMSRouter extends CustomStudioRouter {
           ids
         })
 
-        const augmentedElements = await Promise.map(elements, el => this._augmentElement(el, botId))
+        const augmentedElements = await Promise.map(elements, (el) => this._augmentElement(el, botId))
         res.send(augmentedElements)
       })
     )
