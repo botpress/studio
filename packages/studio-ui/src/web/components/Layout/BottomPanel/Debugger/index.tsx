@@ -6,10 +6,9 @@ import { lang, ToolTip } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import ms from 'ms'
-import nanoid from 'nanoid'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import 'ui-shared/dist/theme.css'
+import '@botpress/ui-shared/dist/theme.css'
 import { setDebuggerEvent } from '~/actions'
 
 import btStyle from '../style.scss'
@@ -82,7 +81,7 @@ export class Debugger extends React.Component<Props, State> {
     }
   }
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps: Props) {
     if (prevProps.messageId !== this.props.messageId) {
       await this.loadEvent(this.props.messageId)
     }
@@ -215,9 +214,7 @@ export class Debugger extends React.Component<Props, State> {
           id="basic"
           title={lang.tr('summary')}
           className={btStyle.tab}
-          panel={
-            <Fragment>{this.state.event ? <Summary event={this.state.event} /> : this.renderWhenNoEvent()}</Fragment>
-          }
+          panel={<Fragment>{hasEvent ? <Summary event={this.state.event} /> : this.renderWhenNoEvent()}</Fragment>}
         />
         {ndu && <Tab id="ndu" title="NDU" className={btStyle.tab} panel={<NDU ndu={ndu} />} />}
         {hasEvent && this.renderProcessingTab()}

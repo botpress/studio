@@ -34,32 +34,32 @@ export type AsyncMiddleware = (
   fn: (req: BPRequest, res: Response, next?: NextFunction | undefined) => Promise<any>
 ) => (req: Request, res: Response, next: NextFunction) => void
 
-export const asyncMiddleware = (logger: Logger, routerName?: string): AsyncMiddleware => fn => (req, res, next) => {
-  Promise.resolve(fn(req as BPRequest, res, next)).catch(err => {
-    if (typeof err === 'string') {
-      err = {
-        skipLogging: false,
-        message: err
+export const asyncMiddleware =
+  (logger: Logger, routerName?: string): AsyncMiddleware =>
+  (fn) =>
+  (req, res, next) => {
+    Promise.resolve(fn(req as BPRequest, res, next)).catch((err) => {
+      if (typeof err === 'string') {
+        err = {
+          skipLogging: false,
+          message: err
+        }
       }
-    }
 
-    err.router = routerName
-    if (!err.skipLogging && !process.IS_PRODUCTION) {
-      const botId = err.botId || req.params.botId
+      err.router = routerName
+      if (!err.skipLogging && !process.IS_PRODUCTION) {
+        const botId = err.botId || req.params.botId
 
-      if (!botId) {
-        logger.attachError(err).debug(`[${routerName || 'api'}]`)
-      } else {
-        logger
-          .forBot(botId)
-          .attachError(err)
-          .debug(`[${botId}]`)
+        if (!botId) {
+          logger.attachError(err).debug(`[${routerName || 'api'}]`)
+        } else {
+          logger.forBot(botId).attachError(err).debug(`[${botId}]`)
+        }
       }
-    }
 
-    next(err)
-  })
-}
+      next(err)
+    })
+  }
 
 /**
  * The object that wraps HTTP errors.

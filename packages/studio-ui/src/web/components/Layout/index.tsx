@@ -30,7 +30,6 @@ import { TrainingStatusService } from './training-status-service'
 
 const { isInputFocused } = utils
 const WEBCHAT_PANEL_STATUS = 'bp::webchatOpened'
-const EXPANDED_PANEL_HEIGHT = 200
 
 interface OwnProps {
   location: any
@@ -43,6 +42,11 @@ type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 
 type Props = DispatchProps & StateProps & OwnProps
+
+const bottomPanelSizeKey = `bp::${window.BOT_ID}::bottom-panel-size`
+const bottomPanelDefaultSize = 175
+const topPanelMinSize = 200
+const bottomPanelMinSize = 100
 
 const Layout: FC<Props> = (props: Props) => {
   const mainElRef = useRef(null)
@@ -184,23 +188,7 @@ const Layout: FC<Props> = (props: Props) => {
     'toggle-inspect': props.toggleInspector
   }
 
-  const splitPanelLastSizeKey = `bp::${window.BOT_ID}::bottom-panel-size`
-  const lastSize = parseInt(localStorage.getItem(splitPanelLastSizeKey) || '175', 10)
-  const bottomPanelHeight = props.bottomPanelExpanded ? EXPANDED_PANEL_HEIGHT : lastSize
-  const bottomBarSize = props.bottomPanel ? bottomPanelHeight : '100%'
-
-  const squashSize = size => {
-    if (typeof size === 'string') {
-      return size
-    }
-
-    const maxSize = 100
-    const minSize = window.innerHeight - 100
-    size = Math.max(maxSize, size)
-    size = Math.min(minSize, size)
-    return size
-  }
-
+  const bottomPanelSize = parseInt(localStorage.getItem(bottomPanelSizeKey) || bottomPanelDefaultSize.toString(), 10)
   return (
     <Fragment>
       <HotKeys handlers={keyHandlers} id="mainLayout" className={layout.mainLayout}>
@@ -209,15 +197,19 @@ const Layout: FC<Props> = (props: Props) => {
           <Toolbar
             hasDoc={props.docHints?.length}
             toggleDocs={toggleDocs}
+            toggleGuidedTour={toggleGuidedTour}
             onToggleEmulator={toggleEmulator}
             toggleBottomPanel={props.toggleBottomPanel}
           />
           <SplitPane
             split={'horizontal'}
-            defaultSize={squashSize(lastSize)}
-            onChange={size => size > 100 && localStorage.setItem(splitPanelLastSizeKey, squashSize(size).toString())}
-            size={squashSize(bottomBarSize)}
-            maxSize={-100}
+            defaultSize={bottomPanelDefaultSize}
+            onChange={size => localStorage.setItem(bottomPanelSizeKey, size.toString())}
+            size={props.bottomPanel ? bottomPanelSize : '100%'}
+            maxSize={-topPanelMinSize}
+            minSize={props.bottomPanel ? bottomPanelMinSize : undefined}
+            allowResize={props.bottomPanel}
+            primary={props.bottomPanel ? 'second' : 'first'}
             className={cx(layout.mainSplitPaneWToolbar, {
               'emulator-open': props.emulatorOpen
             })}

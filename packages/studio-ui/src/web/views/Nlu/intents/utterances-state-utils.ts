@@ -49,17 +49,17 @@ export const textNodesFromUtterance = (
       const from = previousSlot?.cleanPosition.end ?? 0
       const to = pslot.cleanPosition.start
 
-      const slotExists = allSlots.some(s => s.name === pslot.name)
+      const slotExists = allSlots.some((s) => s.name === pslot.name)
       const pslotNode = slotExists ? slotNode(pslot, idx) : emptySlotNode(pslot)
 
       return [textNode(utterance, from, to), pslotNode]
     })
-    .thru(nodes => {
+    .thru((nodes) => {
       // append remaining
       const start = _.last(parsedSlots)?.cleanPosition.end ?? 0
       return [...nodes, textNode(utterance, start)]
     })
-    .filter(n => !!n.text)
+    .filter((n) => !!n.text)
     .value()
 }
 
@@ -102,7 +102,7 @@ export const utterancesToValue = (
 export const valueToUtterances = (value: Value): string[] => {
   return value
     .getIn(['document', 'nodes'])
-    .map(block =>
+    .map((block) =>
       block.nodes.reduce((utt: string, node, idx: number) => {
         const value = node.get('text')
         if (node.marks.size > 0) {
@@ -120,13 +120,13 @@ export const valueToUtterances = (value: Value): string[] => {
 export const removeSlotFromUtterances = (utterances: string[], slotName: string) => {
   const regex = new RegExp(`\\[([^\\[\\]\\(\\)]+?)\\]\\(${slotName}\\)`, 'gi')
 
-  return utterances.map(u => u.replace(regex, '$1'))
+  return utterances.map((u) => u.replace(regex, '$1'))
 }
 
 export const renameSlotInUtterances = (utterances: string[], prevSlotName: string, newSlotName: string) => {
   const regex = new RegExp(`\\[([^\\(\\)\\[\\]]+?)\\]\\(${prevSlotName}\\)`, 'gi')
 
-  return utterances.map(u => u.replace(regex, `[$1](${newSlotName})`))
+  return utterances.map((u) => u.replace(regex, `[$1](${newSlotName})`))
 }
 
 export const makeSlotMark = (slotName: string, utteranceIdx: number): MarkJSON => ({

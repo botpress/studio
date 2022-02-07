@@ -31,7 +31,7 @@ if (BP_PATH) {
 // Check env variables (are we developing? BP_PATH different)
 
 /** Makes path with forward slashes work on all OS */
-const fixPathForOS = p => p.replace(/\/\//g, '/').replace(/\//g, path.sep)
+const fixPathForOS = (p) => p.replace(/\/\//g, '/').replace(/\//g, path.sep)
 
 export class ModuleResolver {
   unpacker: Unpacker
@@ -54,7 +54,7 @@ export class ModuleResolver {
   }
 
   async getModulesList() {
-    const moduleFolder = lookupPaths.filter(x => fs.existsSync(x))
+    const moduleFolder = lookupPaths.filter((x) => fs.existsSync(x))
     if (!moduleFolder.length) {
       return []
     }

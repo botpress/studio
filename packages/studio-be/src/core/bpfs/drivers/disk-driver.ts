@@ -103,7 +103,7 @@ export class DiskStorageDriver implements StorageDriver {
     }
   }
 
-  @WrapErrorsWith(args => `[Disk Storage Error while moving file from "${args[0]}" to  "${args[1]}".`)
+  @WrapErrorsWith((args) => `[Disk Storage Error while moving file from "${args[0]}" to  "${args[1]}".`)
   async moveFile(fromPath: string, toPath: string): Promise<void> {
     return fse.move(this.resolvePath(fromPath), this.resolvePath(toPath))
   }
@@ -150,19 +150,19 @@ export class DiskStorageDriver implements StorageDriver {
     }
 
     try {
-      const files = await Promise.fromCallback<string[]>(cb => glob('**/*.*', globOptions, cb))
+      const files = await Promise.fromCallback<string[]>((cb) => glob('**/*.*', globOptions, cb))
       if (!options.sortOrder) {
-        return files.map(filePath => forceForwardSlashes(filePath))
+        return files.map((filePath) => forceForwardSlashes(filePath))
       }
 
       const { column, desc } = options.sortOrder
 
-      const filesWithDate = await Promise.map(files, async filePath => ({
+      const filesWithDate = await Promise.map(files, async (filePath) => ({
         filePath,
         modifiedOn: (await fse.stat(path.join(this.resolvePath(folder), filePath))).mtime
       }))
 
-      return _.orderBy(filesWithDate, [column], [desc ? 'desc' : 'asc']).map(x => forceForwardSlashes(x.filePath))
+      return _.orderBy(filesWithDate, [column], [desc ? 'desc' : 'asc']).map((x) => forceForwardSlashes(x.filePath))
     } catch (e) {
       return []
     }
@@ -183,8 +183,8 @@ export class DiskStorageDriver implements StorageDriver {
 
   async absoluteDirectoryListing(destination: string) {
     try {
-      const files = await Promise.fromCallback<string[]>(cb => glob('**/*.*', { cwd: destination }, cb))
-      return files.map(filePath => forceForwardSlashes(filePath))
+      const files = await Promise.fromCallback<string[]>((cb) => glob('**/*.*', { cwd: destination }, cb))
+      return files.map((filePath) => forceForwardSlashes(filePath))
     } catch (e) {
       return []
     }
@@ -192,9 +192,9 @@ export class DiskStorageDriver implements StorageDriver {
 
   private _getBaseDirectories(files: string[]): string[] {
     return _.chain(files)
-      .map(f => path.relative(process.PROJECT_LOCATION, f))
-      .map(f => path.dirname(f))
-      .map(f => f.split('/')[0])
+      .map((f) => path.relative(process.PROJECT_LOCATION, f))
+      .map((f) => path.dirname(f))
+      .map((f) => f.split('/')[0])
       .uniq()
       .value()
   }

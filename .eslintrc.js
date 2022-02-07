@@ -4,18 +4,16 @@ module.exports = {
     es6: true,
     node: true
   },
-  extends: ['prettier', 'prettier/@typescript-eslint'],
+  extends: ['prettier'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: ['./packages/studio-*/tsconfig.json', './packages/ui-shared/tsconfig.json'],
+    project: ['./packages/studio-*/tsconfig.json', './packages/ui-shared/tsconfig.json', './scripts/tsconfig.json'],
     tsconfigRootDir: __dirname,
     sourceType: 'module'
   },
   ignorePatterns: [
-    '**/index.d.ts',
     '**/global.d.ts',
     '**/*.scss.d.ts',
-    '**/*.test.ts',
     '*.js',
     '**/out/**',
     'packages/ui-shared-lite/**',

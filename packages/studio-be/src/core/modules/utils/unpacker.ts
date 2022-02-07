@@ -10,7 +10,7 @@ import path from 'path'
 const tar = require('tar')
 
 async function fileHash(filePath: string) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const hash = crypto.createHash('sha256')
     const input = fs.createReadStream(filePath)
     input.on('readable', () => {

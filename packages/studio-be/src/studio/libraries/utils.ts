@@ -6,7 +6,8 @@ export interface Package {
 }
 
 // Taken from https://semver.org/#is-there-a-suggested-regular-expression-regex-to-check-a-semver-string
-const versionRegex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
+const versionRegex =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/
 const packageNameRegex = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/
 
 const scriptsToDisable = ['publish', 'prepublish', 'postpublish']
@@ -29,7 +30,7 @@ export const disableScripts = (pkg: Package) => {
     return
   }
 
-  scriptsToDisable.forEach(script => {
+  scriptsToDisable.forEach((script) => {
     if (pkg.scripts[script]) {
       pkg.scripts[`_${script}`] = pkg.scripts[script]
       delete pkg.scripts[script]

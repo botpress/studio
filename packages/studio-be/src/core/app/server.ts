@@ -40,7 +40,7 @@ import { debugRequestMw, resolveStudioAsset } from './server-utils'
 const BASE_API_PATH = '/api/v1'
 
 const getSocketTransports = (config: BotpressConfig): string[] => {
-  const transports = _.filter(config.httpServer.socketTransports, t => ['websocket', 'polling'].includes(t))
+  const transports = _.filter(config.httpServer.socketTransports, (t) => ['websocket', 'polling'].includes(t))
   return transports && transports.length ? transports : ['websocket', 'polling']
 }
 
@@ -236,7 +236,12 @@ export class HTTPServer {
       )
     }
 
-    this.app.use('/assets/studio/ui', this.guardWhiteLabel(), express.static(resolveStudioAsset('')))
+    this.app.use(
+      '/assets/studio/ui',
+      this.guardWhiteLabel(),
+      express.static(resolveStudioAsset(''), { fallthrough: false })
+    )
+
     this.app.use(`${BASE_API_PATH}/studio/modules`, this.modulesRouter.router)
 
     await this.studioRouter.setupRoutes(this.app)
@@ -272,7 +277,7 @@ export class HTTPServer {
     process.LOCAL_URL = `http://localhost:${process.PORT}${process.ROOT_PATH}`
     process.EXTERNAL_URL = process.env.EXTERNAL_URL || config.externalUrl || `http://${process.HOST}:${process.PORT}`
 
-    await Promise.fromCallback(callback => {
+    await Promise.fromCallback((callback) => {
       this.httpServer.listen(process.PORT, undefined, config.backlog, () => callback(undefined))
     })
 

@@ -61,7 +61,7 @@ const FlowNameModal: FC<Props> = props => {
     submitText = lang.tr('rename')
   }
 
-  const isNameInvalid = name?.startsWith('skills/')
+  const isNameInvalid = name?.toLowerCase().startsWith('skills/')
 
   return (
     <Dialog isOpen={props.isOpen} onClose={closeModal} transitionDuration={0} {...dialog}>

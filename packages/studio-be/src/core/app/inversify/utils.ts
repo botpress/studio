@@ -40,8 +40,8 @@ const getBoundInstancesFn = (container: Container, functionName: string): (() =>
 export const applyDisposeOnExit = (container: Container) => {
   const provider = getBoundInstancesFn(container, 'disposeOnExit')
 
-  const cleanup = code => {
-    provider().forEach(m => m())
+  const cleanup = (code) => {
+    provider().forEach((m) => m())
     process.exit(process.exitCode)
   }
 
@@ -60,6 +60,6 @@ export const applyInitializeFromConfig = (container: Container) => {
   AppLifecycle.waitFor(AppLifecycleEvents.CONFIGURATION_LOADED).then(async () => {
     const configProvider = container.get<ConfigProvider>(TYPES.ConfigProvider)
     const botpressConfig = await configProvider.getBotpressConfig()
-    provider().forEach(m => m(botpressConfig))
+    provider().forEach((m) => m(botpressConfig))
   })
 }

@@ -15,7 +15,7 @@ export const getOrCreate = (type: 'subscriber' | 'commands' | 'socket', url?: st
     // TODO: remove this workaround when ioredis supports other promises or if we get rid of bluebird-global
     global.Promise = global['NativePromise'] || global.Promise
 
-    const RETRY_STRATEGY = times => {
+    const RETRY_STRATEGY = (times) => {
       return Math.min(times * 200, 5000)
     }
 
