@@ -1,3 +1,4 @@
+import { SuperInput, SiTypes } from '@botpress/superinput'
 import { lang, Dialog } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
@@ -76,7 +77,7 @@ class ConditionModalForm extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const subflowNames = this.props.subflows.filter(flow => !flow.startsWith('skills/'))
+    const subflowNames = this.props.subflows.filter((flow) => !flow.startsWith('skills/'))
 
     const subflowOptions = reorderFlows(subflowNames).map((flow: string) => ({
       label: getFlowLabel(flow),
@@ -110,14 +111,14 @@ class ConditionModalForm extends Component<Props, State> {
         flowToSubflow:
           typeOfTransition === 'subflow'
             ? this.state.subflowOptions.find(
-                x => x.value === (hashIndex !== -1 ? item.node.substring(0, hashIndex) : item.node)
+                (x) => x.value === (hashIndex !== -1 ? item.node.substring(0, hashIndex) : item.node)
               )
             : undefined,
         flowToSubflowNode:
           typeOfTransition === 'subflow' && item.node && hashIndex !== -1
             ? item.node.substring(hashIndex + 1)
             : undefined,
-        flowToNode: typeOfTransition === 'node' ? options.find(x => x.value === item.node) : options[0],
+        flowToNode: typeOfTransition === 'node' ? options.find((x) => x.value === item.node) : options[0],
         returnToNode: typeOfTransition === 'return' ? item.node.substr(1) : ''
       })
     } else {
@@ -150,7 +151,7 @@ class ConditionModalForm extends Component<Props, State> {
       return 'always'
     } else if (condition.includes('event.nlu.intent.name')) {
       return 'intent'
-    } else if (availableProps.some(props => condition.indexOf(`${props.value}.`) === 0)) {
+    } else if (availableProps.some((props) => condition.indexOf(`${props.value}.`) === 0)) {
       return 'props'
     } else {
       return 'raw'
@@ -169,7 +170,7 @@ class ConditionModalForm extends Component<Props, State> {
 
     if (props?.length > 3) {
       this.setState({
-        matchPropsType: availableProps.find(x => x.value === props[1]),
+        matchPropsType: availableProps.find((x) => x.value === props[1]),
         matchPropsFieldName: props[2],
         matchPropsExpression: props[3]
       })
@@ -283,7 +284,7 @@ class ConditionModalForm extends Component<Props, State> {
           menuPortalTarget={document.getElementById('menuOverlayPortal')}
         />
         <label>{lang.tr('studio.flow.node.transition.specificNodeCalled')}:</label>
-        <input type="text" value={flowToSubflowNode} onChange={e => updateSubflowNode(e.target.value)} />
+        <input type="text" value={flowToSubflowNode} onChange={(e) => updateSubflowNode(e.target.value)} />
       </div>
     )
   }
@@ -297,7 +298,7 @@ class ConditionModalForm extends Component<Props, State> {
     return (
       <div className={style.returnToNodeSection}>
         <div>{lang.tr('studio.flow.node.transition.returnToNodeCalled')}:</div>
-        <input type="text" value={this.state.returnToNode} onChange={e => updateNode(e.target.value)} />
+        <input type="text" value={this.state.returnToNode} onChange={(e) => updateNode(e.target.value)} />
         <div>
           <input
             type="checkbox"
@@ -335,7 +336,7 @@ class ConditionModalForm extends Component<Props, State> {
     )
   }
 
-  changeConditionType = event => {
+  changeConditionType = (event) => {
     const conditionType: Condition['conditionType'] = event.target.value
 
     if (conditionType === 'always') {
@@ -348,7 +349,7 @@ class ConditionModalForm extends Component<Props, State> {
   }
 
   handlePropsTypeChanged = (option: Option) => this.setState({ matchPropsType: option }, this.updatePropertyMatch)
-  handlePropsFieldNameChanged = e => this.setState({ matchPropsFieldName: e.target.value }, this.updatePropertyMatch)
+  handlePropsFieldNameChanged = (e) => this.setState({ matchPropsFieldName: e.target.value }, this.updatePropertyMatch)
   handlePropsExpressionChanged = (value: string) =>
     this.setState({ matchPropsExpression: value }, this.updatePropertyMatch)
   handleConditionChanged = (value: string) => this.setState({ condition: value })
@@ -376,7 +377,7 @@ class ConditionModalForm extends Component<Props, State> {
     }
 
     const intents: Option[] = this.props.intents
-      .filter(i => !i.name.startsWith('__qna__'))
+      .filter((i) => !i.name.startsWith('__qna__'))
       .map(({ name }) => ({ label: name, value: name }))
       .concat([{ label: 'none', value: 'none' }])
 
@@ -423,11 +424,12 @@ class ConditionModalForm extends Component<Props, State> {
 
   renderRawExpression() {
     return (
-      <SmartInput
+      <SuperInput
+        type={SiTypes.EXPRESSION}
         placeholder={lang.tr('studio.flow.node.transition.javascriptExpression')}
         value={this.state.condition}
         onChange={this.handleConditionChanged}
-        singleLine={false}
+        autoFocus
       />
     )
   }

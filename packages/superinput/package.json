@@ -31,7 +31,7 @@
   },
   "scripts": {
     "build": "yarn doctree && rollup -c",
-    "dev": "rollup -c -w",
+    "watch": "rollup -c -w",
     "demo": "parcel demo/index.html",
     "doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
   },
