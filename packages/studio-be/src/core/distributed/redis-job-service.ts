@@ -6,7 +6,7 @@ import { inject, injectable } from 'inversify'
 import { Redis } from 'ioredis'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 
 import { getOrCreate as redisFactory, makeRedisKey } from './async-redis'
 

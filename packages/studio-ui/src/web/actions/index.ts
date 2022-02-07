@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as sdk from 'botpress/sdk'
 import { FlowPoint, FlowView, NodeProblem } from 'common/typings'
 import _ from 'lodash'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import { createAction } from 'redux-actions'
 import { copyName } from '~/util/flows'
 

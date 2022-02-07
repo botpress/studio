@@ -5,7 +5,7 @@ import { lang, ToolTip } from 'botpress/shared'
 import cn from 'classnames'
 import _ from 'lodash'
 import moment from 'moment'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -137,7 +137,7 @@ class BottomPanel extends React.Component<Props, State> {
     el.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0
   }
 
-  handleTabChange = e => {
+  handleTabChange = (e) => {
     this.setState({ selectedPanel: e })
   }
 
@@ -151,7 +151,7 @@ class BottomPanel extends React.Component<Props, State> {
     downloadBlob(`logs-${time}.txt`, data)
   }
 
-  handleLogsScrolled = e => {
+  handleLogsScrolled = (e) => {
     // When zoomed, scrollTop may have decimals and must be rounded
     const isAtBottom = e.target.scrollHeight - Math.round(e.target.scrollTop) === e.target.clientHeight
 
@@ -178,7 +178,7 @@ class BottomPanel extends React.Component<Props, State> {
         ref={this.messageListRef}
         onScroll={this.handleLogsScrolled}
       >
-        {allLogs.map(e => this.renderEntry(e))}
+        {allLogs.map((e) => this.renderEntry(e))}
         <li className={logStyle.end}>{lang.tr('bottomPanel.logs.endOfLogs')}</li>
       </ul>
     )
@@ -239,10 +239,10 @@ class BottomPanel extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   emulatorOpen: state.ui.emulatorOpen
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ toggleBottomPanel }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ toggleBottomPanel }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomPanel)
