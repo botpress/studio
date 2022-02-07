@@ -1,3 +1,22 @@
+## [0.0.47](https://github.com/botpress/studio/compare/v0.0.46...v0.0.47) (2022-02-07)
+
+
+### Bug Fixes
+
+* **studio:** fix random error with lang switcher ([#253](https://github.com/botpress/studio/issues/253)) ([1fe38d5](https://github.com/botpress/studio/commit/1fe38d54d7c6cd921d5351596b8ac80d43421896))
+* **studio:** prevent back & forth when file is not found ([#249](https://github.com/botpress/studio/issues/249)) ([c22ea75](https://github.com/botpress/studio/commit/c22ea7511797572d64c9a6bd42233e46947b8ce5))
+* **studio-be:** fix cache invalidation being discarded by flow service ([#229](https://github.com/botpress/studio/issues/229)) ([e15f83e](https://github.com/botpress/studio/commit/e15f83e2277f783d141374eda28bb80e5ebeb93c))
+* **ui:** no model warning in debugger only appears when there's no model ([#257](https://github.com/botpress/studio/issues/257)) ([f66369f](https://github.com/botpress/studio/commit/f66369f847af34f6ab98c25af09dbbd50ed9c609))
+* **ui:** zoom in and out from cursor position ([#262](https://github.com/botpress/studio/issues/262)) ([6ed8110](https://github.com/botpress/studio/commit/6ed8110ac0ed1a0105186f0e4fed34138022c514))
+* properly display start enterprise trial ([#248](https://github.com/botpress/studio/issues/248)) ([900b067](https://github.com/botpress/studio/commit/900b0674a1302bb05b7858bd8c977615fc12d6f7))
+
+
+### Features
+
+* **studio:** adds guided tour button to top ([#227](https://github.com/botpress/studio/issues/227)) ([8c0d57f](https://github.com/botpress/studio/commit/8c0d57f0adc35e5323307c46577746f6da349b9b))
+
+
+
 ## [0.0.46](https://github.com/botpress/studio/compare/v0.0.45...v0.0.46) (2022-01-14)
 
 

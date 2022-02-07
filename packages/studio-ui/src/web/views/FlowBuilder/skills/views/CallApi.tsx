@@ -1,4 +1,4 @@
-import nanoid from 'nanoid/generate'
+import { customAlphabet } from 'nanoid'
 import React from 'react'
 import { Tabs, Tab, Row, Col, Alert } from 'react-bootstrap'
 import Select from 'react-select'
@@ -21,7 +21,7 @@ const memoryOptions = [
   { label: 'User', value: 'user' }
 ]
 
-const stringify = obj => {
+const stringify = (obj) => {
   return JSON.stringify(obj, null, 2)
 }
 
@@ -38,15 +38,15 @@ export class CallAPI extends React.Component<any, any> {
     selectedMemory: memoryOptions[0],
     variable: 'response',
     body: undefined,
-    randomId: nanoid('abcdefghijklmnopqrstuvwxyz0123456789', 10),
+    randomId: customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 10)(),
     headers: undefined,
     url: undefined,
     invalidJson: false
   }
 
-  getInitialDataProps = propsKey => this.props.initialData[propsKey]
+  getInitialDataProps = (propsKey) => this.props.initialData[propsKey]
   getOrDefault = (propsKey, stateKey) => this.getInitialDataProps(propsKey) || this.state[stateKey]
-  createSelectOption = data => (data ? { value: data, label: data } : undefined)
+  createSelectOption = (data) => (data ? { value: data, label: data } : undefined)
 
   componentDidMount() {
     if (this.props.initialData) {
@@ -85,7 +85,7 @@ export class CallAPI extends React.Component<any, any> {
     }
   }
 
-  handleHeadersChange = event => {
+  handleHeadersChange = (event) => {
     const value = event.target.value
 
     try {
@@ -98,15 +98,15 @@ export class CallAPI extends React.Component<any, any> {
     }
   }
 
-  handleInputChange = event => {
+  handleInputChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  handleMemoryChange = option => {
+  handleMemoryChange = (option) => {
     this.setState({ selectedMemory: option })
   }
 
-  handleMethodChange = option => {
+  handleMethodChange = (option) => {
     this.setState({ selectedMethod: option })
   }
 

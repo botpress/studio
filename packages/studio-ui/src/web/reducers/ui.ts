@@ -98,12 +98,6 @@ const reducer = handleActions(
         explorerOpen: value
       }
     },
-    [zoomIn]: (state, {}) => {
-      return {
-        ...state,
-        explorerOpen: value
-      }
-    },
     [zoomToLevel]: (state, { payload }) => {
       return {
         ...state,

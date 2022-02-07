@@ -2,14 +2,10 @@ import { BotConfig, Logger } from 'botpress/sdk'
 import { ObjectCache } from 'common/object-cache'
 import { GhostService } from 'core/bpfs'
 import { calculateHash, stringify } from 'core/misc/utils'
-import { ModuleResolver } from 'core/modules'
 import { TYPES } from 'core/types'
 import { FatalError } from 'errors'
-import fs from 'fs'
 import { inject, injectable } from 'inversify'
-import defaultJsonBuilder from 'json-schema-defaults'
-import _, { PartialDeep } from 'lodash'
-import path from 'path'
+import _ from 'lodash'
 
 import { BotpressConfig } from './botpress.config'
 import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './config-utils'
@@ -68,8 +64,8 @@ export class ConfigProvider {
     return `BP_CONFIG_${option.split('.').join('_')}`.toUpperCase()
   }
 
-  private async _loadBotpressConfigFromEnv(currentConfig: BotpressConfig): Promise<PartialDeep<BotpressConfig>> {
-    const configOverrides: PartialDeep<BotpressConfig> = {}
+  private async _loadBotpressConfigFromEnv(currentConfig: BotpressConfig): Promise<Partial<BotpressConfig>> {
+    const configOverrides: Partial<BotpressConfig> = {}
     const weakSchema = await this._getBotpressConfigSchema()
     const options = await getValidJsonSchemaProperties(weakSchema as SchemaNode, currentConfig)
     for (const option of options) {
@@ -91,7 +87,7 @@ export class ConfigProvider {
     await this.ghostService.forBot(botId).upsertFile('/', 'bot.config.json', stringify(config), { ignoreLock })
   }
 
-  async mergeBotConfig(botId: string, partialConfig: PartialDeep<BotConfig>, ignoreLock?: boolean): Promise<BotConfig> {
+  async mergeBotConfig(botId: string, partialConfig: Partial<BotConfig>, ignoreLock?: boolean): Promise<BotConfig> {
     const originalConfig = await this.getBotConfig(botId)
     const config = _.merge(originalConfig, partialConfig)
     await this.setBotConfig(botId, config, ignoreLock)

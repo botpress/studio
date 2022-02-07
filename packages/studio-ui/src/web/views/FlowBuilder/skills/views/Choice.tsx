@@ -14,7 +14,7 @@ import {
 
 import axios from 'axios'
 import _ from 'lodash'
-import nanoid from 'nanoid/generate'
+import { customAlphabet } from 'nanoid'
 import React from 'react'
 import ContentPickerWidget from '~/components/Content/Select/Widget'
 
@@ -54,7 +54,7 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
   state: State = {
     tab: 'basic',
     keywords: {},
-    randomId: nanoid('abcdefghijklmnopqrstuvwxyz0123456789', 10),
+    randomId: customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 10)(),
     contentId: '',
     invalidContentId: '',
     config: {
@@ -126,7 +126,7 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
     }
   }
 
-  onMaxRetriesChanged = value => {
+  onMaxRetriesChanged = (value) => {
     const config = {
       ...this.state.config,
       nbMaxRetries: isNaN(Number(value)) ? MAX_RETRIES : Number(value)
@@ -134,13 +134,13 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
     this.setState({ config })
   }
 
-  onToggleRepeatChoicesOnInvalid = event => {
+  onToggleRepeatChoicesOnInvalid = (event) => {
     this.setState({
       config: { ...this.state.config, repeatChoicesOnInvalid: !this.state.config.repeatChoicesOnInvalid }
     })
   }
 
-  onBlocNameChanged = key => event => {
+  onBlocNameChanged = (key) => (event) => {
     let blocName = event.target.value
 
     if (!blocName.startsWith('#')) {
@@ -168,12 +168,12 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
     }
   }
 
-  handleTagChange = choiceValue => keywords => {
+  handleTagChange = (choiceValue) => (keywords) => {
     this.setState({ keywords: { ...this.state.keywords, [choiceValue]: keywords } })
   }
 
   renderMatchingSection() {
-    return this.choices.map(choice => {
+    return this.choices.map((choice) => {
       const keywordsEntry = this.state.keywords[choice.value] || []
 
       return (
@@ -257,12 +257,12 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
     return (this.state.defaultConfig && this.state.defaultConfig.defaultMaxAttempts) || 0
   }
 
-  handleConfigTextChanged = name => event => {
+  handleConfigTextChanged = (name) => (event) => {
     const config = { ...this.state.config, [name]: event.target.value }
     this.setState({ config })
   }
 
-  handleInvalidContentChange = content => {
+  handleInvalidContentChange = (content) => {
     this.setState({ invalidContentId: content.id })
   }
 
@@ -317,7 +317,7 @@ export class Choice extends React.Component<SkillProps<ChoiceData>, State> {
 
   render() {
     return (
-      <Tabs id="add-option-skill-tabs" onChange={tab => this.setState({ tab })}>
+      <Tabs id="add-option-skill-tabs" onChange={(tab) => this.setState({ tab })}>
         <Tab id="basic" title="Basic" panel={this.renderBasic()} />
         <Tab id="advanced" title="Advanced" panel={this.renderAdvanced()} />
       </Tabs>

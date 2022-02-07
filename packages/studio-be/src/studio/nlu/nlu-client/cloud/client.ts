@@ -38,8 +38,8 @@ export class CloudClient extends StanClient {
       getToken: (res) => res.access_token
     })
 
-    this.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this))
-    this.axios.interceptors.response.use(undefined, this._errorInterceptor(this.axios, tokenCache).bind(this))
+    this.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this) as any)
+    this.axios.interceptors.response.use(undefined, this._errorInterceptor(this.axios as any, tokenCache).bind(this))
   }
 
   private _createOauthTokenClient =
@@ -58,11 +58,18 @@ export class CloudClient extends StanClient {
       return res.data as OauthResponse
     }
 
-  private _requestInterceptor = (authenticate: () => Promise<string>) => async (config: AxiosRequestConfig) => {
-    const token = await authenticate()
-    config.headers.Authorization = `Bearer ${token}`
-    return config
-  }
+  private _requestInterceptor =
+    (authenticate: () => Promise<string>) =>
+    async (config: AxiosRequestConfig<any>): Promise<AxiosRequestConfig<any>> => {
+      const token = await authenticate()
+
+      if (!config.headers) {
+        config.headers = {}
+      }
+
+      config.headers.Authorization = `Bearer ${token}`
+      return config
+    }
 
   private _errorInterceptor =
     (instance: AxiosInstance, authenticate: () => Promise<string>) => async (error: ErrorRetrier) => {
@@ -70,6 +77,11 @@ export class CloudClient extends StanClient {
         error.config._retry = true
         const token = await authenticate()
         const config = error.config
+
+        if (!config.headers) {
+          config.headers = {}
+        }
+
         config.headers.Authorization = `Bearer ${token}`
         return instance.request(config)
       }

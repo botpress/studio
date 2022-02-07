@@ -21,13 +21,9 @@
     "paths": {
       "~/*": ["*"],
       "botpress/sdk": ["../../studio-be/src/sdk/botpress.d.ts"],
-      "common/*": ["../../studio-be/src/common/*"],
-      "@blueprintjs/core": ["../../studio-ui/node_modules/@blueprintjs/core"],
-      "@blueprintjs/select": ["../../studio-ui/node_modules/@blueprintjs/select"],
-      "react": ["../../studio-ui/node_modules/@types/react"],
-      "react-dom": ["../../studio-ui/node_modules/@types/react-dom"]
+      "common/*": ["../../studio-be/src/common/*"]
     }
   },
   "include": ["src"],
-  "exclude": ["node_modules", "build", "dist", "example", "rollup.config.js", "webpack.config.js"]
+  "exclude": []
 }
