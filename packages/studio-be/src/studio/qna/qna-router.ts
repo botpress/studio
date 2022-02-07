@@ -3,7 +3,7 @@ import { validate } from 'joi'
 import _ from 'lodash'
 import moment from 'moment'
 import multer from 'multer'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 

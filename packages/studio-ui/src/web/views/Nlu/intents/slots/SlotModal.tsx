@@ -3,7 +3,7 @@ import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import random from 'lodash/random'
-import nanoid from 'nanoid'
+import { nanoid } from 'nanoid'
 import React from 'react'
 
 import { NluClient } from '../../client'
@@ -41,11 +41,11 @@ export default class SlotModal extends React.Component<Props, State> {
   nameInput = null
   state = { ...INITIAL_STATE }
 
-  onNameChange = event => {
+  onNameChange = (event) => {
     this.setState({ name: event.target.value.replace(/[^A-Z0-9_-]/gi, '_') })
   }
 
-  onEntitiesChanged = entities => {
+  onEntitiesChanged = (entities) => {
     this.setState({ entities })
   }
 
@@ -76,7 +76,7 @@ export default class SlotModal extends React.Component<Props, State> {
     return maxColor <= N_COLORS ? maxColor + 1 : random(1, N_COLORS)
   }
 
-  onSave = e => {
+  onSave = (e) => {
     e.preventDefault()
 
     const operation = this.state.editing ? 'modified' : 'created'
@@ -109,7 +109,7 @@ export default class SlotModal extends React.Component<Props, State> {
           <FormGroup label={lang.tr('name')}>
             <input
               tabIndex={1}
-              ref={el => (this.nameInput = el)}
+              ref={(el) => (this.nameInput = el)}
               className={`${Classes.INPUT} ${Classes.FILL}`}
               value={this.state.name}
               placeholder={lang.tr('nlu.slots.namePlaceholder')}

@@ -16,6 +16,7 @@ module.exports = {
     '**/*.scss.d.ts',
     '*.js',
     '**/out/**',
+    '**/*.test.ts',
     'packages/ui-shared-lite/**',
     'packages/native-extensions/**'
   ],

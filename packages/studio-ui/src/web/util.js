@@ -1,7 +1,7 @@
 import _ from 'lodash'
-import generate from 'nanoid/generate'
+import { customAlphabet } from 'nanoid'
 
-export const hashCode = str => {
+export const hashCode = (str) => {
   let hash = 0
   if (str.length === 0) {
     return hash
@@ -16,7 +16,7 @@ export const hashCode = str => {
 }
 
 // https://davidwalsh.name/caret-end
-export const moveCursorToEnd = el => {
+export const moveCursorToEnd = (el) => {
   if (!el) {
     return
   }
@@ -32,7 +32,7 @@ export const moveCursorToEnd = el => {
   }
 }
 
-export const prettyId = (length = 10) => generate('1234567890abcdef', length)
+export const prettyId = (length = 10) => customAlphabet('1234567890abcdef', length)()
 
 export const downloadBlob = (name, blob) => {
   const url = window.URL.createObjectURL(blob)
@@ -54,7 +54,7 @@ export const parseBotId = () => {
   return (matches && matches[2]) || ''
 }
 
-export const sanitizeName = text =>
+export const sanitizeName = (text) =>
   text
     .replace(/\s/g, '-')
     .replace(/[^a-zA-Z0-9\/_-]/g, '')

@@ -3,12 +3,12 @@ import { QnaEntry, QnaItem } from 'common/typings'
 import { GhostService } from 'core/bpfs'
 
 import _ from 'lodash'
-import nanoid from 'nanoid/generate'
+import { customAlphabet } from 'nanoid'
 import { NLUService } from 'studio/nlu/nlu-service'
 
 export const NLU_PREFIX = '__qna__'
 
-const safeId = (length = 10) => nanoid('1234567890abcdefghijklmnopqrsuvwxyz', length)
+const safeId = (length = 10) => customAlphabet('1234567890abcdefghijklmnopqrsuvwxyz', length)()
 
 const slugify = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '_')
 
