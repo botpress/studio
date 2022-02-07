@@ -78,7 +78,7 @@ export const parseUtterance = (utterance: string): ParsedUtterance => {
           { text: inBetweenText },
           { text: value, slot: parsedSlot },
           { text: trailingText }
-        ].filter(x => x.text.length)
+        ].filter((x) => x.text.length)
       }
     },
     { utterance: '', parsedSlots: [], parts: [] } as ParsedUtterance

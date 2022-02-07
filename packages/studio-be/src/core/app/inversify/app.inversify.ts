@@ -18,9 +18,9 @@ const container = new Container({ autoBindInjectable: true })
 
 // Binds the Logger name auto-magically on injection based on the `name` @tagged attribute
 // Or else from the Symbol of the class in which the logger is being injected in
-container.bind<string>(TYPES.Logger_Name).toDynamicValue(ctx => {
+container.bind<string>(TYPES.Logger_Name).toDynamicValue((ctx) => {
   const targetName = ctx.currentRequest.parentRequest!.target.name
-  const byProvider = ctx.plan.rootRequest.target.metadata.find(x => x.key === 'name')
+  const byProvider = ctx.plan.rootRequest.target.metadata.find((x) => x.key === 'name')
   let loggerName = (targetName && targetName.value()) || (byProvider && byProvider.value)
 
   if (!loggerName) {
@@ -38,46 +38,25 @@ container.bind<string>(TYPES.Logger_Name).toDynamicValue(ctx => {
 })
 
 container.bind<Logger>(TYPES.Logger).to(PersistedConsoleLogger)
-container.bind<LoggerProvider>(TYPES.LoggerProvider).toProvider<Logger>(context => {
-  return async name => {
+container.bind<LoggerProvider>(TYPES.LoggerProvider).toProvider<Logger>((context) => {
+  return async (name) => {
     return context.container.getTagged<Logger>(TYPES.Logger, 'name', name)
   }
 })
 
-container
-  .bind<LoggerDbPersister>(TYPES.LoggerDbPersister)
-  .to(LoggerDbPersister)
-  .inSingletonScope()
+container.bind<LoggerDbPersister>(TYPES.LoggerDbPersister).to(LoggerDbPersister).inSingletonScope()
 
-container
-  .bind<LoggerFilePersister>(TYPES.LoggerFilePersister)
-  .to(LoggerFilePersister)
-  .inSingletonScope()
+container.bind<LoggerFilePersister>(TYPES.LoggerFilePersister).to(LoggerFilePersister).inSingletonScope()
 
-container
-  .bind<ModuleLoader>(TYPES.ModuleLoader)
-  .to(ModuleLoader)
-  .inSingletonScope()
+container.bind<ModuleLoader>(TYPES.ModuleLoader).to(ModuleLoader).inSingletonScope()
 
-container
-  .bind<Botpress>(TYPES.Botpress)
-  .to(Botpress)
-  .inSingletonScope()
+container.bind<Botpress>(TYPES.Botpress).to(Botpress).inSingletonScope()
 
-container
-  .bind<HTTPServer>(TYPES.HTTPServer)
-  .to(HTTPServer)
-  .inSingletonScope()
+container.bind<HTTPServer>(TYPES.HTTPServer).to(HTTPServer).inSingletonScope()
 
-container
-  .bind<ConfigProvider>(TYPES.ConfigProvider)
-  .to(ConfigProvider)
-  .inSingletonScope()
+container.bind<ConfigProvider>(TYPES.ConfigProvider).to(ConfigProvider).inSingletonScope()
 
-container
-  .bind<WorkspaceService>(TYPES.WorkspaceService)
-  .to(WorkspaceService)
-  .inSingletonScope()
+container.bind<WorkspaceService>(TYPES.WorkspaceService).to(WorkspaceService).inSingletonScope()
 
 const isPackaged = !!eval('process.pkg')
 

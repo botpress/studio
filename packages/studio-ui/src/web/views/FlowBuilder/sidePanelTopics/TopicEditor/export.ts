@@ -20,7 +20,7 @@ const getKnowledge = async (topicName: string) => {
 
 const getWorkflows = async (wfs: string[]) => {
   try {
-    return Promise.mapSeries(wfs, async name => exportCompleteWorkflow(name))
+    return Promise.mapSeries(wfs, async (name) => exportCompleteWorkflow(name))
   } catch (err) {
     console.error(`Can't export intents: ${err}`)
     return []
@@ -32,8 +32,8 @@ export const exportCompleteTopic = async (topicName: string, flows: any[]): Prom
 
   return {
     name: topicName,
-    description: topics.find(x => x.name === topicName)?.description,
+    description: topics.find((x) => x.name === topicName)?.description,
     knowledge: await getKnowledge(topicName),
-    workflows: await getWorkflows(flows.filter(x => x.name.startsWith(topicName)).map(x => x.name))
+    workflows: await getWorkflows(flows.filter((x) => x.name.startsWith(topicName)).map((x) => x.name))
   }
 }

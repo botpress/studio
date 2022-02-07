@@ -34,7 +34,7 @@ function makeFileName(hash: string, lang: string): string {
 async function pruneModels(ghost: sdk.ScopedGhostService, languageCode: string): Promise<void | void[]> {
   const models = await listModelsForLang(ghost, languageCode)
   if (models.length > MAX_MODELS_TO_KEEP) {
-    return Promise.map(models.slice(MAX_MODELS_TO_KEEP), file => ghost.deleteFile(MODELS_DIR, file))
+    return Promise.map(models.slice(MAX_MODELS_TO_KEEP), (file) => ghost.deleteFile(MODELS_DIR, file))
   }
 }
 
@@ -56,7 +56,7 @@ async function getModel(ghost: sdk.ScopedGhostService, hash: string, lang: strin
 
   const tarStream = tar.x({ cwd: tmpDir.name, strict: true }, ['model']) as WriteStream
   buffStream.pipe(tarStream)
-  await new Promise(resolve => tarStream.on('close', resolve))
+  await new Promise((resolve) => tarStream.on('close', resolve))
 
   const modelBuff = await fse.readFile(path.join(tmpDir.name, 'model'))
   let mod
@@ -104,11 +104,11 @@ const migration: Migration = {
     const migrateModels = async (bot: sdk.BotConfig) => {
       const ghost = ghostService.forBot(bot.id)
 
-      return Promise.mapSeries(bot.languages, async lang => {
+      return Promise.mapSeries(bot.languages, async (lang) => {
         await pruneModels(ghost, lang)
         const modNames = await listModelsForLang(ghost, lang)
 
-        return Promise.map(modNames, async mod => {
+        return Promise.map(modNames, async (mod) => {
           try {
             const model: any = await ghost.readFileAsObject(MODELS_DIR, mod)
             if (!model.hash) {

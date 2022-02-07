@@ -86,10 +86,7 @@ export class BotService {
         const bot = await this.findBotById(botId)
         bot && bots.set(botId, bot)
       } catch (err) {
-        this.logger
-          .forBot(botId)
-          .attachError(err)
-          .error(`Bot configuration file not found for bot "${botId}"`)
+        this.logger.forBot(botId).attachError(err).error(`Bot configuration file not found for bot "${botId}"`)
       }
     }
 
@@ -197,7 +194,7 @@ export class BotService {
     const destGhost = this.ghostService.forBot(destBotId)
     const botContent = await sourceGhost.directoryListing('/')
     await Promise.all(
-      botContent.map(async file => destGhost.upsertFile('/', file, await sourceGhost.readFileAsBuffer('/', file)))
+      botContent.map(async (file) => destGhost.upsertFile('/', file, await sourceGhost.readFileAsBuffer('/', file)))
     )
     // const workspaceId = await this.workspaceService.getBotWorkspaceId(sourceBotId)
     // await this.workspaceService.addBotRef(destBotId, workspaceId)
@@ -220,7 +217,7 @@ export class BotService {
     return (await this.getBotsIds(ignoreCache)).includes(botId)
   }
 
-  @WrapErrorsWith(args => `Could not delete bot '${args[0]}'`, { hideStackTrace: true })
+  @WrapErrorsWith((args) => `Could not delete bot '${args[0]}'`, { hideStackTrace: true })
   async deleteBot(botId: string) {
     if (!(await this.botExists(botId))) {
       throw new Error(`Bot "${botId}" doesn't exist`)
@@ -262,7 +259,7 @@ export class BotService {
       this._invalidateBotIds()
 
       // Call the BP client to check if bots must be trained, until the logic is moved on the studio
-      this._trainWatchers[botId] = this.ghostService.forBot(botId).onFileChanged(async filePath => {
+      this._trainWatchers[botId] = this.ghostService.forBot(botId).onFileChanged(async (filePath) => {
         const hasPotentialNLUChange = filePath.includes('/intents/') || filePath.includes('/entities/')
         if (!hasPotentialNLUChange) {
           return
@@ -273,10 +270,7 @@ export class BotService {
 
       return true
     } catch (err) {
-      this.logger
-        .forBot(botId)
-        .attachError(err)
-        .critical(`Cannot mount bot "${botId}"`)
+      this.logger.forBot(botId).attachError(err).critical(`Cannot mount bot "${botId}"`)
 
       return false
     } finally {

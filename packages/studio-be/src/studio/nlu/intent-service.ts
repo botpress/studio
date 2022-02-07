@@ -18,7 +18,7 @@ export class IntentService {
 
   public async getIntents(botId: string): Promise<sdk.NLU.IntentDefinition[]> {
     const intentNames = await this.ghostService.forBot(botId).directoryListing(INTENTS_DIR, '*.json')
-    return Promise.map(intentNames, n => this.getIntent(botId, n))
+    return Promise.map(intentNames, (n) => this.getIntent(botId, n))
   }
 
   public async getIntent(botId: string, intentName: string): Promise<sdk.NLU.IntentDefinition> {
@@ -44,8 +44,8 @@ export class IntentService {
     _.chain(intent.slots)
       .flatMap('entities')
       .uniq()
-      .forEach(entity => {
-        if (!availableEntities.find(e => e.name === entity)) {
+      .forEach((entity) => {
+        if (!availableEntities.find((e) => e.name === entity)) {
           throw Error(`"${entity}" is neither a system entity nor a custom entity`)
         }
       })
@@ -82,9 +82,9 @@ export class IntentService {
 
   // ideally this would be a filewatcher
   public async updateIntentsSlotsEntities(botId: string, prevEntityName: string, newEntityName: string): Promise<void> {
-    _.each(await this.getIntents(botId), async intent => {
+    _.each(await this.getIntents(botId), async (intent) => {
       let modified = false
-      _.each(intent.slots, slot => {
+      _.each(intent.slots, (slot) => {
         _.forEach(slot.entities, (e, index, arr) => {
           if (e === prevEntityName) {
             arr[index] = newEntityName
@@ -115,9 +115,9 @@ export class IntentService {
     for (const flow of flows) {
       const topicName = flow.name.split('/')[0]
 
-      for (const node of flow.nodes.filter(x => x.type === 'trigger')) {
+      for (const node of flow.nodes.filter((x) => x.type === 'trigger')) {
         const tn = node as sdk.TriggerNode
-        const match = tn.conditions.find(x => x.id === 'user_intent_is')
+        const match = tn.conditions.find((x) => x.id === 'user_intent_is')
         const name = match?.params?.intentName as string
 
         if (name && name !== 'none' && (!intentNames || intentNames.includes(name))) {

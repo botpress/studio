@@ -47,12 +47,12 @@ export namespace FlowsAPI {
 
     const debounced = currentUpdates[name]
     if (debounced) {
-      return BbPromise.fromCallback(cb => debounced(flowDto, cb))
+      return BbPromise.fromCallback((cb) => debounced(flowDto, cb))
     }
 
     const newDebounce = _.debounce(buildUpdateDebounced(name), DELAY, { leading: true })
     currentUpdates[name] = newDebounce
-    return BbPromise.fromCallback(cb => newDebounce(flowDto, cb))
+    return BbPromise.fromCallback((cb) => newDebounce(flowDto, cb))
   }
 
   const apiDeleteFlow = async (flowName: string) => {
@@ -60,7 +60,7 @@ export namespace FlowsAPI {
     return axios.post(`${window.STUDIO_API_PATH}/flows/${flowName}/delete`)
   }
 
-  const apiInsertFlow = async flow => {
+  const apiInsertFlow = async (flow) => {
     return axios.post(`${window.STUDIO_API_PATH}/flows`, { flow })
   }
 

@@ -69,7 +69,7 @@ export class BotMigrationService {
   }
 
   private displayMigrationStatus(configVersion: string, missingMigrations: MigrationFile[], logger: sdk.Logger) {
-    const migrations = missingMigrations.map(x => this.migService.loadedMigrations[x.filename].info)
+    const migrations = missingMigrations.map((x) => this.migService.loadedMigrations[x.filename].info)
 
     logger.warn(chalk`
 ${_.repeat(' ', 9)}========================================
@@ -78,12 +78,12 @@ ${_.repeat(' ', 9)}========================================
 {dim ${centerText(`${migrations.length} change${migrations.length === 1 ? '' : 's'}`, 40, 9)}}
 ${_.repeat(' ', 9)}========================================`)
 
-    Object.keys(types).map(type => {
+    Object.keys(types).map((type) => {
       logger.warn(chalk`{bold ${types[type]}}`)
-      const filtered = migrations.filter(x => x.type === type)
+      const filtered = migrations.filter((x) => x.type === type)
 
       if (filtered.length) {
-        filtered.map(x => logger.warn(`- ${x.description}`))
+        filtered.map((x) => logger.warn(`- ${x.description}`))
       } else {
         logger.warn('- None')
       }

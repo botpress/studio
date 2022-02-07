@@ -37,7 +37,7 @@ const migration: Migration = {
       for (const fileName of entFiles) {
         try {
           const contentElements = await bpfs.readFileAsObject<sdk.ContentElement[]>(ELEMENTS_DIR, fileName)
-          contentElements.forEach(element => updateFormData(element))
+          contentElements.forEach((element) => updateFormData(element))
 
           const fileContent = JSON.stringify(contentElements, undefined, 2)
 
@@ -55,7 +55,7 @@ const migration: Migration = {
       await migrateBotTextContent(metadata.botId)
     } else {
       const bots = await botService.getBots()
-      await Promise.map(bots.keys(), botId => migrateBotTextContent(botId))
+      await Promise.map(bots.keys(), (botId) => migrateBotTextContent(botId))
     }
 
     return {
