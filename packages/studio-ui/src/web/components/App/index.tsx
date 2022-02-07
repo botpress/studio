@@ -69,7 +69,6 @@ class App extends Component<Props> {
     this.fetchData()
 
     authEvents.on('login', this.fetchData)
-    authEvents.on('new_token', this.fetchData)
 
     EventBus.default.on('flow.changes', payload => {
       // TODO: should check if real uniq Id is different. Multiple browser windows can be using the same email. There should be a uniq window Id.
