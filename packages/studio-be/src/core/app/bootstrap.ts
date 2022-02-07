@@ -23,7 +23,7 @@ async function setupEnv(app: BotpressApp) {
 async function getLogger(provider: LoggerProvider, loggerName: string) {
   const logger = await provider(loggerName)
 
-  global.printErrorDefault = err => {
+  global.printErrorDefault = (err) => {
     logger.attachError(err).error('Unhandled Rejection')
   }
 
@@ -37,21 +37,14 @@ async function setupDebugLogger(provider: LoggerProvider) {
     const message = args[0]
     const rest = args.slice(1)
 
-    logger
-      .level(LogLevel.DEBUG)
-      .persist(false)
-      .forBot(botId)
-      .debug(message.trim(), rest)
+    logger.level(LogLevel.DEBUG).persist(false).forBot(botId).debug(message.trim(), rest)
   }
 
-  global.printLog = args => {
+  global.printLog = (args) => {
     const message = args[0]
     const rest = args.slice(1)
 
-    logger
-      .level(LogLevel.DEBUG)
-      .persist(false)
-      .debug(message.trim(), rest)
+    logger.level(LogLevel.DEBUG).persist(false).debug(message.trim(), rest)
   }
 }
 
@@ -96,8 +89,8 @@ async function start() {
   await setupEnv(app)
 
   const globalConfig = await app.config.getBotpressConfig()
-  const modules = _.uniqBy(globalConfig.modules, x => x.location)
-  const enabledModules = modules.filter(m => m.enabled)
+  const modules = _.uniqBy(globalConfig.modules, (x) => x.location)
+  const enabledModules = modules.filter((m) => m.enabled)
 
   const logger = await getLogger(app.logger, 'Launcher')
   const resolver = new ModuleResolver(logger)
@@ -134,7 +127,7 @@ This is a fatal error, process will exit.`
     }
   }
 
-  await app.botpress.start({ modules: loadedModules.map(m => m.entryPoint) }).catch(err => {
+  await app.botpress.start({ modules: loadedModules.map((m) => m.entryPoint) }).catch((err) => {
     logger.attachError(err).error('Error starting Botpress Studio')
 
     if (!process.IS_FAILSAFE) {

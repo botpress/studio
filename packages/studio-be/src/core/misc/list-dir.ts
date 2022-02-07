@@ -12,14 +12,14 @@ export const listDir = async (
   dirPath: string,
   options: { fileFilter?: string; ignores?: RegExp[] } = {}
 ): Promise<FileListing[]> => {
-  const files = await Promise.fromCallback<string[]>(cb =>
+  const files = await Promise.fromCallback<string[]>((cb) =>
     glob(options.fileFilter || '**/*', { cwd: dirPath, nodir: true }, cb)
   )
 
   return files
-    .filter(x => {
-      const match = (options.ignores || []).filter(i => x.match(i))
+    .filter((x) => {
+      const match = (options.ignores || []).filter((i) => x.match(i))
       return match && !match.length
     })
-    .map(relativePath => ({ relativePath, absolutePath: path.join(dirPath, relativePath) }))
+    .map((relativePath) => ({ relativePath, absolutePath: path.join(dirPath, relativePath) }))
 }

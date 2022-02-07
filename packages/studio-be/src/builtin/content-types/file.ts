@@ -33,7 +33,7 @@ const contentType: ContentType = {
     }
   },
 
-  computePreviewText: formData => {
+  computePreviewText: (formData) => {
     if (!formData.file) {
       return ''
     }
@@ -49,7 +49,7 @@ const contentType: ContentType = {
     }
   },
 
-  renderElement: data => utils.extractPayload('file', data)
+  renderElement: (data) => utils.extractPayload('file', data)
 }
 
 export default contentType

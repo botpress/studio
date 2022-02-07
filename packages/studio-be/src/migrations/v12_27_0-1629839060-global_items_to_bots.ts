@@ -37,8 +37,8 @@ const migration: Migration = {
     const builtinTypes = await listDir(getBuiltinPath(CONTENT_DIR), { fileFilter: '**/*.js' })
 
     const contentTypes = [
-      ...globalTypes.filter(x => !x.startsWith('builtin/')),
-      ...builtinTypes.map(x => x.relativePath)
+      ...globalTypes.filter((x) => !x.startsWith('builtin/')),
+      ...builtinTypes.map((x) => x.relativePath)
     ]
 
     const updateBotContentTypes = async (botId: string, botConfig: sdk.BotConfig) => {
@@ -49,9 +49,9 @@ const migration: Migration = {
 
       for (const type of contentTypes) {
         let content
-        if (builtinTypes.find(x => x.relativePath === type)) {
+        if (builtinTypes.find((x) => x.relativePath === type)) {
           content = await fse.readFile(path.join(getBuiltinPath(CONTENT_DIR), type))
-        } else if (globalTypes.find(x => x === type)) {
+        } else if (globalTypes.find((x) => x === type)) {
           content = await ghostService.global().readFileAsBuffer(CONTENT_DIR, type)
         }
 
@@ -70,22 +70,22 @@ const migration: Migration = {
     const builtinActions = await listDir(getBuiltinPath('actions'))
 
     // We ignore actions of custom modules for now, since they may require their custom node_modules folder
-    const globalWithoutCustomModules = globalActions.filter(fileName => path.dirname(fileName) === '.')
+    const globalWithoutCustomModules = globalActions.filter((fileName) => path.dirname(fileName) === '.')
 
     const updateBotActions = async (botId: string) => {
       const botActions = await ghostService.forBot(botId).directoryListing(ACTIONS_DIR, '*.*')
       const usedActions = await flowService.forBot(botId).getAllFlowActions()
-      const filteredActions = usedActions.filter(x => !IGNORED_ACTION.includes(x)).map(x => `${x}.js`)
+      const filteredActions = usedActions.filter((x) => !IGNORED_ACTION.includes(x)).map((x) => `${x}.js`)
 
       for (const actionFile of filteredActions) {
-        if (botActions.find(x => x === actionFile)) {
+        if (botActions.find((x) => x === actionFile)) {
           continue
         }
 
         let content
-        if (builtinActions.find(x => x.relativePath === actionFile)) {
+        if (builtinActions.find((x) => x.relativePath === actionFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(ACTIONS_DIR), actionFile))
-        } else if (globalWithoutCustomModules.find(x => x === actionFile)) {
+        } else if (globalWithoutCustomModules.find((x) => x === actionFile)) {
           content = await ghostService.global().readFileAsBuffer(ACTIONS_DIR, actionFile)
         }
 
@@ -104,25 +104,25 @@ const migration: Migration = {
     const builtinHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
 
     // Ignore hooks of custom modules, since they may need their node_modules. We copy other global hooks locally
-    const globalBotHooks = globalHooks.filter(path => {
+    const globalBotHooks = globalHooks.filter((path) => {
       const [hookType, _moduleName, fileName] = path.split('/')
       return BOT_HOOKS.includes(hookType) && !fileName
     })
 
-    const globalWithBuiltin = [...globalBotHooks, ...builtinHooks.map(x => x.relativePath)]
+    const globalWithBuiltin = [...globalBotHooks, ...builtinHooks.map((x) => x.relativePath)]
 
     const updateBotHooks = async (botId: string) => {
       const botHooks = await ghostService.forBot(botId).directoryListing(HOOKS_DIR, '*.*')
 
       for (const hookFile of globalWithBuiltin) {
-        if (botHooks.find(x => x === hookFile)) {
+        if (botHooks.find((x) => x === hookFile)) {
           continue
         }
 
         let content
-        if (globalHooks.find(x => x === hookFile)) {
+        if (globalHooks.find((x) => x === hookFile)) {
           content = await ghostService.global().readFileAsBuffer(HOOKS_DIR, hookFile)
-        } else if (builtinHooks.find(x => x.relativePath === hookFile)) {
+        } else if (builtinHooks.find((x) => x.relativePath === hookFile)) {
           content = await fse.readFile(path.join(getBuiltinPath(HOOKS_DIR), hookFile))
         }
 

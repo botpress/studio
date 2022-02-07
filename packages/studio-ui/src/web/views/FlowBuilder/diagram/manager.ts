@@ -2,6 +2,7 @@ import { FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
 import { DefaultLinkModel, DiagramEngine, DiagramModel, DiagramWidget, PointModel } from 'storm-react-diagrams'
 import { hashCode } from '~/util'
+import { ZOOM_MIN, ZOOM_MAX, ZOOM_SPEED_SCALAR, ZOOM_IN_OUT_AMT, DIAGRAM_PADDING } from './constants'
 
 import { FlowNode } from './debugger'
 import { BlockModel } from './nodes/Block'
@@ -9,11 +10,6 @@ import { BlockModel } from './nodes/Block'
 interface NodeProblem {
   nodeName: string
   missingPorts: any
-}
-
-interface DiagramContainerSize {
-  width: number
-  height: number
 }
 
 type ExtendedDiagramModel = {
@@ -31,7 +27,6 @@ const passThroughNodeProps: string[] = [
   'content',
   'activeWorkflow'
 ]
-export const DIAGRAM_PADDING: number = 100
 
 // Must be identified by the deleteSelectedElement logic to know it needs to delete something
 export const nodeTypes = ['standard', 'trigger', 'skill-call', 'say_something', 'execute', 'listen', 'router', 'action']
@@ -52,13 +47,14 @@ export class DiagramManager {
   private diagramEngine: DiagramEngine
   private activeModel: ExtendedDiagramModel
   private diagramWidget: DiagramWidget
+  private diagramWidgetEl: HTMLDivElement
   private highlightedNodes?: FlowNode[] = []
   private highlightedLinks?: string[] = []
   private highlightFilter?: string
   private currentFlow: FlowView
   private isReadOnly: boolean
-  private diagramContainerSize: DiagramContainerSize
   private storeDispatch
+  private zoomLevelFloat: number
 
   constructor(engine, storeActions) {
     this.diagramEngine = engine
@@ -77,22 +73,97 @@ export class DiagramManager {
     }
 
     const nodes = this.getBlockModelFromFlow(currentFlow)
-    this.activeModel.addListener({ zoomUpdated: e => this.storeDispatch.zoomToLevel?.(Math.floor(e.zoom)) })
+    this.activeModel.addListener({ zoomUpdated: (e) => this.storeDispatch.zoomToLevel?.(Math.floor(e.zoom)) })
 
     this.activeModel.addAll(...nodes)
-    nodes.forEach(node => this._createNodeLinks(node, nodes, this.currentFlow.links))
+    nodes.forEach((node) => this._createNodeLinks(node, nodes, this.currentFlow.links))
 
     this.diagramEngine.setDiagramModel(this.activeModel)
-    this._updateZoomLevel(nodes)
 
+    // defer initial center & zoom because
+    // we need one paint to know node sizes
+    setTimeout(this.zoomToFit.bind(this), 0)
     // Setting the initial links hash when changing flow
     this.getLinksRequiringUpdate()
     this.highlightLinkedNodes()
   }
 
-  updateZoomLevel() {
-    const nodes = this.getBlockModelFromFlow(this.currentFlow)
-    this._updateZoomLevel(nodes)
+  /** Sets the internal zoom level, and returns a "safe" zoom level */
+  setZoomLevelFloat = (delta: number) => {
+    const zoom = Math.min(
+      Math.max((this.zoomLevelFloat || this.activeModel.getZoomLevel()) + delta, ZOOM_MIN),
+      ZOOM_MAX
+    )
+    const safeZoom = Math.round(zoom)
+    // Update internal zoom state
+    this.zoomLevelFloat = zoom
+    return safeZoom
+  }
+
+  handleDiagramWheel = (e: WheelEvent) => {
+    if (!this.diagramWidget.props.allowCanvasZoom) {
+      return
+    }
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    const previousZoom = this.activeModel.getZoomLevel()
+
+    const delta = (this.diagramWidget.props.inverseZoom ? -e.deltaY : e.deltaY) / ZOOM_SPEED_SCALAR
+    const currentZoom = this.setZoomLevelFloat(delta)
+
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+
+      // Recenter
+      const { left, top } = this.diagramWidgetEl.getBoundingClientRect()
+      this.centerDiagramAfterZoom(previousZoom, currentZoom, { x: e.clientX - left, y: e.clientY - top })
+    }
+  }
+
+  centerDiagramAfterZoom = (previousZoom: number, currentZoom: number, centerOn?: { x: number; y: number }) => {
+    const { width, height } = this.diagramWidgetEl.getBoundingClientRect()
+    const previousZoomFactor = previousZoom / 100
+    const zoomFactor = currentZoom / 100
+    const widthDiff = width * zoomFactor - width * previousZoomFactor
+    const heightDiff = height * zoomFactor - height * previousZoomFactor
+
+    const center = centerOn || { x: width / 2, y: height / 2 }
+
+    const xFactor = (center.x - this.activeModel.getOffsetX()) / previousZoomFactor / width
+    const yFactor = (center.y - this.activeModel.getOffsetY()) / previousZoomFactor / height
+    this.activeModel.setOffset(
+      this.activeModel.getOffsetX() - widthDiff * xFactor,
+      this.activeModel.getOffsetY() - heightDiff * yFactor
+    )
+    this.diagramEngine.enableRepaintEntities([])
+    this.diagramWidget.forceUpdate()
+  }
+
+  zoomIn = () => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(ZOOM_IN_OUT_AMT)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
+  }
+
+  zoomOut = () => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(-ZOOM_IN_OUT_AMT)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
+  }
+
+  zoomToLevel = (zoom: number) => {
+    const previousZoom = this.activeModel.getZoomLevel()
+    const currentZoom = this.setZoomLevelFloat(zoom - previousZoom)
+    if (previousZoom !== currentZoom) {
+      this.activeModel.setZoomLevel(currentZoom)
+      this.centerDiagramAfterZoom(previousZoom, currentZoom)
+    }
   }
 
   getBlockModelFromFlow(flow: FlowView) {
@@ -118,7 +189,7 @@ export class DiagramManager {
     }
 
     const matchNodeName = !!this.highlightedNodes?.find(
-      x => x.flow === this.currentFlow?.name && node.name?.includes(x.node)
+      (x) => x.flow === this.currentFlow?.name && node.name?.includes(x.node)
     )
 
     let matchCorpus
@@ -145,7 +216,7 @@ export class DiagramManager {
     const snapshot = _.once(this._serialize)
 
     // Remove nodes that have been deleted
-    _.keys(this.activeModel.getNodes()).forEach(nodeId => {
+    _.keys(this.activeModel.getNodes()).forEach((nodeId) => {
       if (!_.find(this.currentFlow.nodes, { id: nodeId })) {
         this._deleteNode(nodeId)
       }
@@ -193,8 +264,8 @@ export class DiagramManager {
   disconnectPorts(model: any) {
     const ports = model.getPorts()
 
-    Object.keys(ports).forEach(p => {
-      _.values(ports[p].links).forEach(link => {
+    Object.keys(ports).forEach((p) => {
+      _.values(ports[p].links).forEach((link) => {
         this.activeModel.removeLink(link)
         ports[p].removeLink(link)
       })
@@ -204,13 +275,13 @@ export class DiagramManager {
   highlightLinkedNodes() {
     this.highlightedLinks = []
 
-    const nodeNames = this.highlightedNodes.filter(x => x.flow === this.currentFlow?.name).map(x => x.node)
+    const nodeNames = this.highlightedNodes.filter((x) => x.flow === this.currentFlow?.name).map((x) => x.node)
     if (!nodeNames) {
       return
     }
 
     const links = _.values(this.activeModel.getLinks())
-    links.forEach(link => {
+    links.forEach((link) => {
       const outPort = link.getSourcePort().name.startsWith('out') ? link.getSourcePort() : link.getTargetPort()
       const targetPort = link.getSourcePort().name.startsWith('out') ? link.getTargetPort() : link.getSourcePort()
 
@@ -230,7 +301,7 @@ export class DiagramManager {
     // 1) All links are connected to ONE [out] and [in] port
     // 2) All ports have only ONE outbound link
     const links = _.values(this.activeModel.getLinks())
-    links.forEach(link => {
+    links.forEach((link) => {
       // If there's not two ports attached to the link
       if (!link.getSourcePort() || !link.getTargetPort()) {
         link.remove()
@@ -251,7 +322,7 @@ export class DiagramManager {
 
       // If ports have more than one output link
       const ports = [link.getSourcePort(), link.getTargetPort()]
-      ports.forEach(port => {
+      ports.forEach((port) => {
         if (!port) {
           return
         }
@@ -287,20 +358,20 @@ export class DiagramManager {
   }
 
   cleanPortLinks() {
-    const allLinkIds = _.values(this.activeModel.getLinks()).map(x => x.getID())
+    const allLinkIds = _.values(this.activeModel.getLinks()).map((x) => x.getID())
 
     // Loops through all nodes to extract all their ports
     const allPorts = _.flatten(
       _.values(this.activeModel.getNodes())
-        .map(x => x.ports)
+        .map((x) => x.ports)
         .map(_.values)
     )
 
     // For each ports, if it has an invalid link, it will be removed
-    allPorts.map(port =>
+    allPorts.map((port) =>
       Object.keys(port.links)
-        .filter(x => !allLinkIds.includes(x))
-        .map(x => port.links[x].remove())
+        .filter((x) => !allLinkIds.includes(x))
+        .map((x) => port.links[x].remove())
     )
   }
 
@@ -335,9 +406,9 @@ export class DiagramManager {
     this.isReadOnly = readOnly
   }
 
-  setDiagramContainer(diagramWidget, diagramContainerSize: DiagramContainerSize) {
-    this.diagramContainerSize = diagramContainerSize
+  setDiagramContainer(diagramWidget, diagramWidgetEl) {
     this.diagramWidget = diagramWidget
+    this.diagramWidgetEl = diagramWidgetEl
   }
 
   getSelectedNode() {
@@ -345,25 +416,25 @@ export class DiagramManager {
   }
 
   unselectAllElements() {
-    this.activeModel.getSelectedItems().map(x => x.setSelected(false))
+    this.activeModel.getSelectedItems().map((x) => x.setSelected(false))
   }
 
   getNodeProblems(): NodeProblem[] {
     const nodes = this.activeModel.getNodes()
     return Object.keys(nodes)
-      .map(node => ({
+      .map((node) => ({
         nodeName: (nodes[node] as BlockModel).name,
-        missingPorts: (nodes[node] as BlockModel).next.filter(n => n.node === '').length
+        missingPorts: (nodes[node] as BlockModel).next.filter((n) => n.node === '').length
       }))
-      .filter(x => x.missingPorts > 0)
+      .filter((x) => x.missingPorts > 0)
   }
 
   private _deleteNode(nodeId: string) {
     const ports = this.activeModel.getNode(nodeId).getPorts()
     this.activeModel.removeNode(nodeId)
 
-    _.values(ports).forEach(port => {
-      _.values(port.getLinks()).forEach(link => {
+    _.values(ports).forEach((port) => {
+      _.values(port.getLinks()).forEach((link) => {
         this.activeModel.removeLink(link)
       })
     })
@@ -402,8 +473,8 @@ export class DiagramManager {
     model.setPosition(node.x, node.y)
 
     const ports = model.getOutPorts()
-    ports.forEach(port => {
-      _.values(port.links).forEach(link => {
+    ports.forEach((port) => {
+      _.values(port.links).forEach((link) => {
         this.activeModel.removeLink(link)
         port.removeLink(link)
       })
@@ -451,7 +522,7 @@ export class DiagramManager {
 
         if (existingLink) {
           link.setPoints(
-            existingLink.points.map(pt => {
+            existingLink.points.map((pt) => {
               return new PointModel(link, { x: pt.x, y: pt.y })
             })
           )
@@ -462,22 +533,50 @@ export class DiagramManager {
     })
   }
 
-  private _updateZoomLevel(nodes) {
-    const { width: diagramWidth, height: diagramHeight } = this.diagramContainerSize
-    const totalFlowWidth = _.max(_.map(nodes, 'x')) - _.min(_.map(nodes, 'x')) || 0
-    const totalFlowHeight = _.max(_.map(nodes, 'y')) - _.min(_.map(nodes, 'y')) || 0
-    const zoomLevelX = Math.min(1, diagramWidth / (totalFlowWidth + 2 * DIAGRAM_PADDING))
-    const zoomLevelY = Math.min(1, diagramHeight / (totalFlowHeight + 2 * DIAGRAM_PADDING))
-    const zoomLevel = Math.min(zoomLevelX, zoomLevelY)
+  zoomToFit() {
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity
 
-    const offsetX = DIAGRAM_PADDING - _.min(_.map(nodes, 'x')) || 100
-    const offsetY = DIAGRAM_PADDING - _.min(_.map(nodes, 'y')) || 100
+    for (const node of this.getBlockModelFromFlow(this.currentFlow)) {
+      const el = document.querySelector(`[data-nodeid="${node.id}"]`) as HTMLElement
+      if (!el) {
+        continue
+      }
+      if (node.x < minX) {
+        minX = node.x
+      }
+      if (node.y < minY) {
+        minY = node.y
+      }
+      if (node.x + el.offsetWidth > maxX) {
+        maxX = node.x + el.offsetWidth
+      }
+      if (node.y + el.offsetHeight > maxY) {
+        maxY = node.y + el.offsetHeight
+      }
+    }
 
-    this.activeModel.setZoomLevel(zoomLevel * 100)
-    this.activeModel.setOffsetX(offsetX * zoomLevel)
-    this.activeModel.setOffsetY(offsetY * zoomLevel)
+    let { width, height } = this.diagramWidgetEl.getBoundingClientRect()
+    width = width - 2 * DIAGRAM_PADDING
+    height = height - 2 * DIAGRAM_PADDING
+    const containerAspectRatio = height / width
 
-    this.diagramWidget && this.diagramWidget.forceUpdate()
+    const totalFlowWidth = maxX - minX
+    const totalFlowHeight = maxY - minY
+    const graphAspectRatio = totalFlowHeight / totalFlowWidth
+
+    const prevZoom = this.activeModel.getZoomLevel()
+    const toZoom = 100 * (containerAspectRatio <= graphAspectRatio ? height / totalFlowHeight : width / totalFlowWidth)
+    const safeZoom = this.setZoomLevelFloat(toZoom - prevZoom)
+    const offsetX = -minX * (safeZoom / 100) + (width - totalFlowWidth * (safeZoom / 100)) / 2 + DIAGRAM_PADDING
+    const offsetY = -minY * (safeZoom / 100) + (height - totalFlowHeight * (safeZoom / 100)) / 2 + DIAGRAM_PADDING
+
+    this.activeModel.setZoomLevel(safeZoom)
+    this.activeModel.setOffsetX(offsetX)
+    this.activeModel.setOffsetY(offsetY)
+    this.diagramWidget.forceUpdate()
   }
 
   private _serialize = () => {
@@ -515,13 +614,13 @@ export class DiagramManager {
   private _serializeLinks() {
     const diagram = this.activeModel.serializeDiagram()
 
-    const links = diagram.links.map(link => {
+    const links = diagram.links.map((link) => {
       const instance = this.activeModel.getLink(link.id)
       const model = {
         source: link.source,
         sourcePort: instance.getSourcePort().name,
         target: link.target,
-        points: link.points.map(pt => ({ x: Math.floor(pt.x), y: Math.floor(pt.y) }))
+        points: link.points.map((pt) => ({ x: Math.floor(pt.x), y: Math.floor(pt.y) }))
       }
 
       if (instance.getSourcePort().name === 'in') {

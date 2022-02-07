@@ -18,7 +18,7 @@ class EventBus extends EventEmitter2 {
     authEvents.on('new_token', this.setup)
   }
 
-  dispatchSocketEvent = event => {
+  dispatchSocketEvent = (event) => {
     this.emit(event.name, event.data, 'server')
   }
 

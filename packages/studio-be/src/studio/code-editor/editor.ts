@@ -32,7 +32,7 @@ export class Editor {
   async getAllFiles(permissions: FilePermissions, listBuiltin?: boolean): Promise<FilesDS> {
     const files: FilesDS = {}
 
-    await Promise.mapSeries(Object.keys(permissions), async type => {
+    await Promise.mapSeries(Object.keys(permissions), async (type) => {
       const userPermissions = permissions[type]
       if (userPermissions.read) {
         files[type] = await this.loadFiles(userPermissions.type, this._botId, listBuiltin)
@@ -152,7 +152,7 @@ export class Editor {
       { name: 'es6include.d.ts', location: path.join(__dirname, '/../../typings/es6include.txt') }
     ]
 
-    const content = await Promise.mapSeries(files, file => this.readFile(file.name, file.location))
+    const content = await Promise.mapSeries(files, (file) => this.readFile(file.name, file.location))
     const localTypings = _.mapValues(_.keyBy(content, 'name'), 'fileContent')
 
     this._typings = {

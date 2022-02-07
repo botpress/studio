@@ -2,7 +2,6 @@
 // Please do not change this file!
 interface CssExports {
   'actionsWrapper': string;
-  'contentNotice': string;
   'flexContainer': string;
   'missingIcon': string;
   'warning': string;

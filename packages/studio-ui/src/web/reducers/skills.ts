@@ -97,7 +97,7 @@ const reducer = handleActions(
       }
     }),
 
-    [cancelNewSkill]: state => ({
+    [cancelNewSkill]: (state) => ({
       ...state,
       builder: {
         ...state.builder,
@@ -128,7 +128,7 @@ const reducer = handleActions(
       }
     }),
 
-    [requestUpdateSkill]: state => ({
+    [requestUpdateSkill]: (state) => ({
       ...state,
       builder: {
         ...state.builder,

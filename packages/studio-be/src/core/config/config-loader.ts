@@ -18,7 +18,7 @@ import { getValidJsonSchemaProperties, getValueFromEnvKey, SchemaNode } from './
  * These properties should not be considered when calculating the config hash
  * They are always read from the configuration file and can be dynamically changed
  */
-const removeDynamicProps = config => _.omit(config, ['superAdmins'])
+const removeDynamicProps = (config) => _.omit(config, ['superAdmins'])
 
 @injectable()
 export class ConfigProvider {
@@ -33,8 +33,9 @@ export class ConfigProvider {
     @inject(TYPES.Logger) private logger: Logger,
     @inject(TYPES.ObjectCache) private cache: ObjectCache
   ) {
-    this.cache.events.on('invalidation', async key => {
-      if (key === 'object::data/global/botpress.config.json' || key === 'file::data/global/botpress.config.json') {
+    this.cache.events.on('invalidation', async (key: string) => {
+      const re = /(object|file)::(?:data\/)?global\/botpress\.config\.json/g
+      if (key.match(re)) {
         this._botpressConfigCache = undefined
         const config = await this.getBotpressConfig()
 
@@ -109,12 +110,12 @@ export class ConfigProvider {
         content = await this.ghostService
           .forBot(botId)
           .readFileAsString('/', fileName)
-          .catch(_err => this.ghostService.forBot(botId).readFileAsString('/', fileName))
+          .catch((_err) => this.ghostService.forBot(botId).readFileAsString('/', fileName))
       } else {
         content = await this.ghostService
           .global()
           .readFileAsString('/', fileName)
-          .catch(_err => this.ghostService.global().readFileAsString('/', fileName))
+          .catch((_err) => this.ghostService.global().readFileAsString('/', fileName))
       }
 
       if (!content) {

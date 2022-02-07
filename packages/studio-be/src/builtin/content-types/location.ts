@@ -35,8 +35,8 @@ const contentType: ContentType = {
 
   uiSchema: {},
 
-  computePreviewText: formData => `${formData.latitude}° ${formData.longitude}°`,
-  renderElement: data => utils.extractPayload('location', data)
+  computePreviewText: (formData) => `${formData.latitude}° ${formData.longitude}°`,
+  renderElement: (data) => utils.extractPayload('location', data)
 }
 
 export default contentType

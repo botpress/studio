@@ -15,7 +15,7 @@ export const generateFlow = async (
   }
 }
 
-const createNodes = data => {
+const createNodes = (data) => {
   const nodes: sdk.FlowNode[] = [
     {
       name: 'entry',

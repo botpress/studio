@@ -72,11 +72,11 @@ const defaultState = {
 }
 
 const findNodesThatReferenceFlow = (state, flowName) =>
-  _.flatten(_.values(state.flowsByName).map(flow => flow.nodes))
-    .filter(node => node.flow === flowName || _.find(node.next, { node: flowName }))
-    .map(node => node.id)
+  _.flatten(_.values(state.flowsByName).map((flow) => flow.nodes))
+    .filter((node) => node.flow === flowName || _.find(node.next, { node: flowName }))
+    .map((node) => node.id)
 
-const computeFlowsHash = state => {
+const computeFlowsHash = (state) => {
   return _.values(state.flowsByName).reduce((obj, curr) => {
     if (!curr) {
       return obj
@@ -90,7 +90,7 @@ const computeFlowsHash = state => {
 const computeHashForFlow = (flow: FlowView) => {
   const hashAction = (hash, action) => {
     if (_.isArray(action)) {
-      action.forEach(c => {
+      action.forEach((c) => {
         if (_.isString(c)) {
           hash += c
         } else {
@@ -115,7 +115,7 @@ const computeHashForFlow = (flow: FlowView) => {
     buff = hashAction(buff, flow.catchAll.next)
   }
 
-  _.orderBy(flow.nodes, 'id').forEach(node => {
+  _.orderBy(flow.nodes, 'id').forEach((node) => {
     buff = hashAction(buff, node.onReceive)
     buff = hashAction(buff, node.onEnter)
     buff = hashAction(buff, node.next)
@@ -127,11 +127,11 @@ const computeHashForFlow = (flow: FlowView) => {
     buff += node.y
   })
 
-  _.orderBy(flow.links, l => l.source + l.target).forEach(link => {
+  _.orderBy(flow.links, (l) => l.source + l.target).forEach((link) => {
     buff += link.source
     buff += link.target
     link.points &&
-      link.points.forEach(p => {
+      link.points.forEach((p) => {
         buff += p.x
         buff += p.y
       })
@@ -140,14 +140,14 @@ const computeHashForFlow = (flow: FlowView) => {
   return hashCode(buff)
 }
 
-const updateCurrentHash = state => ({ ...state, currentHashes: computeFlowsHash(state) })
+const updateCurrentHash = (state) => ({ ...state, currentHashes: computeFlowsHash(state) })
 
-const createSnapshot = state => ({
+const createSnapshot = (state) => ({
   ..._.pick(state, ['currentFlow', 'currentFlowNode', 'flowsByName']),
   createdAt: new Date()
 })
 
-const recordHistory = state => {
+const recordHistory = (state) => {
   // @ts-ignore
   if (!state.currentSnapshot || new Date() - state.currentSnapshot.createdAt < MIN_HISTORY_RECORD_INTERVAL) {
     return { ...state, currentSnapshot: createSnapshot(state) }
@@ -160,7 +160,7 @@ const recordHistory = state => {
   }
 }
 
-const popHistory = stackName => state => {
+const popHistory = (stackName) => (state) => {
   const oppositeStack = stackName === 'undoStack' ? 'redoStack' : 'undoStack'
   if (state[stackName].length === 0) {
     return state
@@ -210,7 +210,7 @@ const doDeleteFlow = ({ name, flowsByName }) => {
   return doRenameFlow({ currentName: name, newName: '', flows })
 }
 
-const doCreateNewFlow = name => {
+const doCreateNewFlow = (name) => {
   const nodes = [
     {
       id: prettyId(),
@@ -324,13 +324,13 @@ let reducer = handleActions(
       flowProblems: payload
     }),
 
-    [requestFlows]: state => ({
+    [requestFlows]: (state) => ({
       ...state,
       fetchingFlows: true
     }),
 
     [receiveFlows]: (state, { payload }) => {
-      const flows = _.keys(payload).filter(key => !payload[key].skillData)
+      const flows = _.keys(payload).filter((key) => !payload[key].skillData)
       const newFlow = _.keys(payload).includes('Built-In/welcome.flow.json') && 'Built-In/welcome.flow.json'
       const defaultFlow = newFlow || (_.keys(payload).includes('main.flow.json') ? 'main.flow.json' : _.first(flows))
 
@@ -346,7 +346,7 @@ let reducer = handleActions(
       }
     },
 
-    [receiveSaveFlows]: state => ({
+    [receiveSaveFlows]: (state) => ({
       ...state,
       errorSavingFlows: undefined
     }),
@@ -356,7 +356,7 @@ let reducer = handleActions(
       errorSavingFlows: payload
     }),
 
-    [clearErrorSaveFlows as any]: state => ({
+    [clearErrorSaveFlows as any]: (state) => ({
       ...state,
       errorSavingFlows: undefined
     }),
@@ -366,12 +366,12 @@ let reducer = handleActions(
       currentFlowNode: payload
     }),
 
-    [openFlowNodeProps as any]: state => ({
+    [openFlowNodeProps as any]: (state) => ({
       ...state,
       showFlowNodeProps: true
     }),
 
-    [closeFlowNodeProps as any]: state => ({
+    [closeFlowNodeProps as any]: (state) => ({
       ...state,
       showFlowNodeProps: false
     }),
@@ -393,13 +393,13 @@ let reducer = handleActions(
       currentDiagramAction: payload
     }),
 
-    [handleRefreshFlowLinks]: state => ({
+    [handleRefreshFlowLinks]: (state) => ({
       ...state,
       flowsByName: {
         ...state.flowsByName,
         [state.currentFlow]: {
           ...state.flowsByName[state.currentFlow],
-          nodes: state.flowsByName[state.currentFlow].nodes.map(node => ({ ...node, lastModified: new Date() }))
+          nodes: state.flowsByName[state.currentFlow].nodes.map((node) => ({ ...node, lastModified: new Date() }))
         }
       }
     })
@@ -425,10 +425,10 @@ reducer = reduceReducers(
         const currentFlow = state.flowsByName[state.currentFlow]
         const nodes = !payload.links
           ? currentFlow.nodes
-          : currentFlow.nodes.map(node => {
-              const nodeLinks = payload.links.filter(link => link.source === node.id)
+          : currentFlow.nodes.map((node) => {
+              const nodeLinks = payload.links.filter((link) => link.source === node.id)
               const next = node.next.map((value, index) => {
-                const link = nodeLinks.find(link => Number(link.sourcePort.replace('out', '')) === index)
+                const link = nodeLinks.find((link) => Number(link.sourcePort.replace('out', '')) === index)
                 const targetNode = _.find(currentFlow.nodes, { id: (link || {}).target })
                 let remapNode = ''
 
@@ -442,7 +442,7 @@ reducer = reduceReducers(
               return { ...node, next, lastModified: new Date() }
             })
 
-        const links = (payload.links || currentFlow.links).map(link => ({
+        const links = (payload.links || currentFlow.links).map((link) => ({
           ...link,
           points: link.points.map(({ x, y }) => ({ x: Math.round(x), y: Math.round(y) }))
         }))
@@ -528,14 +528,14 @@ reducer = reduceReducers(
           location: payload.editFlowName
         })
 
-        const nodes = state.flowsByName[state.currentFlow].nodes.map(node => {
+        const nodes = state.flowsByName[state.currentFlow].nodes.map((node) => {
           if (node.id !== payload.editNodeId) {
             return node
           }
 
           return {
             ...node,
-            next: payload.transitions.map(transition => {
+            next: payload.transitions.map((transition) => {
               const prevTransition =
                 node.next.find(({ condition }) => condition === transition.condition) ||
                 node.next.find(({ caption }) => caption === transition.caption)
@@ -582,7 +582,7 @@ reducer = reduceReducers(
               ...state.flowsByName[flowNameToDuplicate],
               name,
               location: name,
-              nodes: state.flowsByName[flowNameToDuplicate].nodes.map(node => ({
+              nodes: state.flowsByName[flowNameToDuplicate].nodes.map((node) => ({
                 ...node,
                 id: prettyId()
               }))
@@ -597,7 +597,7 @@ reducer = reduceReducers(
         payload = Array.isArray(payload) ? payload : [{ ...payload, id: payload.id ?? state.currentFlowNode }]
         const currentFlow = state.flowsByName[state.currentFlow]
         const nodesToUpdate = payload
-          .map(node =>
+          .map((node) =>
             _.find(currentFlow.nodes, {
               id: node.id
             })
@@ -609,7 +609,7 @@ reducer = reduceReducers(
         }
 
         // Find the replacement name, if there is any
-        const findNewName = name => {
+        const findNewName = (name) => {
           const nodeToUpdate = _.find(nodesToUpdate, {
             name
           })
@@ -621,8 +621,8 @@ reducer = reduceReducers(
           )
         }
 
-        const updateNodeName = elements =>
-          elements.map(element => {
+        const updateNodeName = (elements) =>
+          elements.map((element) => {
             return {
               ...element,
               node: findNewName(element.node) ?? element.node
@@ -636,7 +636,7 @@ reducer = reduceReducers(
             [state.currentFlow]: {
               ...currentFlow,
               startNode: findNewName(currentFlow.startNode) ?? currentFlow.startNode,
-              nodes: currentFlow.nodes.map(node => {
+              nodes: currentFlow.nodes.map((node) => {
                 if (!_.find(nodesToUpdate, { id: node.id })) {
                   return {
                     ...node,
@@ -680,7 +680,7 @@ reducer = reduceReducers(
             ..._.omit(state.flowsByName, flowsToRemove),
             [state.currentFlow]: {
               ...state.flowsByName[state.currentFlow],
-              nodes: state.flowsByName[state.currentFlow].nodes.filter(node => node.id !== payload.id)
+              nodes: state.flowsByName[state.currentFlow].nodes.filter((node) => node.id !== payload.id)
             }
           }
         }
@@ -688,8 +688,8 @@ reducer = reduceReducers(
 
       [copyFlowNodes as any]: (state, { payload }) => {
         const nodes = payload
-          ?.map(nodeId => _.find(state.flowsByName[state.currentFlow].nodes, { id: nodeId }))
-          .filter(node => node)
+          ?.map((nodeId) => _.find(state.flowsByName[state.currentFlow].nodes, { id: nodeId }))
+          .filter((node) => node)
         if (!nodes || !nodes.length) {
           return state
         }
@@ -707,7 +707,7 @@ reducer = reduceReducers(
 
         const currentFlow = state.flowsByName[state.currentFlow]
         const siblingNames = currentFlow.nodes.map(({ name }) => name)
-        const newNodes = _.cloneDeep(nodesToPaste).map(node => {
+        const newNodes = _.cloneDeep(nodesToPaste).map((node) => {
           const newNodeId = prettyId()
           const newName = copyName(siblingNames, node.name)
           return { ...node, id: newNodeId, newName, lastModified: new Date() }
@@ -717,7 +717,7 @@ reducer = reduceReducers(
         const xCenter = _.reduce(newNodes, (sum, elem) => sum + elem.x, 0) / newNodes.length
         const yCenter = _.reduce(newNodes, (sum, elem) => sum + elem.y, 0) / newNodes.length
 
-        newNodes.forEach(node => {
+        newNodes.forEach((node) => {
           // Recalculate position to fit the new flow and cursor position
           node.x = node.x - xCenter + x
           node.y = node.y - yCenter + y
@@ -732,7 +732,7 @@ reducer = reduceReducers(
         })
 
         // Migrate node name now that all transitions have been migrated
-        newNodes.forEach(node => {
+        newNodes.forEach((node) => {
           node.name = node.newName
           delete node.newName
         })
@@ -774,7 +774,7 @@ reducer = reduceReducers(
         const currentNode = _.find(currentFlow.nodes, { id: state.currentFlowNode })
 
         // TODO: use this as a helper function in other reducers
-        const updateCurrentFlow = modifier => ({
+        const updateCurrentFlow = (modifier) => ({
           ...state,
           flowsByName: { ...state.flowsByName, [state.currentFlow]: { ...currentFlow, ...modifier } }
         })
@@ -834,12 +834,12 @@ reducer = reduceReducers(
   reducer,
   handleActions(
     {
-      [receiveFlows]: state => {
+      [receiveFlows]: (state) => {
         const hashes = computeFlowsHash(state)
         return { ...state, currentHashes: hashes, initialHashes: hashes }
       },
 
-      [receiveSaveFlows]: state => {
+      [receiveSaveFlows]: (state) => {
         const hashes = computeFlowsHash(state)
         return { ...state, currentHashes: hashes, initialHashes: hashes }
       },

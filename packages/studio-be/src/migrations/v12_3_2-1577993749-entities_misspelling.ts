@@ -24,7 +24,7 @@ const migration: Migration = {
       await migrateBotEntities(metadata.botId)
     } else {
       const bots = await botService.getBots()
-      await Promise.map(bots.keys(), botId => migrateBotEntities(botId))
+      await Promise.map(bots.keys(), (botId) => migrateBotEntities(botId))
     }
 
     return { success: true, message: "Entities' properties updated successfully" }

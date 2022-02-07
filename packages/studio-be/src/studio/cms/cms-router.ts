@@ -24,7 +24,7 @@ export class CMSRouter extends CustomStudioRouter {
         const types = await this.cmsService.getAllContentTypes(botId)
         const categories: Categories = {
           registered: [],
-          unregistered: types.disabled.map(x => ({
+          unregistered: types.disabled.map((x) => ({
             id: x,
             title: x
           }))
@@ -81,7 +81,7 @@ export class CMSRouter extends CustomStudioRouter {
           ids
         })
 
-        const augmentedElements = await Promise.map(elements, el => this._augmentElement(el, botId))
+        const augmentedElements = await Promise.map(elements, (el) => this._augmentElement(el, botId))
         res.send(augmentedElements)
       })
     )
@@ -160,7 +160,7 @@ export class CMSRouter extends CustomStudioRouter {
         }, {})
 
         return res.send(
-          elements.map(x => {
+          elements.map((x) => {
             const contentType = contentTypes[x.contentType]
             return {
               path: `Content/${contentType}/${x.id}`,
@@ -191,7 +191,7 @@ export class CMSRouter extends CustomStudioRouter {
           CONTENT_FOLDER,
           LIBRARY_FILE,
           JSON.stringify(
-            ids.filter(x => x !== contentId),
+            ids.filter((x) => x !== contentId),
             undefined,
             2
           )

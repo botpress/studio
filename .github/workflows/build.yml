@@ -1,0 +1,22 @@
+name: Build
+on: [pull_request]
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.18.1'
+          cache: 'yarn'
+      - name: Fetch Node Packages
+        run: |
+          yarn --immutable
+      - name: Build Studio
+        run: |
+          yarn build
+        env:
+          NODE_ENV: production

@@ -4,22 +4,12 @@ export const QnaDefSchema = Joi.object().keys({
   action: Joi.string().required(),
   // Keeping optional category for import schema validation
   category: Joi.string().optional(),
-  contexts: Joi.array()
-    .items(Joi.string())
-    .optional(),
+  contexts: Joi.array().items(Joi.string()).optional(),
   enabled: Joi.bool().required(),
-  redirectFlow: Joi.string()
-    .allow('')
-    .optional(),
-  redirectNode: Joi.string()
-    .allow('')
-    .optional(),
-  questions: Joi.object()
-    .pattern(/.*/, Joi.array().items(Joi.string()))
-    .default({}),
-  answers: Joi.object()
-    .pattern(/.*/, Joi.array().items(Joi.string()))
-    .default({})
+  redirectFlow: Joi.string().allow('').optional(),
+  redirectNode: Joi.string().allow('').optional(),
+  questions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).default({}),
+  answers: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).default({})
 })
 
 const QnaItemSchema = Joi.object().keys({

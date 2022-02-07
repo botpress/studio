@@ -20,7 +20,7 @@ export const coreActions = {
   onModuleEvent: async (eventType: string, payload: any) => {
     await coreClient?.post('/onModuleEvent', { eventType, ...payload })
   },
-  notifyFlowChanges: async payload => {
+  notifyFlowChanges: async (payload) => {
     await coreClient?.post('/notifyFlowChange', payload)
   },
   invalidateCmsForBot: async (botId: string) => {

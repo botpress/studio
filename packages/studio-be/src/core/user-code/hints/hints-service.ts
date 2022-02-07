@@ -29,7 +29,9 @@ export interface Hint {
   parentObject?: string
 }
 
-const invalidationFilePrefix = 'string::data/'
+// Matches strings::data/* and strings::*
+// And capture what is after
+const invalidationFilePrefix = /^string::(?:data\/)?(.+)$/
 
 @injectable()
 export class HintsService {
@@ -50,15 +52,16 @@ export class HintsService {
   }
 
   private _listenForCacheInvalidation() {
-    this.cache.events.on('invalidation', async key => {
-      if (!key.startsWith(invalidationFilePrefix)) {
+    this.cache.events.on('invalidation', async (key: string) => {
+      const matches = key.match(invalidationFilePrefix)
+      if (!matches || matches.length < 2) {
         return
       }
 
       // We let invalidation happens first
       // This is necessary because the ghost relies on the cache when reading file content
       await Promise.delay(100)
-      const filePath = key.substr(invalidationFilePrefix.length)
+      const filePath = matches[1]
       this.hints[filePath] = await this.indexFile(filePath)
     })
   }
@@ -67,9 +70,9 @@ export class HintsService {
     let content: string | undefined = undefined
 
     return _.flatten(
-      await Promise.mapSeries(FileBasedProviders, async provider => {
+      await Promise.mapSeries(FileBasedProviders, async (provider) => {
         const patterns = Array.isArray(provider.filePattern) ? provider.filePattern : [provider.filePattern]
-        const matched = _.some(patterns, p => minimatch(filePath, p, { nocase: true, nonull: true, dot: true }))
+        const matched = _.some(patterns, (p) => minimatch(filePath, p, { nocase: true, nonull: true, dot: true }))
 
         if (!matched) {
           return []
@@ -98,11 +101,11 @@ export class HintsService {
     hints['global/base'] = BaseProvider
 
     const files = [
-      ...(await this.ghost.global().directoryListing('/')).map(x => 'global/' + x),
-      ...(await this.ghost.bots().directoryListing('/')).map(x => 'bots/' + x)
+      ...(await this.ghost.global().directoryListing('/')).map((x) => 'global/' + x),
+      ...(await this.ghost.bots().directoryListing('/')).map((x) => 'bots/' + x)
     ]
 
-    await Promise.mapSeries(files, async file => (hints[file] = await this.indexFile(file)))
+    await Promise.mapSeries(files, async (file) => (hints[file] = await this.indexFile(file)))
 
     this.hints = hints
   }

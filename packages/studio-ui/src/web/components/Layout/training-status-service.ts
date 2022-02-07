@@ -20,7 +20,7 @@ export class TrainingStatusService {
     EventBus.default.off('statusbar.event', this._onStatusBarEvent)
   }
 
-  private _onStatusBarEvent = async ev => {
+  private _onStatusBarEvent = async (ev) => {
     if (ev.type !== 'nlu') {
       return
     }

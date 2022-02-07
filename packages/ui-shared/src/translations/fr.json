@@ -281,9 +281,5 @@
     "thisMonth": "Ce mois-ci",
     "thisWeek": "Cette semaine",
     "thisYear": "Cette année"
-  },
-  "contentNotice": {
-    "title": "Modification du contenu partagé",
-    "message": "Ce contenu est utilisé à {count} endroits. Le changer affectera tous les endroits."
   }
 }

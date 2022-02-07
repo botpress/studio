@@ -64,7 +64,7 @@ const contentType: ContentType = {
 
   uiSchema: {},
 
-  computePreviewText: formData => `Action: ${formData.action}`,
+  computePreviewText: (formData) => `Action: ${formData.action}`,
   renderElement: (data, channel) => [],
   hidden: true
 }

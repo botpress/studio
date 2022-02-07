@@ -18,7 +18,7 @@ export const getBaseLookupPaths = (fullPath: string, lastPathPart: string) => {
 }
 
 export const prepareRequire = (fullPath: string, lookups: string[]) => {
-  return module => requireAtPaths(module, lookups, fullPath)
+  return (module) => requireAtPaths(module, lookups, fullPath)
 }
 
 export const enabled = (filename: string) => !path.basename(filename).startsWith('.')

@@ -33,7 +33,7 @@ const contentType: ContentType = {
     }
   },
 
-  computePreviewText: formData => {
+  computePreviewText: (formData) => {
     if (!formData.video) {
       return ''
     }
@@ -48,7 +48,7 @@ const contentType: ContentType = {
       return `Expression: ${link}${title}`
     }
   },
-  renderElement: data => utils.extractPayload('video', data)
+  renderElement: (data) => utils.extractPayload('video', data)
 }
 
 export default contentType

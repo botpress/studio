@@ -12,9 +12,6 @@ import {
   updateDocumentationModal,
   updateGlobalStyle,
   viewModeChanged,
-  zoomIn,
-  zoomOut,
-  zoomToFit,
   zoomToLevel
 } from '~/actions'
 
@@ -104,26 +101,13 @@ const reducer = handleActions(
     [zoomIn]: (state, {}) => {
       return {
         ...state,
-        zoomLevel: state.zoomLevel + 25
-      }
-    },
-    [zoomToFit]: (state, {}) => {
-      return {
-        ...state,
-        zoomLevel: -1
+        explorerOpen: value
       }
     },
     [zoomToLevel]: (state, { payload }) => {
       return {
         ...state,
         zoomLevel: payload
-      }
-    },
-    [zoomOut]: (state, {}) => {
-      const newLevel = state.zoomLevel - 25
-      return {
-        ...state,
-        zoomLevel: newLevel > 10 ? newLevel : 10
       }
     },
     [setEmulatorOpen]: (state, { payload }) => ({

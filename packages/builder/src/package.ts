@@ -27,9 +27,9 @@ export default async (argv: any) => {
 }
 
 const getTargetOSConfig = () => {
-  if (process.argv.find(x => x.toLowerCase() === '--win32')) {
+  if (process.argv.find((x) => x.toLowerCase() === '--win32')) {
     return 'win32'
-  } else if (process.argv.find(x => x.toLowerCase() === '--linux')) {
+  } else if (process.argv.find((x) => x.toLowerCase() === '--linux')) {
     return 'linux'
   } else {
     return 'darwin'

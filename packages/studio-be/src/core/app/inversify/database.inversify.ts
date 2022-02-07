@@ -6,9 +6,7 @@ import Knex from 'knex'
 import { TYPES } from '../types'
 
 const DatabaseContainerModule = new ContainerModule((bind: interfaces.Bind) => {
-  bind<Database>(TYPES.Database)
-    .to(Database)
-    .inSingletonScope()
+  bind<Database>(TYPES.Database).to(Database).inSingletonScope()
 
   bind<Knex>(TYPES.InMemoryDatabase).toDynamicValue(() => {
     return patchKnex(
