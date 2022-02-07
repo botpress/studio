@@ -1,22 +1,26 @@
 import { Button } from '@blueprintjs/core'
 import { lang, ToolTip } from 'botpress/shared'
-import React, { FC } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
-import { zoomIn, zoomOut, zoomToLevel, zoomToFit } from '~/actions'
 
 import { RootReducer } from '../../../../reducers'
+import { ZOOM_MAX, ZOOM_MIN } from '../constants'
 
 import style from './style.scss'
 
 type StateProps = ReturnType<typeof mapStateToProps>
-type DispatchProps = typeof mapDispatchToProps
 
-type Props = DispatchProps & StateProps
+type Props = StateProps & {
+  zoomIn: () => void
+  zoomOut: () => void
+  zoomToLevel: (level: number) => void
+  zoomToFit: () => void
+}
 
-const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel, zoomToFit }) => (
+const ZoomToolbar = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel, zoomToFit }: Props) => (
   <div className={style.zoomWrapper}>
     <ToolTip content={lang.tr('studio.flow.zoomOut')}>
-      <Button icon="zoom-out" disabled={zoomLevel <= 10} onClick={zoomOut} />
+      <Button icon="zoom-out" disabled={zoomLevel <= ZOOM_MIN} onClick={zoomOut} />
     </ToolTip>
     <label>
       <span className={style.label}>{zoomLevel}%</span>
@@ -30,7 +34,7 @@ const ZoomToolbar: FC<Props> = ({ zoomLevel, zoomIn, zoomOut, zoomToLevel, zoomT
       </select>
     </label>
     <ToolTip content={lang.tr('studio.flow.zoomIn')}>
-      <Button icon="zoom-in" onClick={zoomIn} />
+      <Button icon="zoom-in" onClick={zoomIn} disabled={zoomLevel >= ZOOM_MAX} />
     </ToolTip>
     <ToolTip content={lang.tr('studio.flow.zoomToFit')}>
       <Button className={style.zoomToFit} icon="zoom-to-fit" onClick={zoomToFit} />
@@ -42,11 +46,4 @@ const mapStateToProps = (state: RootReducer) => ({
   zoomLevel: state.ui.zoomLevel
 })
 
-const mapDispatchToProps = {
-  zoomIn,
-  zoomOut,
-  zoomToFit,
-  zoomToLevel
-}
-
-export default connect<StateProps, DispatchProps>(mapStateToProps, mapDispatchToProps)(ZoomToolbar)
+export default connect<StateProps>(mapStateToProps)(ZoomToolbar)
