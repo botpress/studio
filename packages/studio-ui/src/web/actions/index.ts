@@ -350,10 +350,7 @@ export const updateDocumentationModal = createAction('UI/UPDATE_DOCUMENTATION_MO
 export const toggleBottomPanel = createAction('UI/TOGGLE_BOTTOM_PANEL')
 export const toggleInspector = createAction('UI/TOGGLE_INSPECTOR')
 export const toggleBottomPanelExpand = createAction('UI/TOGGLE_BOTTOM_PANEL_EXPAND')
-export const zoomIn = createAction('UI/ZOOM_IN_DIAGRAM')
-export const zoomOut = createAction('UI/ZOOM_OUT_DIAGRAM')
 export const zoomToLevel = createAction('UI/ZOOM_TO_LEVEL_DIAGRAM')
-export const zoomToFit = createAction('UI/ZOOM_TO_FIT_DIAGRAM')
 export const setEmulatorOpen = createAction('EMULATOR_OPENED')
 
 // User
