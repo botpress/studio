@@ -80,10 +80,9 @@ export class DiagramManager {
 
     this.diagramEngine.setDiagramModel(this.activeModel)
 
-    // initial center & zoom
-    this.zoomToFit()
-    this.zoomLevelFloat = this.activeModel.getZoomLevel()
-
+    // defer initial center & zoom because
+    // we need one paint to know node sizes
+    setTimeout(this.zoomToFit.bind(this), 0)
     // Setting the initial links hash when changing flow
     this.getLinksRequiringUpdate()
     this.highlightLinkedNodes()
@@ -91,7 +90,10 @@ export class DiagramManager {
 
   /** Sets the internal zoom level, and returns a "safe" zoom level */
   setZoomLevelFloat = (delta: number) => {
-    const zoom = Math.min(Math.max(this.zoomLevelFloat + delta, ZOOM_MIN), ZOOM_MAX)
+    const zoom = Math.min(
+      Math.max((this.zoomLevelFloat || this.activeModel.getZoomLevel()) + delta, ZOOM_MIN),
+      ZOOM_MAX
+    )
     const safeZoom = Math.round(zoom)
     // Update internal zoom state
     this.zoomLevelFloat = zoom
@@ -532,22 +534,49 @@ export class DiagramManager {
   }
 
   zoomToFit() {
-    const nodes = this.getBlockModelFromFlow(this.currentFlow)
-    const { width: diagramWidth, height: diagramHeight } = this.diagramWidgetEl.getBoundingClientRect()
-    const totalFlowWidth = _.max(_.map(nodes, 'x')) - _.min(_.map(nodes, 'x')) || 0
-    const totalFlowHeight = _.max(_.map(nodes, 'y')) - _.min(_.map(nodes, 'y')) || 0
-    const zoomLevelX = Math.min(1, diagramWidth / (totalFlowWidth + 2 * DIAGRAM_PADDING))
-    const zoomLevelY = Math.min(1, diagramHeight / (totalFlowHeight + 2 * DIAGRAM_PADDING))
-    const zoomLevel = Math.min(zoomLevelX, zoomLevelY)
+    let minX = Infinity,
+      minY = Infinity,
+      maxX = -Infinity,
+      maxY = -Infinity
 
-    const offsetX = DIAGRAM_PADDING - _.min(_.map(nodes, 'x')) || 100
-    const offsetY = DIAGRAM_PADDING - _.min(_.map(nodes, 'y')) || 100
+    for (const node of this.getBlockModelFromFlow(this.currentFlow)) {
+      const el = document.querySelector(`[data-nodeid="${node.id}"]`) as HTMLElement
+      if (!el) {
+        continue
+      }
+      if (node.x < minX) {
+        minX = node.x
+      }
+      if (node.y < minY) {
+        minY = node.y
+      }
+      if (node.x + el.offsetWidth > maxX) {
+        maxX = node.x + el.offsetWidth
+      }
+      if (node.y + el.offsetHeight > maxY) {
+        maxY = node.y + el.offsetHeight
+      }
+    }
 
-    this.activeModel.setZoomLevel(zoomLevel * 100)
-    this.activeModel.setOffsetX(offsetX * zoomLevel)
-    this.activeModel.setOffsetY(offsetY * zoomLevel)
+    let { width, height } = this.diagramWidgetEl.getBoundingClientRect()
+    width = width - 2 * DIAGRAM_PADDING
+    height = height - 2 * DIAGRAM_PADDING
+    const containerAspectRatio = height / width
 
-    this.diagramWidget && this.diagramWidget.forceUpdate()
+    const totalFlowWidth = maxX - minX
+    const totalFlowHeight = maxY - minY
+    const graphAspectRatio = totalFlowHeight / totalFlowWidth
+
+    const prevZoom = this.activeModel.getZoomLevel()
+    const toZoom = 100 * (containerAspectRatio <= graphAspectRatio ? height / totalFlowHeight : width / totalFlowWidth)
+    const safeZoom = this.setZoomLevelFloat(toZoom - prevZoom)
+    const offsetX = -minX * (safeZoom / 100) + (width - totalFlowWidth * (safeZoom / 100)) / 2 + DIAGRAM_PADDING
+    const offsetY = -minY * (safeZoom / 100) + (height - totalFlowHeight * (safeZoom / 100)) / 2 + DIAGRAM_PADDING
+
+    this.activeModel.setZoomLevel(safeZoom)
+    this.activeModel.setOffsetX(offsetX)
+    this.activeModel.setOffsetY(offsetY)
+    this.diagramWidget.forceUpdate()
   }
 
   private _serialize = () => {
