@@ -100,7 +100,10 @@ class App extends Component<Props> {
     return (
       <Fragment>
         {!window.IS_STANDALONE && (
-          <TokenRefresher getAxiosClient={() => axios} onRefreshCompleted={token => setToken(token)} />
+          <TokenRefresher
+            getAxiosClient={() => axios.create({ baseURL: '/api/v1' })}
+            onRefreshCompleted={token => setToken(token)}
+          />
         )}
         <Routes />
       </Fragment>
