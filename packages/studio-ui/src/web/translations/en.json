@@ -711,11 +711,11 @@
     "help": "Help",
     "emulator": "Emulator",
     "readDoc": "Read Documentation",
-    "showEmulator": "Show Emulator",
-    "toggleBottomPanel": "Toggle Bottom Panel",
-    "toggleEmulator": "Toggle Emulator",
-    "toggleSidePanel": "Toggle Side Panel",
-    "tutorial": "Tutorial"
+    "toggleEmulator": "{shortcut} Toggle Emulator",
+    "toggleExplorer": "{shortcut} Toggle Explorer",
+    "toggleDebugger": "{shortcut} Toggle Debugger",
+    "salesCallToAction": "Start a free Enterprise trial",
+    "salesCallToActionDescription": "Secure, scalable, entreprise-grade chatbots"
   },
   "bottomPanel": {
     "inspector": {

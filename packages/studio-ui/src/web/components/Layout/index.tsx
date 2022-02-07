@@ -195,13 +195,7 @@ const Layout: FC<Props> = (props: Props) => {
       <HotKeys handlers={keyHandlers} id="mainLayout" className={layout.mainLayout}>
         <Sidebar />
         <div className={layout.container}>
-          <Toolbar
-            hasDoc={props.docHints?.length}
-            toggleDocs={toggleDocs}
-            toggleGuidedTour={toggleGuidedTour}
-            onToggleEmulator={toggleEmulator}
-            toggleBottomPanel={props.toggleBottomPanel}
-          />
+          <TopNav toggleDocs={toggleDocs} onToggleEmulator={toggleEmulator} />
           <SplitPane
             split={'horizontal'}
             defaultSize={bottomPanelDefaultSize}
