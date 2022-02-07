@@ -70,7 +70,7 @@ const reducer = handleActions(
       ...state,
       docModal: payload
     }),
-    [toggleBottomPanelExpand]: state => ({
+    [toggleBottomPanelExpand]: (state) => ({
       ...state,
       bottomPanelExpanded: !state.bottomPanelExpanded
     }),
