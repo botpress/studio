@@ -98,7 +98,7 @@ const compareNodes = (a, b) => {
   return a.type === 'folder' ? -1 : 1
 }
 
-const sortChildren = tree => {
+const sortChildren = (tree) => {
   if (!tree.childNodes) {
     return
   }
@@ -106,9 +106,9 @@ const sortChildren = tree => {
   tree.childNodes.forEach(sortChildren)
 }
 
-export const getUniqueId = node => `${node.type}:${node.fullPath}`
+export const getUniqueId = (node) => `${node.type}:${node.fullPath}`
 
-export const splitFlowPath = flow => {
+export const splitFlowPath = (flow) => {
   const flowPath = flow.replace(/\.flow\.json$/, '').split('/')
   const flowName = flowPath[flowPath.length - 1]
   const flowFolders = flowPath.slice(0, flowPath.length - 1)
@@ -137,7 +137,7 @@ export const splitFlowPath = flow => {
 
 export const buildFlowsTree = (flows, filterName) => {
   const tree = { icon: 'root', fullPath: '', label: '<root>', childNodes: [] }
-  flows.forEach(flowData => {
+  flows.forEach((flowData) => {
     const { folders, flow } = splitFlowPath(flowData.name)
     if (!filterName || flow.id.includes(filterName)) {
       addNode(tree, folders, flow, { nodeData: flowData })

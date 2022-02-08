@@ -8,7 +8,7 @@ import style from '../Components/style.scss'
 type Props = Pick<BlockProps, 'node' | 'updateFlowNode' | 'switchFlowNode' | 'editNodeItem'>
 
 const ExecuteContents: FC<Props> = ({ node, switchFlowNode, updateFlowNode, editNodeItem }) => {
-  const handleItemChanged = actionText => {
+  const handleItemChanged = (actionText) => {
     switchFlowNode(node.id)
     updateFlowNode({ onEnter: [actionText] })
   }

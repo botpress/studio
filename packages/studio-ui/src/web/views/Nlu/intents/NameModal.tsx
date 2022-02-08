@@ -19,14 +19,14 @@ const sanitizeName = (text: string) =>
     .toLowerCase()
     .replace(/[^a-z0-9-_.]/g, '')
 
-const NameModal: FC<Props> = props => {
+const NameModal: FC<Props> = (props) => {
   const [name, setName] = useState('')
 
   useEffect(() => {
     props.originalName ? setName(props.originalName) : setName('')
   }, [props.isOpen])
 
-  const submit = async e => {
+  const submit = async (e) => {
     e.preventDefault()
     props.onSubmit(sanitizeName(name), name)
     closeModal()
@@ -37,7 +37,7 @@ const NameModal: FC<Props> = props => {
     props.toggle()
   }
 
-  const alreadyExists = !!(props.intents || []).find(x => x.name === sanitizeName(name))
+  const alreadyExists = !!(props.intents || []).find((x) => x.name === sanitizeName(name))
 
   return (
     <Dialog
@@ -56,7 +56,7 @@ const NameModal: FC<Props> = props => {
               placeholder={lang.tr('nlu.intents.namePlaceholder')}
               required={true}
               value={name}
-              onChange={e => setName(e.currentTarget.value)}
+              onChange={(e) => setName(e.currentTarget.value)}
               autoFocus={true}
             />
           </FormGroup>

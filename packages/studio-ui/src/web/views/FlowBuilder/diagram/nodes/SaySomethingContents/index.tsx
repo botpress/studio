@@ -24,7 +24,7 @@ type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
-const SayNodeContent: FC<Props> = props => {
+const SayNodeContent: FC<Props> = (props) => {
   const { node, contentLang, defaultLanguage } = props
   const { text, variations, contentType, markdown, items, ...nodeContent } = getFormData(
     node.content || {},

@@ -232,11 +232,11 @@ class PanelContent extends React.Component<Props> {
   }
 
   _buildHooksActions() {
-    const hooks = Object.keys(HOOK_SIGNATURES).map(hookType => ({
+    const hooks = Object.keys(HOOK_SIGNATURES).map((hookType) => ({
       id: hookType,
       label: hookType
         .split('_')
-        .map(x => x.charAt(0).toUpperCase() + x.slice(1))
+        .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
         .join(' '),
       onClick: () => this.createFilePrompt('hook', hookType)
     }))
@@ -244,7 +244,7 @@ class PanelContent extends React.Component<Props> {
     const items = [
       {
         label: lang.tr('code-editor.sidePanel.eventHooks'),
-        items: hooks.filter(x =>
+        items: hooks.filter((x) =>
           [
             'before_incoming_middleware',
             'after_incoming_middleware',
@@ -258,7 +258,7 @@ class PanelContent extends React.Component<Props> {
       },
       {
         label: lang.tr('code-editor.sidePanel.botHooks'),
-        items: hooks.filter(x => ['after_bot_mount', 'after_bot_unmount', 'on_bot_error'].includes(x.id))
+        items: hooks.filter((x) => ['after_bot_mount', 'after_bot_unmount', 'on_bot_error'].includes(x.id))
       }
     ]
 

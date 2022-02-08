@@ -46,14 +46,14 @@ const NodeHeader: FC<StateProps & Props> = ({
       {debugInfo && <DebugInfo {...debugInfo} nodeType={nodeType} className={className}></DebugInfo>}
       <Button
         icon={setExpanded ? icon : null}
-        onClick={e => {
+        onClick={(e) => {
           if (e.screenX - startMouse.x === 0 && e.screenY - startMouse.y === 0) {
             setExpanded && setExpanded(!expanded)
           }
         }}
-        onMouseDown={e => setStartMouse({ x: e.screenX, y: e.screenY })}
+        onMouseDown={(e) => setStartMouse({ x: e.screenX, y: e.screenY })}
         className={style.button}
-        onContextMenu={e => handleContextMenu && handleContextMenu(e)}
+        onContextMenu={(e) => handleContextMenu && handleContextMenu(e)}
       >
         {defaultLabel}
       </Button>

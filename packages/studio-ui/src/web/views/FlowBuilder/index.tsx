@@ -92,7 +92,7 @@ const FlowBuilder = (props: Props) => {
     }
 
     const someoneElseIsEditingOtherFlow = _.values(props.flowsByName).some(
-      f => f.currentMutex?.remainingSeconds && f.currentMutex.lastModifiedBy !== me
+      (f) => f.currentMutex?.remainingSeconds && f.currentMutex.lastModifiedBy !== me
     )
 
     if (isOperationAllowed({ operation: 'write', resource: 'bot.flows' })) {
@@ -108,36 +108,36 @@ const FlowBuilder = (props: Props) => {
     }
   }, [props.flowsByName, props.currentFlow])
 
-  const pushFlowState = flow => props.history.push(`/flows/${flow.replace(/\.flow\.json/i, '')}`)
+  const pushFlowState = (flow) => props.history.push(`/flows/${flow.replace(/\.flow\.json/i, '')}`)
 
   const keyHandlers = {
-    add: e => {
+    add: (e) => {
       e.preventDefault()
       props.setDiagramAction('insert_node')
     },
-    undo: e => {
+    undo: (e) => {
       e.preventDefault()
       props.flowEditorUndo()
     },
-    redo: e => {
+    redo: (e) => {
       e.preventDefault()
       props.flowEditorRedo()
     },
-    find: e => {
+    find: (e) => {
       e.preventDefault()
       setShowSearch(!showSearch)
     },
-    save: e => {
+    save: (e) => {
       e.preventDefault()
       toastInfo(lang.tr('studio.flow.nowSaveAuto'), Timeout.LONG)
     },
-    delete: e => {
+    delete: (e) => {
       if (!utils.isInputFocused()) {
         e.preventDefault()
         diagram?.deleteSelectedElements()
       }
     },
-    cancel: e => {
+    cancel: (e) => {
       e.preventDefault()
       props.closeFlowNodeProps()
       setShowSearch(false)
@@ -150,7 +150,7 @@ const FlowBuilder = (props: Props) => {
     props.history.replace(newUrl)
   }
 
-  const createFlow = name => {
+  const createFlow = (name) => {
     diagram.createFlow(name)
     props.switchFlow(`${name}.flow.json`)
   }
@@ -174,7 +174,7 @@ const FlowBuilder = (props: Props) => {
             handleFilterChanged={handleFilterChanged}
             highlightFilter={highlightFilter}
             mutexInfo={mutex}
-            ref={el => {
+            ref={(el) => {
               if (!!el) {
                 // @ts-ignore
                 diagram = el.getWrappedInstance()

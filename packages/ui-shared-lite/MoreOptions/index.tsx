@@ -8,10 +8,10 @@ import MoreOptionsMenu from './MoreOptionsMenu'
 import style from './style.scss'
 import { MoreOptionsProps } from './typings'
 
-const MoreOptions: FC<MoreOptionsProps> = props => {
+const MoreOptions: FC<MoreOptionsProps> = (props) => {
   const { show, onToggle, element } = props
 
-  const handleToggle = e => {
+  const handleToggle = (e) => {
     e.stopPropagation()
     onToggle(!show)
   }

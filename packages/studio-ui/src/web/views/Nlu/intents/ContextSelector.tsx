@@ -13,7 +13,7 @@ interface Props {
   saveContexts: (ctx: string[]) => void
 }
 
-export const ContextSelector: FC<Props> = props => {
+export const ContextSelector: FC<Props> = (props) => {
   const [availableContexts, setContexts] = useState([])
 
   useEffect(() => {
@@ -78,12 +78,12 @@ export const ContextSelector: FC<Props> = props => {
         itemRenderer={ctxItemRenderer}
         itemPredicate={(q: string, ctx: string) => !q || ctx.includes(q)}
         onItemSelect={onItemSelect}
-        tagRenderer={ctx => ctx}
+        tagRenderer={(ctx) => ctx}
         tagInputProps={{ tagProps: { minimal: true }, onRemove: removeCtx }}
         popoverProps={{ minimal: true, fill: true }}
         selectedItems={props.contexts}
         createNewItemRenderer={createNewItemRenderer}
-        createNewItemFromQuery={q => q}
+        createNewItemFromQuery={(q) => q}
       />
     </div>
   )

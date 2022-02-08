@@ -10,7 +10,7 @@ const RawPayloadSender = () => {
   const [isValid, setValid] = useState(true)
   const [error, setError] = useState('')
 
-  const updatePayload = payload => {
+  const updatePayload = (payload) => {
     try {
       setPayload(payload)
       jsonlintMod.parse(payload)
@@ -40,7 +40,7 @@ const RawPayloadSender = () => {
         <TextArea
           name="rawPayload"
           value={payload}
-          onChange={e => updatePayload(e.currentTarget.value)}
+          onChange={(e) => updatePayload(e.currentTarget.value)}
           className={style.textArea}
           rows={7}
           placeholder={lang.tr('bottomPanel.debugger.settings.sendRawPayloadsPlaceholder')}

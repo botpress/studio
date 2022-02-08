@@ -104,13 +104,13 @@ const TextFieldsArray: FC<TextFieldsArrayProps> = ({
               isFocused={focusedElement.current === index}
               className={cx(sharedStyle.textarea, { ['has-error']: missingTranslation })}
               placeholder={getPlaceholder?.(index)}
-              onChange={value => updateLocalItem(index, value)}
+              onChange={(value) => updateLocalItem(index, value)}
               onBlur={() => {
                 if (!_isEqual(localItems, refValue)) {
                   onChange([...localItems])
                 }
               }}
-              onKeyDown={e => onKeyDown(e, index)}
+              onKeyDown={(e) => onKeyDown(e, index)}
               refValue={refValue?.[index]}
               value={item}
             />

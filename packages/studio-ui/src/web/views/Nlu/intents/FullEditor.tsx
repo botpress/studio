@@ -21,7 +21,7 @@ interface Props {
   liteEditor?: boolean
 }
 
-export const IntentEditor: FC<Props> = props => {
+export const IntentEditor: FC<Props> = (props) => {
   const [intent, setIntent] = useState<NLU.IntentDefinition>()
 
   const debouncedApiSaveIntent = useRef(
@@ -30,7 +30,7 @@ export const IntentEditor: FC<Props> = props => {
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    props.api.fetchIntent(props.intent).then(intent => {
+    props.api.fetchIntent(props.intent).then((intent) => {
       setIntent(intent)
       utils.inspect(intent)
     })
@@ -76,7 +76,7 @@ export const IntentEditor: FC<Props> = props => {
           {!props.liteEditor && (
             <ContextSelector
               contexts={intent.contexts}
-              saveContexts={contexts => saveIntent({ ...intent, contexts })}
+              saveContexts={(contexts) => saveIntent({ ...intent, contexts })}
               api={props.api}
             />
           )}

@@ -74,7 +74,7 @@ export class Slot extends React.Component<any, any> {
 
   fetchIntents = () => {
     return axios.get(`${window.STUDIO_API_PATH}/nlu/intents`).then(({ data }) => {
-      const intents = data.filter(x => !x.name.startsWith('__qna'))
+      const intents = data.filter((x) => !x.name.startsWith('__qna'))
       this.setState({ intents })
     })
   }
@@ -83,8 +83,8 @@ export class Slot extends React.Component<any, any> {
     await axios.get(`${window.STUDIO_API_PATH}/actions`).then(({ data }) => {
       this.setState({
         actions: data
-          .filter(action => !action.hidden)
-          .map(x => {
+          .filter((action) => !action.hidden)
+          .map((x) => {
             return { label: x.name, value: x.name, metadata: x.metadata }
           })
       })
@@ -93,12 +93,12 @@ export class Slot extends React.Component<any, any> {
 
   getSelectedIntent() {
     const intentName = this.state.selectedIntentOption && this.state.selectedIntentOption.value
-    return intentName && this.state.intents.find(x => x.name === intentName)
+    return intentName && this.state.intents.find((x) => x.name === intentName)
   }
 
   getSelectedSlot(intent) {
     const slotName = this.state.selectedSlotOption && this.state.selectedSlotOption.value
-    return intent && intent.slots.find(x => x.name === slotName)
+    return intent && intent.slots.find((x) => x.name === slotName)
   }
 
   isFormValid() {
@@ -110,12 +110,12 @@ export class Slot extends React.Component<any, any> {
     )
   }
 
-  validateIntentExists = intentName => {
+  validateIntentExists = (intentName) => {
     if (!intentName) {
       return
     }
 
-    const exists = this.state.intents.find(x => x.name === intentName)
+    const exists = this.state.intents.find((x) => x.name === intentName)
     if (!exists) {
       this.setState({ error: 'Missing intent: This intent does not exist anymore!' })
     }
@@ -126,31 +126,31 @@ export class Slot extends React.Component<any, any> {
       return
     }
 
-    const currentIntent = this.state.intents.find(x => x.name === intentName)
-    if (!currentIntent || !currentIntent.slots.find(x => x.name === slotName)) {
+    const currentIntent = this.state.intents.find((x) => x.name === intentName)
+    if (!currentIntent || !currentIntent.slots.find((x) => x.name === slotName)) {
       this.setState({ error: 'Missing slot: This slot does not exits anymore!' })
     }
   }
 
-  handleContentChange = item => {
+  handleContentChange = (item) => {
     this.setState({ contentElement: item.id })
   }
 
-  handleSlotChange = selectedSlotOption => {
+  handleSlotChange = (selectedSlotOption) => {
     this.validateSlotExists(this.state.selectedIntentOption.value, selectedSlotOption.value)
     this.setState({ selectedSlotOption })
   }
 
-  handleIntentChange = selectedIntentOption => {
+  handleIntentChange = (selectedIntentOption) => {
     this.validateIntentExists(selectedIntentOption.value)
     this.setState({ selectedIntentOption, selectedSlotOption: undefined })
   }
 
-  handleNotFoundChange = item => {
+  handleNotFoundChange = (item) => {
     this.setState({ notFoundElement: item.id })
   }
 
-  handleMaxRetryAttemptsChange = event => {
+  handleMaxRetryAttemptsChange = (event) => {
     const value = Number(event.target.value)
     if (value > MAX_RETRIES) {
       this.setState({ error: `Too many retry attempts: Choose a number less than or equal to ${MAX_RETRIES}` })
@@ -159,24 +159,24 @@ export class Slot extends React.Component<any, any> {
     }
   }
 
-  handleTurnExpiryChange = event => {
+  handleTurnExpiryChange = (event) => {
     this.setState({ turnExpiry: Number(event.target.value) })
   }
 
-  handleActionChange = selectedActionOption => {
+  handleActionChange = (selectedActionOption) => {
     this.setState({ selectedActionOption })
   }
 
   getSlotOptionsForIntent(intent) {
     const slots = _.get(intent, 'slots', [])
-    return slots.map(slot => {
+    return slots.map((slot) => {
       return { value: slot.name, label: slot.name }
     })
   }
 
   render() {
     const intent = this.getSelectedIntent()
-    const intentsOptions = this.state.intents.map(intent => {
+    const intentsOptions = this.state.intents.map((intent) => {
       return { value: intent.name, label: intent.name }
     })
     const slotOptions = this.getSlotOptionsForIntent(intent)

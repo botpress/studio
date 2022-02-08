@@ -31,7 +31,7 @@ const ActionNameSelect: FC<{
   name: string
   actions: ActionDefinition[]
   onUpdate: (name: string) => void
-}> = props => {
+}> = (props) => {
   const { name, actions, onUpdate } = props
   const ActionSelect = Select.ofType<ActionDefinition>()
 
@@ -52,7 +52,7 @@ const ActionNameSelect: FC<{
         <ActionSelect
           items={actions}
           itemRenderer={ActionItemRenderer}
-          onItemSelect={item => {
+          onItemSelect={(item) => {
             onUpdate(item.name)
           }}
           filterable={false}
@@ -69,7 +69,7 @@ const ActionParametersComponent: FC<{
   actionDefinitionParams: ActionParameterDefinition[]
   actionParams: Parameters
   onUpdate: (params: Parameters) => void
-}> = props => {
+}> = (props) => {
   const { actionDefinitionParams, actionParams, onUpdate } = props
   return (
     <FormGroup
@@ -79,10 +79,10 @@ const ActionParametersComponent: FC<{
     >
       <div style={{ padding: 10 }}>
         <ActionParameters
-          parameterValues={actionDefinitionParams.map(parameterDefinition => {
+          parameterValues={actionDefinitionParams.map((parameterDefinition) => {
             return { definition: parameterDefinition, value: actionParams[parameterDefinition.name] || '' }
           })}
-          onUpdate={parameterValues => {
+          onUpdate={(parameterValues) => {
             const paramsObj = parameterValues.reduce((previousValue, parameterValue) => {
               previousValue[parameterValue.definition.name] = parameterValue.value
               return previousValue
@@ -100,7 +100,7 @@ const ActionServers: FC<{
   actionServerId: string
   actionServers: ActionServer[]
   onUpdate: (actionServerId: string) => void
-}> = props => {
+}> = (props) => {
   const { actionServerId, actionServers, onUpdate } = props
   return (
     <FormGroup
@@ -113,12 +113,12 @@ const ActionServers: FC<{
     >
       <HTMLSelect
         value={actionServerId}
-        onChange={e => {
+        onChange={(e) => {
           e.preventDefault()
           onUpdate(e.target.value)
         }}
       >
-        {actionServers.map(actionServer => (
+        {actionServers.map((actionServer) => (
           <option key={actionServer.id} value={actionServer.id}>
             {actionServer.id} ({actionServer.baseUrl})
           </option>
@@ -135,7 +135,7 @@ const ActionDialog: FC<{
   isOpen: boolean
   onClose: () => void
   onSave: (action: Action) => void
-}> = props => {
+}> = (props) => {
   const { isOpen, onClose, onSave } = props
 
   const [actionServers, setActionServers] = useState<ActionServerWithActions[]>([])
@@ -166,7 +166,7 @@ const ActionDialog: FC<{
   }, [opening])
 
   const currentServer: ActionServerWithActions | undefined =
-    actionServers.find(s => s.id === actionServerId) || actionServers[0]
+    actionServers.find((s) => s.id === actionServerId) || actionServers[0]
 
   if (actionServerId === '' && currentServer) {
     setActionServerId(currentServer.id)
@@ -177,7 +177,7 @@ const ActionDialog: FC<{
   let actionDef: ActionDefinition | undefined
 
   if (hasActions) {
-    actionDef = currentServer.actions.find(a => a.name === name) || currentServer.actions[0]
+    actionDef = currentServer.actions.find((a) => a.name === name) || currentServer.actions[0]
     if (name === '' && actionDef) {
       setName(actionDef.name)
     }
@@ -207,14 +207,14 @@ const ActionDialog: FC<{
       )}
       {isLoading && (
         <Dialog.Body>
-          <div onMouseDown={e => e.stopPropagation()} onContextMenu={e => e.stopPropagation()}>
+          <div onMouseDown={(e) => e.stopPropagation()} onContextMenu={(e) => e.stopPropagation()}>
             {!errorFetchingServers && (
               <ActionServers
                 actionServers={actionServers}
                 actionServerId={actionServerId}
-                onUpdate={actionServerId => {
+                onUpdate={(actionServerId) => {
                   setActionServerId(actionServerId)
-                  const actionServer = actionServers.find(s => s.id === actionServerId)
+                  const actionServer = actionServers.find((s) => s.id === actionServerId)
                   setName(actionServer.actions[0]?.name || '')
                 }}
               />
@@ -245,7 +245,7 @@ const ActionDialog: FC<{
                 <ActionNameSelect
                   actions={currentServer.actions}
                   name={actionDef.name}
-                  onUpdate={name => {
+                  onUpdate={(name) => {
                     setName(name)
                   }}
                 />
@@ -253,7 +253,7 @@ const ActionDialog: FC<{
                 <ActionParametersComponent
                   actionDefinitionParams={actionDef.params}
                   actionParams={parameters}
-                  onUpdate={parameters => setParameters(parameters)}
+                  onUpdate={(parameters) => setParameters(parameters)}
                 />
               </>
             )}

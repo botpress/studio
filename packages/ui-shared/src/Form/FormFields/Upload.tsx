@@ -5,7 +5,7 @@ import FileDisplay from '~/FileDisplay'
 import sharedStyle from '../../../../ui-shared-lite/style.scss'
 import { UploadFieldProps } from './typings'
 
-const Upload: FC<UploadFieldProps> = props => {
+const Upload: FC<UploadFieldProps> = (props) => {
   const uploadReducer = (state, action) => {
     if (action.type === 'uploadStart') {
       return {
@@ -48,19 +48,19 @@ const Upload: FC<UploadFieldProps> = props => {
     dispatch({ type: 'deleteFile' })
   }
 
-  const startUpload = async event => {
+  const startUpload = async (event) => {
     const data = new FormData()
     data.append('file', event.target.files[0])
 
     dispatch({ type: 'uploadStart' })
     await props.axios
       .post(props.customPath ? props.customPath : 'media', data, { headers: { 'Content-Type': 'multipart/form-data' } })
-      .then(response => {
+      .then((response) => {
         const url: string = response.data.url
 
         dispatch({ type: 'uploadSuccess', data: { url } })
       })
-      .catch(e => {
+      .catch((e) => {
         dispatch({ type: 'uploadError', data: { error: e.message } })
       })
   }
@@ -74,7 +74,7 @@ const Upload: FC<UploadFieldProps> = props => {
       // e.g. video/*, audio/*, ...
       return `${type}/*`
     } else {
-      '*'
+      ;('*')
     }
   }
 

@@ -41,13 +41,13 @@ export class Container extends React.Component<Partial<BottomPanelProps>> {
   static tabs: string[] = []
   static onTabsChanged: (tabs: string[]) => void
 
-  static addTab = val => {
+  static addTab = (val) => {
     Container.tabs.push(val)
     Container.onTabsChanged?.(Container.tabs)
   }
 
-  static removeTab = val => {
-    Container.tabs = Container.tabs.filter(x => x !== val)
+  static removeTab = (val) => {
+    Container.tabs = Container.tabs.filter((x) => x !== val)
     Container.onTabsChanged?.(Container.tabs)
   }
 

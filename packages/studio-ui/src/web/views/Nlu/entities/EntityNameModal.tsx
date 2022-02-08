@@ -31,7 +31,7 @@ interface Props {
   onEntityModified: (ent: NLU.EntityDefinition) => void
 }
 
-export const EntityNameModal: FC<Props> = props => {
+export const EntityNameModal: FC<Props> = (props) => {
   const [name, setName] = useState<string>('')
   const [type, setType] = useState<string>(AVAILABLE_TYPES[0].value)
   const [isValid, setIsValid] = useState<boolean>()
@@ -44,7 +44,7 @@ export const EntityNameModal: FC<Props> = props => {
     props.action === 'rename' ? setName(props.originalEntity.name) : setName('')
   }, [props.isOpen])
 
-  const submit: React.FormEventHandler<HTMLFormElement> = async e => {
+  const submit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
 
     if (props.action === 'create') {
@@ -86,7 +86,7 @@ export const EntityNameModal: FC<Props> = props => {
   }
 
   const isIdentical = props.action === 'rename' && props.originalEntity.name === name
-  const alreadyExists = !isIdentical && _.some(props.entityIDs, id => id === getEntityId(name))
+  const alreadyExists = !isIdentical && _.some(props.entityIDs, (id) => id === getEntityId(name))
 
   let dialog: { icon: any; title: string } = { icon: 'add', title: lang.tr('create') }
   let submitText = lang.tr('create')
@@ -112,7 +112,7 @@ export const EntityNameModal: FC<Props> = props => {
               dir="auto"
               placeholder={lang.tr('nlu.entities.namePlaceholder')}
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
               autoFocus
             />
           </FormGroup>
@@ -122,7 +122,7 @@ export const EntityNameModal: FC<Props> = props => {
                 tabIndex={2}
                 fill
                 options={AVAILABLE_TYPES}
-                onChange={e => setType(e.target.value)}
+                onChange={(e) => setType(e.target.value)}
                 value={type}
               />
             </FormGroup>

@@ -30,7 +30,7 @@ interface Props {
   onChange: (entities: string[]) => void
 }
 
-export const EntitySelector: FC<Props> = props => {
+export const EntitySelector: FC<Props> = (props) => {
   const [availableEntities, setAvbEntities] = useState([])
 
   useEffect(() => {
@@ -72,7 +72,7 @@ export const EntitySelector: FC<Props> = props => {
       key={`${entity.name}${entity.type}`}
       onClick={handleClick}
       active={modifiers.active}
-      icon={!!props.entities.find(e => e === entity.name) ? 'tick' : 'blank'}
+      icon={!!props.entities.find((e) => e === entity.name) ? 'tick' : 'blank'}
     />
   )
 

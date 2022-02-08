@@ -29,12 +29,12 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
   const [showPicker, setShowPicker] = useState(false)
   const [localItems, setLocalItems] = useState(props.items)
   // Generating unique keys so we don't need to rerender all the list as soon as we add or delete one element
-  const [keys, setKeys] = useState(localItems.map(x => _uniqueId(keyPrefix)))
+  const [keys, setKeys] = useState(localItems.map((x) => _uniqueId(keyPrefix)))
   const { duplicateMsg, updateItems, keyPrefix, canAddContent, addItemLabel, label, refItems, placeholder } = props
   const focusedElement = useRef(props.initialFocus || '')
 
   useEffect(() => {
-    setKeys(localItems.map(x => _uniqueId(keyPrefix)))
+    setKeys(localItems.map((x) => _uniqueId(keyPrefix)))
   }, [refItems])
 
   const updateLocalItem = (index: number, value: string): void => {
@@ -102,9 +102,9 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
                 isFocused={focusedElement.current === `${keyPrefix}${index}`}
                 className={cx(style.textarea, { [style.hasError]: errors[index] })}
                 placeholder={refItems?.[index] ? refItems[index] : placeholder(index)}
-                onChange={value => updateLocalItem(index, value)}
+                onChange={(value) => updateLocalItem(index, value)}
                 onBlur={() => updateItems(localItems)}
-                onKeyDown={e => onKeyDown(e, index)}
+                onKeyDown={(e) => onKeyDown(e, index)}
                 value={item}
                 direction={contentDirection}
               />
@@ -139,7 +139,7 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
         <BotpressContentTypePicker
           show={showPicker}
           onClose={() => setShowPicker(false)}
-          onSelect={item => addItem(`#!${item.id}`)}
+          onSelect={(item) => addItem(`#!${item.id}`)}
           container={document.getElementsByTagName('body')[0]}
         />
       )}

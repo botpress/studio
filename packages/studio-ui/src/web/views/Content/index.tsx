@@ -164,7 +164,7 @@ class ContentView extends Component<Props, State> {
       .then(() => this.setState({ showModal: false }))
   }
 
-  handleClone = ids => {
+  handleClone = (ids) => {
     return Promise.all(
       this.props.contentItems
         .filter(({ id }) => ids.includes(id))
@@ -172,7 +172,7 @@ class ContentView extends Component<Props, State> {
     ).then(() => this.fetchCategoryItems(this.state.selectedId))
   }
 
-  handleFormEdited = data => {
+  handleFormEdited = (data) => {
     this.setState({ contentToEdit: data })
   }
 
@@ -181,7 +181,7 @@ class ContentView extends Component<Props, State> {
     this.setState({ selectedId: id })
   }
 
-  handleDeleteSelected = ids => {
+  handleDeleteSelected = (ids) => {
     this.props
       .deleteContentItems(ids)
       .then(() => this.props.fetchContentCategories())
@@ -198,7 +198,7 @@ class ContentView extends Component<Props, State> {
     this.fetchCategoryItems(this.state.selectedId ?? 'all')
   }
 
-  handleSearch = input => {
+  handleSearch = (input) => {
     this.setState({ searchQuery: input })
     setImmediate(() => this.fetchCategoryItems(this.state.selectedId))
   }

@@ -29,17 +29,17 @@ export default class ElementsList extends React.Component<Props> {
     showPicker: false
   }
 
-  handlePickContent = async item => {
+  handlePickContent = async (item) => {
     this.props.onCreate(`#!${item.id}`)
     this.setState({ editElementIndex: undefined })
   }
 
-  onContentChange = item => {
+  onContentChange = (item) => {
     this.props.onUpdate(`#!${item.id}`, this.state.editElementIndex)
     this.setState({ editElementIndex: undefined })
   }
 
-  toggleEditMode = index => {
+  toggleEditMode = (index) => {
     this.setState({ editElementIndex: index })
   }
 
@@ -55,8 +55,8 @@ export default class ElementsList extends React.Component<Props> {
           key={`elements_edit_element_${index}`}
           defaultValue={element}
           allowMultiline={this.props.allowMultiline}
-          elements={this.props.elements.filter(el => el !== element)}
-          onElementAdd={element => this.handleNewElement(element, index)}
+          elements={this.props.elements.filter((el) => el !== element)}
+          onElementAdd={(element) => this.handleNewElement(element, index)}
         />
       )
     } else {

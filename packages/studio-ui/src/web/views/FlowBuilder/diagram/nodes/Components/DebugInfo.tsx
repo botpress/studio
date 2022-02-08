@@ -22,7 +22,7 @@ export const DebugInfo: FC<NodeDebugInfoProps> = ({
   nodeType,
   className
 }) => {
-  const goToFlow = flow => history.push(`/flows/${flow.replace(/\.flow\.json/, '')}`)
+  const goToFlow = (flow) => history.push(`/flows/${flow.replace(/\.flow\.json/, '')}`)
 
   const infos: JSX.Element[] = []
 

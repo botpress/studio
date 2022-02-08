@@ -59,7 +59,7 @@ export class Debugger extends React.Component<Props, State> {
 
   allowedRetryCount = 0
   currentRetryCount = 0
-  loadEventDebounced = _.debounce(m => this.loadEvent(m), DEBOUNCE_DELAY)
+  loadEventDebounced = _.debounce((m) => this.loadEvent(m), DEBOUNCE_DELAY)
   lastMessage = undefined
 
   async componentDidMount() {
@@ -137,7 +137,7 @@ export class Debugger extends React.Component<Props, State> {
 
     const eventsCache = this.state.eventsCache
 
-    const existing = eventsCache.find(x => x.messageId === messageId)
+    const existing = eventsCache.find((x) => x.messageId === messageId)
     if (existing) {
       return existing
     }
@@ -163,7 +163,7 @@ export class Debugger extends React.Component<Props, State> {
     this.postToIframe('new-session', null)
   }
 
-  handleTabChange = selectedTabId => this.setState({ selectedTabId })
+  handleTabChange = (selectedTabId) => this.setState({ selectedTabId })
 
   // check rendering
 
@@ -186,7 +186,7 @@ export class Debugger extends React.Component<Props, State> {
       return
     }
 
-    const hasError = Object.values(processing).some(item => item.errors?.length > 0)
+    const hasError = Object.values(processing).some((item) => item.errors?.length > 0)
 
     return (
       <Tab

@@ -13,7 +13,7 @@ interface Props {
   stacktrace: sdk.IO.JumpPoint[]
 }
 
-const Decision: FC<{ decision: sdk.IO.Suggestion }> = props => {
+const Decision: FC<{ decision: sdk.IO.Suggestion }> = (props) => {
   const decision = props.decision.sourceDetails
   const isQnA = isQnaItem(decision)
 
@@ -30,10 +30,10 @@ const Decision: FC<{ decision: sdk.IO.Suggestion }> = props => {
   )
 }
 
-const Suggestions: FC<{ suggestions: sdk.IO.Suggestion[] }> = props => (
+const Suggestions: FC<{ suggestions: sdk.IO.Suggestion[] }> = (props) => (
   <Fragment>
     <ul>
-      {_.take(props.suggestions, 4).map(sugg => (
+      {_.take(props.suggestions, 4).map((sugg) => (
         <li key={sugg.sourceDetails}>
           <Intent name={sugg.sourceDetails} confidence={sugg.confidence} />
         </li>
@@ -42,7 +42,7 @@ const Suggestions: FC<{ suggestions: sdk.IO.Suggestion[] }> = props => (
   </Fragment>
 )
 
-const Dialog: FC<Props> = props => {
+const Dialog: FC<Props> = (props) => {
   if (!props.decision) {
     return null
   }

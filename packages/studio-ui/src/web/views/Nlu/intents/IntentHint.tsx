@@ -16,7 +16,7 @@ interface Props {
 }
 
 // At some point, recommendations will be computed in the backend and this component will simply fetch and display intents recommendations
-const IntentHint: FC<Props> = props => {
+const IntentHint: FC<Props> = (props) => {
   const utterances = props.intent.utterances[props.contentLang] || []
   const slotsLength = (props.intent.slots || []).length
 

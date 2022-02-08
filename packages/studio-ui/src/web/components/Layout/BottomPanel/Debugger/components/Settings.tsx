@@ -53,7 +53,7 @@ const Settings = () => {
         >
           <InputGroup
             value={userId}
-            onChange={e => setUserId(e.currentTarget.value ?? '')}
+            onChange={(e) => setUserId(e.currentTarget.value ?? '')}
             placeholder={lang.tr('bottomPanel.debugger.settings.userIdPlaceholder')}
           />
         </FormGroup>
@@ -63,7 +63,7 @@ const Settings = () => {
         >
           <InputGroup
             value={externalAuthToken}
-            onChange={e => setExternalAuthToken(e.currentTarget.value ?? '')}
+            onChange={(e) => setExternalAuthToken(e.currentTarget.value ?? '')}
             placeholder={lang.tr('bottomPanel.debugger.settings.authTokenPlaceholder')}
           />
         </FormGroup>

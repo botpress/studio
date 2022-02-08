@@ -25,14 +25,14 @@ const Text: FC<TextProps> = ({
     setLocalValue(value ?? getFieldDefaultValue({ type, defaultValue }))
   }, [value])
 
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
       e.preventDefault()
       e.target.select()
     }
   }
 
-  const reformatValue = value => {
+  const reformatValue = (value) => {
     if (valueManipulation) {
       const { regex, modifier, replaceChar } = valueManipulation
       const re = new RegExp(regex, modifier)
@@ -63,13 +63,13 @@ const Text: FC<TextProps> = ({
   return (
     <Fragment>
       <input
-        ref={ref => childRef?.(ref)}
+        ref={(ref) => childRef?.(ref)}
         className={cx(sharedStyle.input, { 'has-error': missingTranslation })}
         type={type}
         maxLength={maxLength}
         placeholder={placeholder}
         onKeyDown={onKeyDown}
-        onChange={e => {
+        onChange={(e) => {
           const value = reformatValue(e.target.value)
 
           onChange?.(value)

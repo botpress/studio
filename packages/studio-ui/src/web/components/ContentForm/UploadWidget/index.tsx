@@ -18,7 +18,7 @@ interface IUploadWidgetProps {
   }
 }
 
-const UploadWidget: FC<IUploadWidgetProps> = props => {
+const UploadWidget: FC<IUploadWidgetProps> = (props) => {
   const { value } = props
   const [error, setError] = useState<string>(null)
   const [enterUrlManually, setEnterUrlManually] = useState(false)
@@ -70,7 +70,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
         {!enterUrlManually && (
           <FormFields.Upload
             axios={axios.create({ baseURL: window.STUDIO_API_PATH })}
-            onChange={value => onChange(value, true)}
+            onChange={(value) => onChange(value, true)}
             value={value}
             type={subtype}
             filter={filter}

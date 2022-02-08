@@ -12,7 +12,7 @@ interface Props {
   saveContexts: (ctx: string[]) => void
 }
 
-const ContextSelector: FC<Props> = props => {
+const ContextSelector: FC<Props> = (props) => {
   const [availableContexts, setContexts] = useState([])
   const contexts = props.contexts || []
 
@@ -89,7 +89,7 @@ const ContextSelector: FC<Props> = props => {
         itemRenderer={ctxItemRenderer}
         itemPredicate={(q: string, ctx: string) => !q || ctx.includes(q)}
         onItemSelect={onItemSelect}
-        tagRenderer={ctx => ctx}
+        tagRenderer={(ctx) => ctx}
         tagInputProps={{
           tagProps: { minimal: true },
           onRemove: removeCtx,
@@ -101,7 +101,7 @@ const ContextSelector: FC<Props> = props => {
         popoverProps={{ minimal: true, fill: true, usePortal: false }}
         selectedItems={contexts}
         createNewItemRenderer={props.isSearch ? undefined : createNewItemRenderer}
-        createNewItemFromQuery={q => q}
+        createNewItemFromQuery={(q) => q}
       />
     </div>
   )

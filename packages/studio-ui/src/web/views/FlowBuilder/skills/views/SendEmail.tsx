@@ -49,11 +49,11 @@ export class SendEmail extends React.Component<any, any> {
     )
   }
 
-  handleContentChange = item => {
+  handleContentChange = (item) => {
     this.setState({ contentElement: item.id })
   }
 
-  handleSubjectChange = item => {
+  handleSubjectChange = (item) => {
     this.setState({ subjectElement: item.id })
   }
 
@@ -71,7 +71,7 @@ export class SendEmail extends React.Component<any, any> {
               type="text"
               value={this.state.fromAddress}
               placeholder="your@email.com"
-              onChange={event => this.setState({ fromAddress: event.target.value })}
+              onChange={(event) => this.setState({ fromAddress: event.target.value })}
             />
           </Col>
         </Row>
@@ -86,7 +86,7 @@ export class SendEmail extends React.Component<any, any> {
               type="text"
               value={this.state.toAddress}
               placeholder="your@email.com"
-              onChange={event => this.setState({ toAddress: event.target.value })}
+              onChange={(event) => this.setState({ toAddress: event.target.value })}
             />
           </Col>
         </Row>
@@ -101,7 +101,7 @@ export class SendEmail extends React.Component<any, any> {
               type="text"
               value={this.state.ccAddress}
               placeholder="your@email.com"
-              onChange={event => this.setState({ ccAddress: event.target.value })}
+              onChange={(event) => this.setState({ ccAddress: event.target.value })}
             />
           </Col>
           <Col md={6}>
@@ -114,7 +114,7 @@ export class SendEmail extends React.Component<any, any> {
               type="text"
               value={this.state.bccAddress}
               placeholder="your@email.com"
-              onChange={event => this.setState({ bccAddress: event.target.value })}
+              onChange={(event) => this.setState({ bccAddress: event.target.value })}
             />
           </Col>
         </Row>

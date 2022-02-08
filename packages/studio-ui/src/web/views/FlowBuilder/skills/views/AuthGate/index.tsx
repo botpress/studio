@@ -16,7 +16,7 @@ export interface AuthGateProps {
   inviteCodeRetry: number
 }
 
-export const AuthGate: FC<SkillProps<AuthGateProps>> = props => {
+export const AuthGate: FC<SkillProps<AuthGateProps>> = (props) => {
   const [inviteCodeRetry, setInviteCodeRetry] = useState<number>(3)
   const [promptLogin, setPromptLogin] = useState<boolean>(false)
   const [loginMessage, setLoginMessage] = useState<string>()
@@ -43,7 +43,7 @@ export const AuthGate: FC<SkillProps<AuthGateProps>> = props => {
       <div className={cx(style.element, style.flex)}>
         <Checkbox
           checked={promptLogin}
-          onChange={e => setPromptLogin(e.currentTarget.checked)}
+          onChange={(e) => setPromptLogin(e.currentTarget.checked)}
           label={lang.tr('skills.authGate.promptUnauthenticated')}
         />
 
@@ -58,7 +58,7 @@ export const AuthGate: FC<SkillProps<AuthGateProps>> = props => {
             <div className={style.title}>{lang.tr('skills.authGate.loginPromptMessage')}</div>
             <ContentPickerWidget
               itemId={loginMessage}
-              onChange={content => setLoginMessage(content.id)}
+              onChange={(content) => setLoginMessage(content.id)}
               placeholder={lang.tr('skills.authGate.selectContent')}
             />
 
@@ -81,7 +81,7 @@ export const AuthGate: FC<SkillProps<AuthGateProps>> = props => {
             <div className={style.title}>{lang.tr('skills.authGate.inviteMessage')}</div>
             <ContentPickerWidget
               itemId={inviteMessage}
-              onChange={content => setInviteMessage(content.id)}
+              onChange={(content) => setInviteMessage(content.id)}
               placeholder={lang.tr('skills.authGate.invitePlaceholder')}
             />
           </div>
@@ -90,7 +90,7 @@ export const AuthGate: FC<SkillProps<AuthGateProps>> = props => {
             <FormGroup label={lang.tr('skills.authGate.retryLimit')}>
               <InputGroup
                 value={inviteCodeRetry.toString()}
-                onChange={e => setInviteCodeRetry(Number(e.currentTarget.value))}
+                onChange={(e) => setInviteCodeRetry(Number(e.currentTarget.value))}
               />
             </FormGroup>
           </div>

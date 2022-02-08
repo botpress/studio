@@ -12,7 +12,7 @@ export interface InstalledLibrary {
   version: string
 }
 
-const MainView = props => {
+const MainView = () => {
   const [libraries, setLibraries] = useState([])
   const [page, setPage] = useState('splash')
   const [lib, setLib] = useState<InstalledLibrary>()
@@ -74,7 +74,7 @@ const MainView = props => {
     }
   }
 
-  const handleLibClicked = item => {
+  const handleLibClicked = (item) => {
     setLib(item.data)
   }
 

@@ -14,7 +14,7 @@ type Props = DispatchProps &
     toggleEmulator: () => void
   }
 
-const CommandPalette: FC<Props> = props => {
+const CommandPalette: FC<Props> = (props) => {
   const [commands, setCommands] = useState<QuickShortcut[]>([])
 
   useEffect(() => {
@@ -26,8 +26,8 @@ const CommandPalette: FC<Props> = props => {
       return
     }
 
-    const getBotDisplayName = bot => {
-      return props.bots.filter(x => x.name === bot.name).length > 1 ? `${bot.name} (${bot.id})` : bot.name
+    const getBotDisplayName = (bot) => {
+      return props.bots.filter((x) => x.name === bot.name).length > 1 ? `${bot.name} (${bot.id})` : bot.name
     }
 
     const commands: QuickShortcut[] = [
@@ -50,15 +50,15 @@ const CommandPalette: FC<Props> = props => {
         type: 'popup',
         url: `${window.location.origin}/s/${window.BOT_ID}`
       },
-      ...props.bots.map(bot => ({
+      ...props.bots.map((bot) => ({
         label: lang.tr('commander.switchBot', { name: getBotDisplayName(bot) }),
         type: 'redirect' as any,
         category: 'studio',
         url: `${window.location.origin}/studio/${bot.id}`
       })),
       ...props.modules
-        .filter(module => !module.noInterface)
-        .map(module => ({
+        .filter((module) => !module.noInterface)
+        .map((module) => ({
           label: `${lang.tr(`module.${module.name}.fullName`)}`,
           type: 'goto',
           category: 'module',

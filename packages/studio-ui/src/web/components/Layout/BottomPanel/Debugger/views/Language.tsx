@@ -7,7 +7,7 @@ interface Props {
   usedLanguage: string
 }
 
-export const Language: FC<Props> = props => (
+export const Language: FC<Props> = (props) => (
   <div>
     <p>
       <span className={style.slightBold}>Detected language:</span>&nbsp;

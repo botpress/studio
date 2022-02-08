@@ -100,7 +100,7 @@ class ListView extends Component<Props, State> {
     this.setState({ checkedIds: [], allChecked: false })
   }
 
-  handleSearchChanged = event => {
+  handleSearchChanged = (event) => {
     this.setState({ searchTerm: event.target.value })
     this.debouncedHandleSearch?.()
   }
@@ -122,11 +122,11 @@ class ListView extends Component<Props, State> {
     this.props.handleSearch(searchQuery)
   }
 
-  fetchData = state => {
-    const filters = state.filtered.map(filter => {
+  fetchData = (state) => {
+    const filters = state.filtered.map((filter) => {
       return { column: filter.id, value: filter.value }
     })
-    let sortOrder = state.sorted.map(sort => {
+    let sortOrder = state.sorted.map((sort) => {
       return { column: sort.id, desc: sort.desc }
     })
 
@@ -153,15 +153,18 @@ class ListView extends Component<Props, State> {
     )
   }
 
-  renderFilterPlaceholder = placeholder => ({ filter, onChange }) => (
-    <input
-      type="text"
-      placeholder={placeholder}
-      value={filter ? filter.value : ''}
-      style={{ width: '100%' }}
-      onChange={event => onChange(event.target.value)}
-    />
-  )
+  renderFilterPlaceholder =
+    (placeholder) =>
+    ({ filter, onChange }) =>
+      (
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={filter ? filter.value : ''}
+          style={{ width: '100%' }}
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )
 
   onRowClick = (_state, rowInfo, column, _instance) => {
     return {
@@ -218,7 +221,7 @@ class ListView extends Component<Props, State> {
       },
       {
         Header: lang.tr('id'),
-        Cell: x => `#!${x.value}`,
+        Cell: (x) => `#!${x.value}`,
         filterable: false,
         accessor: 'id',
         width: 170
@@ -233,7 +236,7 @@ class ListView extends Component<Props, State> {
         Header: lang.tr('preview'),
         accessor: 'previews',
         filterable: false,
-        Cell: x => {
+        Cell: (x) => {
           const preview = x.original.previews?.[this.props.contentLang]
           const className = cx({ [style.missingTranslation]: !preview || preview.startsWith('(missing translation) ') })
           return (
@@ -242,8 +245,8 @@ class ListView extends Component<Props, State> {
                 <Markdown
                   source={preview}
                   renderers={{
-                    image: props => <img {...props} className={style.imagePreview} />,
-                    link: props => (
+                    image: (props) => <img {...props} className={style.imagePreview} />,
+                    link: (props) => (
                       <a href={props.href} target="_blank">
                         {props.children}
                       </a>
@@ -257,7 +260,7 @@ class ListView extends Component<Props, State> {
       },
       {
         Header: lang.tr('modifiedOn'),
-        Cell: x =>
+        Cell: (x) =>
           x.original.modifiedOn ? moment(x.original.modifiedOn).format('MMM Do YYYY, h:mm') : lang.tr('never'),
         accessor: 'modifiedOn',
         filterable: false,
@@ -265,7 +268,8 @@ class ListView extends Component<Props, State> {
       },
       {
         Header: lang.tr('createdOn'),
-        Cell: x => (x.original.createdOn ? moment(x.original.createdOn).format('MMM Do YYYY, h:mm') : lang.tr('never')),
+        Cell: (x) =>
+          x.original.createdOn ? moment(x.original.createdOn).format('MMM Do YYYY, h:mm') : lang.tr('never'),
         accessor: 'createdOn',
         filterable: false,
         width: 150
@@ -273,7 +277,7 @@ class ListView extends Component<Props, State> {
       {
         Header: lang.tr('usage'),
         id: 'usage',
-        Cell: x => {
+        Cell: (x) => {
           const count = this.getCountUsage(x.original.usage)
           return count ? <a>{count}</a> : count
         },
@@ -282,7 +286,7 @@ class ListView extends Component<Props, State> {
         width: 100
       },
       {
-        Cell: _x => (!this.props.readOnly ? <Button small icon="edit" className="icon-edit" /> : ''),
+        Cell: (_x) => (!this.props.readOnly ? <Button small icon="edit" className="icon-edit" /> : ''),
         filterable: false,
         width: 45
       }
@@ -314,7 +318,7 @@ class ListView extends Component<Props, State> {
         page={this.state.page}
         onFetchData={this.fetchData}
         onPageSizeChange={(pageSize, page) => this.setState({ page, pageSize })}
-        onPageChange={page => this.setState({ page })}
+        onPageChange={(page) => this.setState({ page })}
         getTdProps={this.onRowClick}
         defaultPageSize={this.state.pageSize}
         defaultSorted={[{ id: 'modifiedOn', desc: true }]}

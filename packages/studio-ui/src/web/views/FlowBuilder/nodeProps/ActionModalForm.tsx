@@ -73,7 +73,7 @@ class ActionModalForm extends Component<Props, State> {
       this.setState({
         actionType: nextProps.item.type,
         functionInputValue:
-          this.state.avActions && this.state.avActions.find(x => x.value === nextProps.item.functionName),
+          this.state.avActions && this.state.avActions.find((x) => x.value === nextProps.item.functionName),
         messageValue: nextProps.item.message,
         functionParams: nextProps.item.parameters
       })
@@ -99,7 +99,7 @@ class ActionModalForm extends Component<Props, State> {
 
   prepareActions() {
     this.setState({
-      avActions: (this.props.actions || []).filter(this.isCloudSafeAction).map(x => {
+      avActions: (this.props.actions || []).filter(this.isCloudSafeAction).map((x) => {
         return {
           label: x.name,
           value: x.name,
@@ -160,8 +160,8 @@ class ActionModalForm extends Component<Props, State> {
             id="select-action"
             value={this.state.functionInputValue || ''}
             options={avActions}
-            onChange={val => {
-              const fn = avActions.find(fn => fn.value === (val && val.value))
+            onChange={(val) => {
+              const fn = avActions.find((fn) => fn.value === (val && val.value))
               const paramsDefinition = (_.get(fn, 'metadata.params') || []) as ActionParameterDefinition[]
               this.setState({
                 functionInputValue: val,
@@ -180,7 +180,7 @@ class ActionModalForm extends Component<Props, State> {
               }
 
               this.setState({
-                functionParams: _.fromPairs(paramsDefinition.map(param => [param.name, param.default || '']))
+                functionParams: _.fromPairs(paramsDefinition.map((param) => [param.name, param.default || '']))
               })
             }}
           />
@@ -303,7 +303,7 @@ class ActionModalForm extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  actions: state.skills.actions?.filter(a => a.legacy),
+  actions: state.skills.actions?.filter((a) => a.legacy),
   isCloudBot: Boolean(state.bot.isCloudBot)
 })
 

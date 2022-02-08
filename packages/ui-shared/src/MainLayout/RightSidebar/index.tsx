@@ -22,7 +22,7 @@ const RightSidebar: FC<RightSidebarProps> = ({ className, canOutsideClickClose, 
     }
   }, [children])
 
-  const handleClickOutside = event => {
+  const handleClickOutside = (event) => {
     if (
       !container?.contains(event.target) &&
       !event.target?.closest('.more-options-more-menu') &&

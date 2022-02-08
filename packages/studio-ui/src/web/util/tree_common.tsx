@@ -19,11 +19,11 @@ export function traverseTree<T>(nodes: ITreeNode<T>[], callback: (node: ITreeNod
   }
 }
 
-export const getUniqueId = node => `${node.type}:${node.fullPath}`
+export const getUniqueId = (node) => `${node.type}:${node.fullPath}`
 
 export const addNode = (tree, folders, flowDesc, data) => {
   for (const folderDesc of folders) {
-    let folder = _.find(tree.childNodes, x => x.id === folderDesc.id)
+    let folder = _.find(tree.childNodes, (x) => x.id === folderDesc.id)
     if (!folder) {
       folder = { ...folderDesc, parent: tree, childNodes: [] }
       tree.childNodes.push(folder)
@@ -44,7 +44,7 @@ const compareNodes = (a, b) => {
   }
 }
 
-export const sortChildren = tree => {
+export const sortChildren = (tree) => {
   if (!tree.childNodes) {
     return
   }

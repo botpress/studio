@@ -12,7 +12,7 @@ interface Props {
   onReady?: Function
   className?: string
 }
-export const RecordSpeechToText: FC<Props> = props => {
+export const RecordSpeechToText: FC<Props> = (props) => {
   let recognition
   const [isListening, setIsListening] = useState(false)
   const [text, setText] = useState<string>('')

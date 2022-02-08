@@ -82,8 +82,8 @@ export const SidePanelSection = (props: SidePanelSectionProps) => {
           {!props.hideCaret && <Icon icon={isOpen ? 'caret-down' : 'caret-right'} />}
           {props.label || ''}
         </strong>
-        <ButtonGroup minimal={true} onClick={e => e.stopPropagation()}>
-          {props.actions && props.actions.map(action => SectionAction(action))}
+        <ButtonGroup minimal={true} onClick={(e) => e.stopPropagation()}>
+          {props.actions && props.actions.map((action) => SectionAction(action))}
         </ButtonGroup>
       </div>
       <Collapse isOpen={isOpen} transitionDuration={50} keepChildrenMounted={true}>
@@ -95,12 +95,12 @@ export const SidePanelSection = (props: SidePanelSectionProps) => {
 
 export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>((props: SearchBarProps, ref) => {
   const [text, setText] = useState('')
-  const handleTextChanged = e => {
+  const handleTextChanged = (e) => {
     props.value === undefined && setText(e.target.value)
     props.onChange && props.onChange(e.target.value)
   }
 
-  const onBlur = e => props.onBlur && props.onBlur(e)
+  const onBlur = (e) => props.onBlur && props.onBlur(e)
 
   return (
     <div className={cx(style.searchBar, props.className)}>
@@ -120,7 +120,7 @@ export const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>((pro
             id="btn-search"
             icon={'search'}
             className={Classes.FIXED}
-            onClick={e => props.onButtonClick && props.onButtonClick(e)}
+            onClick={(e) => props.onButtonClick && props.onButtonClick(e)}
           />
         )}
       </ControlGroup>
@@ -132,7 +132,7 @@ export const ItemList = (props: ItemListProps) => {
   return (
     <div className={style.itemList}>
       {props.items &&
-        props.items.map(item => {
+        props.items.map((item) => {
           const key = item.key ? item.key : item.label
           return (
             <div key={key} className={cx(style.item, { [style.itemListSelected]: item.selected })}>
@@ -140,13 +140,13 @@ export const ItemList = (props: ItemListProps) => {
                 id={item.id}
                 className={style.label}
                 onClick={() => props.onElementClicked && props.onElementClicked(item)}
-                onContextMenu={e => showContextMenu(e, item.contextMenu)}
+                onContextMenu={(e) => showContextMenu(e, item.contextMenu)}
               >
                 {item.icon && <Icon icon={item.icon} />} {item.label}
               </div>
               <div className={style.right}>
                 {item.actions &&
-                  item.actions.map(action => (
+                  item.actions.map((action) => (
                     <Tooltip key={key + action.tooltip} content={action.tooltip} position={Position.RIGHT}>
                       <span id={action.id}>
                         <Icon
@@ -166,7 +166,7 @@ export const ItemList = (props: ItemListProps) => {
   )
 }
 
-export const PaddedContent = props => <div style={{ padding: '5px' }}>{props.children}</div>
+export const PaddedContent = (props) => <div style={{ padding: '5px' }}>{props.children}</div>
 export const SidePanel = (props: SidePanelProps) => (
   <div className={style.sidePanel} style={props.style}>
     {props.children}
@@ -226,7 +226,7 @@ const SectionAction = (action: SectionAction) => {
           disabled={action.disabled}
           icon={action.icon}
           text={action.label}
-          onClick={e => {
+          onClick={(e) => {
             action.onClick && action.onClick(e)
           }}
         />
@@ -258,7 +258,7 @@ export const InfoTooltip = (props: InfoTooltipProps) => (
 )
 
 const elementPreviewCache = {}
-export const ElementPreview: FC<ElementPreviewProps> = props => {
+export const ElementPreview: FC<ElementPreviewProps> = (props) => {
   const [contentItem, setContentItem] = useState<any>()
 
   useEffect(() => {

@@ -124,7 +124,7 @@ const Sidebar: FC<Props> = (props) => {
         {window.IS_BOT_MOUNTED ? (
           <Fragment>
             {BASIC_MENU_ITEMS.map(renderBasicItem)}
-            {!props.isCloudBot && props.modules.filter(m => !m.noInterface).map(renderModuleItem)}
+            {!props.isCloudBot && props.modules.filter((m) => !m.noInterface).map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         ) : (

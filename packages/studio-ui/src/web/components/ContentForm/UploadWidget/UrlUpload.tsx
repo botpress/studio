@@ -15,7 +15,7 @@ interface IUrlUploadProps {
   onDelete(): void
 }
 
-const UrlUpload: FC<IUrlUploadProps> = props => {
+const UrlUpload: FC<IUrlUploadProps> = (props) => {
   const { value, type } = props
 
   const [url, setUrl] = useState(props.value)

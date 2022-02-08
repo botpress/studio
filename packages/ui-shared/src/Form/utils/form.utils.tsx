@@ -25,17 +25,17 @@ export const printMoreInfo = (moreInfo: FormMoreInfo, isCheckbox = false): JSX.E
   return <p className={cx(style.moreInfo, { [style.isCheckbox]: isCheckbox })}>{lang(label)}</p>
 }
 
-export const changeEmptyStrToNull = data => {
+export const changeEmptyStrToNull = (data) => {
   return (data && loopThroughData(data)) || {}
 }
 
-const loopThroughData = data => {
+const loopThroughData = (data) => {
   return Object.keys(data).reduce((acc, key) => {
     const currentData = data[key]
     let newValue = currentData === '' ? null : currentData
 
     if (_.isArray(currentData)) {
-      newValue = currentData.map(item => {
+      newValue = currentData.map((item) => {
         if (_.isObject(item)) {
           return loopThroughData(item)
         } else {

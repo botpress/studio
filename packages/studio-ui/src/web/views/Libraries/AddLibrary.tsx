@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import { isOperationAllowed } from '~/components/Shared/Utils'
 
 import Dropdown from './LibDropdown'
-import PackageLib from './PackageLib'
 import style from './style.scss'
 import UploadLibrary from './UploadLibrary'
 
@@ -22,7 +21,7 @@ interface LibEntry {
   }
 }
 
-const AddLibrary = props => {
+const AddLibrary = (props) => {
   const [items, setItems] = useState([])
   const [activeItem, setActiveItem] = useState<LibEntry>()
 
@@ -77,7 +76,7 @@ const AddLibrary = props => {
     }
   }
 
-  const changeSource = source => {
+  const changeSource = (source) => {
     setSource(source)
   }
 
@@ -91,7 +90,7 @@ const AddLibrary = props => {
   return (
     <div>
       <div className={style.title}>{lang.tr('libraries.addLibrary')}</div>
-      <RadioGroup onChange={e => changeSource(e.currentTarget.value)} selectedValue={source}>
+      <RadioGroup onChange={(e) => changeSource(e.currentTarget.value)} selectedValue={source}>
         <Radio label={lang.tr('libraries.searchNpm')} value="npm" />
         <Radio label={lang.tr('libraries.searchGithub')} value="github" />
         <Radio label={lang.tr('libraries.uploadArchive')} value="archive" />
@@ -131,7 +130,7 @@ const AddLibrary = props => {
         <div>
           <h5>{lang.tr('libraries.searchGithub')}</h5>
           <ControlGroup>
-            <InputGroup placeholder="botpress/botpress#master" onChange={e => setRepoName(e.currentTarget.value)} />
+            <InputGroup placeholder="botpress/botpress#master" onChange={(e) => setRepoName(e.currentTarget.value)} />
             <Button onClick={addLib} disabled={processing} text={processing ? 'pleaseWait' : 'libraries.addLibrary'} />
           </ControlGroup>
         </div>
@@ -148,7 +147,7 @@ const AddLibrary = props => {
         <div>
           <h5>{lang.tr('libraries.customCommand')}</h5>
           <ControlGroup>
-            <InputGroup placeholder="install axios" onChange={e => setCommand(e.currentTarget.value)} />
+            <InputGroup placeholder="install axios" onChange={(e) => setCommand(e.currentTarget.value)} />
             <Button
               onClick={executeCommand}
               disabled={processing}

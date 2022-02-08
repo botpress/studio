@@ -36,7 +36,7 @@ const Select: FC<SelectProps> = ({ onChange, printField, parent, field, data, ax
       )
       const elements = path ? _.get(data, path) : data
 
-      setOptions(elements.map(x => ({ label: x[labelField || 'label'], value: x[valueField || 'value'] })))
+      setOptions(elements.map((x) => ({ label: x[labelField || 'label'], value: x[valueField || 'value'] })))
     } catch (err) {
       console.error(err)
       return null
@@ -44,7 +44,7 @@ const Select: FC<SelectProps> = ({ onChange, printField, parent, field, data, ax
   }
 
   const value = data[field.key] ?? field.defaultValue ?? (!field.placeholder && options?.[0]?.value)
-  const currentOption = options?.find(option => option.value === value)
+  const currentOption = options?.find((option) => option.value === value)
 
   return (
     <Fragment>
@@ -52,10 +52,10 @@ const Select: FC<SelectProps> = ({ onChange, printField, parent, field, data, ax
         filterable={false}
         className={sharedStyle.formSelect}
         placeholder={field.placeholder && lang(field.placeholder as string)}
-        items={options?.map(option => ({ ...option, label: lang(option.label) })) || []}
+        items={options?.map((option) => ({ ...option, label: lang(option.label) })) || []}
         defaultItem={currentOption && { ...currentOption, label: lang(currentOption.label) }}
         rightIcon="chevron-down"
-        onChange={option => onChange?.(option.value)}
+        onChange={(option) => onChange?.(option.value)}
       />
       {currentOption?.related && printField(currentOption.related, data, parent)}
     </Fragment>

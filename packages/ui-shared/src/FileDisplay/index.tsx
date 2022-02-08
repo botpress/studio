@@ -5,7 +5,7 @@ import { lang } from '../translations'
 import style from './style.scss'
 import { FileDisplayProps } from './typings'
 
-const FileDisplay: FC<FileDisplayProps> = props => {
+const FileDisplay: FC<FileDisplayProps> = (props) => {
   const { url, type, deletable, onDelete } = props
 
   const fullUrl = `${window['ROOT_PATH']}${url}`

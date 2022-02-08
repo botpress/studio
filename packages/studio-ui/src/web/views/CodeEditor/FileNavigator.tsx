@@ -47,7 +47,7 @@ class FileNavigator extends React.Component<Props, State> {
     if (this.props.selectedNode !== prevProps.selectedNode) {
       const { nodes } = this.state
       const selectedNode = this.props.selectedNode.replace(`${this.props.id}/`, '')
-      this.traverseTree(nodes, n => (n.isSelected = selectedNode === n.id))
+      this.traverseTree(nodes, (n) => (n.isSelected = selectedNode === n.id))
       this.setState({ nodes })
     }
   }
@@ -83,7 +83,7 @@ class FileNavigator extends React.Component<Props, State> {
     )
 
     const filter = this.props.filters && this.props.filters.filename.toLowerCase()
-    const nodes: ITreeNode[] = this.props.files.map(dir => ({
+    const nodes: ITreeNode[] = this.props.files.map((dir) => ({
       id: dir.label,
       label: dir.label === EXAMPLE_FOLDER_LABEL ? exampleLabel : dir.label,
       icon: dir.label === EXAMPLE_FOLDER_LABEL ? FOLDER_EXAMPLE : FOLDER_ICON,
@@ -93,17 +93,17 @@ class FileNavigator extends React.Component<Props, State> {
     }))
 
     // Examples are hidden by default so the view is not cluttered
-    this.traverseTree(nodes, n => n.id === EXAMPLE_FOLDER_LABEL && (n.isExpanded = false))
+    this.traverseTree(nodes, (n) => n.id === EXAMPLE_FOLDER_LABEL && (n.isExpanded = false))
 
     if (filter) {
-      this.traverseTree(nodes, n => (n.isExpanded = true))
+      this.traverseTree(nodes, (n) => (n.isExpanded = true))
     }
 
     this.setState({ nodes })
   }
 
   private handleNodeClick = async (node: ITreeNode) => {
-    this.traverseTree(this.state.nodes, n => (n.isSelected = n.id === node.id))
+    this.traverseTree(this.state.nodes, (n) => (n.isSelected = n.id === node.id))
 
     // If nodeData is set, it's a file, otherwise a folder
     if (node.nodeData) {
@@ -290,8 +290,8 @@ class FileNavigator extends React.Component<Props, State> {
         contents={this.state.nodes}
         onNodeContextMenu={this.handleContextMenu}
         onNodeClick={this.handleNodeClick}
-        onNodeCollapse={n => this.handleNodeExpand(n, false)}
-        onNodeExpand={n => this.handleNodeExpand(n, true)}
+        onNodeCollapse={(n) => this.handleNodeExpand(n, false)}
+        onNodeExpand={(n) => this.handleNodeExpand(n, true)}
         className={Classes.ELEVATION_0}
       />
     )

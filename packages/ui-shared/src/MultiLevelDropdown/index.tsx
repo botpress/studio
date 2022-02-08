@@ -26,20 +26,20 @@ const MultiLevelDropdown: FC<MultiLevelDropdownProps> = ({
 
   useEffect(() => {
     setActiveItem(defaultItem)
-    const parent = items.find(x => x.items.some(item => item.value === defaultItem?.value))
+    const parent = items.find((x) => x.items.some((item) => item.value === defaultItem?.value))
 
     if (parent) {
       setExpanded({ ...expanded, [parent.name]: true })
     }
   }, [defaultItem])
 
-  const updateSelectedOption = option => {
+  const updateSelectedOption = (option) => {
     onChange(option)
     setActiveItem(option)
     setIsOpen(false)
   }
 
-  const handleOptionClick = async option => {
+  const handleOptionClick = async (option) => {
     if (!confirmChange) {
       updateSelectedOption(option)
 
@@ -61,10 +61,10 @@ const MultiLevelDropdown: FC<MultiLevelDropdownProps> = ({
   }
 
   const btnText = activeItem?.label || (addBtn?.selected && addBtn.text) || defaultItem?.label || placeholder
-  const filterItem = item => `${item.label}//${item.value}`.toLowerCase().includes(searchValue)
-  const filteredItems = items.filter(x => x.name.toLowerCase().includes(searchValue) || x.items.some(filterItem))
+  const filterItem = (item) => `${item.label}//${item.value}`.toLowerCase().includes(searchValue)
+  const filteredItems = items.filter((x) => x.name.toLowerCase().includes(searchValue) || x.items.some(filterItem))
 
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
       e.preventDefault()
       e.target.select()
@@ -117,7 +117,7 @@ const MultiLevelDropdown: FC<MultiLevelDropdownProps> = ({
                 </button>
                 {expanded[name] && (
                   <ul>
-                    {options.filter(filterItem).map(option => (
+                    {options.filter(filterItem).map((option) => (
                       <li key={option.value}>
                         <button
                           onClick={() => handleOptionClick(option)}

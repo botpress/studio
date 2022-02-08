@@ -9,7 +9,7 @@ import ToolTip from '../../../../ui-shared-lite/ToolTip'
 import style from './style.scss'
 import { ToolbarProps } from './typings'
 
-const Toolbar: FC<ToolbarProps> = props => {
+const Toolbar: FC<ToolbarProps> = (props) => {
   const [showingOption, setShowingOption] = useState<SetStateAction<number>>()
   return (
     <Navbar className={cx(style.header, props.className)}>

@@ -17,7 +17,7 @@ const ConfigStatus = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     fetchHash()
 
-    const configUpdated = event => setDifferent(event.initialHash !== event.newHash)
+    const configUpdated = (event) => setDifferent(event.initialHash !== event.newHash)
 
     EventBus.default.on('config.updated', configUpdated)
     return () => EventBus.default.off('config.updated', configUpdated)

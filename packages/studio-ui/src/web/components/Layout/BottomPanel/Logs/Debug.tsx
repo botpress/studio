@@ -49,15 +49,19 @@ export default class Debug extends React.Component<Props, State> {
       this.buildNodeRecursive(rootNode, element.split(':'), 0)
     }
 
-    this.setState({ nodes: rootNode.children, checked: Object.keys(data).filter(x => data[x]) })
+    this.setState({ nodes: rootNode.children, checked: Object.keys(data).filter((x) => data[x]) })
   }
 
   buildNodeRecursive(node: any, path: string[], index: number) {
     if (index < path.length) {
       const item = path[index]
-      let directory = node.children.find((child: any) => child.label === item)
+      let directory = node.children?.find((child: any) => child.label === item)
       if (!directory) {
-        directory = { label: item, value: path.slice(0, index + 1).join(':'), children: [] }
+        directory = { label: item, value: path.slice(0, index + 1).join(':') }
+
+        if (!node.children) {
+          node.children = []
+        }
         node.children.push(directory)
       }
       this.buildNodeRecursive(directory, path, index + 1)
@@ -82,9 +86,10 @@ export default class Debug extends React.Component<Props, State> {
           <CheckboxTree
             nodes={this.state.nodes || []}
             checked={this.state.checked}
+            checkModel={'all'}
             expanded={this.state.expanded}
-            onCheck={checked => this.setState({ checked })}
-            onExpand={expanded => this.setState({ expanded: ['bp', ...expanded] })}
+            onCheck={(checked) => this.setState({ checked })}
+            onExpand={(expanded) => this.setState({ expanded: ['bp', ...expanded] })}
             showExpandAll={true}
             icons={{
               check: <FaCheckSquare />,

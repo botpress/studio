@@ -37,6 +37,6 @@ class InjectionSite extends React.Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({ modules: state.modules })
+const mapStateToProps = (state) => ({ modules: state.modules })
 
 export default connect(mapStateToProps)(InjectionSite)

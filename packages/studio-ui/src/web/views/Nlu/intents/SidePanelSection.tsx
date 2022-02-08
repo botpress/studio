@@ -22,7 +22,7 @@ interface Props {
 
 type NameModalAction = 'rename' | 'create' | 'duplicate'
 
-export const IntentSidePanelSection: FC<Props> = props => {
+export const IntentSidePanelSection: FC<Props> = (props) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [intentName, setIntentName] = useState('')
   const [modalAction, setModalAction] = useState<NameModalAction>('create')
@@ -62,7 +62,7 @@ export const IntentSidePanelSection: FC<Props> = props => {
   }
 
   const renameIntent = async (targetIntent: string, sanitizedName: string) => {
-    const intent = props.intents.find(i => i.name === targetIntent)
+    const intent = props.intents.find((i) => i.name === targetIntent)
     if (!intent) {
       return
     }
@@ -77,7 +77,7 @@ export const IntentSidePanelSection: FC<Props> = props => {
   }
 
   const duplicateIntent = async (targetIntent: string, sanitizedName: string) => {
-    const intent = props.intents.find(i => i.name === targetIntent)
+    const intent = props.intents.find((i) => i.name === targetIntent)
     if (!intent) {
       return
     }
@@ -92,9 +92,9 @@ export const IntentSidePanelSection: FC<Props> = props => {
   }
 
   const intentItems = props.intents
-    .filter(intent => !intentsFilter || intent.name.includes(intentsFilter))
+    .filter((intent) => !intentsFilter || intent.name.includes(intentsFilter))
     .map(
-      intent =>
+      (intent) =>
         ({
           key: intent.name,
           label: intent.name,

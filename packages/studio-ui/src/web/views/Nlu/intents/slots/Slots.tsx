@@ -44,7 +44,7 @@ export default class Slots extends React.Component<Props, State> {
   }
 
   onSlotDeleted = (slot: NLU.SlotDefinition) => {
-    const slots = [...this.getSlots().filter(s => s.id !== slot.id)]
+    const slots = [...this.getSlots().filter((s) => s.id !== slot.id)]
     this.props.onSlotsChanged && this.props.onSlotsChanged(slots, { operation: 'deleted', name: slot.name })
   }
 

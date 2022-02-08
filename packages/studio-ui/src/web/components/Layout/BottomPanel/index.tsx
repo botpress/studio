@@ -19,7 +19,7 @@ const CODE_EDITOR = 'Code Editor'
 
 const DevPanel = MainLayout.BottomPanel
 
-const BottomPanel = props => {
+const BottomPanel = (props) => {
   const [tab, setTab] = useState<string>(utils.storage.get(BOTTOM_PANEL_TAB) || 'debugger')
   const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(
     utils.storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true
@@ -31,7 +31,7 @@ const BottomPanel = props => {
   useEffect(() => {
     window.addEventListener('message', handleNewMessage)
 
-    window['inspect'] = data => {
+    window['inspect'] = (data) => {
       if (!data) {
         return
       }
@@ -56,7 +56,7 @@ const BottomPanel = props => {
     setTab(newTab)
   }
 
-  const handleNewMessage = e => {
+  const handleNewMessage = (e) => {
     if (!e.data || !e.data.action) {
       return
     }
@@ -97,16 +97,21 @@ const BottomPanel = props => {
   )
 
   // @ts-ignore
-  DevPanel.Container.onTabsChanged = tabs => setCustomTabs(tabs)
+  DevPanel.Container.onTabsChanged = (tabs) => setCustomTabs(tabs)
 
   return (
     <div className={style.container}>
-      <Tabs className={style.verticalTab} vertical onChange={tab => handleChangeTab(tab as string)} selectedTabId={tab}>
+      <Tabs
+        className={style.verticalTab}
+        vertical
+        onChange={(tab) => handleChangeTab(tab as string)}
+        selectedTabId={tab}
+      >
         <Tab id="debugger" title={lang.tr('debugger')} />
         <Tab id="logs" title={lang.tr('logs')} />
         {props.inspectorEnabled && <Tab id="inspector" title={lang.tr('inspector')} />}
 
-        {customTabs.map(tab => {
+        {customTabs.map((tab) => {
           return <Tab id={tab} title={tab} />
         })}
       </Tabs>
@@ -116,11 +121,9 @@ const BottomPanel = props => {
         <Logs commonButtons={commonButtons} hidden={tab !== 'logs'} />
 
         {tab === CODE_EDITOR && (
-            <div className={cx(style.commonButtons)}>
-              <ButtonGroup minimal={true}>
-                {commonButtons}
-              </ButtonGroup>
-            </div>
+          <div className={cx(style.commonButtons)}>
+            <ButtonGroup minimal={true}>{commonButtons}</ButtonGroup>
+          </div>
         )}
 
         <Debugger
@@ -137,12 +140,12 @@ const BottomPanel = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   emulatorOpen: state.ui.emulatorOpen,
   inspectorEnabled: state.ui.inspectorEnabled,
   bottomPanelExpanded: state.ui.bottomPanelExpanded
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({ toggleBottomPanel, toggleBottomPanelExpand }, dispatch)
+const mapDispatchToProps = (dispatch) => bindActionCreators({ toggleBottomPanel, toggleBottomPanelExpand }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(BottomPanel)

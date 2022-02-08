@@ -70,7 +70,7 @@ class DeletableLinkWidget extends DefaultLinkWidget {
         className={className}
         strokeWidth={width}
         stroke={color}
-        ref={path => path && this.refPaths && this.refPaths.push(path)}
+        ref={(path) => path && this.refPaths && this.refPaths.push(path)}
         d={path}
         {...extraProps}
       />
@@ -251,7 +251,7 @@ class DeletableLinkWidget extends DefaultLinkWidget {
     return (
       <g {...this.getProps()}>
         {paths}
-        {_.map(this.props.link.labels, labelModel => {
+        {_.map(this.props.link.labels, (labelModel) => {
           return this.generateLabel(labelModel)
         })}
       </g>

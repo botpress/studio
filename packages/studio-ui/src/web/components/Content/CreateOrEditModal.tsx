@@ -34,11 +34,11 @@ class CreateOrEditModal extends React.Component<Props, State> {
     mustChangeLang: false
   }
 
-  handleEdit = event => {
+  handleEdit = (event) => {
     this.props.handleEdit(event.formData)
   }
 
-  handleSave = event => {
+  handleSave = (event) => {
     this.props.handleCreateOrUpdate(event.formData)
   }
 
