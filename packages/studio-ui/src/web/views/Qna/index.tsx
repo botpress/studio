@@ -105,12 +105,6 @@ const QnAList: FC<Props> = (props) => {
     setUrl(`${window['STUDIO_API_PATH']}/qna/export`)
   }
 
-  const getQueryParams = () => {
-    return {
-      filteredContexts: [props.topicName]
-    }
-  }
-
   const handleScroll = () => {
     if (wrapperRef.current.scrollHeight - wrapperRef.current.scrollTop !== wrapperRef.current.offsetHeight) {
       return
@@ -191,16 +185,14 @@ const QnAList: FC<Props> = (props) => {
   buttons.push({
     icon: 'plus',
     onClick: () => {
-      dispatch({ type: 'addQnA', data: { languages, contexts: [props.topicName || 'global'] } })
+      dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
     },
     tooltip: lang.tr('qna.form.addQuestion')
   })
 
   const fetchData = async (page = 1) => {
     dispatch({ type: 'loading' })
-    const params = !isLite
-      ? { limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, filteredContexts: filterContexts }
-      : getQueryParams()
+    const params = { limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, filteredContexts: filterContexts }
 
     const { data } = await axios.get(`${window.STUDIO_API_PATH}/qna/questions`, {
       params: { ...params, question: questionSearch }
