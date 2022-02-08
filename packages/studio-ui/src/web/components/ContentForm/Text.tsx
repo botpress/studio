@@ -14,7 +14,7 @@ interface Props {
   onChange: () => any
 }
 
-const Text: FC<Props> = props => {
+const Text: FC<Props> = (props) => {
   const { formContext, formData, schema, required, uiSchema, onChange } = props
   const key = useRef(`${formContext?.customKey}`)
 

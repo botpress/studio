@@ -13,7 +13,7 @@ interface Props {
   handleClose: () => void
 }
 
-export const UsageModal: FC<Props> = props => {
+export const UsageModal: FC<Props> = (props) => {
   const [getPage, setPage] = useState(0)
   const [getPageSize, setPageSize] = useState(5)
 
@@ -28,7 +28,7 @@ export const UsageModal: FC<Props> = props => {
       Header: lang.tr('name'),
       filterable: false,
       accessor: 'name',
-      Cell: x => {
+      Cell: (x) => {
         const href = getHref(x)
         const name = x.original.name
         return <a href={href}>{x.original.type === 'Flow' ? getFlowLabel(name) : name}</a>
@@ -38,7 +38,7 @@ export const UsageModal: FC<Props> = props => {
       Header: lang.tr('studio.content.usageModal.node'),
       filterable: false,
       accessor: 'node',
-      Cell: x => {
+      Cell: (x) => {
         const href = getHref(x)
         return <a href={href}>{x.original.node}</a>
       }
@@ -52,7 +52,7 @@ export const UsageModal: FC<Props> = props => {
     }
   ]
 
-  const getHref = x => {
+  const getHref = (x) => {
     if (x.original.type === 'Flow') {
       const flowName = x.original.name.replace(/\.flow\.json$/i, '')
       return `/studio/${window.BOT_ID}/flows/${flowName}/#search:${x.original.node}`

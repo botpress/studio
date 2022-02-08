@@ -13,7 +13,7 @@ const renderSlotItem = (name: string, slot: any) => {
         <td>{name}</td>
         <td>
           <ul>
-            {slot.map(s => (
+            {slot.map((s) => (
               <Tooltip
                 key={s.value}
                 content={lang.tr('bottomPanel.debugger.slots.value', { x: s.value })}
@@ -50,7 +50,7 @@ interface Props {
   sessionSlots: any | undefined
 }
 
-export const Slots: FC<Props> = props => {
+export const Slots: FC<Props> = (props) => {
   if (_.isEmpty(props.sessionSlots) && _.isEmpty(props.slots)) {
     return null
   }

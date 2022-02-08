@@ -41,7 +41,7 @@ export interface FormState {
 
 const shownCategories = ['builtin_text', 'builtin_image', 'builtin_carousel', 'builtin_card']
 
-const SaySomethingForm: FC<Props> = props => {
+const SaySomethingForm: FC<Props> = (props) => {
   const [showOptions, setShowOptions] = useState(false)
   const { contentType, currentFlowNode, readOnly } = props
   const changedContentType = useRef(contentType)
@@ -52,7 +52,7 @@ const SaySomethingForm: FC<Props> = props => {
     }
   }, [props.currentFlowNode.id])
 
-  const onChange = text => {
+  const onChange = (text) => {
     if (!text) {
       return toast.failure(lang.tr('studio.flow.node.emptyName'))
     }
@@ -61,7 +61,7 @@ const SaySomethingForm: FC<Props> = props => {
       return
     }
 
-    const alreadyExists = props.currentFlow.nodes.find(x => x.name === text)
+    const alreadyExists = props.currentFlow.nodes.find((x) => x.name === text)
     if (alreadyExists) {
       return toast.failure(lang.tr('studio.flow.node.nameAlreadyExists'))
     }
@@ -69,7 +69,7 @@ const SaySomethingForm: FC<Props> = props => {
     props.updateNode({ name: text })
   }
 
-  const transformText = text => {
+  const transformText = (text) => {
     return text.replace(/[^a-z0-9-_\.]/gi, '_')
   }
 
@@ -79,12 +79,12 @@ const SaySomethingForm: FC<Props> = props => {
     toastInfo(lang.tr('studio.flow.copiedToBuffer'))
   }
 
-  const handleContentTypeChange = value => {
+  const handleContentTypeChange = (value) => {
     changedContentType.current = value
     props.updateNode({ content: { contentType: value, formData: {} } })
   }
 
-  const contentTypes = props.contentTypes?.filter(cat => shownCategories.includes(cat.id))
+  const contentTypes = props.contentTypes?.filter((cat) => shownCategories.includes(cat.id))
 
   const moreOptionsItems: MoreOptionsItems[] = [
     {
@@ -103,7 +103,7 @@ const SaySomethingForm: FC<Props> = props => {
   const goThroughObjectAndLeaveOutKey = (properties: any, keyToRemove: string): any => {
     const returnObject = {}
 
-    Object.keys(properties).forEach(key => {
+    Object.keys(properties).forEach((key) => {
       if (key !== keyToRemove) {
         returnObject[key] =
           Object.prototype.toString.call(properties[key]) === '[object Object]'
@@ -115,7 +115,7 @@ const SaySomethingForm: FC<Props> = props => {
     return returnObject
   }
 
-  const removeDescriptions = json => {
+  const removeDescriptions = (json) => {
     const { properties, ...leftover } = json
 
     const newProperties = goThroughObjectAndLeaveOutKey(properties, 'description')
@@ -134,7 +134,7 @@ const SaySomethingForm: FC<Props> = props => {
         ...schema
       },
       ...restContentType
-    } = contentTypes?.find(cat => cat.id === contentType)
+    } = contentTypes?.find((cat) => cat.id === contentType)
 
     // just a way to remove the descriptions since we don't want it in the sidebar form, but still want it in the CMS
     return { ...restContentType, schema: { json: removeDescriptions(json), ...schema } }
@@ -142,7 +142,7 @@ const SaySomethingForm: FC<Props> = props => {
 
   const currentContentType = getCurrentContentType(contentType || 'builtin_text')
 
-  const handleEdit = event => {
+  const handleEdit = (event) => {
     if (contentType === changedContentType.current && !_.isEqual(event.formData, props.formData)) {
       props.updateNode({
         content: {
@@ -175,10 +175,10 @@ const SaySomethingForm: FC<Props> = props => {
           <Dropdown
             filterable={false}
             className={style.formSelect}
-            items={contentTypes.map(cat => ({ value: cat.id, label: lang.tr(cat.title) }))}
+            items={contentTypes.map((cat) => ({ value: cat.id, label: lang.tr(cat.title) }))}
             defaultItem={contentType || 'builtin_text'}
             rightIcon="caret-down"
-            onChange={option => {
+            onChange={(option) => {
               handleContentTypeChange(option.value)
             }}
           />

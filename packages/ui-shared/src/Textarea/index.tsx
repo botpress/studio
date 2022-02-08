@@ -55,7 +55,7 @@ const Textarea: FC<TextareaProps> = ({
     }
   }
 
-  const handleOnChange = value => {
+  const handleOnChange = (value) => {
     onChange(value)
   }
 
@@ -70,7 +70,7 @@ const Textarea: FC<TextareaProps> = ({
         className={cx(style.textarea, className)}
         value={value || refValue}
         placeholder={placeholder}
-        onChange={e => handleOnChange(e.currentTarget.value)}
+        onChange={(e) => handleOnChange(e.currentTarget.value)}
         onBlur={onBlur}
         onKeyDown={onKeyDown}
         onInput={updateHeight}

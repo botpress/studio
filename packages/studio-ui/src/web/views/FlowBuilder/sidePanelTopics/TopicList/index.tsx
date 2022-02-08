@@ -62,17 +62,17 @@ interface NodeData {
 
 type NodeType = 'workflow' | 'folder' | 'topic' | 'qna' | 'addWorkflow'
 
-const TopicList: FC<Props> = props => {
+const TopicList: FC<Props> = (props) => {
   const { editing, setEditing, isEditingNew, setIsEditingNew } = props
   const [filter, setFilter] = useState('')
   const [flows, setFlows] = useState<NodeData[]>([])
   const [forcedSelect, setForcedSelect] = useState(false)
   const [expanded, setExpanded] = useState<any>({})
 
-  const filterByText = item => item.name.toLowerCase().includes(filter.toLowerCase())
+  const filterByText = (item) => item.name.toLowerCase().includes(filter.toLowerCase())
 
   useEffect(() => {
-    const qna = props.topics.filter(filterByText).map(topic => ({
+    const qna = props.topics.filter(filterByText).map((topic) => ({
       name: `${topic.name}/qna`,
       label: lang.tr('qna.fullName'),
       type: 'qna' as NodeType,
@@ -101,7 +101,7 @@ const TopicList: FC<Props> = props => {
 
   const deleteTopic = async (name: string, skipDialog = false) => {
     const matcher = new RegExp(`^${name}/`)
-    const flowsToDelete = props.flowsName.filter(x => matcher.test(x.name))
+    const flowsToDelete = props.flowsName.filter((x) => matcher.test(x.name))
 
     if (
       skipDialog ||
@@ -123,7 +123,7 @@ const TopicList: FC<Props> = props => {
       ))
     ) {
       await axios.post(`${window.STUDIO_API_PATH}/topics/deleteTopic/${name}`)
-      flowsToDelete.forEach(flow => props.deleteFlow(flow.name))
+      flowsToDelete.forEach((flow) => props.deleteFlow(flow.name))
       props.fetchTopics()
     }
   }
@@ -247,7 +247,7 @@ const TopicList: FC<Props> = props => {
     }, newFlows)
   }
 
-  const sortItems = flows => {
+  const sortItems = (flows) => {
     return flows.sort((a, b) => {
       const aItem = a.id.toUpperCase()
       const bItem = b.id.toUpperCase()
@@ -290,7 +290,7 @@ const TopicList: FC<Props> = props => {
     setIsEditingNew(false)
 
     if (isTopic) {
-      if (value !== item.id && !props.topics.find(x => x.name === value)) {
+      if (value !== item.id && !props.topics.find((x) => x.name === value)) {
         await axios.post(`${window.STUDIO_API_PATH}/topics/${item.id}`, {
           name: value,
           description: undefined
@@ -307,7 +307,7 @@ const TopicList: FC<Props> = props => {
     } else if (value !== (item.name || item.id)) {
       const fullName = buildFlowName({ topic: item.topic, workflow: sanitize(value) }, true)
 
-      if (!props.flowsName.find(x => x.name === fullName)) {
+      if (!props.flowsName.find((x) => x.name === fullName)) {
         props.renameFlow({ targetFlow: item.name, name: fullName })
         props.updateFlow({ name: fullName })
       }
@@ -331,7 +331,7 @@ const TopicList: FC<Props> = props => {
           level={level}
           isEditing={editing === path}
           isEditingNew={isEditingNew}
-          onSave={value => handleSave(item, isTopic, value)}
+          onSave={(value) => handleSave(item, isTopic, value)}
           contextMenuContent={handleContextMenu(item, isTopic, path)}
           onDoubleClick={() => (item.type === 'qna' ? props.editQnA(item.name.replace('/qna', '')) : null)}
           onClick={() => handleClick({ ...item, isTopic, path })}
@@ -339,7 +339,7 @@ const TopicList: FC<Props> = props => {
         />
         {expanded[path] && (
           <Fragment>
-            {hasChildren && item.children.map(child => printTree(child, level + 1, path))}
+            {hasChildren && item.children.map((child) => printTree(child, level + 1, path))}
             {isTopic && item.id !== 'default' && (
               <Button
                 minimal
@@ -356,7 +356,7 @@ const TopicList: FC<Props> = props => {
   }
 
   const newFlowsAsArray = getFlattenFlows(newFlows)
-  const isEmpty = !newFlowsAsArray.filter(item => item.type !== 'default').length
+  const isEmpty = !newFlowsAsArray.filter((item) => item.type !== 'default').length
 
   return (
     <div className={cx(style.tree)}>
@@ -374,7 +374,7 @@ const TopicList: FC<Props> = props => {
           text={lang.tr('studio.flow.sidePanel.tapIconsToAdd')}
         />
       )}
-      {getFlattenFlows(newFlows).map(item => printTree(item, 0))}
+      {getFlattenFlows(newFlows).map((item) => printTree(item, 0))}
     </div>
   )
 }

@@ -18,7 +18,7 @@ type Props = StateProps & OwnProps
 
 const SelectDropdown = Select.ofType<Condition>()
 
-const ConditionDropdown: FC<Props> = props => {
+const ConditionDropdown: FC<Props> = (props) => {
   const [selected, setSelected] = useState<Condition>()
   const [elements, setElements] = useState([])
 
@@ -27,8 +27,8 @@ const ConditionDropdown: FC<Props> = props => {
   }
 
   useEffect(() => {
-    const ignoredIds = (props.ignored && props.ignored.map(x => x.id)) || []
-    const elements = props.conditions.filter(x => !ignoredIds.includes(x.id))
+    const ignoredIds = (props.ignored && props.ignored.map((x) => x.id)) || []
+    const elements = props.conditions.filter((x) => !ignoredIds.includes(x.id))
 
     setElements(elements)
     selectItem(elements[0])
@@ -47,8 +47,8 @@ const ConditionDropdown: FC<Props> = props => {
       activeItem={selected}
       popoverProps={{ minimal: true }}
       noResults={<MenuItem disabled={true} text={lang.tr('studio.flow.condition.noResults')} />}
-      onItemSelect={option => selectItem(option)}
-      onActiveItemChange={option => selectItem(option)}
+      onItemSelect={(option) => selectItem(option)}
+      onActiveItemChange={(option) => selectItem(option)}
     >
       <Button
         id="select-role"
@@ -80,6 +80,6 @@ const renderOption: ItemRenderer<Condition> = (option, { handleClick, modifiers 
   )
 }
 
-const mapStateToProps = state => ({ conditions: state.ndu.conditions })
+const mapStateToProps = (state) => ({ conditions: state.ndu.conditions })
 
 export default connect<StateProps, undefined, OwnProps>(mapStateToProps, undefined)(ConditionDropdown)

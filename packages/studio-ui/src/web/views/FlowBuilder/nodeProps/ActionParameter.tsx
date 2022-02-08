@@ -25,7 +25,7 @@ export const ActionParameter: FC<{
         id={id}
         placeholder={lang.tr('studio.flow.node.valuePlaceholder')}
         value={parameterValue.value || parameterValue.definition.default?.toString()}
-        onChange={e => onValueUpdated({ ...parameterValue, value: e.target.value })}
+        onChange={(e) => onValueUpdated({ ...parameterValue, value: e.target.value })}
         disabled={unknownType}
       />
     </FormGroup>

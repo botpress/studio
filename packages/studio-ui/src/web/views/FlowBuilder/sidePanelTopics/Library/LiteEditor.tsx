@@ -34,7 +34,7 @@ interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps
 
-const ContentEdit: FC<Props> = props => {
+const ContentEdit: FC<Props> = (props) => {
   const [formData, setFormData] = useState()
 
   const { contentItem, itemId } = props
@@ -62,7 +62,7 @@ const ContentEdit: FC<Props> = props => {
       uiSchema={contentItem.schema?.ui || {}}
       handleClose={props.toggle}
       formData={props.contentItem.formData}
-      handleEdit={contentToEdit => setFormData(contentToEdit)}
+      handleEdit={(contentToEdit) => setFormData(contentToEdit)}
       handleCreateOrUpdate={handleUpdate}
     />
   )

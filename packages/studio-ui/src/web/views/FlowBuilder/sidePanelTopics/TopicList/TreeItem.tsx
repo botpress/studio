@@ -36,7 +36,7 @@ const TreeItem: FC<Props> = ({
 }) => {
   const [inputValue, setInputValue] = useState(isEditingNew ? '' : item?.id)
 
-  const onContextMenu = e => {
+  const onContextMenu = (e) => {
     e.preventDefault()
     if (item.type === 'qna') {
       return
@@ -56,7 +56,7 @@ const TreeItem: FC<Props> = ({
     return sanitizeName(name).replace(/\//g, '-')
   }
 
-  const onKeyDown = event => {
+  const onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
       event.target.select()
     }
@@ -69,7 +69,7 @@ const TreeItem: FC<Props> = ({
   const hasChildren = !!item.children.length
   const chevron = !isExpanded ? 'chevron-right' : 'chevron-down'
   const isTopic = level === 0
-  const wfCount = item.children.filter(child => child.type !== 'qna').length
+  const wfCount = item.children.filter((child) => child.type !== 'qna').length
   let placeholder = lang.tr(isTopic ? 'studio.flow.sidePanel.renameTopic' : 'studio.flow.sidePanel.renameWorkflow')
 
   if (isEditingNew) {
@@ -83,11 +83,11 @@ const TreeItem: FC<Props> = ({
         <input
           type="text"
           autoFocus
-          onFocus={e => e.currentTarget.select()}
+          onFocus={(e) => e.currentTarget.select()}
           onBlur={() => onSave(inputValue || item.id)}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          onChange={e => setInputValue(sanitize(e.currentTarget.value))}
+          onChange={(e) => setInputValue(sanitize(e.currentTarget.value))}
           value={inputValue}
         />
       </div>

@@ -20,13 +20,13 @@ const availableProps = [
   { label: 'Temporary Dialog Context', value: 'temp' }
 ]
 
-const parseCondition = condition => {
+const parseCondition = (condition) => {
   condition = condition.trim()
 
   const extractProps = () => {
     const props = condition.match(ROUTER_CONDITON_REGEX)
     if (props && props.length > 3) {
-      return { type: availableProps.find(x => x.value === props[1]), field: props[2], expression: props[3] }
+      return { type: availableProps.find((x) => x.value === props[1]), field: props[2], expression: props[3] }
     }
   }
 
@@ -35,14 +35,14 @@ const parseCondition = condition => {
   } else if (condition.includes('event.nlu.intent.name')) {
     const intent = condition.match(/'(.*)'/)
     return { type: 'intent', value: intent && intent[1] }
-  } else if (availableProps.some(props => condition.indexOf(`${props.value}.`) === 0)) {
+  } else if (availableProps.some((props) => condition.indexOf(`${props.value}.`) === 0)) {
     return { type: 'props', value: extractProps() }
   } else {
     return { type: 'raw' }
   }
 }
 
-const getLabel = parsedCondition => {
+const getLabel = (parsedCondition) => {
   const { type, value } = parsedCondition
   if (type === 'always') {
     return 'Always'
@@ -61,7 +61,7 @@ export default class RoutingItem extends Component<Props> {
   }
 
   // TODO migrate styling to blueprint
-  renderOverlay = child => {
+  renderOverlay = (child) => {
     const popoverHoverFocus = (
       <Popover id="popover-action" title="⚡ Conditional transition">
         <Well>{this.props.condition.condition}</Well>
@@ -86,10 +86,10 @@ export default class RoutingItem extends Component<Props> {
     if (caption) {
       const vars = {}
 
-      const stripDots = str => str.replace(/\./g, '--dot--')
-      const restoreDots = str => str.replace(/--dot--/g, '.')
+      const stripDots = (str) => str.replace(/\./g, '--dot--')
+      const restoreDots = (str) => str.replace(/--dot--/g, '.')
 
-      const htmlTpl = caption.replace(/\[(.+)]/gi, x => {
+      const htmlTpl = caption.replace(/\[(.+)]/gi, (x) => {
         const name = stripDots(x.replace(/\[|]/g, ''))
         vars[name] = `<span class="val">${_.escape(name)}</span>`
         return `{{{${name}}}}`

@@ -59,7 +59,7 @@ export class BaseNodeModel extends NodeModel {
       onReceive = []
     }
 
-    onReceive = onReceive.map(x => x.function || x)
+    onReceive = onReceive.map((x) => x.function || x)
 
     if (!_.isArray(next) && _.isObjectLike(next)) {
       next = [next]
@@ -73,6 +73,6 @@ export class BaseNodeModel extends NodeModel {
   }
 
   getOutPorts() {
-    return _.filter(_.values(this.ports), p => p.name.startsWith('out'))
+    return _.filter(_.values(this.ports), (p) => p.name.startsWith('out'))
   }
 }

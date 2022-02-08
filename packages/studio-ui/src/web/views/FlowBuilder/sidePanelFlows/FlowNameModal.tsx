@@ -21,14 +21,14 @@ export const sanitizeName = (text: string) =>
     .replace(/[^a-zA-Z0-9\/_-]/g, '')
     .replace(/\/\//, '/')
 
-const FlowNameModal: FC<Props> = props => {
+const FlowNameModal: FC<Props> = (props) => {
   const [name, setName] = useState<string>()
 
   useEffect(() => {
     props.action === 'rename' ? setName(props.originalName.replace(/\.flow\.json$/i, '')) : setName('')
   }, [props.isOpen])
 
-  const submit = async e => {
+  const submit = async (e) => {
     e.preventDefault()
 
     if (props.action === 'create') {
@@ -49,7 +49,7 @@ const FlowNameModal: FC<Props> = props => {
 
   const isIdentical = props.action === 'rename' && props.originalName === `${name}.flow.json`
   const alreadyExists =
-    !isIdentical && _.some(props.flowsNames, n => n.toLowerCase() === `${name}.flow.json`.toLowerCase())
+    !isIdentical && _.some(props.flowsNames, (n) => n.toLowerCase() === `${name}.flow.json`.toLowerCase())
 
   let dialog: { icon: any; title: string } = { icon: 'add', title: lang.tr('studio.flow.sidePanel.createFlow') }
   let submitText = lang.tr('create')
@@ -77,7 +77,7 @@ const FlowNameModal: FC<Props> = props => {
               placeholder={lang.tr('studio.flow.sidePanel.flowNamePlaceholder')}
               required
               value={name}
-              onChange={e => setName(sanitizeName(e.currentTarget.value))}
+              onChange={(e) => setName(sanitizeName(e.currentTarget.value))}
               autoFocus
             />
           </FormGroup>

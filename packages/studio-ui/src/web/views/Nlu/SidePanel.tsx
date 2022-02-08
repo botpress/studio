@@ -75,7 +75,7 @@ export const NLUSidePanel: FC<Props> = ({
   return (
     <SidePanel>
       <MainLayout.Toolbar
-        tabChange={tab => setCurrentTab(tab)}
+        tabChange={(tab) => setCurrentTab(tab)}
         tabs={tabs}
         currentTab={currentTab}
         buttons={buttons}
@@ -113,7 +113,7 @@ export const NLUSidePanel: FC<Props> = ({
           <EntityNameModal
             action={'create'}
             onEntityModified={onEntityCreated}
-            entityIDs={entities.map(e => e.id)}
+            entityIDs={entities.map((e) => e.id)}
             api={api}
             isOpen={modalOpen}
             closeModal={() => setModalOpen(false)}

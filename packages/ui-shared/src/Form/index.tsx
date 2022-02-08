@@ -60,7 +60,7 @@ const Form: FC<FormProps> = ({
     }
   }, [formData])
 
-  const focusFirstElement = parent => {
+  const focusFirstElement = (parent) => {
     const firstFocusableElement = parent?.querySelector(
       `input, select, textarea, [contenteditable], button:not(.${style.labelBtn}):not(.${parentStyle.groupLabel}):not(.more-options-btn)`
     ) as HTMLElement
@@ -70,7 +70,7 @@ const Form: FC<FormProps> = ({
     }
   }
 
-  const printError = key => {
+  const printError = (key) => {
     if (!fieldsError?.[key]) {
       return null
     }
@@ -80,7 +80,7 @@ const Form: FC<FormProps> = ({
 
   const printLabel = (field, data, parent, currentLang?) => {
     if (field.label?.startsWith('fields::') && field.fields?.length) {
-      const labelField = field.fields?.find(subField => subField.key === field.label.replace('fields::', ''))
+      const labelField = field.fields?.find((subField) => subField.key === field.label.replace('fields::', ''))
       const fieldData = labelField.translated ? data[labelField.key]?.[currentLang] : data[labelField.key]
 
       return fieldData || ' '
@@ -106,7 +106,7 @@ const Form: FC<FormProps> = ({
 
   const getRefValue = (value, currentLang, defaultLang) => {
     if (currentLang !== defaultLang || !value[defaultLang]) {
-      const refLang = Object.keys(value).find(key => key !== currentLang && value[key])
+      const refLang = Object.keys(value).find((key) => key !== currentLang && value[key])
 
       return refLang && value[refLang]
     }
@@ -122,7 +122,7 @@ const Form: FC<FormProps> = ({
       refValue = getRefValue(currentValue || {}, currentLang, defaultLang)
       currentValue = currentValue?.[currentLang!]
     }
-    const invalid = invalidFields?.find(x => x.field === field.key)
+    const invalid = invalidFields?.find((x) => x.field === field.key)
 
     switch (field.type) {
       case 'hidden':
@@ -132,7 +132,7 @@ const Form: FC<FormProps> = ({
           <Fragment key={field.key}>
             <div
               className={style.formGroup}
-              ref={ref => {
+              ref={(ref) => {
                 groupRef.current[field.key] = ref!
               }}
             >
@@ -150,7 +150,7 @@ const Form: FC<FormProps> = ({
                   }
                   label={printLabel(field, fieldData, parent, currentLang)}
                 >
-                  {field.fields?.map(groupField =>
+                  {field.fields?.map((groupField) =>
                     printField(groupField, fieldData, { key: field.key, index, parent })
                   )}
                 </GroupItemWrapper>
@@ -185,7 +185,7 @@ const Form: FC<FormProps> = ({
               data={data}
               field={field}
               placeholder={lang(field.placeholder)}
-              onChange={value =>
+              onChange={(value) =>
                 dispatch({
                   type: 'updateField',
                   data: {
@@ -210,7 +210,7 @@ const Form: FC<FormProps> = ({
               value={currentValue}
               options={field.options}
               placeholder={field.placeholder}
-              onChange={value =>
+              onChange={(value) =>
                 dispatch({
                   type: 'updateField',
                   data: {
@@ -232,10 +232,10 @@ const Form: FC<FormProps> = ({
         return (
           <TextFieldsArray
             key={field.key}
-            getPlaceholder={index => getArrayPlaceholder(index, field)}
+            getPlaceholder={(index) => getArrayPlaceholder(index, field)}
             moreInfo={printMoreInfo(field.moreInfo)}
             validation={field.validation}
-            onChange={value => {
+            onChange={(value) => {
               dispatch({
                 type: 'updateField',
                 data: {
@@ -262,7 +262,7 @@ const Form: FC<FormProps> = ({
             <TextArea
               placeholder={lang(field.placeholder)}
               field={field}
-              onBlur={value => {
+              onBlur={(value) => {
                 dispatch({
                   type: 'updateField',
                   data: {
@@ -291,7 +291,7 @@ const Form: FC<FormProps> = ({
               customPath={mediaPath}
               placeholder={lang(field.placeholder)}
               type="image"
-              onChange={value =>
+              onChange={(value) =>
                 dispatch({
                   type: 'updateField',
                   data: {
@@ -316,7 +316,7 @@ const Form: FC<FormProps> = ({
             checked={currentValue}
             fieldKey={field.key}
             label={printLabel(field, currentValue, parent, currentLang)}
-            onChange={e =>
+            onChange={(e) =>
               dispatch({
                 type: 'updateField',
                 data: {
@@ -343,7 +343,7 @@ const Form: FC<FormProps> = ({
               data,
               refValue,
               label: printLabel(field, currentValue, currentLang),
-              onChange: value => {
+              onChange: (value) => {
                 dispatch({
                   type: 'updateOverridableField',
                   data: { newFormData, field: field.key, onUpdate, value }
@@ -357,7 +357,7 @@ const Form: FC<FormProps> = ({
           <FieldWrapper key={field.key} label={printLabel(field, currentValue, parent, currentLang)} invalid={invalid}>
             <Text
               placeholder={lang(field.placeholder)}
-              onBlur={value => {
+              onBlur={(value) => {
                 dispatch({
                   type: 'updateField',
                   data: {
@@ -384,10 +384,10 @@ const Form: FC<FormProps> = ({
 
   return (
     <Fragment>
-      <div ref={fieldWrapperRef}>{fields?.map(field => printField(field, state))}</div>
+      <div ref={fieldWrapperRef}>{fields?.map((field) => printField(field, state))}</div>
       {!!advancedSettings?.length && (
         <GroupItemWrapper defaultCollapsed borderTop={!!fields.length} label={lang('advancedSettings')}>
-          {advancedSettings.map(field => printField(field, state))}
+          {advancedSettings.map((field) => printField(field, state))}
         </GroupItemWrapper>
       )}
     </Fragment>

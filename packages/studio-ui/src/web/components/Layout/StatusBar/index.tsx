@@ -15,7 +15,7 @@ interface Props {
   toggleLangSwitcher: (e: any) => void
 }
 
-const StatusBar: FC<Props> = props => {
+const StatusBar: FC<Props> = (props) => {
   return (
     <footer className={style.statusBar}>
       <div className={style.item}>
@@ -31,7 +31,7 @@ const StatusBar: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user,
   botInfo: state.bot,
   contentLang: state.language.contentLang

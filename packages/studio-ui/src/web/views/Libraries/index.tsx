@@ -13,7 +13,7 @@ export interface InstalledLibrary {
 
 const { Container, ItemList, SidePanel, SidePanelSection, SplashScreen } = ModuleUI
 
-const MainView = props => {
+const MainView = (props) => {
   const [libraries, setLibraries] = useState([])
   const [page, setPage] = useState('splash')
   const [lib, setLib] = useState<InstalledLibrary>()
@@ -75,7 +75,7 @@ const MainView = props => {
     }
   }
 
-  const handleLibClicked = item => {
+  const handleLibClicked = (item) => {
     setLib(item.data)
   }
 

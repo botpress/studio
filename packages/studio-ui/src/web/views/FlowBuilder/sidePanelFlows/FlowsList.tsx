@@ -61,13 +61,13 @@ export default class FlowsList extends Component<Props, State> {
     const nodes = buildFlowsTree(this.props.flows, this.props.filter)
 
     if (this.props.filter) {
-      traverseTree(nodes, n => (n.isExpanded = true))
+      traverseTree(nodes, (n) => (n.isExpanded = true))
     }
 
     this.setState({ nodes })
   }
 
-  handleDelete = async flow => {
+  handleDelete = async (flow) => {
     if (
       await confirmDialog(lang.tr('studio.flow.sidePanel.confirmDeleteFlow', { name: flow.name }), {
         acceptLabel: lang.tr('delete')
@@ -115,7 +115,7 @@ export default class FlowsList extends Component<Props, State> {
   private handleNodeClick = (node: ITreeNode<NodeData>) => {
     const originallySelected = node.isSelected
 
-    traverseTree(this.state.nodes, n => (n.isSelected = false))
+    traverseTree(this.state.nodes, (n) => (n.isSelected = false))
 
     node.isSelected = originallySelected !== null
 

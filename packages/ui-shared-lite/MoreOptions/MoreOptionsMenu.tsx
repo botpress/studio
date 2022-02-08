@@ -8,7 +8,7 @@ import { MoreOptionsMenuProps } from './typings'
 
 import style from './style.scss'
 
-const MoreOptionsMenu: FC<MoreOptionsMenuProps> = props => {
+const MoreOptionsMenu: FC<MoreOptionsMenuProps> = (props) => {
   const { className, items } = props
 
   const onAction = (e, action) => {
@@ -35,7 +35,7 @@ const MoreOptionsMenu: FC<MoreOptionsMenuProps> = props => {
                       [style.delete]: type === 'delete',
                       ['more-options-selected-option']: selected
                     })}
-                    onClick={e => onAction(e, action)}
+                    onClick={(e) => onAction(e, action)}
                   >
                     {label}
                     {selected && <Icon icon="tick" iconSize={12} />}

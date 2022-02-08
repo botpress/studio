@@ -15,7 +15,7 @@ interface Props {
   forceSave?: boolean
 }
 
-const ConditionEditor: FC<Props> = props => {
+const ConditionEditor: FC<Props> = (props) => {
   const { topicName, params, updateParams, contentLang, forceSave } = props
   const useLiteEditor = props.condition.useLiteEditor
 

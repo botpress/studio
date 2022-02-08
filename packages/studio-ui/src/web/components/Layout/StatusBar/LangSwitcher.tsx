@@ -8,7 +8,7 @@ import withLanguage from '../../Util/withLanguage'
 import ActionItem from './ActionItem'
 import style from './style.scss'
 
-const requireFlag = code => {
+const requireFlag = (code) => {
   try {
     return require(`../../../img/flags/${code}.svg`)
   } catch (err) {
@@ -34,7 +34,7 @@ class LangSwitcher extends React.Component<Props> {
   }
 
   componentDidUpdate(prevProps) {
-    const idx = this.props.languages.findIndex(l => l === this.props.contentLang)
+    const idx = this.props.languages.findIndex((l) => l === this.props.contentLang)
     if (idx !== -1 && !_.isEmpty(this.elems)) {
       this.elems[idx].focus()
     }
@@ -61,7 +61,7 @@ class LangSwitcher extends React.Component<Props> {
     }
   }
 
-  switchLang = lang => {
+  switchLang = (lang) => {
     this.props.changeContentLanguage(lang)
     this.props.toggleLangSwitcher()
 
@@ -102,7 +102,7 @@ class LangSwitcher extends React.Component<Props> {
             {this.props.languages.map((l, idx) => (
               <li
                 tabIndex={-1}
-                ref={el => (this.elems[idx] = el)}
+                ref={(el) => (this.elems[idx] = el)}
                 key={l}
                 className={style.langItem}
                 onClick={this.switchLang.bind(this, l)}

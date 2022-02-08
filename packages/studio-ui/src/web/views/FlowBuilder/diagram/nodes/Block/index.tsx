@@ -74,7 +74,7 @@ const BlockWidget: FC<BlockProps> = ({
   const { nodeType } = node
   const { currentLang, defaultLang } = getLanguage()
 
-  const handleContextMenu = e => {
+  const handleContextMenu = (e) => {
     e.stopPropagation()
     e.preventDefault()
 
@@ -186,7 +186,7 @@ const BlockWidget: FC<BlockProps> = ({
     }
   }
 
-  const handleExpanded = expanded => {
+  const handleExpanded = (expanded) => {
     setExpandedNodes(node.id, expanded)
   }
 
@@ -199,7 +199,7 @@ const BlockWidget: FC<BlockProps> = ({
   if (isOldNode) {
     label =
       nodeType === 'skill-call'
-        ? `${lang.tr(getSkills()?.find(x => x.id === node.skill)?.name) || ''} | ${node.name}`
+        ? `${lang.tr(getSkills()?.find((x) => x.id === node.skill)?.name) || ''} | ${node.name}`
         : node.name
   }
 
@@ -207,7 +207,7 @@ const BlockWidget: FC<BlockProps> = ({
     <NodeWrapper
       isHighlighed={node.isHighlighted || node.isSelected()}
       isLarge={isOldNode}
-      onClick={() => utils.inspect(getCurrentFlow().nodes.find(x => x.id === node.id))}
+      onClick={() => utils.inspect(getCurrentFlow().nodes.find((x) => x.id === node.id))}
     >
       <NodeHeader
         className={style[nodeType]}

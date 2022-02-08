@@ -10,7 +10,7 @@ import { ShortcutLabelProps } from './typings'
 
 const iconKeys = ['backspace', 'command', 'delete', 'enter', 'escape', 'option', 'shift', 'tab']
 
-const ShortcutLabel: FC<ShortcutLabelProps> = props => {
+const ShortcutLabel: FC<ShortcutLabelProps> = (props) => {
   const { shortcut } = props
   let shortcutKeys
 
@@ -18,7 +18,7 @@ const ShortcutLabel: FC<ShortcutLabelProps> = props => {
     shortcutKeys = Array.isArray(keyMap[shortcut]) ? keyMap[shortcut].join(` ${lang('or')} `) : keyMap[shortcut]
   }
 
-  const keys = props.keys || shortcutKeys?.split(/(\/|\s|\+)/).filter(item => !!item.trim() && item !== '+')
+  const keys = props.keys || shortcutKeys?.split(/(\/|\s|\+)/).filter((item) => !!item.trim() && item !== '+')
 
   return (
     <span className={cx(style.shortcut, { [style.light]: props.light })}>

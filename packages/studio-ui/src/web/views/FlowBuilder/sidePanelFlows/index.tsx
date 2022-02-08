@@ -32,16 +32,16 @@ interface Props {
   showFlowNodeProps: boolean
 }
 
-const SidePanelContent: FC<Props> = props => {
+const SidePanelContent: FC<Props> = (props) => {
   const [modalOpen, setModalOpen] = useState(false)
   const [flowName, setFlowName] = useState<string>()
   const [flowAction, setFlowAction] = useState<any>('create')
   const [filter, setFilter] = useState<any>()
 
-  const goToFlow = flow => history.push(`/flows/${flow.replace(/\.flow\.json$/i, '')}`)
+  const goToFlow = (flow) => history.push(`/flows/${flow.replace(/\.flow\.json$/i, '')}`)
 
-  const normalFlows = reject(props.flows, x => x.name.startsWith('skills/'))
-  const flowsName = normalFlows.map(x => {
+  const normalFlows = reject(props.flows, (x) => x.name.startsWith('skills/'))
+  const flowsName = normalFlows.map((x) => {
     return { name: x.name }
   })
 
@@ -103,20 +103,18 @@ const SidePanelContent: FC<Props> = props => {
   )
 }
 
-const SidePanelInspectorContent: FC<Props> = props => {
-
+const SidePanelInspectorContent: FC<Props> = (props) => {
   return (
     <div className={props.showFlowNodeProps ? style.rightPanelActive : style.rightPanel}>
       <SidePanel>
-        <SidePanelSection label="Inspector">
-        </SidePanelSection>
-        {props.showFlowNodeProps ? ( <Inspector /> ) : null}
+        <SidePanelSection label="Inspector"></SidePanelSection>
+        {props.showFlowNodeProps ? <Inspector /> : null}
       </SidePanel>
     </div>
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   currentFlow: getCurrentFlow(state),
   flows: getAllFlows(state),
   dirtyFlows: getDirtyFlows(state),

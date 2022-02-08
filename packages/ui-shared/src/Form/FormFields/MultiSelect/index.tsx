@@ -31,7 +31,7 @@ interface Props {
 }
 
 const MultiSelectComponent: FC<Props> = ({ onChange, value, options, placeholder }) => {
-  const handleItemSelect = item => {
+  const handleItemSelect = (item) => {
     if (!isItemSelected(item)) {
       selectItem(item)
     } else {
@@ -39,15 +39,15 @@ const MultiSelectComponent: FC<Props> = ({ onChange, value, options, placeholder
     }
   }
 
-  const isItemSelected = item => {
+  const isItemSelected = (item) => {
     return getSelectedItemIndex(item) !== -1
   }
 
-  const getSelectedItemIndex = item => {
+  const getSelectedItemIndex = (item) => {
     return value.indexOf(item)
   }
 
-  const selectItem = item => {
+  const selectItem = (item) => {
     onChange([...value, item])
   }
 

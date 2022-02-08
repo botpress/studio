@@ -24,27 +24,27 @@ type DispatchProps = typeof mapDispatchToProps
 
 type Props = StateProps & DispatchProps & OwnProps
 
-const WorkflowEditor: FC<Props> = props => {
+const WorkflowEditor: FC<Props> = (props) => {
   const [topic, setTopic] = useState<Option>()
   const [name, setName] = useState<string>('')
   const [label, setLabel] = useState<string>('')
   const [description, setDescription] = useState<string>('')
 
-  const items = props.topics.map(x => ({ label: x.name, value: x.name }))
+  const items = props.topics.map((x) => ({ label: x.name, value: x.name }))
 
   useEffect(() => {
-    const originalFlow = props.flows.find(x => x.name === props.selectedWorkflow)
+    const originalFlow = props.flows.find((x) => x.name === props.selectedWorkflow)
     if (originalFlow) {
       const { name, label, description } = originalFlow
 
       const parsed = parseFlowName(name, true)
 
-      setTopic(items.find(x => x.value === parsed.topic))
+      setTopic(items.find((x) => x.value === parsed.topic))
       setName(parsed.workflow)
       setLabel(label || '')
       setDescription(description || '')
     } else {
-      setTopic(items.find(x => x.value === props.selectedTopic))
+      setTopic(items.find((x) => x.value === props.selectedTopic))
       setName('')
       setLabel('')
       setDescription('')
@@ -57,7 +57,7 @@ const WorkflowEditor: FC<Props> = props => {
     if (isCreate) {
       props.createFlow(fullName)
     } else {
-      const originalFlow = props.flows.find(x => x.name === props.selectedWorkflow)
+      const originalFlow = props.flows.find((x) => x.name === props.selectedWorkflow)
 
       // TODO: fix flow edition
       if (originalFlow.name !== fullName) {
@@ -92,7 +92,7 @@ const WorkflowEditor: FC<Props> = props => {
         <div>
           <div style={{ display: 'flex' }}>
             <FormGroup label={lang.tr('studio.flow.topic')}>
-              <Dropdown items={items} onChange={item => setTopic(item)} defaultItem={topic} />
+              <Dropdown items={items} onChange={(item) => setTopic(item)} defaultItem={topic} />
             </FormGroup>
             <FormGroup label={lang.tr('studio.flow.workflow.name')} style={{ marginLeft: 10, flexGrow: 2 }}>
               <InputGroup
@@ -101,7 +101,7 @@ const WorkflowEditor: FC<Props> = props => {
                 fill={true}
                 required
                 value={name || ''}
-                onChange={e => setName(sanitizeName(e.currentTarget.value))}
+                onChange={(e) => setName(sanitizeName(e.currentTarget.value))}
                 autoFocus
               />
             </FormGroup>
@@ -112,7 +112,7 @@ const WorkflowEditor: FC<Props> = props => {
               id="input-flow-label"
               tabIndex={2}
               value={label || ''}
-              onChange={e => setLabel(e.currentTarget.value)}
+              onChange={(e) => setLabel(e.currentTarget.value)}
             />
           </FormGroup>
 
@@ -123,7 +123,7 @@ const WorkflowEditor: FC<Props> = props => {
               tabIndex={3}
               value={description || ''}
               fill
-              onChange={e => setDescription(e.currentTarget.value)}
+              onChange={(e) => setDescription(e.currentTarget.value)}
             />
           </FormGroup>
         </div>

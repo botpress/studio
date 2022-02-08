@@ -11,14 +11,14 @@ interface Props {
   params?: any
 }
 
-const InputParams: FC<Props> = props => {
+const InputParams: FC<Props> = (props) => {
   const updateParam = (key: string, value: any) => {
     props.updateParams({ ...props.params, [key]: value })
   }
 
   return (
     <div className={style.inputParamWrapper}>
-      {Object.keys(props.condition.params).map(key => {
+      {Object.keys(props.condition.params).map((key) => {
         const { defaultValue, label } = props.condition.params[key]
         const value = props.params?.[key]
 
@@ -31,7 +31,7 @@ const InputParams: FC<Props> = props => {
             key={label}
             {...props.condition.params[key]}
             value={value}
-            updateValue={val => updateParam(key, val)}
+            updateValue={(val) => updateParam(key, val)}
           />
         )
       })}

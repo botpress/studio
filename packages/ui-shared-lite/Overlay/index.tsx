@@ -6,7 +6,7 @@ import { OverlayProps } from './typings'
 
 const Overlay: FC<OverlayProps> = ({ onClick, onContextMenu }) => (
   <div
-    onContextMenu={e => {
+    onContextMenu={(e) => {
       e.preventDefault()
       e.persist()
 

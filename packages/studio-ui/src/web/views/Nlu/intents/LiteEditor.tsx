@@ -29,7 +29,7 @@ export const sanitizeName = (text: string) =>
     .replace(/\s|\t|\n/g, '-')
     .replace(/[^a-z0-9-_.]/g, '')
 
-export const LiteEditor: FC<Props> = props => {
+export const LiteEditor: FC<Props> = (props) => {
   const [intents, setIntents] = useState<NLU.IntentDefinition[]>([])
   const [currentIntent, setCurrentIntent] = useState(props.params.intentName)
   const [isModalOpen, setModalOpen] = useState(false)
@@ -72,7 +72,7 @@ export const LiteEditor: FC<Props> = props => {
     setCurrentIntent(sanitizedName)
   }
 
-  const onIntentChanged = async intent => {
+  const onIntentChanged = async (intent) => {
     if (intent) {
       setDirtyIntents([...dirtyIntents, currentIntent])
       setCurrentIntent(intent.name)

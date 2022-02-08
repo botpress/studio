@@ -39,7 +39,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-const EditTriggerModal: FC<Props> = props => {
+const EditTriggerModal: FC<Props> = (props) => {
   const [isEditing, setEditing] = useState(false)
   const [conditions, setConditions] = useState<Condition[]>([])
   const [currentFlowCondition, setCurrentFlowCondition] = useState<Condition>()
@@ -79,13 +79,13 @@ const EditTriggerModal: FC<Props> = props => {
   }
 
   const onConditionEdit = (condition: Condition) => {
-    setCurrentCondition(props.backendConditions.find(x => x.id === condition.id))
+    setCurrentCondition(props.backendConditions.find((x) => x.id === condition.id))
     setCurrentFlowCondition(condition)
     setEditing(true)
   }
 
   const onParamsChanged = (newParams: any) => {
-    const selCond = conditions.find(x => x.id === currentFlowCondition.id)
+    const selCond = conditions.find((x) => x.id === currentFlowCondition.id)
 
     selCond.params = _.merge(selCond.params, newParams)
     save([...conditions])
@@ -95,23 +95,23 @@ const EditTriggerModal: FC<Props> = props => {
     if (
       await confirmDialog(lang.tr('studio.flow.condition.confirmDeleteCondition'), { acceptLabel: lang.tr('delete') })
     ) {
-      save([...conditions.filter(cond => cond.id !== condition.id)])
+      save([...conditions.filter((cond) => cond.id !== condition.id)])
 
-      const def = props.backendConditions.find(x => x.id === condition.id)
+      const def = props.backendConditions.find((x) => x.id === condition.id)
       if (def.callback) {
         await axios.post(`${window.STUDIO_API_PATH}/${def.callback}`, { action: 'delete', condition })
       }
     }
   }
 
-  const onActiveWorkflowChanged = e => {
+  const onActiveWorkflowChanged = (e) => {
     setActiveWorkflow(e.currentTarget.checked)
 
     switchFlowNode(node.id)
     updateFlowNode({ activeWorkflow: e.currentTarget.checked })
   }
 
-  const save = updatedConditions => {
+  const save = (updatedConditions) => {
     switchFlowNode(node.id)
     updateFlowNode({ conditions: updatedConditions, activeWorkflow: isActiveWorkflow })
     setConditions(updatedConditions)
@@ -183,8 +183,8 @@ const EditTriggerModal: FC<Props> = props => {
                   <ConditionItem
                     condition={condition}
                     className={!conditions[index + 1] && triggerStyles.last}
-                    onEdit={flowCondition => onConditionEdit(flowCondition)}
-                    onDelete={flowCondition => onConditionDeleted(flowCondition)}
+                    onEdit={(flowCondition) => onConditionEdit(flowCondition)}
+                    onDelete={(flowCondition) => onConditionDeleted(flowCondition)}
                     key={condition.id}
                   />
                 ))}
@@ -193,7 +193,7 @@ const EditTriggerModal: FC<Props> = props => {
 
             {conditions?.length !== backendConditions?.length && (
               <ButtonGroup>
-                <ConditionDropdown onChange={con => setCurrentCondition(con)} ignored={conditions} />
+                <ConditionDropdown onChange={(con) => setCurrentCondition(con)} ignored={conditions} />
                 <Button
                   icon="add"
                   minimal
@@ -209,7 +209,7 @@ const EditTriggerModal: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({ backendConditions: state.ndu.conditions, currentFlow: getCurrentFlow(state) })
+const mapStateToProps = (state) => ({ backendConditions: state.ndu.conditions, currentFlow: getCurrentFlow(state) })
 
 const mapDispatchToProps = {
   switchFlowNode,

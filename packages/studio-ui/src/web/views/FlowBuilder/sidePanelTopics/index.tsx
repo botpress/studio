@@ -59,7 +59,7 @@ type DispatchProps = typeof mapDispatchToProps
 
 type Props = StateProps & DispatchProps & OwnProps
 
-const SidePanelContent: FC<Props> = props => {
+const SidePanelContent: FC<Props> = (props) => {
   const [createTopicOpen, setCreateTopicOpen] = useState(false)
   const [topicModalOpen, setTopicModalOpen] = useState(false)
   const [topicQnAModalOpen, setTopicQnAModalOpen] = useState(false)
@@ -82,7 +82,7 @@ const SidePanelContent: FC<Props> = props => {
     props.getQnaCountByTopic()
   }, [])
 
-  const goToFlow = flow => history.push(`/flows/${flow.replace(/\.flow\.json/, '')}`)
+  const goToFlow = (flow) => history.push(`/flows/${flow.replace(/\.flow\.json/, '')}`)
 
   const editQnA = (topicName: string) => {
     setSelectedTopic(topicName)
@@ -93,7 +93,7 @@ const SidePanelContent: FC<Props> = props => {
     let name = originalName
     let fullName = buildFlowName({ topic: topicName, workflow: name }, true)
     let index = 0
-    while (props.flows.find(f => f.name === fullName)) {
+    while (props.flows.find((f) => f.name === fullName)) {
       index++
       name = `${originalName}-${index}`
       fullName = buildFlowName({ topic: topicName, workflow: name }, true)
@@ -110,7 +110,7 @@ const SidePanelContent: FC<Props> = props => {
     let name = originalName
     let index = 0
 
-    while (props.topics.find(t => t.name === name)) {
+    while (props.topics.find((t) => t.name === name)) {
       index++
       name = `${originalName}-${index}`
     }
@@ -129,7 +129,7 @@ const SidePanelContent: FC<Props> = props => {
     link.click()
   }
 
-  const exportTopic = async topicName => {
+  const exportTopic = async (topicName) => {
     const topic = await exportCompleteTopic(topicName, props.flows)
     downloadTextFile(JSON.stringify(topic), `${topicName}.json`)
   }
@@ -150,7 +150,7 @@ const SidePanelContent: FC<Props> = props => {
 
   const canDelete = props.permissions.includes('delete')
 
-  const onTabChanged = tabId => {
+  const onTabChanged = (tabId) => {
     setCurrentTab(tabId)
   }
 

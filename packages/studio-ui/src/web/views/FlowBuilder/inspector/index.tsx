@@ -79,8 +79,8 @@ class Inspector extends Component<Props> {
     } = this.props
 
     const subflows = _.filter(
-      _.map(flows, f => f.name),
-      f => f !== currentFlow?.name
+      _.map(flows, (f) => f.name),
+      (f) => f !== currentFlow?.name
     )
 
     const updateNodeAndRefresh = (...args) => {
@@ -147,7 +147,7 @@ class Inspector extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   flows: _.values(state.flows.flowsByName),
   currentFlow: getCurrentFlow(state),
   currentFlowNode: getCurrentFlowNode(state) as any,

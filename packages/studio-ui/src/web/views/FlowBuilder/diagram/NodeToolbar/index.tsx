@@ -16,7 +16,7 @@ interface ToolItemProps {
 
 const Toolbar: FC = (props: any) => {
   return (
-    <div className={style.toolbar} onContextMenu={e => e.stopPropagation()}>
+    <div className={style.toolbar} onContextMenu={(e) => e.stopPropagation()}>
       <ToolItem label={lang.tr('studio.flow.sidePanel.node')} type="node" id="standard" icon="chat" />
       {(window.EXPERIMENTAL || window.USE_ONEFLOW) && (
         <Fragment>
@@ -29,7 +29,7 @@ const Toolbar: FC = (props: any) => {
         </Fragment>
       )}
       <AccessControl resource="bot.skills" operation="write">
-        {props.skills?.map(skill => (
+        {props.skills?.map((skill) => (
           <ToolItem key={skill.id} label={lang.tr(skill.name)} type="skill" id={skill.id} icon={skill.icon} />
         ))}
       </AccessControl>
@@ -44,7 +44,7 @@ const ToolItem: FC<ToolItemProps> = ({ label, type, id, icon }) => {
       className={style.toolItem}
       key={id}
       draggable
-      onDragStart={event => {
+      onDragStart={(event) => {
         event.dataTransfer.setData('diagram-node', JSON.stringify({ type, id }))
       }}
     >
@@ -55,7 +55,7 @@ const ToolItem: FC<ToolItemProps> = ({ label, type, id, icon }) => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   skills: state.skills.installed
 })
 

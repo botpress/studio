@@ -149,7 +149,7 @@ const translatePropsRecursive = (schema: Schema) => {
   )
 }
 
-const ContentForm: FC<Props> = props => {
+const ContentForm: FC<Props> = (props) => {
   const handleOnChange = (event: IChangeEvent<FormData>) => {
     const newFields = Object.keys(event.formData).reduce((obj, key) => {
       obj[`${key}$${props.contentLang}`] = event.formData[key]

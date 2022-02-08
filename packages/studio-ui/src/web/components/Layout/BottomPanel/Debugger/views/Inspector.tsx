@@ -8,7 +8,7 @@ import bpStyle from '../../style.scss'
 import inspectorTheme from '../inspectorTheme'
 import style from '../style.scss'
 
-const CopyPath = props => {
+const CopyPath = (props) => {
   const [copied, setCopied] = useState(false)
 
   const onCopy = () => {
@@ -30,7 +30,7 @@ interface ExpandedPath {
   level: number
 }
 
-export const Inspector = props => {
+export const Inspector = (props) => {
   const [expanded, setExpanded] = useState<ExpandedPath[]>([])
 
   const onContextMenu = (e: React.MouseEvent, path: string, currentLevel: number) => {
@@ -38,16 +38,16 @@ export const Inspector = props => {
     path = path.replace('event.', '')
 
     const entries = [
-      ...expanded.filter(x => x.path !== path),
-      { path, level: (expanded.find(x => x.path === path)?.level ?? currentLevel) + 1 }
+      ...expanded.filter((x) => x.path !== path),
+      { path, level: (expanded.find((x) => x.path === path)?.level ?? currentLevel) + 1 }
     ]
 
-    setExpanded(_.orderBy(entries, x => x.path.length, ['desc']))
+    setExpanded(_.orderBy(entries, (x) => x.path.length, ['desc']))
   }
 
   const shouldExpand = (key: string[], data, level: number) => {
     const path = [...key].reverse().join('.')
-    const found = expanded.find(x => path.startsWith(x.path))
+    const found = expanded.find((x) => path.startsWith(x.path))
 
     return level <= (found?.level ?? 1)
   }
@@ -58,15 +58,15 @@ export const Inspector = props => {
         <JSONTree
           data={props.data || {}}
           theme={inspectorTheme}
-          labelRenderer={paths => {
+          labelRenderer={(paths) => {
             const key = paths[0]
             const joinedPaths = [...paths, 'event']
               .reverse()
-              .map(x => x.toString())
+              .map((x) => x.toString())
               .join('.')
 
             return (
-              <span onContextMenu={e => onContextMenu(e, joinedPaths, paths.length)}>
+              <span onContextMenu={(e) => onContextMenu(e, joinedPaths, paths.length)}>
                 <CopyPath path={'{{' + joinedPaths + '}}'} />
                 &nbsp;{key}:
               </span>

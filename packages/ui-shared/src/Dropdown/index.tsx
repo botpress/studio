@@ -31,7 +31,7 @@ const filterOptions: ItemPredicate<Option> = (query, option) => {
   return `${option.label.toLowerCase()} ${option.value}`.indexOf(query.toLowerCase()) > -1
 }
 
-const Dropdown: FC<DropdownProps> = props => {
+const Dropdown: FC<DropdownProps> = (props) => {
   const {
     hideActiveItemIcon,
     placeholder,
@@ -54,10 +54,10 @@ const Dropdown: FC<DropdownProps> = props => {
   const SimpleDropdown = Select.ofType<Option>()
 
   useEffect(() => {
-    setActiveItem(typeof defaultItem === 'string' ? items.find(item => item.value === defaultItem) : defaultItem)
+    setActiveItem(typeof defaultItem === 'string' ? items.find((item) => item.value === defaultItem) : defaultItem)
   }, [defaultItem])
 
-  const updateSelectedOption = option => {
+  const updateSelectedOption = (option) => {
     onChange(option)
   }
 
@@ -74,7 +74,7 @@ const Dropdown: FC<DropdownProps> = props => {
       itemRenderer={customItemRenderer || itemRenderer}
       itemPredicate={filterOptions}
       itemListPredicate={filterList}
-      onItemSelect={async option => {
+      onItemSelect={async (option) => {
         if (confirmChange) {
           confirmChange.callback?.(false)
 

@@ -20,7 +20,7 @@ interface Props {
   fetchFlows: () => void
 }
 
-const EditTopicModal: FC<Props> = props => {
+const EditTopicModal: FC<Props> = (props) => {
   const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
 
@@ -28,7 +28,7 @@ const EditTopicModal: FC<Props> = props => {
     setName(props.selectedTopic)
 
     if (props.topics) {
-      const topic = props.topics.find(x => x && x.name === props.selectedTopic)
+      const topic = props.topics.find((x) => x && x.name === props.selectedTopic)
       setDescription(topic && topic.description)
     }
   }, [props.isOpen])
@@ -68,7 +68,7 @@ const EditTopicModal: FC<Props> = props => {
               required={true}
               value={name}
               maxLength={50}
-              onChange={e => setName(sanitizeName(e.currentTarget.value))}
+              onChange={(e) => setName(sanitizeName(e.currentTarget.value))}
               autoFocus={true}
             />
           </FormGroup>
@@ -80,7 +80,7 @@ const EditTopicModal: FC<Props> = props => {
               value={description}
               maxLength={250}
               fill={true}
-              onChange={e => setDescription(e.currentTarget.value)}
+              onChange={(e) => setDescription(e.currentTarget.value)}
             />
           </FormGroup>
         </div>
@@ -93,7 +93,7 @@ const EditTopicModal: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   flows: _.values(state.flows.flowsByName),
   topics: state.ndu.topics
 })

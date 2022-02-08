@@ -18,7 +18,7 @@ interface Props {
   hidden: boolean
 }
 
-const InspectorTab: FC<Props> = props => {
+const InspectorTab: FC<Props> = (props) => {
   const [expand, setExpand] = useState(false)
   const [current, setCurrent] = useState({})
 

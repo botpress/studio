@@ -20,7 +20,7 @@ interface OwnProps {
 
 type Props = OwnProps & StateProps & DispatchProps
 
-const CreateTopicModal: FC<Props> = props => {
+const CreateTopicModal: FC<Props> = (props) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState<string>('')
 
@@ -56,7 +56,7 @@ const CreateTopicModal: FC<Props> = props => {
             tabIndex={1}
             value={name}
             maxLength={50}
-            onChange={e => setName(sanitizeName(e.currentTarget.value))}
+            onChange={(e) => setName(sanitizeName(e.currentTarget.value))}
           />
         </FormGroup>
 
@@ -68,7 +68,7 @@ const CreateTopicModal: FC<Props> = props => {
             value={description}
             maxLength={250}
             fill={true}
-            onChange={e => setDescription(e.currentTarget.value)}
+            onChange={(e) => setDescription(e.currentTarget.value)}
           />
         </FormGroup>
       </Dialog.Body>

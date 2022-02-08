@@ -1,1 +1,1 @@
-export const formatConfidence = confidence => (+confidence * 100).toFixed(1)
+export const formatConfidence = (confidence) => (+confidence * 100).toFixed(1)

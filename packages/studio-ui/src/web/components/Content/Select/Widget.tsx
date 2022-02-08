@@ -106,7 +106,7 @@ class ContentPickerWidget extends Component<Props, State> {
         isEditing={this.state.contentToEdit !== null}
         handleClose={this.handleClose}
         formData={this.state.contentToEdit}
-        handleEdit={contentToEdit => this.setState({ contentToEdit })}
+        handleEdit={(contentToEdit) => this.setState({ contentToEdit })}
         handleCreateOrUpdate={this.handleUpdate}
       />
     )

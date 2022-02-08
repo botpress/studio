@@ -3,7 +3,7 @@ import React, { FC, useEffect, useRef, useState } from 'react'
 
 import { DownloaderProps } from './typings'
 
-export const Downloader: FC<DownloaderProps> = props => {
+export const Downloader: FC<DownloaderProps> = (props) => {
   const downloadLink = useRef(null)
   const [content, setContent] = useState<string>()
   const [filename, setFilename] = useState<string>()

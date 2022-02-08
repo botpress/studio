@@ -9,7 +9,7 @@ interface Props {
   noLink?: boolean
 }
 
-const MarkdownRenderer: FC<Props> = props => {
+const MarkdownRenderer: FC<Props> = (props) => {
   let width = 140
   if (props.size === 'sm') {
     width = 30
@@ -19,8 +19,8 @@ const MarkdownRenderer: FC<Props> = props => {
     <Markdown
       source={props.content as any}
       renderers={{
-        image: props => <img {...props} style={{ width }} />,
-        link: props =>
+        image: (props) => <img {...props} style={{ width }} />,
+        link: (props) =>
           !props.noLink && (
             <a href={props.href} target="_blank">
               {props.children}
