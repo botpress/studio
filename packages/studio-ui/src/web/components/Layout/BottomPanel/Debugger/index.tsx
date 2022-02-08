@@ -26,6 +26,7 @@ import Summary from './views/Summary'
 const DELAY_BETWEEN_CALLS = 500
 const RETRY_SECURITY_FACTOR = 3
 const DEBOUNCE_DELAY = 100
+const COLLECTION_INTERVAL = ms('1s')
 
 interface Props {
   messageId: string
@@ -67,17 +68,7 @@ export class Debugger extends React.Component<Props, State> {
       await this.loadEvent(this.props.messageId)
     }
 
-    try {
-      const { data } = await axios.get(`${window.BOT_API_PATH}/events/update-frequency`)
-      const { collectionInterval } = data
-      const maxDelai = ms(collectionInterval as string) * RETRY_SECURITY_FACTOR
-      this.allowedRetryCount = Math.ceil(maxDelai / DELAY_BETWEEN_CALLS)
-    } catch (err) {
-      const errorCode = _.get(err, 'response.status')
-      if (errorCode === 403) {
-        this.setState({ unauthorized: true })
-      }
-    }
+    this.allowedRetryCount = Math.ceil((COLLECTION_INTERVAL * RETRY_SECURITY_FACTOR) / DELAY_BETWEEN_CALLS)
   }
 
   async componentDidUpdate(prevProps: Props) {
