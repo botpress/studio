@@ -12,7 +12,6 @@ import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
 import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
-import { ModuleLoader, ModulesRouter } from 'core/modules'
 import { monitoringMiddleware } from 'core/routers'
 import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
@@ -52,7 +51,6 @@ export class HTTPServer {
   private machineId!: string
 
   private readonly studioRouter!: StudioRouter
-  private readonly modulesRouter: ModulesRouter
 
   constructor(
     @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
@@ -63,7 +61,6 @@ export class HTTPServer {
     @inject(TYPES.FlowService) flowService: FlowService,
     @inject(TYPES.ActionService) actionService: ActionService,
     @inject(TYPES.ActionServersService) actionServersService: ActionServersService,
-    @inject(TYPES.ModuleLoader) moduleLoader: ModuleLoader,
     @inject(TYPES.AuthService) private authService: AuthService,
     @inject(TYPES.MediaServiceProvider) mediaServiceProvider: MediaServiceProvider,
     @inject(TYPES.SkillService) skillService: SkillService,
@@ -91,8 +88,6 @@ export class HTTPServer {
     if (!yn(process.core_env.BP_HTTP_DISABLE_GZIP)) {
       this.app.use(compression())
     }
-
-    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService, botService)
 
     this.studioRouter = new StudioRouter(
       logger,
@@ -242,8 +237,6 @@ export class HTTPServer {
       this.guardWhiteLabel(),
       express.static(resolveStudioAsset(''), { fallthrough: false })
     )
-
-    this.app.use(`${BASE_API_PATH}/studio/modules`, this.modulesRouter.router)
 
     await this.studioRouter.setupRoutes(this.app)
 

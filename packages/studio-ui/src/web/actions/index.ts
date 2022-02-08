@@ -358,19 +358,15 @@ export const fetchBotInformation = () => (dispatch) => {
 // Modules
 export const modulesReceived = createAction('MODULES/RECEIVED')
 export const fetchModules = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules`).then((res) => {
-    dispatch(modulesReceived(res.data))
-  })
+  // TODO cleanup
+  dispatch(modulesReceived([]))
 }
 
 // Skills
 export const skillsReceived = createAction('SKILLS/RECEIVED')
 export const fetchSkills = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/skills`).then((res) => {
-    dispatch(skillsReceived(res.data))
-  })
+  // TODO cleanup
+  dispatch(skillsReceived([]))
 }
 
 // Skills
@@ -491,10 +487,8 @@ export const getQNAContentElementUsage = () => (dispatch) => {
 
 export const receiveModuleTranslations = createAction('LANG/TRANSLATIONS')
 export const getModuleTranslations = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/translations?botId=${window.BOT_ID}`).then(({ data }) => {
-    dispatch(receiveModuleTranslations(data))
-  })
+  // TODO cleanup
+  dispatch(receiveModuleTranslations([]))
 }
 
 export const botsReceived = createAction('BOTS/RECEIVED')

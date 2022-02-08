@@ -24,7 +24,6 @@ import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
-import { LibrariesRouter } from './libraries/libraries-router'
 import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
@@ -61,7 +60,6 @@ export class StudioRouter extends CustomRouter {
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
   private internalRouter: InternalRouter
-  private libsRouter: LibrariesRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
   private manageRouter: ManageRouter
@@ -115,7 +113,6 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
     this.internalRouter = new InternalRouter(studioServices)
-    this.libsRouter = new LibrariesRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
@@ -131,7 +128,6 @@ export class StudioRouter extends CustomRouter {
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.internalRouter.setupRoutes()
-    this.libsRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
     this.manageRouter.setupRoutes()
@@ -167,7 +163,6 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
-    this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
     this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
     this.setupUnauthenticatedRoutes(app)

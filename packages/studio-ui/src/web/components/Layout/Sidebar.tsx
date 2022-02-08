@@ -45,13 +45,6 @@ const BASIC_MENU_ITEMS = [
     icon: 'chat'
   },
   {
-    id: 'libraries',
-    name: lang.tr('libraries.fullName'),
-    path: '/libraries',
-    rule: { res: 'module.code-editor', op: 'read' },
-    icon: 'book'
-  },
-  {
     id: 'code-editor',
     name: lang.tr('code-editor.fullName'),
     path: '/code-editor',

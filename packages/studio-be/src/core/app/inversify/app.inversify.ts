@@ -4,7 +4,6 @@ import { HTTPServer } from 'core/app/server'
 import { ConfigProvider } from 'core/config'
 import { LoggerFilePersister, LoggerProvider, PersistedConsoleLogger } from 'core/logger'
 import { LoggerDbPersister } from 'core/logger/persister/db-persister'
-import { ModuleLoader } from 'core/modules'
 import { WorkspaceService } from 'core/users'
 import { Container } from 'inversify'
 import { TYPES } from '../types'
@@ -46,8 +45,6 @@ container.bind<LoggerProvider>(TYPES.LoggerProvider).toProvider<Logger>((context
 container.bind<LoggerDbPersister>(TYPES.LoggerDbPersister).to(LoggerDbPersister).inSingletonScope()
 
 container.bind<LoggerFilePersister>(TYPES.LoggerFilePersister).to(LoggerFilePersister).inSingletonScope()
-
-container.bind<ModuleLoader>(TYPES.ModuleLoader).to(ModuleLoader).inSingletonScope()
 
 container.bind<Botpress>(TYPES.Botpress).to(Botpress).inSingletonScope()
 

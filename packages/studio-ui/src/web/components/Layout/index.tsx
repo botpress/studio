@@ -13,7 +13,6 @@ import CodeEditor from '~/views/CodeEditor'
 import Config from '~/views/Config'
 import Content from '~/views/Content'
 import FlowBuilder from '~/views/FlowBuilder'
-import Libraries from '~/views/Libraries'
 import Module from '~/views/Module'
 import NLU from '~/views/Nlu'
 import QNA from '~/views/Qna'
@@ -218,7 +217,6 @@ const Layout: FC<Props> = (props: Props) => {
                     return window.IS_BOT_MOUNTED ? <Redirect to="/flows" /> : <Redirect to="/config" />
                   }}
                 />
-                <Route exact path="/libraries" component={Libraries} />
                 <Route exact path="/content" component={Content} />
                 <Route exact path="/flows/:flow*" component={FlowBuilder} />
                 <Route exact path="/config" component={Config} />

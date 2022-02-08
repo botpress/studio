@@ -95,7 +95,7 @@ export class CMSService implements IDisposeOnExit {
   }
 
   async getAllElements(botId: string): Promise<ContentElement[]> {
-    const fileNames = await this.ghost.forBot(botId).directoryListing(this.elementsDir, '*.json', 'library.json')
+    const fileNames = await this.ghost.forBot(botId).directoryListing(this.elementsDir, '*.json')
     let contentElements: ContentElement[] = []
 
     for (const fileName of fileNames) {

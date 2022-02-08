@@ -8,7 +8,6 @@ import { LoggerFilePersister, LoggerProvider } from 'core/logger'
 import { LoggerDbPersister } from 'core/logger/persister/db-persister'
 import { MigrationService } from 'core/migration'
 import { copyDir } from 'core/misc/pkg-fs'
-import { ModuleLoader } from 'core/modules'
 import { HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import { WrapErrorsWith } from 'errors'
@@ -46,7 +45,6 @@ export class Botpress {
     private logger: sdk.Logger,
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.HTTPServer) private httpServer: HTTPServer,
-    @inject(TYPES.ModuleLoader) private moduleLoader: ModuleLoader,
     @inject(TYPES.HintsService) private hintsService: HintsService,
     @inject(TYPES.CMSService) private cmsService: CMSService,
     @inject(TYPES.NLUService) private nluService: NLUService,
@@ -127,8 +125,6 @@ export class Botpress {
 
   @WrapErrorsWith('Error while discovering bots')
   async discoverBots(): Promise<void> {
-    await AppLifecycle.waitFor(AppLifecycleEvents.MODULES_READY)
-
     const botsRef = await this.workspaceService.getBotRefs()
     const botsIds = await this.botService.getBotsIds()
     const deleted = _.difference(botsRef, botsIds)
@@ -163,8 +159,7 @@ export class Botpress {
   }
 
   private async loadModules(modules: sdk.ModuleEntryPoint[]): Promise<void> {
-    const loadedModules = await this.moduleLoader.loadModules(modules)
-    this.logger.info(`Loaded ${loadedModules.length} ${plur('module', loadedModules.length)}`)
+    return
   }
 
   private async startServer() {
