@@ -16,11 +16,11 @@ class SelectContentManager extends Component<{}, State> {
     selects: []
   }
 
-  constructor(props) {
+  constructor(props: {}) {
     super(props)
 
     window.botpress = window.botpress || {}
-    window.botpress.pickContent = ({ contentType = null } = {}, callback) => {
+    window.botpress.pickContent = ({ contentType = null } = {}, callback: () => void) => {
       const id = nanoid()
       const rootEl = document.createElement('DIV')
       rootEl.setAttribute('data-select-content-container', id)
@@ -35,7 +35,7 @@ class SelectContentManager extends Component<{}, State> {
     delete window.botpress.pickContent
   }
 
-  onClose = i => () => {
+  onClose = (i: number) => () => {
     const { rootEl } = this.state.selects[i]
     this.setState(
       ({ selects }) => ({
