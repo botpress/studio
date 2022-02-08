@@ -19,10 +19,6 @@ const STORAGE_KEY = `bp::${window.BOT_ID}::cmsLanguage`
 
 export const LanguageSwitcher = (props: Props) => {
   useEffect(() => {
-    restoreLastLanguage()
-  }, [props.languages])
-
-  const restoreLastLanguage = () => {
     const lastLang = localStorage.getItem(STORAGE_KEY)
     if (!props.languages || !props.languages.length || !lastLang) {
       return
@@ -31,7 +27,7 @@ export const LanguageSwitcher = (props: Props) => {
     if (props.languages.includes(lastLang)) {
       props.changeContentLanguage(lastLang)
     }
-  }
+  }, [props.languages])
 
   const switchLang = (lang: string) => {
     props.changeContentLanguage(lang)
