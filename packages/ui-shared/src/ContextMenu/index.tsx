@@ -10,13 +10,13 @@ const ContextMenuWrapper = ({ event, onClose, children }) => {
   const elPos = useRef(event.currentTarget?.getBoundingClientRect())
   const { top, bottom, right, left } = elPos.current
 
-  const handleToggle = e => {
+  const handleToggle = (e) => {
     e.stopPropagation()
     onClose?.()
     removeContextMenu()
   }
 
-  const handleWrapperClick = e => {
+  const handleWrapperClick = (e) => {
     if (['button', 'a'].includes(e.target?.closest('.bp3-menu-item')?.tagName?.toLowerCase())) {
       handleToggle(e)
     }
@@ -33,7 +33,7 @@ const ContextMenuWrapper = ({ event, onClose, children }) => {
       </div>
       <Overlay
         onClick={handleToggle}
-        onContextMenu={e => {
+        onContextMenu={(e) => {
           if (!isWithinBounds(e.clientX, e.clientY)) {
             handleToggle(e)
             return

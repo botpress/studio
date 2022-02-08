@@ -22,7 +22,7 @@ type StateProps = ReturnType<typeof mapStateToProps>
 
 type Props = StateProps & OwnProps
 
-const Toolbar: FC<Props> = props => {
+const Toolbar: FC<Props> = (props) => {
   const { toggleDocs, toggleGuidedTour, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props
 
   return (

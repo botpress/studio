@@ -23,7 +23,7 @@ interface OwnProps {
 type StateProps = ReturnType<typeof mapStateToProps>
 type Props = StateProps & OwnProps
 
-const FlowProblems = props => {
+const FlowProblems = (props) => {
   const hasProblems = !!props.flowProblems.length
 
   if (!hasProblems) {
@@ -48,7 +48,7 @@ const FlowProblems = props => {
         </div>
       </Tooltip>
       <div style={{ padding: 10 }}>
-        {props.flowProblems.map(node => (
+        {props.flowProblems.map((node) => (
           <div key={node.nodeName}>
             <a onClick={() => props.highlightNode({ flow: props.currentFlow.name, node: node.nodeName })}>
               <strong>{node.nodeName}</strong>
@@ -86,7 +86,7 @@ const FlowMutexInfo = (props: { mutexInfo: MutexInfo }) => {
   )
 }
 
-const CatchAll = props => {
+const CatchAll = (props) => {
   const nbNext = _.get(props.currentFlow, 'catchAll.next.length', 0)
   const nbReceive = _.get(props.currentFlow, 'catchAll.onReceive.length', 0)
 
@@ -108,7 +108,7 @@ const CatchAll = props => {
   )
 }
 
-const FlowBar = props => {
+const FlowBar = (props) => {
   if (!props.mutexInfo && !props.flowProblems.length) {
     return null
   }
@@ -121,7 +121,7 @@ const FlowBar = props => {
   )
 }
 
-const DiagramToolbar: FC<Props> = props => {
+const DiagramToolbar: FC<Props> = (props) => {
   return (
     <div className={style.toolbar}>
       <CatchAll {...props}></CatchAll>
@@ -130,7 +130,7 @@ const DiagramToolbar: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   flowProblems: state.flows.flowProblems,
   currentFlow: getCurrentFlow(state)
 })

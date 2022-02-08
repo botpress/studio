@@ -10,11 +10,11 @@ export { default as AccessControl, isOperationAllowed } from './AccessControl'
 
 export const reorderFlows = (flows: (FlowNode | string)[]) =>
   [
-    flows.find(x => getName(x) === 'main'),
-    flows.find(x => getName(x) === 'error'),
-    flows.find(x => getName(x) === 'timeout'),
-    ...flows.filter(x => !['main', 'error', 'timeout'].includes(getName(x)))
-  ].filter(x => Boolean(x))
+    flows.find((x) => getName(x) === 'main'),
+    flows.find((x) => getName(x) === 'error'),
+    flows.find((x) => getName(x) === 'timeout'),
+    ...flows.filter((x) => !['main', 'error', 'timeout'].includes(getName(x)))
+  ].filter((x) => Boolean(x))
 
 const getName = (x: FlowNode | string) => {
   let name = ''

@@ -13,7 +13,7 @@ import { Body, Footer, Wrapper } from '../../ui-shared/src/Dialog'
 import styles from './style.scss'
 import { ConfirmDialogOptions, ConfirmDialogProps } from './typings'
 
-const ConfirmDialogComponent: FC<ConfirmDialogProps> = props => {
+const ConfirmDialogComponent: FC<ConfirmDialogProps> = (props) => {
   const onAccept = () => {
     removeDialog()
     props.accept?.()

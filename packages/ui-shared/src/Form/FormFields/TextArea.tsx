@@ -25,7 +25,7 @@ const TextArea: FC<TextAreaProps> = ({
     setLocalValue(value || '')
   }, [value])
 
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
       e.preventDefault()
       e.target.select()
@@ -38,7 +38,7 @@ const TextArea: FC<TextAreaProps> = ({
         className={cx(sharedStyle.input, { [sharedStyle.hasError]: missingTranslation })}
         placeholder={placeholder}
         onKeyDown={onKeyDown}
-        onChange={value => {
+        onChange={(value) => {
           if (valueManipulation) {
             const { regex, modifier, replaceChar } = valueManipulation
             const re = new RegExp(regex, modifier)

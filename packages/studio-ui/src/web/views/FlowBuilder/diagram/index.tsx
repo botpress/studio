@@ -165,7 +165,7 @@ class Diagram extends Component<Props> {
   }
 
   updateExpandedNodes(nodeId: string, expanded: boolean): void {
-    const expandedNodes = this.state.expandedNodes.filter(id => id !== nodeId)
+    const expandedNodes = this.state.expandedNodes.filter((id) => id !== nodeId)
 
     if (expanded) {
       expandedNodes.push(nodeId)
@@ -187,8 +187,8 @@ class Diagram extends Component<Props> {
 
   getDebugInfo = (nodeName: string) => {
     return (this.state.nodeInfos ?? [])
-      .filter(x => x.workflow === this.props.currentFlow?.name.replace('.flow.json', ''))
-      .find(x => x?.node === nodeName)
+      .filter((x) => x.workflow === this.props.currentFlow?.name.replace('.flow.json', ''))
+      .find((x) => x?.node === nodeName)
   }
 
   showEventOnDiagram(event?: IO.IncomingEvent) {
@@ -351,10 +351,12 @@ class Diagram extends Component<Props> {
     // When no element is chosen from the context menu, we reset the start port so it doesn't impact the next selected node
     let clearStartPortOnClose = true
 
-    const wrap = (addNodeMethod, ...args) => () => {
-      clearStartPortOnClose = false
-      addNodeMethod(...args)
-    }
+    const wrap =
+      (addNodeMethod, ...args) =>
+      () => {
+        clearStartPortOnClose = false
+        addNodeMethod(...args)
+      }
 
     contextMenu(
       event,
@@ -389,11 +391,11 @@ class Diagram extends Component<Props> {
           tagName="button"
           text={lang.tr('skills')}
           icon="add"
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation()
           }}
         >
-          {this.props.skills.map(skill => (
+          {this.props.skills.map((skill) => (
             <MenuItem
               key={skill.id}
               text={lang.tr(skill.name)}
@@ -496,7 +498,7 @@ class Diagram extends Component<Props> {
     this.props.createFlow(`${name}.flow.json`)
   }
 
-  canTargetOpenInspector = target => {
+  canTargetOpenInspector = (target) => {
     if (!target) {
       return false
     }
@@ -628,7 +630,7 @@ class Diagram extends Component<Props> {
       this.diagramEngine
         .getDiagramModel()
         .getSelectedItems()
-        .map(el => el.id)
+        .map((el) => el.id)
     )
     Toaster.create({
       className: 'recipe-toaster',
@@ -651,7 +653,7 @@ class Diagram extends Component<Props> {
     this.setState({ currentTriggerNode: node, isTriggerEditOpen: true })
   }
 
-  onKeyDown = event => {
+  onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
       this.copySelectedElementToBuffer()
     } else if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
@@ -710,23 +712,23 @@ class Diagram extends Component<Props> {
       <MainLayout.Wrapper>
         <WorkflowToolbar
           highlightFilter={this.props.highlightFilter}
-          handleFilterChanged={value => this.props.handleFilterChanged({ target: { value } })}
+          handleFilterChanged={(value) => this.props.handleFilterChanged({ target: { value } })}
         />
         <div
           id="diagramContainer"
-          ref={ref => (this.diagramContainer = ref)}
+          ref={(ref) => (this.diagramContainer = ref)}
           tabIndex={1}
           style={{ outline: 'none', width: '100%', height: '100%' }}
           onContextMenu={this.handleContextMenu}
           onDrop={this.handleToolDropped}
-          onDragOver={event => event.preventDefault()}
+          onDragOver={(event) => event.preventDefault()}
         >
           <div className={style.floatingInfo}>
             <DiagramToolbar
               currentFlow={this.props.currentFlow}
               handleFlowWideClicked={this.handleFlowWideClicked}
               mutexInfo={this.props.mutexInfo}
-              highlightNode={node => {
+              highlightNode={(node) => {
                 this.manager.setHighlightedNodes([node])
                 this.forceUpdate()
               }}
@@ -734,7 +736,7 @@ class Diagram extends Component<Props> {
           </div>
 
           <DiagramWidget
-            ref={w => (this.diagramWidget = w)}
+            ref={(w) => (this.diagramWidget = w)}
             deleteKeys={[]}
             diagramEngine={this.diagramEngine}
             maxNumberPointsPerLink={MAX_NUMBER_OF_POINTS_PER_LINK}

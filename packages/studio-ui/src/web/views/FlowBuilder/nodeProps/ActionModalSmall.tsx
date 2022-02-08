@@ -33,7 +33,7 @@ export default class ActionModalSmall extends React.Component<any> {
     return options.functionName + ' ' + JSON.stringify(options.parameters || {})
   }
 
-  onSubmitAction = content => {
+  onSubmitAction = (content) => {
     this.props.onChange(this.optionsToItem(content))
     this.setState({ showActionModalForm: false })
   }

@@ -14,7 +14,7 @@ let intl: IntlShape
 const cache = createIntlCache()
 let isDev = false
 
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
   if (event.ctrlKey && event.key === 'q') {
     isDev = !isDev
     localStorage.setItem('langdebug', isDev ? 'true' : 'false')
@@ -22,7 +22,7 @@ document.addEventListener('keydown', function(event) {
   }
 })
 
-const langExtend = langs => {
+const langExtend = (langs) => {
   if (isEmpty(translations)) {
     translations = { en, fr, es }
   }
@@ -53,7 +53,7 @@ const langInit = () => {
       locale,
       messages,
       defaultLocale,
-      onError: err => {
+      onError: (err) => {
         if (isDev) {
           console.error(err)
         }
@@ -83,7 +83,7 @@ const squash = (space, root = {}, path = '') => {
 }
 
 const getUserLocale = () => {
-  const code = str => str.split('-')[0]
+  const code = (str) => str.split('-')[0]
   const browserLocale = code(navigator.language || navigator['userLanguage'] || '')
   const storageLocale = code(localStorage.getItem('uiLanguage') || '')
 

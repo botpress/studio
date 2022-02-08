@@ -11,7 +11,7 @@ interface Props {
   remove: () => void
 }
 
-export const Occurrence: FC<Props> = props => {
+export const Occurrence: FC<Props> = (props) => {
   return (
     <TagInput
       className={style.occurrence}

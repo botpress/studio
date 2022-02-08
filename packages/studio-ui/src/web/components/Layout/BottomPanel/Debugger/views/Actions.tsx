@@ -10,7 +10,7 @@ interface Props {
   ndu: sdk.NDU.DialogUnderstanding
 }
 
-export const Actions: FC<Props> = props => {
+export const Actions: FC<Props> = (props) => {
   const { actions } = props.ndu
 
   return (

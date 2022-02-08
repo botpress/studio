@@ -8,7 +8,7 @@ import SmartInput from '../SmartInput'
 
 import localStyle from './style.scss'
 
-const ArrayFieldTemplate = props => {
+const ArrayFieldTemplate = (props) => {
   const { canAdd, onAddClick, items, schema, formContext } = props
   const key = useRef(`${formContext?.customKey}`)
 
@@ -31,7 +31,7 @@ const ArrayFieldTemplate = props => {
   return (
     <div className={style.fieldWrapper}>
       <span className={style.formLabel}>{schema.title}</span>
-      {items?.map(element => {
+      {items?.map((element) => {
         const { type } = schema.items
 
         return (

@@ -9,7 +9,7 @@ interface Props {
   config: any
 }
 
-const ConfigEditor: FC<Props> = props => {
+const ConfigEditor: FC<Props> = (props) => {
   const [config, setConfig] = useState('')
   const [isValid, setValid] = useState(true)
   const [error, setError] = useState('')
@@ -18,7 +18,7 @@ const ConfigEditor: FC<Props> = props => {
     setConfig(props.config)
   }, [props.config])
 
-  const updateConfig = payload => {
+  const updateConfig = (payload) => {
     try {
       setConfig(payload)
       jsonlintMod.parse(payload)
@@ -49,7 +49,7 @@ const ConfigEditor: FC<Props> = props => {
         <TextArea
           name="config"
           value={config}
-          onChange={e => updateConfig(e.currentTarget.value)}
+          onChange={(e) => updateConfig(e.currentTarget.value)}
           className={style.textArea}
           rows={7}
           placeholder={lang.tr('bottomPanel.debugger.settings.editConfPlaceholder')}

@@ -27,7 +27,7 @@ interface Props {
   selectedTopic: string
 }
 
-const ImportModal: FC<Props> = props => {
+const ImportModal: FC<Props> = (props) => {
   const [filePath, setFilePath] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
   const [fileContent, setFileContent] = useState<ExportedTopic | ExportedFlow>()
@@ -54,7 +54,7 @@ const ImportModal: FC<Props> = props => {
 
     const fr = new FileReader()
     fr.readAsArrayBuffer(files[0])
-    fr.onload = loadedEvent => {
+    fr.onload = (loadedEvent) => {
       try {
         const dec = new TextDecoder('utf-8')
         const content = JSON.parse(dec.decode(_.get(loadedEvent, 'target.result')))
@@ -83,20 +83,20 @@ const ImportModal: FC<Props> = props => {
 
         const topicAction = getTopicAction(
           _.pick(content, ['name', 'description']),
-          props.topics.find(x => x.name === content.name)
+          props.topics.find((x) => x.name === content.name)
         )
 
-        setActions([...actions, topicAction].filter(x => !x.existing || !x.identical))
+        setActions([...actions, topicAction].filter((x) => !x.existing || !x.identical))
       } else if (detected === ElementType.Workflow) {
         const content = fileContent as ExportedFlow
 
         const actions = await analyzeWorkflowFile(content, props.flows)
         const wfAction = getWorkflowAction(
           { ...content, name, location: name },
-          props.flows.find(x => x.name === name)
+          props.flows.find((x) => x.name === name)
         )
 
-        setActions([...actions, wfAction].filter(x => !x.identical))
+        setActions([...actions, wfAction].filter((x) => !x.identical))
       }
     } catch (err) {
       toastFailure(err.message)
@@ -136,8 +136,8 @@ const ImportModal: FC<Props> = props => {
       return renderNoChanges()
     }
 
-    const missing = actions.filter(x => !x.existing)
-    const existing = actions.filter(x => x.existing && !x.identical)
+    const missing = actions.filter((x) => !x.existing)
+    const existing = actions.filter((x) => x.existing && !x.identical)
 
     return (
       <div>
@@ -147,7 +147,7 @@ const ImportModal: FC<Props> = props => {
               <strong>{lang.tr('studio.flow.topicEditor.dontExisteWillCreate')}</strong>
               <div style={{ padding: 5 }}>
                 <ul>
-                  {missing.map(x => (
+                  {missing.map((x) => (
                     <li>
                       {x.type} {x.name}
                     </li>
@@ -162,7 +162,7 @@ const ImportModal: FC<Props> = props => {
               <strong>{lang.tr('studio.flow.topicEditor.alreadyExistButDifferent')}</strong>
               <div style={{ padding: 5 }}>
                 <ul>
-                  {existing.map(x => (
+                  {existing.map((x) => (
                     <li>
                       {x.type} {x.name}
                     </li>
@@ -172,7 +172,7 @@ const ImportModal: FC<Props> = props => {
                 <Checkbox
                   label={lang.tr('studio.flow.topicEditor.overwrite')}
                   checked={overwrite}
-                  onChange={e => setOverwrite(e.currentTarget.checked)}
+                  onChange={(e) => setOverwrite(e.currentTarget.checked)}
                 />
               </div>
             </div>
@@ -200,9 +200,9 @@ const ImportModal: FC<Props> = props => {
       return <div>{lang.tr('studio.flow.topicEditor.unknownFileType')}</div>
     }
 
-    let alreadyExist = !!topics?.find(x => x.name === name)
+    let alreadyExist = !!topics?.find((x) => x.name === name)
     if (detected === 'workflow') {
-      alreadyExist = !!props.flows.find(x => x.name === name)
+      alreadyExist = !!props.flows.find((x) => x.name === name)
     }
 
     return (
@@ -224,12 +224,12 @@ const ImportModal: FC<Props> = props => {
             tabIndex={1}
             value={name}
             maxLength={100}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
           />
         </FormGroup>
         <h4>{lang.tr('studio.flow.topicEditor.contentOverview')}</h4>
         <ul>
-          {Object.keys(fields[detected]).map(field => {
+          {Object.keys(fields[detected]).map((field) => {
             const count = fileContent[field]?.length
             return (
               <li>
@@ -246,8 +246,8 @@ const ImportModal: FC<Props> = props => {
   const renderUpload = () => {
     return (
       <div
-        onDragOver={e => e.preventDefault()}
-        onDrop={e => {
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
           e.preventDefault()
           readFile(e.dataTransfer.files)
         }}
@@ -256,7 +256,7 @@ const ImportModal: FC<Props> = props => {
           <FormGroup label={<span>{lang.tr('studio.flow.topicEditor.selectJson')}</span>} labelFor="input-archive">
             <FileInput
               text={filePath || lang.tr('chooseFile')}
-              onChange={e => readFile((e.target as HTMLInputElement).files)}
+              onChange={(e) => readFile((e.target as HTMLInputElement).files)}
               fill
             />
           </FormGroup>

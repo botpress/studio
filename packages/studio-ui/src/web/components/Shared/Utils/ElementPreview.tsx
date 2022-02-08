@@ -5,7 +5,7 @@ import store from '~/store'
 
 import withLanguage from '../../Util/withLanguage'
 
-const ElementPreview = props => {
+const ElementPreview = (props) => {
   const { itemId, contentItem, contentLang } = props
   if (!itemId) {
     return null
@@ -19,9 +19,6 @@ const ElementPreview = props => {
 }
 
 const mapStateToProps = ({ content: { itemsById } }, { itemId }) => ({ contentItem: itemsById[itemId] })
-const ConnectedElementPreview = connect(
-  mapStateToProps,
-  { fetchContentItem }
-)(withLanguage(ElementPreview))
+const ConnectedElementPreview = connect(mapStateToProps, { fetchContentItem })(withLanguage(ElementPreview))
 
-export default props => <ConnectedElementPreview {...props} store={store} />
+export default (props) => <ConnectedElementPreview {...props} store={store} />

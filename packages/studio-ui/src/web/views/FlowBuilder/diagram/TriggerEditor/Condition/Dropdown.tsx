@@ -15,7 +15,7 @@ interface Props {
 
 const SelectDropdown = Select.ofType<Option>()
 
-const Dropdown: FC<Props> = props => {
+const Dropdown: FC<Props> = (props) => {
   const [elements, setElements] = useState([])
   const [selected, setSelected] = useState<Option>()
 
@@ -48,7 +48,7 @@ const Dropdown: FC<Props> = props => {
       )
       const elements = path ? _.get(data, path) : data
 
-      setElements(elements.map(x => ({ label: x[labelField || 'label'], value: x[valueField || 'value'] })))
+      setElements(elements.map((x) => ({ label: x[labelField || 'label'], value: x[valueField || 'value'] })))
     } catch (err) {
       console.error(err)
     }
@@ -58,13 +58,13 @@ const Dropdown: FC<Props> = props => {
     if (!elements || !elements.length) {
       return
     }
-    const chosenValue = elements.find(x => x.value === props.selectedValue)
-    const defaultValue = elements.find(x => x.value === props.defaultValue)
+    const chosenValue = elements.find((x) => x.value === props.selectedValue)
+    const defaultValue = elements.find((x) => x.value === props.defaultValue)
 
     setSelected(chosenValue || defaultValue || elements[0])
   }
 
-  const selectItem = item => {
+  const selectItem = (item) => {
     if (item !== selected) {
       setSelected(item)
       props.onChange(item)
@@ -79,8 +79,8 @@ const Dropdown: FC<Props> = props => {
       activeItem={selected}
       popoverProps={{ minimal: true }}
       noResults={<MenuItem disabled={true} text={lang.tr('studio.flow.condition.noResults')} />}
-      onItemSelect={option => selectItem(option)}
-      onActiveItemChange={option => selectItem(option)}
+      onItemSelect={(option) => selectItem(option)}
+      onActiveItemChange={(option) => selectItem(option)}
     >
       <Button
         id="select"

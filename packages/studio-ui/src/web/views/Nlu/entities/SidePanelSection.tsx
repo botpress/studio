@@ -18,7 +18,7 @@ interface Props {
   reloadIntents: () => void
 }
 
-export const EntitySidePanelSection: FC<Props> = props => {
+export const EntitySidePanelSection: FC<Props> = (props) => {
   const [entitiesFilter, setEntitiesFilter] = useState('')
   const [modalOpen, setModalOpen] = useState(false)
   const [entity, setEntity] = useState<NLU.EntityDefinition>()
@@ -52,10 +52,10 @@ export const EntitySidePanelSection: FC<Props> = props => {
     }
   }
 
-  const customEntities = props.entities.filter(e => e.type !== 'system')
+  const customEntities = props.entities.filter((e) => e.type !== 'system')
   const entityItems: Item[] = customEntities
-    .filter(entity => !entitiesFilter || entity.name.includes(entitiesFilter))
-    .map(entity => ({
+    .filter((entity) => !entitiesFilter || entity.name.includes(entitiesFilter))
+    .map((entity) => ({
       key: entity.name,
       label: entity.name,
       value: entity.name,
@@ -94,7 +94,7 @@ export const EntitySidePanelSection: FC<Props> = props => {
       <EntityNameModal
         action={entityAction}
         originalEntity={entity}
-        entityIDs={props.entities.map(e => e.id)}
+        entityIDs={props.entities.map((e) => e.id)}
         api={props.api}
         onEntityModified={onEntityModified}
         isOpen={modalOpen}

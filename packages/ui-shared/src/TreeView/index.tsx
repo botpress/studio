@@ -11,7 +11,7 @@ export const DOCUMENT_ICON = 'document'
 const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
   const [nodes, setNodes] = useState<TreeNode<T>[]>([])
   const [expanded, setExpanded] = useState(props.expandedPaths || [])
-  const [, forceUpdate] = useReducer(x => x + 1, 0)
+  const [, forceUpdate] = useReducer((x) => x + 1, 0)
   let timer: any = null
   let prevent = false
 
@@ -32,8 +32,8 @@ const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
       pathProps
     })
 
-    traverseTree(nodes, node => {
-      if (props.visibleElements?.find(x => node?.[x.field] === x.value)) {
+    traverseTree(nodes, (node) => {
+      if (props.visibleElements?.find((x) => node?.[x.field] === x.value)) {
         handleInitialNodeExpansion(node, true)
         node.isExpanded = true
       }
@@ -43,7 +43,7 @@ const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
       }
 
       const expandedNodes = props.expandedPaths || expanded
-      if (filterText || expandedNodes.find(path => path === node.fullPath)) {
+      if (filterText || expandedNodes.find((path) => path === node.fullPath)) {
         node.isExpanded = true
       }
     })
@@ -71,7 +71,7 @@ const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
     if (props.expandedPaths) {
       props.onExpandToggle?.(node.fullPath, isExpanded)
     } else {
-      setExpanded(isExpanded ? [...expanded, node.fullPath] : expanded.filter(x => x !== node.fullPath))
+      setExpanded(isExpanded ? [...expanded, node.fullPath] : expanded.filter((x) => x !== node.fullPath))
     }
     node.isExpanded = isExpanded
   }
@@ -88,7 +88,7 @@ const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
 
       const shouldSelectNode = props.highlightFolders || (!props.highlightFolders && selectedNode.type !== 'folder')
 
-      traverseTree(nodes, node => {
+      traverseTree(nodes, (node) => {
         if (node === selectedNode) {
           if (shouldSelectNode) {
             node.isSelected = true
@@ -155,8 +155,8 @@ const TreeView = <T extends {}>(props: TreeViewProps<T>) => {
       onNodeClick={handleNodeClick}
       onNodeContextMenu={handleContextMenu}
       onNodeDoubleClick={handleNodeDoubleClick}
-      onNodeCollapse={node => changeNodeExpansion(node as TreeNode<T>, false)}
-      onNodeExpand={node => changeNodeExpansion(node as TreeNode<T>, true)}
+      onNodeCollapse={(node) => changeNodeExpansion(node as TreeNode<T>, false)}
+      onNodeExpand={(node) => changeNodeExpansion(node as TreeNode<T>, true)}
       className={Classes.ELEVATION_0}
     />
   )

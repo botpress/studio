@@ -17,7 +17,7 @@ interface Analysis {
   fileCmsCount: number
 }
 
-export const ImportModal: FC<Props> = props => {
+export const ImportModal: FC<Props> = (props) => {
   const [file, setFile] = useState<any>()
   const [filePath, setFilePath] = useState<string>()
   const [isLoading, setIsLoading] = useState(false)
@@ -103,8 +103,8 @@ export const ImportModal: FC<Props> = props => {
   const renderUpload = () => {
     return (
       <div
-        onDragOver={e => e.preventDefault()}
-        onDrop={e => {
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => {
           e.preventDefault()
           readFile(e.dataTransfer.files)
         }}
@@ -117,7 +117,7 @@ export const ImportModal: FC<Props> = props => {
           >
             <FileInput
               text={filePath || lang.tr('chooseFile')}
-              onChange={e => readFile((e.target as HTMLInputElement).files)}
+              onChange={(e) => readFile((e.target as HTMLInputElement).files)}
               inputProps={{ accept: '.json' }}
               fill={true}
             />
@@ -155,7 +155,7 @@ export const ImportModal: FC<Props> = props => {
             <div style={{ marginTop: 30 }}>
               <RadioGroup
                 label={lang.tr('studio.content.import.whatLikeDo')}
-                onChange={e => setImportAction(e.target['value'])}
+                onChange={(e) => setImportAction(e.target['value'])}
                 selectedValue={importAction}
               >
                 <Radio id="radio-insert" label={lang.tr('studio.content.import.updateMissing')} value="insert" />

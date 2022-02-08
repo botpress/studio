@@ -10,7 +10,7 @@ interface Props {
   ndu: NDU.DialogUnderstanding
 }
 
-const PercentBar = props => {
+const PercentBar = (props) => {
   return (
     <div className={style.percentBar}>
       <Tooltip content={`${props.desc || ''} ${props.percent}%`} position={Position.RIGHT}>
@@ -25,7 +25,7 @@ const PercentBar = props => {
   )
 }
 
-export const Triggers: FC<Props> = props => {
+export const Triggers: FC<Props> = (props) => {
   const { predictions } = props.ndu
 
   const getConfidence = (key: string) => {

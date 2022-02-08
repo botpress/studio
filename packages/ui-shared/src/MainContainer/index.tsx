@@ -5,7 +5,7 @@ import { HotKeys } from 'react-hotkeys'
 import style from './style.scss'
 import { MainContainerProps } from './typings'
 
-const MainContainer: FC<MainContainerProps> = props => {
+const MainContainer: FC<MainContainerProps> = (props) => {
   const [showSidePanel, setShowSidePanel] = useState(true)
   const toggleSidePanel = () => {
     setShowSidePanel(!showSidePanel)

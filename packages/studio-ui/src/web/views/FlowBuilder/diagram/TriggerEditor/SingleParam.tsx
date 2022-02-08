@@ -12,7 +12,7 @@ type Props = {
   updateValue: (value) => void
 } & ConditionParam
 
-const SingleParam: FC<Props> = props => {
+const SingleParam: FC<Props> = (props) => {
   const { value, label, type, subType, list, required, updateValue } = props
 
   const fieldLabel = required ? `${label} *` : label
@@ -22,9 +22,9 @@ const SingleParam: FC<Props> = props => {
       return (
         <FormGroup key={label} label={fieldLabel}>
           {props.rows ? (
-            <TextArea value={value} onChange={e => updateValue(e.currentTarget.value)} rows={props.rows} fill />
+            <TextArea value={value} onChange={(e) => updateValue(e.currentTarget.value)} rows={props.rows} fill />
           ) : (
-            <InputGroup value={value || ''} onChange={e => updateValue(e.currentTarget.value)} />
+            <InputGroup value={value || ''} onChange={(e) => updateValue(e.currentTarget.value)} />
           )}
         </FormGroup>
       )
@@ -32,7 +32,7 @@ const SingleParam: FC<Props> = props => {
     case 'number':
       return (
         <FormGroup key={label} label={fieldLabel}>
-          <NumericInput value={value || 0} onValueChange={value => updateValue(value)} />
+          <NumericInput value={value || 0} onValueChange={(value) => updateValue(value)} />
         </FormGroup>
       )
 
@@ -40,8 +40,8 @@ const SingleParam: FC<Props> = props => {
       if (subType === 'radio') {
         return (
           <FormGroup key={label} label={fieldLabel}>
-            <RadioGroup onChange={item => updateValue(item.currentTarget.value)} selectedValue={value}>
-              {list.items.map(item => (
+            <RadioGroup onChange={(item) => updateValue(item.currentTarget.value)} selectedValue={value}>
+              {list.items.map((item) => (
                 <Radio key={item.label} label={lang.tr(item.label)} value={item.value} />
               ))}
             </RadioGroup>
@@ -54,7 +54,7 @@ const SingleParam: FC<Props> = props => {
               listOptions={list}
               defaultValue={value}
               selectedValue={value}
-              onChange={item => updateValue(item && item.value)}
+              onChange={(item) => updateValue(item && item.value)}
             />
           </FormGroup>
         )
@@ -65,7 +65,7 @@ const SingleParam: FC<Props> = props => {
         <FormGroup key={label} label={fieldLabel}>
           <TextArea
             value={_.isArray(value) ? value.join('\n') : value}
-            onChange={e => updateValue(e.currentTarget.value.split('\n'))}
+            onChange={(e) => updateValue(e.currentTarget.value.split('\n'))}
             rows={props.rows || 1}
             fill
           />
@@ -75,7 +75,12 @@ const SingleParam: FC<Props> = props => {
     case 'boolean':
       if (subType === 'switch') {
         return (
-          <Switch key={label} label={fieldLabel} checked={value} onChange={e => updateValue(e.currentTarget.checked)} />
+          <Switch
+            key={label}
+            label={fieldLabel}
+            checked={value}
+            onChange={(e) => updateValue(e.currentTarget.checked)}
+          />
         )
       } else {
         return (
@@ -83,7 +88,7 @@ const SingleParam: FC<Props> = props => {
             key={label}
             label={fieldLabel}
             checked={value}
-            onChange={e => updateValue(e.currentTarget.checked)}
+            onChange={(e) => updateValue(e.currentTarget.checked)}
           />
         )
       }
@@ -96,7 +101,7 @@ const SingleParam: FC<Props> = props => {
             name="contentPicker"
             id="contentPicker"
             itemId={value}
-            onChange={item => updateValue(item.id)}
+            onChange={(item) => updateValue(item.id)}
           />
         </FormGroup>
       )

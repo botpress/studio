@@ -61,8 +61,8 @@ const configItem = {
   icon: 'cog'
 }
 
-const Sidebar: FC<Props> = props => {
-  const renderModuleItem = module => {
+const Sidebar: FC<Props> = (props) => {
+  const renderModuleItem = (module) => {
     const rule = { res: `module.${module.name}`, op: 'write' }
     const path = `/modules/${module.name}`
     const iconPath = `assets/modules/${module.name}/studio_${module.menuIcon}`
@@ -117,12 +117,12 @@ const Sidebar: FC<Props> = props => {
         {window.IS_BOT_MOUNTED ? (
           <Fragment>
             {BASIC_MENU_ITEMS.map(renderBasicItem)}
-            {props.modules.filter(m => !m.noInterface).map(renderModuleItem)}
+            {props.modules.filter((m) => !m.noInterface).map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         ) : (
           <Fragment>
-            {props.modules.filter(m => m.name === 'code-editor').map(renderModuleItem)}
+            {props.modules.filter((m) => m.name === 'code-editor').map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         )}

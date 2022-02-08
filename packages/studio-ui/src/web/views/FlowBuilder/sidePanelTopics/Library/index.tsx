@@ -27,7 +27,7 @@ const nodeRenderer = ({ contentId, type, preview }: LibraryElement) => {
       <div
         className={style.grabbable}
         draggable={true}
-        onDragStart={event => {
+        onDragStart={(event) => {
           event.dataTransfer.setData('diagram-node', JSON.stringify({ contentId, type: 'node', id: type }))
         }}
       >
@@ -37,7 +37,7 @@ const nodeRenderer = ({ contentId, type, preview }: LibraryElement) => {
   }
 }
 
-const Library: FC<Props> = props => {
+const Library: FC<Props> = (props) => {
   const [isEditOpen, setEditOpen] = useState(false)
   const [editItem, setEditItem] = useState('')
 

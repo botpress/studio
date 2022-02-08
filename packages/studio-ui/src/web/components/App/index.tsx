@@ -71,7 +71,7 @@ class App extends Component<Props> {
     authEvents.on('login', this.fetchData)
     authEvents.on('new_token', this.fetchData)
 
-    EventBus.default.on('flow.changes', payload => {
+    EventBus.default.on('flow.changes', (payload) => {
       // TODO: should check if real uniq Id is different. Multiple browser windows can be using the same email. There should be a uniq window Id.
       const isOtherUser = this.props.user.email !== payload.userEmail
       const isSameBot = payload.botId === window.BOT_ID
@@ -84,7 +84,7 @@ class App extends Component<Props> {
       this.props.refreshHints()
     })
 
-    window.addEventListener('message', e => {
+    window.addEventListener('message', (e) => {
       if (!e.data || !e.data.action) {
         return
       }
@@ -100,7 +100,7 @@ class App extends Component<Props> {
     return (
       <Fragment>
         {!window.IS_STANDALONE && (
-          <TokenRefresher getAxiosClient={() => axios} onRefreshCompleted={token => setToken(token)} />
+          <TokenRefresher getAxiosClient={() => axios} onRefreshCompleted={(token) => setToken(token)} />
         )}
         <Routes />
       </Fragment>
@@ -118,7 +118,7 @@ const mapDispatchToProps = {
   getModuleTranslations
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user
 })
 

@@ -26,7 +26,7 @@ const ConditionItem: FC<Props> = ({ conditions, condition, onEdit, onDelete, cla
     return null
   }
 
-  const definition = conditions.find(x => x.id === condition.id)
+  const definition = conditions.find((x) => x.id === condition.id)
   if (!definition) {
     return null
   }
@@ -34,7 +34,7 @@ const ConditionItem: FC<Props> = ({ conditions, condition, onEdit, onDelete, cla
   let description = _.get(definition, 'description')
 
   if (description && condition.params) {
-    Object.keys(condition.params).forEach(key => {
+    Object.keys(condition.params).forEach((key) => {
       description = description.replace(`{${key}}`, condition.params[key] as any)
     })
   }
@@ -49,7 +49,7 @@ const ConditionItem: FC<Props> = ({ conditions, condition, onEdit, onDelete, cla
             <div>
               <strong>Trigger parameters</strong>
               <br />
-              {params.map(key => {
+              {params.map((key) => {
                 return (
                   <div key={key}>
                     - {key}: {condition.params[key]}
@@ -76,6 +76,6 @@ const ConditionItem: FC<Props> = ({ conditions, condition, onEdit, onDelete, cla
   )
 }
 
-const mapStateToProps = state => ({ conditions: state.ndu.conditions })
+const mapStateToProps = (state) => ({ conditions: state.ndu.conditions })
 
 export default connect<StateProps, undefined, OwnProps>(mapStateToProps, undefined)(ConditionItem)

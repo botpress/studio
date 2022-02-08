@@ -8,7 +8,7 @@ import { lang } from '../translations'
 import styles from './style.scss'
 import { ConfirmDialogOptions, ConfirmDialogProps } from './typings'
 
-const ConfirmDialogComponent: FC<ConfirmDialogProps> = props => {
+const ConfirmDialogComponent: FC<ConfirmDialogProps> = (props) => {
   const onAccept = () => {
     removeDialog()
     props.accept?.()

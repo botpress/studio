@@ -26,20 +26,20 @@ interface ProcessedElement {
   subItems: Element[]
 }
 
-export const Processing: FC<{ processing: { [activity: string]: sdk.IO.ProcessingEntry } }> = props => {
+export const Processing: FC<{ processing: { [activity: string]: sdk.IO.ProcessingEntry } }> = (props) => {
   const [expanded, setExpanded] = useState({})
   const { processing } = props
   let isBeforeMW = true
 
   const elements: Element[] = Object.keys(processing)
-    .map(key => {
+    .map((key) => {
       const [type, name, status] = key.split(':')
       return { type, name, status, completed: moment(processing[key].date), ...processing[key] }
     })
     .map((curr, idx, array) => {
       return { ...curr, execTime: idx === 0 ? 0 : curr.completed.diff(array[idx - 1].completed) }
     })
-    .filter(x => x.status !== 'skipped')
+    .filter((x) => x.status !== 'skipped')
 
   const processed = elements.reduce((acc, item) => {
     const lastItem = acc.pop()
@@ -84,7 +84,7 @@ export const Processing: FC<{ processing: { [activity: string]: sdk.IO.Processin
           <span className={style.expanded}>
             {hasLog && (
               <span className={style.infoBox}>
-                {item.logs.map(log => (
+                {item.logs.map((log) => (
                   <div key={log.substr(0, 20)}>{log}</div>
                 ))}
               </span>
@@ -92,7 +92,7 @@ export const Processing: FC<{ processing: { [activity: string]: sdk.IO.Processin
 
             {hasError && (
               <span className={style.infoBox}>
-                {item.errors.map(entry => (
+                {item.errors.map((entry) => (
                   <div key={entry.stacktrace}>
                     <b>{lang.tr('bottomPanel.debugger.processing.type')}:</b> {entry.type}
                     <br />
@@ -153,7 +153,7 @@ export const Processing: FC<{ processing: { [activity: string]: sdk.IO.Processin
     <ContentSection className={bpStyle.tabContainer}>
       {renderProgress()}
       {processed.map((item, index) => {
-        const hasChildren = item.subItems?.filter(x => x.name).length
+        const hasChildren = item.subItems?.filter((x) => x.name).length
 
         return (
           <Fragment key={index}>

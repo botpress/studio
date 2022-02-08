@@ -13,7 +13,7 @@ interface Props {
   toggle: () => void
 }
 
-const EditTopicQnAModal: FC<Props> = props => (
+const EditTopicQnAModal: FC<Props> = (props) => (
   <Dialog.Wrapper
     title={lang.tr('studio.flow.editQna')}
     icon="edit"

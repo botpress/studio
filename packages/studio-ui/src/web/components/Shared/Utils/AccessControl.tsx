@@ -38,8 +38,8 @@ const PermissionsChecker = (props: AccessControlProps) => {
   return isOperationAllowed({ user, resource, operation, superAdmin }) ? children : fallback
 }
 
-const mapStateToProps = state => ({ user: state.user })
+const mapStateToProps = (state) => ({ user: state.user })
 
 const ConnectedAccessControl = connect(mapStateToProps, undefined)(PermissionsChecker)
 
-export default props => <ConnectedAccessControl {...props} store={store} />
+export default (props) => <ConnectedAccessControl {...props} store={store} />

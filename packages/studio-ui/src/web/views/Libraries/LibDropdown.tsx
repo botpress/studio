@@ -35,7 +35,7 @@ const itemRenderer = (option, { modifiers, handleClick }) => {
   )
 }
 
-const Dropdown: FC<any> = props => {
+const Dropdown: FC<any> = (props) => {
   const { placeholder, onQueryChange, items, onChange, className } = props
   const [activeItem, setActiveItem] = useState<Option | undefined>()
   const SimpleDropdown = Suggest.ofType<Option>()
@@ -45,14 +45,14 @@ const Dropdown: FC<any> = props => {
   return (
     <SimpleDropdown
       className={className}
-      inputValueRenderer={item => item.name}
+      inputValueRenderer={(item) => item.name}
       inputProps={{ placeholder: lang.tr('libraries.libraryName') }}
       items={items}
       activeItem={activeItem}
       popoverProps={{ minimal: true, usePortal: false }}
       itemRenderer={itemRenderer}
       onQueryChange={onQueryChange}
-      onItemSelect={option => onChange(option)}
+      onItemSelect={(option) => onChange(option)}
     >
       <Button text={btnText} rightIcon={'double-caret-vertical'} />
     </SimpleDropdown>
