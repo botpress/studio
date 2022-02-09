@@ -3,10 +3,9 @@ import { Categories, LibraryElement } from 'common/typings'
 import { DefaultSearchParams } from 'core/cms'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
+import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-
-const CONTENT_FOLDER = 'content-elements'
-const LIBRARY_FILE = 'library.json'
+import path from 'path'
 
 export enum ButtonAction {
   SaySomething = 'Say something',
@@ -14,10 +13,55 @@ export enum ButtonAction {
   Postback = 'Postback'
 }
 
+// TODO: botConfig.contentTypes should be removed ... if you want to disable a contentType, delete the content type from the content-types folder
+// TODO: in the UI, we'll do most of these operations front-end
+
 export class CMSRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('CMS', services)
     this.setupRoutes()
+  }
+
+  // types are static .. load them once in memory
+  // elements can be loaded with bpfs at query time
+
+  async loadContentTypes() {
+    const files = (await Instance.directoryListing('content-types', {})) //
+      .filter((file) => !file.startsWith('_')) // content types starting with _ are shared code
+
+    const types = await Promise.map(files, async (file) => {
+      const content = require(path.join('content-types', file)) // TODO: does that actually work?
+      return content
+    })
+
+    // return a map of content types by id, e.g.
+    // { "builtin_text": {...} }
+    return types.reduce((acc, curr) => {
+      acc[curr.id] = curr
+      return acc
+    }, {})
+  }
+
+  async loadContentElements(): Promise<{ type: string; elements: ContentElement[] }[]> {
+    const files = await Instance.directoryListing('content-elements', {})
+
+    const elementByTypes = await Promise.map(files, async (file) => {
+      const content = await Instance.readFile(path.join('content-elements', file))
+      return { type: file.replace(/\.json$/i, ''), elements: JSON.parse(content.toString()) as ContentElement[] }
+    })
+
+    return elementByTypes
+  }
+
+  async loadContentElements(): Promise<{ type: string; elements: ContentElement[] }[]> {
+    const files = await Instance.directoryListing('content-elements', {})
+
+    const elementByTypes = await Promise.map(files, async (file) => {
+      const content = await Instance.readFile(path.join('content-elements', file))
+      return { type: file.replace(/\.json$/i, ''), elements: JSON.parse(content.toString()) as ContentElement[] }
+    })
+
+    return elementByTypes
   }
 
   setupRoutes() {
@@ -27,34 +71,22 @@ export class CMSRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
-        const types = await this.cmsService.getAllContentTypes(botId)
-        const categories: Categories = {
-          registered: [],
-          unregistered: types.disabled.map((x) => ({
-            id: x,
-            title: x
-          }))
-        }
 
-        for (let i = 0; i < types.enabled.length; i++) {
-          const type = types.enabled[i]
-          const count = await this.cmsService.countContentElementsForContentType(botId, type.id)
+        const typesById = await this.loadContentTypes()
+        const allElements = await this.loadContentElements()
 
-          categories.registered.push({
-            id: type.id,
-            count,
-            title: type.title,
-            hidden: type.hidden,
-            schema: {
-              json: type.jsonSchema,
-              ui: type.uiSchema,
-              title: type.title,
-              renderer: type.id
-            }
-          })
-        }
-
-        res.send(categories)
+        return Object.keys(typesById).map((type) => ({
+          id: type,
+          count: allElements.find((x) => x.type === type)?.elements?.length,
+          title: typesById[type].title,
+          hidden: typesById[type].hidden,
+          schema: {
+            json: typesById[type].jsonSchema,
+            ui: typesById[type].uiSchema,
+            title: typesById[type].title,
+            renderer: type
+          }
+        }))
       })
     )
 
@@ -64,7 +96,13 @@ export class CMSRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
-        const count = await this.cmsService.countContentElements(botId)
+
+        const allElements = await this.loadContentElements()
+
+        const count = allElements.reduce((acc, curr) => {
+          return acc + curr.elements.length
+        }, 0)
+
         res.send({ count })
       })
     )
@@ -77,18 +115,50 @@ export class CMSRouter extends CustomStudioRouter {
         const { botId, contentType } = req.params
         const { count, from, searchTerm, filters, sortOrder, ids } = req.body
 
-        const elements = await this.cmsService.listContentElements(botId, contentType, {
+        const typesById = await this.loadContentTypes()
+        const allElements = await this.loadContentElements()
+        const type = typesById[contentType]
+
+        const elements = allElements.find((x) => x.type === contentType)?.elements || []
+
+        // TODO: Move content translation logic to front-end (_translateElement)
+
+        const params = {
           ...DefaultSearchParams,
           count: Number(count) || DefaultSearchParams.count,
           from: Number(from) || DefaultSearchParams.from,
-          sortOrder: sortOrder || DefaultSearchParams.sortOrder,
           searchTerm,
-          filters,
           ids
-        })
+        }
 
-        const augmentedElements = await Promise.map(elements, (el) => this._augmentElement(el, botId))
-        res.send(augmentedElements)
+        let sorted = _.sortBy(elements, 'createdOn')
+
+        if (params.searchTerm) {
+          // TODO: Look it's 1am
+          sorted = sorted.filter((x) => x.id.includes(searchTerm) || JSON.stringify(x.formData).includes(searchTerm))
+        }
+
+        if (params.ids) {
+          sorted = sorted.filter((x) => params.ids.includes(x.id))
+        }
+
+        if (params.from) {
+          sorted = sorted.slice(params.from)
+        }
+
+        if (params.count) {
+          sorted = sorted.slice(0, params.count)
+        }
+
+        return sorted.map((element) => ({
+          ...element,
+          schema: {
+            json: type.jsonSchema,
+            ui: type.uiSchema,
+            title: type.title,
+            renderer: type.id
+          }
+        }))
       })
     )
 
@@ -98,7 +168,11 @@ export class CMSRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentType } = req.params
-        const count = await this.cmsService.countContentElementsForContentType(botId, contentType)
+
+        const allElements = await this.loadContentElements()
+
+        const count = allElements.find((x) => x.type === contentType)?.elements?.length || 0
+
         res.send({ count })
       })
     )
@@ -109,14 +183,27 @@ export class CMSRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, elementId } = req.params
-        const element = await this.cmsService.getContentElement(botId, elementId)
 
-        if (!element) {
-          this.logger.forBot(botId).warn(`The requested element doesn't exist: "${elementId}"`)
-          return res.status(404).send(`Element ${elementId} not found`)
+        const typesById = await this.loadContentTypes()
+        const allElements = await this.loadContentElements()
+
+        for (let current of allElements) {
+          const element = current.elements.find((x) => x.id === elementId)
+          if (!element) continue
+
+          res.send({
+            ...element,
+            schema: {
+              json: typesById[current.type].jsonSchema,
+              ui: typesById[current.type].uiSchema,
+              title: typesById[current.type].title,
+              renderer: typesById[current.type].id
+            }
+          })
         }
 
-        res.send(await this._augmentElement(element, botId))
+        this.logger.forBot(botId).warn(`The requested element doesn't exist: "${elementId}"`)
+        return res.status(404).send(`Element ${elementId} not found`)
       })
     )
 
@@ -126,6 +213,10 @@ export class CMSRouter extends CustomStudioRouter {
       this.needPermissions('write', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const { botId, contentType, elementId } = req.params
+
+        // TODO: broadcast change?
+        // TODO: get languages and defaultLang necessary for computing previews
+
         const element = await this.cmsService.createOrUpdateContentElement(
           botId,
           contentType,

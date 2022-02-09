@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 
 import ContentPickerWidget from '~/components/Content/Select/Widget'
 
-const decorateRef = id => `##ref(${id})`
+const decorateRef = (id) => `##ref(${id})`
 
-const undecorateRef = decoratedId => {
+const undecorateRef = (decoratedId) => {
   if (decoratedId == null) {
     return decoratedId
   }
@@ -16,7 +16,7 @@ const undecorateRef = decoratedId => {
 }
 
 export default class RefWidget extends Component {
-  handleChange = item => this.props.onChange(decorateRef(item.id))
+  handleChange = (item) => this.props.onChange(decorateRef(item.id))
 
   render() {
     const { $category: contentType, $subtype: subtype, type } = this.props.schema
