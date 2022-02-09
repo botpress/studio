@@ -215,19 +215,6 @@ export class QNARouter extends CustomStudioRouter {
       })
     )
 
-    router.get(
-      '/questionsByTopic',
-      this.needPermissions('read', 'module.qna'),
-      this.asyncMiddleware(async (req, res) => {
-        try {
-          const { storage } = await this.qnaService.getBotStorage(req.params.botId)
-          res.send(await storage.getCountByTopic())
-        } catch (e) {
-          res.status(500).send(e.message || 'Error')
-        }
-      })
-    )
-
     const updateUploadStatus = (uploadStatusId: string, status: string) => {
       if (uploadStatusId) {
         this.jsonUploadStatuses[uploadStatusId] = status

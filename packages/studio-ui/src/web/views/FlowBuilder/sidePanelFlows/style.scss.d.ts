@@ -17,7 +17,6 @@ interface CssExports {
   'title': string;
   'toolItem': string;
   'toolPanel': string;
-  'topicsNavbar': string;
   'tree': string;
   'treeNode': string;
 }

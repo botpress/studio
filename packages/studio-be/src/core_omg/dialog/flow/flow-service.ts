@@ -2,7 +2,6 @@ import { Flow, Logger } from 'botpress/sdk'
 import { parseActionInstruction } from 'common/action'
 import { ArrayCache } from 'common/array-cache'
 import { ObjectCache } from 'common/object-cache'
-import { TreeSearch, PATH_SEPARATOR } from 'common/treeSearch'
 import { FlowMutex, FlowView, NodeView } from 'common/typings'
 import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
@@ -11,13 +10,9 @@ import { GhostService, ScopedGhostService } from 'core/bpfs'
 import { JobService } from 'core/distributed/job-service'
 import { KeyValueStore, KvsService } from 'core/kvs'
 import { inject, injectable, postConstruct, tagged } from 'inversify'
-import Joi from 'joi'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
-import { Memoize } from 'lodash-decorators'
-import LRUCache from 'lru-cache'
 import moment from 'moment'
-import ms from 'ms'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 
@@ -29,11 +24,6 @@ const FLOW_DIR = 'flows'
 
 const MUTEX_LOCK_DELAY_SECONDS = 30
 
-export const TopicSchema = Joi.object().keys({
-  name: Joi.string().required(),
-  description: Joi.string().optional().allow('')
-})
-
 interface FlowModification {
   name: string
   botId: string
@@ -41,11 +31,6 @@ interface FlowModification {
   modification: 'rename' | 'delete' | 'create' | 'update'
   newName?: string
   payload?: any
-}
-
-interface Topic {
-  name: string
-  description: string
 }
 
 export class MutexError extends Error {

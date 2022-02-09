@@ -6,7 +6,6 @@ import Form, { FieldProps, IChangeEvent, UiSchema, WidgetProps } from 'react-jso
 import CheckboxWidget from 'react-jsonschema-form/lib/components/widgets/CheckboxWidget'
 import SmartInput from '~/components/SmartInput'
 import { getFormData } from '~/util/NodeFormData'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
 import withLanguage from '../Util/withLanguage'
 
@@ -15,7 +14,7 @@ import FlowPickWidget from './FlowPickWidget'
 import ArrayMl from './i18n/Array'
 import renderWrapped from './i18n/I18nWrapper'
 import RefWidget from './RefWidget'
-import localStyle from './style.scss'
+import style from './style.scss'
 import Text from './Text'
 import { Fields, Schema, Widgets } from './typings'
 import UploadWidget from './UploadWidget'
@@ -107,7 +106,7 @@ const CustomDescriptionField = ({ description, id, formContext }: FieldProps) =>
     return (
       <div id={id} style={{ lineHeight: 'normal' }}>
         <div>
-          <span className={localStyle.warning}>
+          <span className={style.warning}>
             <Icon icon="warning-sign" />
             &nbsp;{' '}
             {lang.tr('studio.content.contentTypeWarning', {
