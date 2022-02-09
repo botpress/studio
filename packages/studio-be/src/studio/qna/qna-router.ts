@@ -225,8 +225,6 @@ export class QNARouter extends CustomStudioRouter {
       this.needPermissions('write', 'module.qna'),
       upload.single('file'),
       this.asyncMiddleware(async (req, res) => {
-        const uploadStatusId = nanoid()
-        res.send(uploadStatusId)
         if (req.body.action === 'clear_insert') {
           await Instance.deleteDir(QNA_DIR)
         }

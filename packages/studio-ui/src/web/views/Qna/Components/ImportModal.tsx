@@ -3,9 +3,8 @@ import 'bluebird-global'
 import axios from 'axios'
 import { lang, toast } from 'botpress/shared'
 import _ from 'lodash'
-import React, { FC, Fragment, useEffect, useState } from 'react'
+import React, { FC, Fragment, useState } from 'react'
 
-const JSON_STATUS_POLL_INTERVAL = 1000
 const axiosConfig = { headers: { 'Content-Type': 'multipart/form-data' } }
 
 interface Props {
@@ -27,18 +26,8 @@ export const ImportModal: FC<Props> = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [importAction, setImportAction] = useState('insert')
   const [analysis, setAnalysis] = useState<Analysis>()
-  const [statusId, setStatusId] = useState<string>()
   const [uploadStatus, setUploadStatus] = useState<string>()
   const [hasError, setHasError] = useState(false)
-
-  useEffect(() => {
-    if (statusId) {
-      const interval = setInterval(async () => {
-        await updateUploadStatus()
-      }, JSON_STATUS_POLL_INTERVAL)
-      return () => clearInterval(interval)
-    }
-  }, [statusId])
 
   const analyzeImport = async () => {
     setIsLoading(true)
@@ -69,27 +58,13 @@ export const ImportModal: FC<Props> = (props) => {
       form.append('file', file)
       form.append('action', importAction)
 
-      const { data } = await axios.post(`${window.STUDIO_API_PATH}/qna/import`, form, axiosConfig)
-      setStatusId(data)
+      setIsLoading(true)
+      await axios.post(`${window.STUDIO_API_PATH}/qna/import`, form, axiosConfig)
     } catch (err) {
-      clearStatus()
       setHasError(true)
       toast.failure(err.message)
-    }
-  }
-
-  const updateUploadStatus = async () => {
-    const { data: status } = await axios.get(`${window.STUDIO_API_PATH}/qna/json-upload-status/${statusId}`)
-    setUploadStatus(status)
-
-    if (status === 'Completed') {
-      clearStatus()
-      closeDialog()
-      toast.success(lang.tr('qna.import.uploadSuccessful'))
-      props.onImportCompleted()
-    } else if (status.startsWith('Error')) {
-      clearStatus()
-      setHasError(true)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -98,11 +73,6 @@ export const ImportModal: FC<Props> = (props) => {
       setFile(files[0])
       setFilePath(files[0].name)
     }
-  }
-
-  const clearStatus = () => {
-    setStatusId(undefined)
-    setIsLoading(false)
   }
 
   const closeDialog = () => {
@@ -114,7 +84,6 @@ export const ImportModal: FC<Props> = (props) => {
     setFilePath(undefined)
     setFile(undefined)
     setUploadStatus(undefined)
-    setStatusId(undefined)
     setAnalysis(undefined)
     setHasError(false)
   }
