@@ -18,6 +18,19 @@ class MediaRouter extends CustomStudioRouter {
     return `/api/v1/bots/${this.botId}/media/${encodeURIComponent(fileName)}`
   }
 
+  getMediaFiles(formData): string[] {
+    const media = '/media/'
+    const iterator = (result: string[], value, key: string) => {
+      if (key.startsWith('image') && value && value.includes(media)) {
+        result.push(value.substr(value.indexOf(media) + media.length))
+      } else if (key.startsWith('items$') && value.length) {
+        value.forEach((e) => _.reduce(e, iterator, result))
+      }
+      return result
+    }
+    return _.reduce(formData, iterator, []).filter(Boolean)
+  }
+
   constructor(services: StudioServices) {
     super('User', services)
   }
@@ -39,7 +52,6 @@ class MediaRouter extends CustomStudioRouter {
       this.needPermissions('write', 'bot.media'),
       this.asyncMiddleware(async (req, res) => {
         mediaUploadMulter(req, res, async (err) => {
-          const email = req.tokenUser!.email
           if (err) {
             return res.status(400).send(err.message)
           }
@@ -51,6 +63,20 @@ class MediaRouter extends CustomStudioRouter {
 
           res.json({ url: this.getFileUrl(fileName) })
         })
+      })
+    )
+
+    router.post(
+      '/delete',
+      this.checkTokenHeader,
+
+      this.needPermissions('write', 'bot.media'),
+      this.asyncMiddleware(async (req, res) => {
+        const files = this.getMediaFiles(req.body)
+
+        await Promise.map(files, (f) => Instance.deleteFile(path.join('media', sanitize(f))))
+
+        res.sendStatus(200)
       })
     )
   }
