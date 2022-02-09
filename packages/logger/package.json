@@ -1,0 +1,23 @@
+{
+  "name": "@botpress/logger",
+  "version": "1.0.0",
+  "description": "Botpress NLU Logger",
+  "main": "./dist/index.js",
+  "author": "Botpress, Inc.",
+  "license": "AGPL-3.0",
+  "types": "./src/typings.d.ts",
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.116",
+    "@types/node": "^12.13.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^26.5.5",
+    "typescript": "^3.9.10"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "test": "cross-env jest -i --detectOpenHandles -c jest.config.js"
+  }
+}

@@ -64,7 +64,8 @@
     "packages/studio-be",
     "packages/ui-shared",
     "packages/ui-shared-lite",
-    "packages/superinput"
+    "packages/superinput",
+    "packages/logger"
   ],
   "engines": {
     "node": "12.18.1"
