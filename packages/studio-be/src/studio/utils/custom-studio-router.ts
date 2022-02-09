@@ -14,7 +14,7 @@ import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioServices } from 'studio/studio-router'
 
-// TODO: delete this .. later
+// TODO: delete this ..
 export abstract class CustomStudioRouter {
   protected logger: Logger
   protected authService: AuthService
