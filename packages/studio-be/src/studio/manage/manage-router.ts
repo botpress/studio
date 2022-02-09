@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
+// TODO last router that isn't ported
 class ManageRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Manage', services)
@@ -43,7 +44,7 @@ class ManageRouter extends CustomStudioRouter {
             current_stage: {
               id: pipeline![0].id,
               promoted_on: new Date(),
-              promoted_by: req.tokenUser!.email
+              promoted_by: req.tokenUser!.email // TODO req.tokenUser is probably undefined
             }
           }
           await this.botService.addBot(bot, req.body.template)

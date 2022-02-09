@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { DirectoryListingOptions, NLU } from 'botpress/sdk'
 import { QnaEntry, QnaItem } from 'common/typings'
 import { sanitizeFileName } from 'common/utils'
@@ -10,8 +11,9 @@ import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { NLU_PREFIX } from './storage'
 
-import { importQuestions, prepareExport, prepareImport } from './transfer'
+import { prepareImport } from './transfer'
 import { QnaDefSchema } from './validation'
 
 const QNA_DIR = 'qna'
@@ -23,8 +25,6 @@ interface FilteringOptions {
 }
 
 export class QNARouter extends CustomStudioRouter {
-  private jsonUploadStatuses = {}
-
   constructor(services: StudioServices) {
     super('QNA', services)
   }
@@ -118,9 +118,8 @@ export class QNARouter extends CustomStudioRouter {
 
         if (qnaEntry.enabled) {
           const intentDef = this._makeIntentFromQna(qnaItem)
-          // TODO assess this hard coding when we move qna to nlu dir
           await Instance.upsertFile(
-            path.join('intents', sanitizeFileName(intentDef.name)),
+            path.join(INTENT_DIR, sanitizeFileName(intentDef.name)),
             JSON.stringify(intentDef, undefined, 2)
           )
         }
@@ -143,11 +142,20 @@ export class QNARouter extends CustomStudioRouter {
     router.post(
       '/questions/:id',
       this.needPermissions('write', 'module.qna'),
-      this.asyncMiddleware(async (req, res, next) => {
+      this.asyncMiddleware(async (req, res) => {
         const qnaEntry = (await validate(req.body, QnaDefSchema)) as QnaEntry
         const qnaItem: QnaItem = { data: qnaEntry, id: req.params.id }
 
         await Instance.upsertFile(path.join(QNA_DIR), JSON.stringify(qnaItem, undefined, 2))
+        if (qnaItem.data.enabled) {
+          const intentDef = this._makeIntentFromQna(qnaItem)
+          await Instance.upsertFile(
+            path.join(INTENT_DIR, sanitizeFileName(intentDef.name)),
+            JSON.stringify(intentDef, undefined, 2)
+          )
+        } else {
+          await Instance.deleteFile(path.join(NLU_PREFIX, this._makeIntentId(qnaItem.id), '.json'))
+        }
 
         res.send(qnaItem)
       })
@@ -185,16 +193,33 @@ export class QNARouter extends CustomStudioRouter {
       '/export',
       this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
-        const { storage } = await this.qnaService.getBotStorage(req.params.botId)
-        //
-        const data: string = await prepareExport(storage, this.cmsService)
+        const options: DirectoryListingOptions = { sortOrder: { column: 'filePath', desc: true } }
+        const qnas = await Instance.directoryListing(QNA_DIR, options).then((filePaths) => {
+          return Promise.map(filePaths, (filePath) =>
+            Instance.readFile(path.join(QNA_DIR, filePath)).then((buf) => JSON.parse(buf.toString()) as QnaItem)
+          )
+        })
 
+        const contentElementIds = _.chain(qnas)
+          .flatMapDeep((qna) => Object.values(qna.data.answers))
+          .filter((a) => a.startsWith('#!'))
+          .uniq()
+          .value()
+
+        const contentElements = Promise.map(contentElementIds, (id) => {
+          return axios
+            .get(`/api/v1/studio/${req.params.botId}/cms/element/${id}`)
+            .then((res) => _.pick(res.data, ['id', 'contentType', 'formData']))
+        })
+
+        const data = JSON.stringify({ qnas, contentElements })
         res.setHeader('Content-Type', 'application/json')
         res.setHeader('Content-disposition', `attachment; filename=qna_${moment().format('DD-MM-YYYY')}.json`)
-        res.end(data)
+        res.end(JSON.stringify(data, undefined, 2))
       })
     )
 
+    const upload = multer()
     router.post(
       '/import',
       this.needPermissions('write', 'module.qna'),
@@ -202,74 +227,77 @@ export class QNARouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         const uploadStatusId = nanoid()
         res.send(uploadStatusId)
-
-        const { storage } = await this.qnaService.getBotStorage(req.params.botId)
-
         if (req.body.action === 'clear_insert') {
-          updateUploadStatus(uploadStatusId, 'Deleting existing questions')
-          const questions = await storage.fetchQNAs()
-
-          await storage.delete(questions.map(({ id }) => id))
-          updateUploadStatus(uploadStatusId, 'Deleted existing questions')
+          await Instance.deleteDir(QNA_DIR)
         }
 
         try {
-          const importData = await prepareImport(JSON.parse((req as any).file.buffer))
+          const parsed = JSON.parse((req as any).file.buffer)
+          const result = await prepareImport(parsed)
 
-          await importQuestions(importData, storage, this.cmsService, updateUploadStatus, uploadStatusId)
-          updateUploadStatus(uploadStatusId, 'Completed')
-        } catch (e) {
-          this.logger.attachError(e).error('JSON Import Failure')
-          updateUploadStatus(uploadStatusId, `Error: ${e.message}`)
+          const contentPromises = (result?.content ?? []).map((content) =>
+            axios.post(`/api/v1/studio/${req.params.botId}/cms/${content.contentType}/element/${content.id}`, {
+              formData: content
+            })
+          )
+          const qnaPromises = (result?.questions ?? []).map((item) =>
+            Instance.upsertFile(path.join(QNA_DIR), JSON.stringify(item, undefined, 2))
+          )
+          await Promise.all([...contentPromises, ...qnaPromises])
+          res.end()
+        } catch (err) {
+          res.status(400).send('invalid payload')
         }
       })
     )
 
-    // TODO remove, move logic in front end
     router.get(
       '/contentElementUsage',
       this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
-        const { storage } = await this.qnaService.getBotStorage(req.params.botId)
-        const usage = await storage.getContentElementUsage()
+        const qnas = await Instance.directoryListing(QNA_DIR, {}).then((filePaths) => {
+          return Promise.map(filePaths, (filePath) =>
+            Instance.readFile(path.join(QNA_DIR, filePath)).then((buf) => JSON.parse(buf.toString()) as QnaItem)
+          )
+        })
+
+        const usage = _.chain(qnas)
+          .flatMapDeep((qna) => Object.values(qna.data.answers))
+          .filter((a) => a.startsWith('#!'))
+          .groupBy(_.identity)
+          .value()
+
         res.send(usage)
       })
     )
 
-    // TODO move logic in FE
-    const upload = multer()
     router.post(
       '/analyzeImport',
       this.needPermissions('write', 'module.qna'),
       upload.single('file'),
       this.asyncMiddleware(async (req, res) => {
-        const { storage } = await this.qnaService.getBotStorage(req.params.botId)
-        const cmsIds = await storage.getAllContentElementIds()
-        // @ts-ignore
-        const importData = await prepareImport(JSON.parse(req.file.buffer))
+        const parsed = JSON.parse((req as any).file.buffer)
+        const importData = await prepareImport(parsed)
+
+        const qnas = await Instance.directoryListing(QNA_DIR, {}).then((filePaths) => {
+          return Promise.map(filePaths, (filePath) =>
+            Instance.readFile(path.join(QNA_DIR, filePath)).then((buf) => JSON.parse(buf.toString()) as QnaItem)
+          )
+        })
+
+        const cmsCount = _.chain(qnas)
+          .flatMapDeep((qna) => Object.values(qna.data.answers))
+          .filter((a) => a.startsWith('#!'))
+          .uniq()
+          .value().length
 
         res.send({
-          qnaCount: await storage.count(),
-          cmsCount: (cmsIds && cmsIds.length) || 0,
-          fileQnaCount: (importData.questions && importData.questions.length) || 0,
-          fileCmsCount: (importData.content && importData.content.length) || 0
+          cmsCount,
+          qnaCount: qnas.length,
+          fileQnaCount: importData?.questions?.length ?? 0,
+          fileCmsCount: importData?.content?.length ?? 0
         })
       })
     )
-
-    // TODO remove
-    router.get(
-      '/json-upload-status/:uploadStatusId',
-      this.needPermissions('read', 'module.qna'),
-      this.asyncMiddleware(async (req, res) => {
-        res.end(this.jsonUploadStatuses[req.params.uploadStatusId])
-      })
-    )
-
-    const updateUploadStatus = (uploadStatusId: string, status: string) => {
-      if (uploadStatusId) {
-        this.jsonUploadStatuses[uploadStatusId] = status
-      }
-    }
   }
 }
