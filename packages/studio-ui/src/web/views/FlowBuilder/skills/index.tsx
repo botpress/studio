@@ -16,7 +16,7 @@ import { Slot } from './skill-Slot'
 import { SendEmail } from './skill-send-email'
 import { AuthGate } from './skill-auth-gate'
 
-import { generateFlow as doGenerateFlow } from './generateFlow'
+import { doGenerateFlow } from './flowGenerator'
 
 const style = require('./style.scss')
 

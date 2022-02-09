@@ -5,7 +5,7 @@ import _ from 'lodash'
 import { nanoid } from 'nanoid'
 import { createAction } from 'redux-actions'
 import { copyName } from '~/util/flows'
-import { generateFlow } from '~/views/FlowBuilder/skills/generateFlow'
+// import { doGenerateFlow } from '~/views/FlowBuilder/skills/flowGenerator'
 import { getDeletedFlows, getDirtyFlows, getModifiedFlows, getNewFlows } from '../reducers/selectors'
 import { FlowsAPI } from './api'
 
@@ -185,12 +185,14 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
   const currentFlowNodeNames = state.flows.flowsByName[state.flows.currentFlow].nodes.map(({ name }) => name)
 
   // Create new flows for all skills
-  // TODO: fix this after generateFlow has been replaced
+
   for (const node of skills) {
     let { skillData } = state.flows.flowsByName[node.flow]
     const randomId = nanoid(10)
     skillData = { ...skillData, randomId }
-    const data = await generateFlow(skillData, node.skill)
+    // const data = (await doGenerateFlow(skillData, node.skill)) as any
+    // TODO: fix this after generateFlow has been replaced
+    const data: any = {}
     dispatch(
       requestInsertNewSkill({
         skillId: node.skill,

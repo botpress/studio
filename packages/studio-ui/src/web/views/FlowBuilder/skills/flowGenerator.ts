@@ -2,14 +2,14 @@ import { ActionBuilderProps, Flow, FlowGenerationResult, SkillFlow } from 'botpr
 import _ from 'lodash'
 import { customAlphabet } from 'nanoid'
 
-import * as choice from './skill-choice'
-import * as callApi from './skill-call-api'
-import * as slot from './skill-slot'
-import * as email from './skill-send-email'
-import * as authGate from './skill-auth-gate'
+import { generateFlow as choice } from './skill-choice'
+import { generateFlow as callApi } from './skill-call-api'
+import { generateFlow as slot } from './skill-slot'
+import { generateFlow as email } from './skill-send-email'
+import { generateFlow as authGate } from './skill-auth-gate'
 import { NodeActionType } from './typings'
 
-export const generateFlow = async (data: any, skillId: string) => {
+export const doGenerateFlow = async (data: any, skillId: string) => {
   const generateFlow = getFlowGenerator(skillId)
   const partialFlow = await generateFlow(data, { botId: window.BOT_ID })
   return finalizeFlow(partialFlow)
@@ -18,15 +18,15 @@ export const generateFlow = async (data: any, skillId: string) => {
 function getFlowGenerator(skillId: string) {
   switch (skillId) {
     case 'choice':
-      return choice.generateFlow
+      return choice
     case 'CallAPI':
-      return callApi.generateFlow
+      return callApi
     case 'Slot':
-      return slot.generateFlow
+      return slot
     case 'SendEmail':
-      return email.generateFlow
+      return email
     case 'AuthGate':
-      return authGate.generateFlow
+      return authGate
   }
 }
 
