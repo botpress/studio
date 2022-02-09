@@ -15,7 +15,6 @@ import {
 } from '~/actions'
 import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
 
-import SaySomethingForm from '../../FlowBuilder/sidePanelTopics/form/SaySomethingForm'
 import { nodeTypes } from '../diagram/manager'
 import FlowInformation from '../nodeProps/FlowInformation'
 import SkillCallNode from '../nodeProps/SkillCallNode'
@@ -104,19 +103,6 @@ class Inspector extends Component<Props> {
           copyFlowNodeElement={copyFlowNodeElement}
           pasteFlowNodeElement={pasteFlowNodeElement}
           buffer={buffer}
-        />
-      )
-    }
-
-    if (nodeType === 'say_something') {
-      return (
-        <SaySomethingForm
-          onDeleteSelectedElements={onDeleteSelectedElements}
-          contentType={currentFlowNode.content?.contentType}
-          formData={currentFlowNode.content?.formData}
-          updateNode={updateNodeAndRefresh}
-          readOnly={readOnly}
-          subflows={subflows}
         />
       )
     }
