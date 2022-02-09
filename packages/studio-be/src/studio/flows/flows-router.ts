@@ -1,9 +1,13 @@
-import { decodeFolderPath, UnexpectedError } from 'common/http'
-import { FlowView } from 'common/typings'
-import { MutexError } from 'core/dialog'
+import { DirectoryListingOptions, Flow } from 'botpress/sdk'
+import { decodeFolderPath } from 'common/http'
+import { FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
+import path from 'path'
 import { StudioServices } from 'studio/studio-router'
+import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+
+const FLOW_DIR = 'flows'
 
 const parseFlowNameMiddleware = (req, _, next) => {
   const { flowName } = req.params
@@ -13,9 +17,38 @@ const parseFlowNameMiddleware = (req, _, next) => {
   next()
 }
 
+function toUiPath(flowPath: string) {
+  return flowPath.replace(/\.flow\.json$/i, '.ui.json')
+}
+
 export class FlowsRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Flows', services)
+  }
+
+  private async parseFlow(flowPath: string): Promise<Omit<FlowView, 'currentMutex'>> {
+    const flow = (await Instance.readFile(path.join(FLOW_DIR, flowPath)).then((buf) =>
+      JSON.parse(buf.toString())
+    )) as Flow
+    const uiEq = await Instance.readFile(path.join(FLOW_DIR, toUiPath(flowPath))).then((buf) =>
+      JSON.parse(buf.toString())
+    )
+
+    const nodeViews: NodeView[] = flow.nodes.map((n) => {
+      const uiNode = uiEq.nodes.find((uiNode) => uiNode.id === n.id)
+      return {
+        ...n,
+        ...uiNode.position
+      }
+    })
+
+    return {
+      name: flowPath,
+      location: flowPath,
+      nodes: nodeViews,
+      links: uiEq.links,
+      ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description'])
+    }
   }
 
   setupRoutes() {
@@ -27,7 +60,9 @@ export class FlowsRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
-        const flows = await this.flowService.forBot(botId).loadAll()
+        const options: DirectoryListingOptions = { excludes: '*.flow.ui.json', sortOrder: { column: 'filePath' } }
+        const flowsPath = await Instance.directoryListing(FLOW_DIR, options)
+        const flows = await Promise.map(flowsPath, (flowPath) => this.parseFlow(flowPath))
         res.send(flows)
       })
     )
@@ -39,11 +74,24 @@ export class FlowsRouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
         const flow = <FlowView>req.body.flow
-        const userEmail = req.tokenUser!.email
 
-        await this.flowService.forBot(botId).insertFlow(flow, userEmail)
+        const uiContent = {
+          nodes: flow.nodes.map((node) => ({ id: node.id, position: _.pick(node, 'x', 'y') })),
+          links: flow.links
+        }
 
-        res.sendStatus(200)
+        const flowContent = {
+          ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description']),
+          nodes: flow.nodes.map((node) => _.omit(node, 'x', 'y', 'lastModified'))
+        }
+
+        const flowPath = <string>flow.location
+        const uiPath = toUiPath(flowPath)
+
+        await Promise.all([
+          Instance.upsertFile(path.join(FLOW_DIR, flowPath), JSON.stringify(flowContent, undefined, 2)),
+          Instance.upsertFile(path.join(FLOW_DIR, uiPath), JSON.stringify(uiContent, undefined, 2))
+        ])
       })
     )
 
@@ -55,22 +103,38 @@ export class FlowsRouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         const { botId, flowName } = req.params
         const flow = <FlowView>req.body.flow
-        const userEmail = req.tokenUser!.email
 
-        if (_.has(flow, 'name') && flowName !== flow.name) {
-          await this.flowService.forBot(botId).renameFlow(flowName, flow.name, userEmail)
-          return res.sendStatus(200)
-        }
-
-        try {
-          await this.flowService.forBot(botId).updateFlow(flow, userEmail)
-          res.sendStatus(200)
-        } catch (err) {
-          if (err.type && err.type === MutexError.name) {
-            return res.sendStatus(423) // Mutex locked
+        if (flow.name && flowName !== flow.name) {
+          // rename flow
+          const prevPath = path.join(FLOW_DIR, flow.name)
+          const newPath = path.join(FLOW_DIR, flowName)
+          await Promise.all([
+            await Instance.moveFile(prevPath, newPath),
+            await Instance.moveFile(toUiPath(prevPath), toUiPath(newPath))
+          ])
+        } else {
+          // update flow content
+          const uiContent = {
+            nodes: flow.nodes.map((node) => ({ id: node.id, position: _.pick(node, 'x', 'y') })),
+            links: flow.links
           }
 
-          throw new UnexpectedError('Error saving flow', err)
+          const flowContent = {
+            ..._.pick(flow, ['version', 'catchAll', 'startNode', 'skillData', 'label', 'description']),
+            nodes: flow.nodes.map((node) => _.omit(node, 'x', 'y', 'lastModified'))
+          }
+
+          const flowPath = <string>flow.location
+          const uiPath = toUiPath(flowPath)
+
+          await Promise.all([
+            Instance.upsertFile(path.join(FLOW_DIR, flowPath), JSON.stringify(flowContent, undefined, 2)),
+            Instance.upsertFile(path.join(FLOW_DIR, uiPath), JSON.stringify(uiContent, undefined, 2))
+          ])
+
+          // TODO notify on flow change to qna & what not
+          // using something like await coreActions.notifyFlowChanges(modification)
+          return res.sendStatus(200)
         }
       })
     )
@@ -82,10 +146,12 @@ export class FlowsRouter extends CustomStudioRouter {
       parseFlowNameMiddleware,
       this.asyncMiddleware(async (req, res) => {
         const { botId, flowName } = req.params
+        const uiPath = toUiPath(flowName)
 
-        const userEmail = req.tokenUser!.email
-
-        await this.flowService.forBot(botId).deleteFlow(flowName as string, userEmail)
+        await Promise.all([
+          Instance.deleteFile(path.join(FLOW_DIR, flowName)),
+          Instance.deleteFile(path.join(FLOW_DIR, uiPath))
+        ])
 
         res.sendStatus(200)
       })

@@ -1,10 +1,10 @@
 import { DirectoryListingOptions } from 'botpress/sdk'
 
 export interface bpfs {
-  upsertFile(filePath: string, content: Buffer | string, recordRevision: boolean): Promise<void>
+  upsertFile(filePath: string, content: Buffer | string): Promise<void>
   readFile(filePath: string): Promise<Buffer>
   fileExists(filePath: string): Promise<boolean>
-  deleteFile(filePath: string, recordRevision: boolean): Promise<void>
+  deleteFile(filePath: string): Promise<void>
   deleteDir(dirPath: string): Promise<void>
   directoryListing(folder: string, options: DirectoryListingOptions): Promise<string[]>
   fileSize(filePath: string): Promise<number>
@@ -12,28 +12,28 @@ export interface bpfs {
 }
 
 export const Instance: bpfs = {
-  upsertFile: function (filePath: string, content: string | Buffer, recordRevision: boolean): Promise<void> {
+  upsertFile(filePath: string, content: string | Buffer): Promise<void> {
     throw new Error('Function not implemented.')
   },
-  readFile: function (filePath: string): Promise<Buffer> {
+  readFile(filePath: string): Promise<Buffer> {
     throw new Error('Function not implemented.')
   },
-  fileExists: function (filePath: string): Promise<boolean> {
+  fileExists(filePath: string): Promise<boolean> {
     throw new Error('Function not implemented.')
   },
-  deleteFile: function (filePath: string, recordRevision: boolean): Promise<void> {
+  deleteFile(filePath: string): Promise<void> {
     throw new Error('Function not implemented.')
   },
-  deleteDir: function (dirPath: string): Promise<void> {
+  deleteDir(dirPath: string): Promise<void> {
     throw new Error('Function not implemented.')
   },
-  directoryListing: function (folder: string, options: DirectoryListingOptions): Promise<string[]> {
+  directoryListing(folder: string, options: DirectoryListingOptions): Promise<string[]> {
     throw new Error('Function not implemented.')
   },
-  fileSize: function (filePath: string): Promise<number> {
+  fileSize(filePath: string): Promise<number> {
     throw new Error('Function not implemented.')
   },
-  moveFile: function (fromPath: string, toPath: string): Promise<void> {
+  moveFile(fromPath: string, toPath: string): Promise<void> {
     throw new Error('Function not implemented.')
   }
 }
