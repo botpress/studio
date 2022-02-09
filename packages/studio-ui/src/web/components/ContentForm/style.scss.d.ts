@@ -7,7 +7,9 @@ interface CssExports {
   'fieldError': string;
   'fieldWrapper': string;
   'flexContainer': string;
+  'formHeader': string;
   'formLabel': string;
+  'formSelect': string;
   'innerWrapper': string;
   'insertBtn': string;
   'missingIcon': string;
