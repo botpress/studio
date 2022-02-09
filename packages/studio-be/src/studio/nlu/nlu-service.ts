@@ -1,14 +1,10 @@
 import { Specifications as StanSpecifications } from '@botpress/nlu-client'
 import { Logger } from 'botpress/sdk'
 import { NLUProgressEvent, Training as BpTraining } from 'common/nlu-training'
-import { coreActions } from 'core/app/core-client'
-import { GhostService } from 'core/bpfs'
-import { ConfigProvider } from 'core/config'
-import Database from 'core/database'
-import { TYPES } from 'core/types'
-import { inject, injectable, tagged } from 'inversify'
+
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
+import { Instance } from 'studio/utils/bpfs'
 import yn from 'yn'
 import { Bot } from './bot'
 import { BotFactory } from './bot-factory'
@@ -18,7 +14,7 @@ import { BotNotMountedError, NLUServiceNotInitializedError } from './errors'
 import { IntentRepository } from './intent-repo'
 import { ModelEntryRepository } from './model-entry'
 import { NLUClient } from './nlu-client'
-import { ConfigResolver } from './typings'
+import { BotConfig } from './typings'
 
 interface ServerInfo {
   specs: StanSpecifications
@@ -31,7 +27,6 @@ interface SubServices {
   queueTrainingsOnBotMount: boolean
 }
 
-@injectable()
 export class NLUService {
   public entities: EntityRepository
   public intents: IntentRepository
@@ -39,16 +34,9 @@ export class NLUService {
   private _bots: _.Dictionary<Bot> = {}
   private _app: SubServices | undefined
 
-  constructor(
-    @inject(TYPES.Logger)
-    @tagged('name', 'NLUService')
-    private _logger: Logger,
-    @inject(TYPES.ConfigProvider) private configProvider: ConfigProvider,
-    @inject(TYPES.Database) private database: Database,
-    @inject(TYPES.GhostService) private ghost: GhostService
-  ) {
-    this.entities = new EntityRepository(this.ghost, this)
-    this.intents = new IntentRepository(this.ghost, this)
+  constructor(private _logger: Logger) {
+    this.entities = new EntityRepository(this)
+    this.intents = new IntentRepository(this)
   }
 
   public isReady(): boolean {
@@ -60,8 +48,7 @@ export class NLUService {
       throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
     }
 
-    const { nlu: nluConfig } = await this.configProvider.getBotpressConfig()
-    const { queueTrainingOnBotMount } = nluConfig
+    const queueTrainingOnBotMount = false
     const trainingEnabled = !yn(process.env.BP_NLU_DISABLE_TRAINING)
 
     const baseClient = new NLUClient({
@@ -70,16 +57,10 @@ export class NLUService {
 
     const socket = this._getWebsocket()
 
-    const modelRepo = new ModelEntryRepository(this.database.knex)
-    await modelRepo.initialize()
+    const modelRepo = new ModelEntryRepository()
 
-    const configResolver: ConfigResolver = {
-      getBotById: this.configProvider.getBotConfig.bind(this.configProvider),
-      mergeBotConfig: this.configProvider.mergeBotConfig.bind(this.configProvider)
-    }
-
-    const defRepo = new DefinitionsRepository(this.entities, this.intents, this.ghost)
-    const botFactory = new BotFactory(configResolver, this._logger, defRepo, modelRepo, socket, process.NLU_ENDPOINT)
+    const defRepo = new DefinitionsRepository(this.entities, this.intents)
+    const botFactory = new BotFactory(this._logger, defRepo, modelRepo, socket, process.NLU_ENDPOINT)
 
     this._app = {
       baseClient,
@@ -114,7 +95,8 @@ export class NLUService {
       throw new NLUServiceNotInitializedError()
     }
 
-    const botConfig = await this.configProvider.getBotConfig(botId)
+    const botConfig: BotConfig = await Instance.readFile('bot.config.json').then((buf) => JSON.parse(buf.toString()))
+
     const bot = await this._app.botFactory.makeBot(botConfig)
     this._bots[botId] = bot
     return bot.mount({
@@ -166,7 +148,8 @@ export class NLUService {
   private _getWebsocket = () => {
     return async (ts: BpTraining) => {
       const ev: NLUProgressEvent = { type: 'nlu', ...ts }
-      return coreActions.notifyTrainUpdate(ev)
+      // TODO: needs to be fixed (the logic of notifyTrainUpdate is in the BP codebase)
+      // return coreActions.notifyTrainUpdate(ev)
     }
   }
 }

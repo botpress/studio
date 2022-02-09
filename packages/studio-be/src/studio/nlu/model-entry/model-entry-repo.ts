@@ -1,5 +1,3 @@
-import * as sdk from 'botpress/sdk'
-
 /**
  * A bot can have up to one model and one training per language.
  * "ready" means the model is currently used for prediction.
@@ -18,38 +16,19 @@ interface ModelEntryRow extends ModelEntryPrimaryKey {
   definitionHash: string
 }
 
+const getKey = (primaryKey: ModelEntryPrimaryKey) => `${primaryKey.botId}/${primaryKey.language}/${primaryKey.status}`
+
 export class ModelEntryRepository {
-  private _tableName = 'model_entry'
+  private state: { [key: string]: ModelEntryRow } = {}
 
-  constructor(private _db: sdk.KnexExtended) {}
-
-  private get table() {
-    return this._db.table<ModelEntryRow>(this._tableName)
-  }
-
-  // TODO: can all be in memory because it's now a single player studio (no distributed)
-  public async initialize() {
-    await this._db.createTableIfNotExists(this._tableName, (table) => {
-      table.string('botId').notNullable()
-      table.string('language').notNullable()
-      table.string('status').notNullable()
-      table.string('modelId').notNullable()
-      table.string('definitionHash').notNullable()
-      table.primary(['botId', 'language', 'status'])
-    })
-  }
+  constructor() {}
 
   public async get(key: ModelEntryPrimaryKey): Promise<ModelEntryRow | undefined> {
-    return this.table.where(key).select('*').first()
+    return { ...this.state[getKey(key)] }
   }
 
   public async set(model: ModelEntryRow) {
-    const { modelId, definitionHash, ...key } = model
-    const exists = await this.has(key)
-    if (exists) {
-      return this._update(model)
-    }
-    return this._insert(model)
+    return (this.state[getKey(model)] = { ...model })
   }
 
   public async has(key: ModelEntryPrimaryKey): Promise<boolean> {
@@ -58,15 +37,6 @@ export class ModelEntryRepository {
   }
 
   public async del(key: ModelEntryPrimaryKey): Promise<void> {
-    return this.table.where(key).del()
-  }
-
-  private async _insert(model: ModelEntryRow): Promise<void> {
-    return this.table.insert(model)
-  }
-
-  private async _update(model: Partial<ModelEntryRow>): Promise<void> {
-    const { modelId, definitionHash, ...key } = model
-    return this.table.where(key).update(model)
+    delete this.state[getKey(key)]
   }
 }

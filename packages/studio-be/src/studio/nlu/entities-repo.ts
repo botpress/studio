@@ -1,11 +1,19 @@
+import path from 'path'
 import * as sdk from 'botpress/sdk'
 import { getEntityId } from 'common/entity-id'
-import { GhostService } from 'core/bpfs'
-import { sanitizeFileName } from 'core/misc/utils'
-import * as CacheManager from './cache-manager'
+
+import { Instance } from 'studio/utils/bpfs'
+
 import { NLUService } from './nlu-service'
 
 const ENTITIES_DIR = './entities'
+
+const sanitizeFileName = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/\.json$/i, '')
+    .replace(/[\t\s]/gi, '-')
+}
 
 // copied from botpress/nlu repo
 const SYSTEM_ENTITIES = [
@@ -31,14 +39,14 @@ const getSystemEntities = (): sdk.NLU.EntityDefinition[] => {
 }
 
 export class EntityRepository {
-  constructor(private ghostService: GhostService, private nluService: NLUService) {}
+  constructor(private nluService: NLUService) {}
 
   private entityExists(botId: string, entityName: string): Promise<boolean> {
-    return this.ghostService.forBot(botId).fileExists(ENTITIES_DIR, `${entityName}.json`)
+    return Instance.fileExists(path.join(ENTITIES_DIR, `${entityName}.json`))
   }
 
   public async getCustomEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
-    const intentNames = await this.ghostService.forBot(botId).directoryListing(ENTITIES_DIR, '*.json')
+    const intentNames = await Instance.directoryListing(path.join(ENTITIES_DIR, '*.json'), {})
     return Promise.mapSeries(intentNames, (n) => this.getEntity(botId, n))
   }
 
@@ -52,7 +60,8 @@ export class EntityRepository {
     if (!(await this.entityExists(botId, entityName))) {
       throw new Error('Entity does not exist')
     }
-    return this.ghostService.forBot(botId).readFileAsObject(ENTITIES_DIR, `${entityName}.json`)
+    const buffer = await Instance.readFile(path.join(ENTITIES_DIR, `${entityName}.json`))
+    return JSON.parse(buffer.toString())
   }
 
   public async deleteEntity(botId: string, entityName: string): Promise<void> {
@@ -61,15 +70,12 @@ export class EntityRepository {
       throw new Error('Entity does not exist')
     }
 
-    CacheManager.deleteCache(entityName, botId)
-    return this.ghostService.forBot(botId).deleteFile(ENTITIES_DIR, `${nameSanitized}.json`)
+    return Instance.deleteFile(path.join(ENTITIES_DIR, `${nameSanitized}.json`))
   }
 
   public async saveEntity(botId: string, entity: sdk.NLU.EntityDefinition): Promise<void> {
     const nameSanitized = sanitizeFileName(entity.name)
-    return this.ghostService
-      .forBot(botId)
-      .upsertFile(ENTITIES_DIR, `${nameSanitized}.json`, JSON.stringify(entity, undefined, 2))
+    return Instance.upsertFile(path.join(ENTITIES_DIR, `${nameSanitized}.json`), JSON.stringify(entity, undefined, 2))
   }
 
   public async updateEntity(botId: string, targetEntityName: string, entity: sdk.NLU.EntityDefinition): Promise<void> {
@@ -78,14 +84,12 @@ export class EntityRepository {
 
     if (targetSanitized !== nameSanitized) {
       // entity renamed
-      CacheManager.copyCache(targetEntityName, entity.name, botId)
       await Promise.all([
         this.deleteEntity(botId, targetSanitized),
         this.nluService.intents.updateIntentsSlotsEntities(botId, targetSanitized, nameSanitized)
       ])
     } else {
       // entity changed
-      CacheManager.getOrCreateCache(targetEntityName, botId).reset()
     }
     await this.saveEntity(botId, entity)
   }

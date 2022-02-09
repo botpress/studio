@@ -4,7 +4,7 @@ import _ from 'lodash'
 import { DefinitionsRepository } from '../definitions-repository'
 import { ModelEntryService, TrainingEntryService } from '../model-entry'
 import { NLUClient } from '../nlu-client'
-import { BotDefinition, ConfigResolver, TrainListener } from '../typings'
+import { BotDefinition, TrainListener } from '../typings'
 import { BotState } from './bot-state'
 import { poll } from './polling'
 
@@ -22,7 +22,6 @@ export class Bot {
 
   constructor(
     botDef: BotDefinition,
-    _configResolver: ConfigResolver,
     _nluClient: NLUClient,
     private _defRepo: DefinitionsRepository,
     _models: ModelEntryService,
@@ -30,7 +29,7 @@ export class Bot {
     private _logger: Logger,
     private _webSocket: TrainListener
   ) {
-    this._botState = new BotState(botDef, _configResolver, _nluClient, _defRepo, _models, _trainings)
+    this._botState = new BotState(botDef, _nluClient, _defRepo, _models, _trainings)
     this._botId = botDef.botId
     this._languages = botDef.languages
   }

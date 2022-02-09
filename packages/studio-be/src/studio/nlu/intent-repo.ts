@@ -1,10 +1,17 @@
 import * as sdk from 'botpress/sdk'
 
-import { GhostService } from 'core/bpfs'
-import { sanitizeFileName } from 'core/misc/utils'
+import path from 'path'
 import _ from 'lodash'
 
 import { NLUService } from './nlu-service'
+import { Instance } from 'studio/utils/bpfs'
+
+const sanitizeFileName = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/\.json$/i, '')
+    .replace(/[\t\s]/gi, '-')
+}
 
 const INTENTS_DIR = './intents'
 
@@ -15,14 +22,14 @@ export const trimUtterances = (intent: sdk.NLU.IntentDefinition) => {
 }
 
 export class IntentRepository {
-  constructor(private ghostService: GhostService, private nluService: NLUService) {}
+  constructor(private nluService: NLUService) {}
 
   private async intentExists(botId: string, intentName: string): Promise<boolean> {
-    return this.ghostService.forBot(botId).fileExists(INTENTS_DIR, `${intentName}.json`)
+    return Instance.fileExists(path.join(INTENTS_DIR, `${intentName}.json`))
   }
 
   public async getIntents(botId: string): Promise<sdk.NLU.IntentDefinition[]> {
-    const intentNames = await this.ghostService.forBot(botId).directoryListing(INTENTS_DIR, '*.json')
+    const intentNames = await Instance.directoryListing(path.join(INTENTS_DIR, '*.json'), {})
     return Promise.map(intentNames, (n) => this.getIntent(botId, n))
   }
 
@@ -35,7 +42,8 @@ export class IntentRepository {
     if (!(await this.intentExists(botId, intentName))) {
       throw new Error('Intent does not exist')
     }
-    return this.ghostService.forBot(botId).readFileAsObject(INTENTS_DIR, `${intentName}.json`)
+    const buffer = Instance.readFile(path.join(INTENTS_DIR, `${intentName}.json`))
+    return JSON.parse(buffer.toString())
   }
 
   public async saveIntent(botId: string, intent: sdk.NLU.IntentDefinition): Promise<sdk.NLU.IntentDefinition> {
@@ -57,7 +65,7 @@ export class IntentRepository {
 
     trimUtterances(intent)
 
-    await this.ghostService.forBot(botId).upsertFile(INTENTS_DIR, `${name}.json`, JSON.stringify(intent, undefined, 2))
+    await Instance.upsertFile(path.join(INTENTS_DIR, `${name}.json`), JSON.stringify(intent, undefined, 2))
     return intent
   }
 
@@ -82,7 +90,7 @@ export class IntentRepository {
       throw new Error('Intent does not exist')
     }
 
-    return this.ghostService.forBot(botId).deleteFile(INTENTS_DIR, `${intentName}.json`)
+    return Instance.deleteFile(path.join(INTENTS_DIR, `${intentName}.json`))
   }
 
   // ideally this would be a filewatcher

@@ -1,6 +1,7 @@
 import { TrainInput as StanTrainInput, TrainingState as StanTrainingState } from '@botpress/nlu-client'
 import crypto from 'crypto'
 import _ from 'lodash'
+import { Instance } from 'studio/utils/bpfs'
 import { DefinitionsRepository } from '../definitions-repository'
 
 import { ModelEntryService, TrainingEntryService, ModelEntry } from '../model-entry'
@@ -8,7 +9,7 @@ import { ModelEntryService, TrainingEntryService, ModelEntry } from '../model-en
 import { NLUClient } from '../nlu-client'
 import { mapTrainSet } from '../nlu-client/api-mapper'
 
-import { BotDefinition, ConfigResolver } from '../typings'
+import { BotDefinition } from '../typings'
 
 export class BotState {
   private _botId: string
@@ -16,7 +17,6 @@ export class BotState {
 
   constructor(
     botDef: BotDefinition,
-    private _configResolver: ConfigResolver,
     private _nluClient: NLUClient,
     private _defRepo: DefinitionsRepository,
     private _models: ModelEntryService,
@@ -85,15 +85,9 @@ export class BotState {
   }
 
   private async _updateBotConfig(language: string, modelId: string) {
-    const botConfig = await this._configResolver.getBotById(this._botId)
-    if (!botConfig) {
-      throw new Error(`No config found for bot "${this._botId}"`)
-    }
-    let { nluModels } = botConfig
-    nluModels = { ...nluModels, [language]: modelId }
-    return this._configResolver.mergeBotConfig(this._botId, {
-      nluModels
-    })
+    const botConfig = JSON.parse((await Instance.readFile('bot.config')).toString())
+    botConfig.nluModels = { ...botConfig.nluModels, [language]: modelId }
+    await Instance.upsertFile('bot.config', JSON.stringify(botConfig, undefined, 2))
   }
 
   private async _getTrainSet(languageCode: string): Promise<StanTrainInput & { contexts: string[] }> {
