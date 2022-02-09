@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Select from './index'
-import nanoId from 'nanoid'
+import { nanoid } from 'nanoid'
 
 class SelectContentManager extends Component {
   state = {
@@ -12,7 +12,7 @@ class SelectContentManager extends Component {
 
     window.botpress = window.botpress || {}
     window.botpress.pickContent = ({ contentType = null } = {}, callback) => {
-      const id = nanoId()
+      const id = nanoid()
       const rootEl = document.createElement('DIV')
       rootEl.setAttribute('data-select-content-container', id)
       document.getElementById('app').appendChild(rootEl)
@@ -26,7 +26,7 @@ class SelectContentManager extends Component {
     delete window.botpress.pickContent
   }
 
-  onClose = i => () => {
+  onClose = (i) => () => {
     const { rootEl } = this.state.selects[i]
     this.setState(
       ({ selects }) => ({

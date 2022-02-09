@@ -1,7 +1,6 @@
 import { BotService } from 'core/bots'
 import { GhostContainerModule } from 'core/bpfs'
 import { CMSService } from 'core/cms'
-import { SkillService } from 'core/dialog'
 import { DialogContainerModule } from 'core/dialog/dialog.inversify'
 import { LocalJobService, JobService, RedisJobService } from 'core/distributed'
 import { KeyValueStore } from 'core/kvs'
@@ -39,8 +38,6 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<AuthService>(TYPES.AuthService).to(AuthService).inSingletonScope()
 
   bind<KeyValueStore>(TYPES.KeyValueStore).to(KeyValueStore).inSingletonScope()
-
-  bind<SkillService>(TYPES.SkillService).to(SkillService).inSingletonScope()
 
   bind<BotService>(TYPES.BotService).to(BotService).inSingletonScope()
 

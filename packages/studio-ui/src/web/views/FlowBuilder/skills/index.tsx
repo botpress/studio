@@ -1,5 +1,4 @@
 import { Button, Intent } from '@blueprintjs/core'
-import axios from 'axios'
 import { lang, Dialog } from 'botpress/shared'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
@@ -10,7 +9,14 @@ import { cancelNewSkill, insertNewSkill, updateSkill } from '~/actions'
 import InjectedModuleView from '~/components/PluginInjectionSite/module'
 import { RootReducer } from '~/reducers'
 import withLanguage from '../../../components/Util/withLanguage'
-import { Choice, CallAPI, Slot, SendEmail, AuthGate } from './views'
+
+import { Choice } from './skill-choice'
+import { CallAPI } from './skill-call-api'
+import { Slot } from './skill-Slot'
+import { SendEmail } from './skill-send-email'
+import { AuthGate } from './skill-auth-gate'
+
+import { generateFlow as doGenerateFlow } from './generateFlow'
 
 const style = require('./style.scss')
 
@@ -95,16 +101,8 @@ const SkillsBuilder = (props: Props) => {
     })
   }
 
-  const generateFlow = () => {
-    const skill = find(props.installedSkills, { id: props.skillId })
-
-    let baseUrl = `${window.API_PATH}/studio/modules/${skill.moduleName}/skill/${skill.id}/`
-
-    if (skill.moduleName === 'basic-skills') {
-      baseUrl = `${window.STUDIO_API_PATH}/flows/skill/${skill.id}/`
-    }
-
-    return axios.post(`${baseUrl}/generateFlow?botId=${window.BOT_ID}`, data).then(({ data }) => data)
+  const generateFlow = async () => {
+    return doGenerateFlow(data, props.skillId)
   }
 
   const findInstalledSkill = () => {

@@ -1,4 +1,5 @@
 import * as sdk from 'botpress/sdk'
+import { NodeActionType } from '../typings'
 
 export const generateFlow = async (
   data: any,
@@ -21,7 +22,7 @@ const createNodes = (data) => {
       name: 'entry',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'basic-skills/send_email',
           args: data
         }
@@ -38,5 +39,3 @@ const createTransitions = (): sdk.NodeTransition[] => {
     { caption: 'On failure', condition: '!temp.success', node: '' }
   ]
 }
-
-export default { generateFlow }

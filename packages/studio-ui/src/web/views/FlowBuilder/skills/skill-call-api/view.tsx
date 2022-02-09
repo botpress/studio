@@ -5,7 +5,7 @@ import Select from 'react-select'
 import { Input, Label } from 'reactstrap'
 import { BotpressTooltip } from '~/components/Shared/Tooltip'
 import { LinkDocumentationProvider } from '~/components/Util/DocumentationProvider'
-import style from './style.scss'
+import style from '../style.scss'
 
 const methodOptions = [
   { label: 'Get', value: 'get' },

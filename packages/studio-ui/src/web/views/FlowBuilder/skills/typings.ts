@@ -8,3 +8,9 @@ export interface SkillProps<T> {
   defaultLanguage: string
   languages: string[]
 }
+
+export enum NodeActionType { // TODO: clean this.. we can't use Enum from the SDK as we only export definitions
+  RenderElement = 'render',
+  RunAction = 'run',
+  RenderText = 'say'
+}

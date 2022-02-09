@@ -1,4 +1,5 @@
 import * as sdk from 'botpress/sdk'
+import { NodeActionType } from '../typings'
 
 export interface AuthGateData {
   loginMessage: string
@@ -28,7 +29,7 @@ const createNodes = (data: AuthGateData) => {
       name: 'entry',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'internal-users/auth_gate'
         }
       ],
@@ -44,11 +45,11 @@ const createNodes = (data: AuthGateData) => {
       name: 'ask-login',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'internal-users/auth_prompt'
         },
         {
-          type: sdk.NodeActionType.RenderElement,
+          type: NodeActionType.RenderElement,
           name: `#!${data.loginMessage}`
         }
       ],
@@ -58,7 +59,7 @@ const createNodes = (data: AuthGateData) => {
       name: 'validate',
       onReceive: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'internal-users/auth_validate'
         }
       ],
@@ -71,13 +72,13 @@ const createNodes = (data: AuthGateData) => {
       name: 'ask-invite',
       onEnter: [
         {
-          type: sdk.NodeActionType.RenderElement,
+          type: NodeActionType.RenderElement,
           name: `#!${data.inviteMessage}`
         }
       ],
       onReceive: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'internal-users/auth_validate'
         }
       ],
@@ -99,5 +100,3 @@ const createTransitions = (): sdk.NodeTransition[] => {
     { caption: 'Unauthorized', condition: '!temp.authorized', node: '' }
   ]
 }
-
-export default { generateFlow }

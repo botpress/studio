@@ -7,7 +7,7 @@ import { Row, Col, Label, Input } from 'reactstrap'
 import BotpressContentPicker from '~/components/Content/Select/Widget'
 import { BotpressTooltip } from '~/components/Shared/Tooltip'
 import SelectActionDropdown from '~/views/FlowBuilder/nodeProps/SelectActionDropdown'
-import style from './style.scss'
+import style from '../style.scss'
 
 const MAX_RETRIES = 10
 

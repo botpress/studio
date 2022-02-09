@@ -53,7 +53,6 @@ const TYPES = {
   BotConfigFactory: Symbol.for('BotConfigFactory'),
   BotConfigWriter: Symbol.for('BotConfigWriter'),
   KeyValueStore: Symbol.for('KeyValueStore'),
-  SkillService: Symbol.for('SkillService'),
   AdminService: Symbol.for('AdminService'),
   LicensingService: Symbol.for('LicensingService'),
   AppLifecycle: Symbol.for('AppLifecycle'),

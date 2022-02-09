@@ -4,7 +4,6 @@ import { MutexError } from 'core/dialog'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import yn from 'yn'
 
 const parseFlowNameMiddleware = (req, _, next) => {
   const { flowName } = req.params
@@ -45,24 +44,6 @@ export class FlowsRouter extends CustomStudioRouter {
         await this.flowService.forBot(botId).insertFlow(flow, userEmail)
 
         res.sendStatus(200)
-      })
-    )
-
-    this.router.post(
-      '/skill/:skillId/generateFlow',
-      this.checkTokenHeader,
-      this.asyncMiddleware(async (req, res) => {
-        const flowGenerator = this.skillService.getFlowGenerator(req.params.moduleName, req.params.skillId)
-        if (!flowGenerator) {
-          return res.status(404).send('Invalid module name or flow name')
-        }
-
-        try {
-          const metadata: any = { botId: req.query.botId }
-          res.send(this.skillService.finalizeFlow(await flowGenerator(req.body, metadata)))
-        } catch (err) {
-          throw new UnexpectedError('Could not generate flow', err)
-        }
       })
     )
 

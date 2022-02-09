@@ -1,7 +1,11 @@
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
+import { NodeActionType } from '../typings'
 
-const generateFlow = async (data: any, metadata: sdk.FlowGeneratorMetadata): Promise<sdk.FlowGenerationResult> => {
+export const generateFlow = async (
+  data: any,
+  metadata: sdk.FlowGeneratorMetadata
+): Promise<sdk.FlowGenerationResult> => {
   return {
     transitions: createTransitions(data),
     flow: {
@@ -19,7 +23,7 @@ const createNodes = (data) => {
       name: 'entry',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'basic-skills/call_api',
           args: {
             randomId: data.randomId,
@@ -46,5 +50,3 @@ const createTransitions = (data): sdk.NodeTransition[] => {
     { caption: 'On failure', condition: `!temp.valid${keySuffix}`, node: '' }
   ]
 }
-
-export default { generateFlow }

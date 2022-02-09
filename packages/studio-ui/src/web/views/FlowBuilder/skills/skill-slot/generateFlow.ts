@@ -1,6 +1,10 @@
 import * as sdk from 'botpress/sdk'
+import { NodeActionType } from '../typings'
 
-const generateFlow = async (data: any, metadata: sdk.FlowGeneratorMetadata): Promise<sdk.FlowGenerationResult> => {
+export const generateFlow = async (
+  data: any,
+  metadata: sdk.FlowGeneratorMetadata
+): Promise<sdk.FlowGenerationResult> => {
   return {
     transitions: createTransitions(),
     flow: {
@@ -25,7 +29,7 @@ const createNodes = (data) => {
   const runValidationActions = data.validationAction
     ? [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: `${data.validationAction} {}`
         }
       ]
@@ -33,14 +37,14 @@ const createNodes = (data) => {
 
   const slotExtractOnReceive = [
     {
-      type: sdk.NodeActionType.RunAction,
+      type: NodeActionType.RunAction,
       name: `basic-skills/slot_fill {"slotName":"${data.slotName}","entities":"${data.entities}", "turnExpiry":${data.turnExpiry}}`
     },
     ...runValidationActions
   ]
 
   const resetValid = {
-    type: sdk.NodeActionType.RunAction,
+    type: NodeActionType.RunAction,
     name: 'builtin/setVariable {"type":"temp","name":"valid","value": "true"}'
   }
 
@@ -49,7 +53,7 @@ const createNodes = (data) => {
       name: 'slot-extract',
       onEnter: [
         {
-          type: sdk.NodeActionType.RenderElement,
+          type: NodeActionType.RenderElement,
           name: `#!${data.contentElement}`
         }
       ],
@@ -69,7 +73,7 @@ const createNodes = (data) => {
       name: 'extracted',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'builtin/setVariable {"type":"temp","name":"extracted","value":"true"}'
         }
       ],
@@ -85,11 +89,11 @@ const createNodes = (data) => {
       name: 'not-extracted',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: `basic-skills/slot_not_found {"retryAttempts":"${data.retryAttempts}"}`
         },
         {
-          type: sdk.NodeActionType.RenderElement,
+          type: NodeActionType.RenderElement,
           name: `#!${data.notFoundElement}`
         },
         resetValid
@@ -114,7 +118,7 @@ const createNodes = (data) => {
       name: 'check-if-extracted',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: `basic-skills/slot_update_contexts {"intentName":"${data.intent}"}`
         }
       ],
@@ -134,7 +138,7 @@ const createNodes = (data) => {
       name: 'already-extracted',
       onEnter: [
         {
-          type: sdk.NodeActionType.RunAction,
+          type: NodeActionType.RunAction,
           name: 'builtin/setVariable {"type":"temp","name":"alreadyExtracted","value":"true"}'
         },
         resetValid,
@@ -154,5 +158,3 @@ const createNodes = (data) => {
     }
   ]
 }
-
-export default { generateFlow }

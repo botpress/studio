@@ -189,6 +189,7 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
 
   // Create new flows for all skills
   for (const node of skills) {
+    // TODO: fix this after generateFlow has been replaced
     let { skillData } = state.flows.flowsByName[node.flow]
     const randomId = nanoid(10)
     skillData = { ...skillData, randomId }

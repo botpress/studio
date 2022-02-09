@@ -10,7 +10,7 @@ import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig, ConfigProvider } from 'core/config'
-import { FlowService, SkillService } from 'core/dialog'
+import { FlowService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { monitoringMiddleware } from 'core/routers'
 import { AuthService } from 'core/security'
@@ -63,7 +63,6 @@ export class HTTPServer {
     @inject(TYPES.ActionServersService) actionServersService: ActionServersService,
     @inject(TYPES.AuthService) private authService: AuthService,
     @inject(TYPES.MediaServiceProvider) mediaServiceProvider: MediaServiceProvider,
-    @inject(TYPES.SkillService) skillService: SkillService,
     @inject(TYPES.GhostService) private ghostService: GhostService,
     @inject(TYPES.HintsService) hintsService: HintsService,
     @inject(TYPES.WorkspaceService) private workspaceService: WorkspaceService,
@@ -105,7 +104,6 @@ export class HTTPServer {
       objectCache,
       nluService,
       qnaService,
-      skillService,
       this
     )
   }

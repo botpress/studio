@@ -7,7 +7,7 @@ import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig } from 'core/config'
 import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService, SkillService } from 'core/dialog'
+import { FlowService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { CustomRouter } from 'core/routers/customRouter'
 import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility, needPermissions } from 'core/security'
@@ -42,7 +42,6 @@ export interface StudioServices {
   actionService: ActionService
   actionServersService: ActionServersService
   hintsService: HintsService
-  skillService: SkillService
   bpfs: GhostService
   objectCache: MemoryObjectCache
   nluService: NLUService
@@ -81,7 +80,6 @@ export class StudioRouter extends CustomRouter {
     objectCache: MemoryObjectCache,
     nluService: NLUService,
     qnaService: QNAService,
-    skillService: SkillService,
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -102,8 +100,7 @@ export class StudioRouter extends CustomRouter {
       hintsService,
       objectCache,
       nluService,
-      qnaService,
-      skillService
+      qnaService
     }
 
     this.cmsRouter = new CMSRouter(studioServices)

@@ -18,8 +18,8 @@ import { customAlphabet } from 'nanoid'
 import React from 'react'
 import ContentPickerWidget from '~/components/Content/Select/Widget'
 
-import style from './style.scss'
-import { SkillProps } from './typings'
+import style from '../style.scss'
+import { SkillProps } from '../typings'
 
 const MAX_RETRIES = 10
 
