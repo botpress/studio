@@ -304,7 +304,7 @@ class ActionModalForm extends Component<Props, State> {
 
 const mapStateToProps = (state: RootReducer) => ({
   actions: state.skills.actions?.filter((a) => a.legacy),
-  isCloudBot: Boolean(state.bot.isCloudBot)
+  isCloudBot: Boolean(state.bot.bot.isCloudBot)
 })
 
 export default connect(mapStateToProps, undefined)(ActionModalForm)

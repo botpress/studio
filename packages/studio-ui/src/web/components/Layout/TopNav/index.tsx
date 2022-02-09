@@ -66,7 +66,7 @@ const Toolbar = (props: Props) => (
 )
 
 const mapStateToProps = (state: RootReducer) => ({
-  botInfo: state.bot,
+  botInfo: state.bot.bot,
   docHints: state.ui.docHints,
   isBottomPanelOpen: state.ui.bottomPanel,
   emulatorOpen: state.ui.emulatorOpen,

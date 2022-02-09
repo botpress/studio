@@ -60,7 +60,7 @@ const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  languages: state.bot.languages,
+  languages: state.bot.bot.languages,
   trainSessions: state.nlu.trainSessions
 })
 export default connect(mapStateToProps)(MultiLangTrainingStatusComponent)

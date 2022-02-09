@@ -9,10 +9,12 @@ import React, { Component } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import { fetchBotInformation } from '~/actions'
+import { fetchBotInformation, fetchBotLicense } from '~/actions'
 import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/Shared/Interface'
 import { Item } from '~/components/Shared/Interface/typings'
 import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
+import { RootReducer } from '~/reducers'
+import { BotReducer } from '~/reducers/bot'
 
 import style from './style.scss'
 
@@ -39,7 +41,6 @@ interface StateBot {
 }
 
 interface StateVars {
-  licensing: Licensing
   languages: SelectItem[]
   statuses: SelectItem[]
   error: any
@@ -49,10 +50,6 @@ interface StateVars {
 }
 
 type State = StateBot & StateVars
-
-interface Licensing {
-  isPro: boolean
-}
 
 interface SelectItem {
   label: string
@@ -99,7 +96,6 @@ class ConfigView extends Component<Props, State> {
 
   state: State = {
     ...this.initialFormState,
-    licensing: undefined,
     languages: [],
     statuses: [],
     error: undefined,
@@ -109,44 +105,51 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    if (!this.props.bot) {
+    const bot = this.props.bot
+    if (!bot) {
       this.props.fetchBotInformation()
     }
+    if (!this.props.license) {
+      this.props.fetchBotLicense()
+    }
 
-    const bot = this.props.bot
+    const initialState = !!bot ? await this.getStateFromBotConfig(bot) : this.initialFormState
 
-    const languages = await this.fetchLanguages(bot.id)
-    const licensing = await this.fetchLicensing()
+    this.setState({ ...initialState })
+  }
 
+  async getStateFromBotConfig(bot: BotConfig) {
     const statuses = statusList.map<SelectItem>((x) => ({
       label: lang.tr(`status.${x}`),
       value: x
     }))
 
-    const status = bot.disabled ? 'disabled' : bot.private ? 'private' : 'public'
+    const languages = await this.fetchLanguages(bot.id)
 
-    this.initialFormState = {
+    return {
       id: bot.id,
       name: bot.name || '',
       status: statuses.find((s) => s.value === status),
       description: bot.description || '',
       selectedDefaultLang: languages.find((l) => l.value === bot.defaultLanguage),
-      selectedLanguages: languages.filter((x) => bot.languages && bot.languages.includes(x.value)),
-      website: bot.details.website || '',
-      phoneNumber: bot.details.phoneNumber || '',
-      emailAddress: bot.details.emailAddress || '',
+      selectedLanguages: languages.filter((x) => bot?.languages?.includes(x.value) ?? []),
+      website: bot?.details.website || '',
+      phoneNumber: bot?.details.phoneNumber || '',
+      emailAddress: bot?.details.emailAddress || '',
       termsConditions: bot.details.termsConditions || '',
       privacyPolicy: bot.details.privacyPolicy || '',
       avatarUrl: bot.details.avatarUrl || '',
-      coverPictureUrl: bot.details.coverPictureUrl || ''
-    }
-
-    this.setState({
-      ...this.initialFormState,
-      licensing,
+      coverPictureUrl: bot.details.coverPictureUrl || '',
       languages,
       statuses
-    })
+    }
+  }
+
+  async componentDidUpdate(prevProps: Readonly<Props>) {
+    if (!prevProps.bot && this.props.bot) {
+      const state = await this.getStateFromBotConfig(this.props.bot)
+      this.setState({ ...state })
+    }
   }
 
   async fetchLanguages(botId: string): Promise<SelectItem[]> {
@@ -156,11 +159,6 @@ class ConfigView extends Component<Props, State> {
       label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
       value: language
     }))
-  }
-
-  async fetchLicensing(): Promise<Licensing> {
-    const { data } = await axios.get('admin/management/licensing/status', axiosConfig)
-    return data.payload
   }
 
   saveChanges = async () => {
@@ -486,7 +484,7 @@ class ConfigView extends Component<Props, State> {
   }
 
   renderLanguages() {
-    if (this.state.licensing && this.state.licensing.isPro) {
+    if (this.props.license?.isPro) {
       return (
         <div>
           <FormGroup label={lang.tr('config.defaultLanguage')} labelFor="selected-default-lang">
@@ -526,15 +524,16 @@ class ConfigView extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state) => ({ bot: state.bot })
+const mapStateToProps = (state: RootReducer) => ({ ...state.bot })
 
 const mapDispatchToProps = {
-  fetchBotInformation
+  fetchBotInformation,
+  fetchBotLicense
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ConfigView)
 
-interface Props {
+type Props = BotReducer & {
   fetchBotInformation: Function
-  bot: BotConfig
+  fetchBotLicense: Function
 }
