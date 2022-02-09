@@ -10,7 +10,6 @@ import { makeNLUClient } from './client'
 
 import { EntityEditor } from './entities/EntityEditor'
 import { IntentEditor } from './intents/FullEditor'
-import { LiteEditor } from './intents/LiteEditor'
 import { NLUSidePanel } from './SidePanel'
 import style from './style.scss'
 
@@ -132,4 +131,4 @@ const NLU: FC<Props> = (props) => {
 
 export default withLanguage(NLU)
 
-export { LiteEditor, EntityEditor }
+export { EntityEditor }
