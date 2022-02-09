@@ -20,6 +20,8 @@ export class Bot {
   private _botId: string
   private _languages: string[]
 
+  // TODO: needs training doesn't listen anymore on file changes
+
   constructor(
     botDef: BotDefinition,
     _nluClient: NLUClient,
@@ -35,8 +37,6 @@ export class Bot {
   }
 
   public mount = async (opt: MountOptions) => {
-    this._needTrainingWatcher = this._registerNeedsTrainingWatcher()
-
     if (!opt.queueTraining) {
       return
     }
@@ -109,20 +109,6 @@ export class Bot {
 
   public cancelTraining = async (language: string) => {
     await this._botState.cancelTraining(language)
-  }
-
-  private _registerNeedsTrainingWatcher = () => {
-    return this._defRepo.onFileChanged(this._botId, async (filePath) => {
-      const hasPotentialNLUChange = filePath.includes('/intents/') || filePath.includes('/entities/')
-      if (!hasPotentialNLUChange) {
-        return
-      }
-
-      await Promise.map(this._languages, async (l) => {
-        const state = await this.syncAndGetState(l)
-        this._webSocket(state)
-      })
-    })
   }
 
   private _needsTraining = (language: string): BpTraining => ({
