@@ -210,6 +210,7 @@ export class StudioRouter extends CustomRouter {
               window.IS_CLOUD_BOT = ${bot.isCloudBot}
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
               window.IS_PRO_ENABLED = ${process.IS_PRO_ENABLED};
+              window.NLU_ENDPOINT = ${process.NLU_ENDPOINT};
             })(typeof window != 'undefined' ? window : {})
           `
 
