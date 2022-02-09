@@ -79,7 +79,7 @@ export class CMSRouter extends CustomStudioRouter {
     const buffer = await Instance.readFile(file)
     const elements = JSON.parse(buffer.toString()) as ContentElement[]
     const newElements = [...elements.filter((x) => x.id !== content.id), { ...content }]
-    await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2), false)
+    await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2))
 
     // Refresh previews
     this.contentElementsWithPreviews = null

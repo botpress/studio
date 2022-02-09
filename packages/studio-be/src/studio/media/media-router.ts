@@ -1,26 +1,36 @@
-import { BotpressConfig } from 'core/config'
-import { fileUploadMulter } from 'core/routers'
 import _ from 'lodash'
+
 import path from 'path'
 import { StudioServices } from 'studio/studio-router'
+import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-
-const debugMedia = DEBUG('audit:action:media-upload')
+import { safeId, sanitize } from 'studio/utils/file-names'
+import { fileUploadMulter } from 'studio/utils/http-multer'
 
 const DEFAULT_ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'audio/mpeg', 'video/mp4']
 const DEFAULT_MAX_FILE_SIZE = '25mb'
 
 class MediaRouter extends CustomStudioRouter {
+  // TODO: botId must be provided somehow
+  botId: string = 'smalltalk'
+  getFileUrl(fileName: string) {
+    // TODO: we need a router that returns those files (GET). I think it's part of the BP backend atm
+    return `/api/v1/bots/${this.botId}/media/${encodeURIComponent(fileName)}`
+  }
+
   constructor(services: StudioServices) {
     super('User', services)
   }
 
-  async setupRoutes(botpressConfig: BotpressConfig) {
+  async setupRoutes(botpressConfig) {
+    // TODO: What do we do about those configs? Should they remain configurable? Are they fixed for Botpress Cloud? Are they per-bot?
     const router = this.router
 
     const mediaUploadMulter = fileUploadMulter(
-      botpressConfig.fileUpload.allowedMimeTypes ?? DEFAULT_ALLOWED_MIME_TYPES,
-      botpressConfig.fileUpload.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
+      DEFAULT_ALLOWED_MIME_TYPES,
+      DEFAULT_MAX_FILE_SIZE
+      // botpressConfig.fileUpload.allowedMimeTypes ?? DEFAULT_ALLOWED_MIME_TYPES,
+      // botpressConfig.fileUpload.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
     )
 
     router.post(
@@ -31,42 +41,16 @@ class MediaRouter extends CustomStudioRouter {
         mediaUploadMulter(req, res, async (err) => {
           const email = req.tokenUser!.email
           if (err) {
-            debugMedia(`failed (${email} from ${req.ip})`, err.message)
             return res.status(400).send(err.message)
           }
 
-          const botId = req.params.botId
-          const mediaService = this.mediaServiceProvider.forBot(botId)
           const file = req['file']
-          const { url, fileName } = await mediaService.saveFile(file.originalname, file.buffer)
+          const fileName = sanitize(`${safeId(20)}-${path.basename(file.originalname)}`)
 
-          debugMedia(
-            `success (${email} from ${req.ip}). file: ${fileName} %o`,
-            _.pick(file, 'originalname', 'mimetype', 'size')
-          )
+          await Instance.upsertFile(path.resolve('media', fileName), file.buffer)
 
-          res.json({ url })
+          res.json({ url: this.getFileUrl(fileName) })
         })
-      })
-    )
-
-    router.post(
-      '/delete',
-      this.checkTokenHeader,
-
-      this.needPermissions('write', 'bot.media'),
-      this.asyncMiddleware(async (req, res) => {
-        const email = req.tokenUser!.email
-        const botId = req.params.botId
-        const files = this.cmsService.getMediaFiles(req.body)
-        const mediaService = this.mediaServiceProvider.forBot(botId)
-
-        await Promise.map(files, async (f) => {
-          await mediaService.deleteFile(f)
-          debugMedia(`successful deletion (${email} from ${req.ip}). file: ${f}`)
-        })
-
-        res.sendStatus(200)
       })
     )
   }
