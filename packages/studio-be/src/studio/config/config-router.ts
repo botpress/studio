@@ -1,5 +1,5 @@
 import { BotConfig } from 'botpress/sdk'
-import { Serialize } from 'cerialize'
+import { Serialize } from 'cerialize' // TODO: we don't use this lib
 import { UnexpectedError } from 'common/http'
 import { sendSuccess } from 'core/routers'
 import _ from 'lodash'
