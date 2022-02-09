@@ -15,6 +15,7 @@ import { Item } from '~/components/Shared/Interface/typings'
 import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
 import { RootReducer } from '~/reducers'
 import { BotReducer } from '~/reducers/bot'
+import { getNLUServerClient } from '~/util/nlu-client-provider'
 
 import style from './style.scss'
 
@@ -106,6 +107,7 @@ class ConfigView extends Component<Props, State> {
 
   async componentDidMount() {
     const bot = this.props.bot
+    await this.fetchLanguages()
     if (!bot) {
       this.props.fetchBotInformation()
     }
@@ -113,18 +115,18 @@ class ConfigView extends Component<Props, State> {
       this.props.fetchBotLicense()
     }
 
-    const initialState = !!bot ? await this.getStateFromBotConfig(bot) : this.initialFormState
+    const initialState = !!bot ? this.getBotStateFromConfig(bot) : this.initialFormState
 
     this.setState({ ...initialState })
   }
 
-  async getStateFromBotConfig(bot: BotConfig) {
+  getBotStateFromConfig(bot: BotConfig) {
+    const { languages } = this.state
+
     const statuses = statusList.map<SelectItem>((x) => ({
       label: lang.tr(`status.${x}`),
       value: x
     }))
-
-    const languages = await this.fetchLanguages(bot.id)
 
     return {
       id: bot.id,
@@ -140,25 +142,29 @@ class ConfigView extends Component<Props, State> {
       privacyPolicy: bot.details.privacyPolicy || '',
       avatarUrl: bot.details.avatarUrl || '',
       coverPictureUrl: bot.details.coverPictureUrl || '',
-      languages,
       statuses
     }
   }
 
   async componentDidUpdate(prevProps: Readonly<Props>) {
     if (!prevProps.bot && this.props.bot) {
-      const state = await this.getStateFromBotConfig(this.props.bot)
+      const state = await this.getBotStateFromConfig(this.props.bot)
       this.setState({ ...state })
     }
   }
 
-  async fetchLanguages(botId: string): Promise<SelectItem[]> {
-    const languagePath = `studio/${botId}/config/nlu/languages`
-    const { data: languages } = await axios.get(languagePath, axiosConfig)
-    return (languages as string[]).map((language) => ({
-      label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
-      value: language
-    }))
+  async fetchLanguages() {
+    const nluClient = getNLUServerClient()
+    const response = await nluClient.getInfo()
+
+    const languagesOptions: SelectItem[] = response.success
+      ? response.info.languages.map((l) => ({
+          label: lang.tr(`isoLangs.${l.toLowerCase()}.name`),
+          value: l
+        }))
+      : []
+
+    return this.setState({ languages: languagesOptions })
   }
 
   saveChanges = async () => {

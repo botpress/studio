@@ -34,6 +34,7 @@ declare global {
     BP_STORAGE: BPStorage
     EXPERIMENTAL: boolean
     USE_SESSION_STORAGE: boolean
+    NLU_ENDPOINT: string
     botpress: {
       [moduleName: string]: any
     }
