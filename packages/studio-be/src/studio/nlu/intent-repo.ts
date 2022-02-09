@@ -1,7 +1,7 @@
 import * as sdk from 'botpress/sdk'
 
+import { sanitizeFileName } from 'core-omg/misc/utils'
 import { GhostService } from 'core/bpfs'
-import { sanitizeFileName } from 'core/misc/utils'
 import _ from 'lodash'
 
 import { NLUService } from './nlu-service'
