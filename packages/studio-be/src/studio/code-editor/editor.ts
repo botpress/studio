@@ -9,10 +9,11 @@ import {
   FileType,
   TypingDefinitions
 } from 'common/code-editor'
-import { GhostService } from 'core/bpfs'
+
 import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
+import { Instance } from 'studio/utils/bpfs'
 
 import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
 
@@ -22,7 +23,7 @@ export class Editor {
   private _botId!: string
   private _typings!: TypingDefinitions
 
-  constructor(private bpfs: GhostService, private logger: sdk.Logger) {}
+  constructor(private logger: sdk.Logger) {}
 
   forBot(botId: string) {
     this._botId = botId
@@ -44,43 +45,43 @@ export class Editor {
 
   async fileExists(file: EditableFile): Promise<boolean> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).fileExists(folder, filename)
+    return Instance.fileExists(path.join(folder, filename))
   }
 
   async readFileContent(file: EditableFile): Promise<string> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).readFileAsString(folder, filename)
+    return (await Instance.readFile(path.join(folder, filename))).toString()
   }
 
   async readFileBuffer(file: EditableFile): Promise<Buffer> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).readFileAsBuffer(folder, filename)
+    return Instance.readFile(path.join(folder, filename))
   }
 
   async saveFile(file: EditableFile): Promise<void> {
-    const shouldSyncToDisk = FileTypes[file.type].ghost.shouldSyncToDisk
     const { folder, filename } = getFileLocation(file)
-
-    return this.bpfs.forBot(this._botId).upsertFile(folder, filename, file.content!, {
-      syncDbToDisk: shouldSyncToDisk
-    })
+    return Instance.upsertFile(path.join(folder, filename), file.content!)
   }
 
   async loadFiles(fileTypeId: string, botId: string, listBuiltin?: boolean): Promise<EditableFile[]> {
     const def: FileDefinition = FileTypes[fileTypeId]
     const { baseDir, dirListingAddFields, dirListingExcluded } = def.ghost
 
-    let fileExt = '*.*'
-    if (def.isJSON !== undefined) {
-      fileExt = def.isJSON ? '*.json' : '*.js'
-    }
-
     const baseExcluded = listBuiltin ? [] : getBuiltinExclusion()
     const excluded = [...baseExcluded, ...(dirListingExcluded ?? [])]
 
-    const files = def.filenames
+    let files = def.filenames
       ? def.filenames
-      : await this.bpfs.forBot(botId).directoryListing(baseDir, fileExt, excluded, true)
+      : await Instance.directoryListing(baseDir, {
+          excludes: excluded,
+          includeDotFiles: true
+        })
+
+    if (def.isJSON) {
+      files = files.filter((x) => x.endsWith('.json'))
+    } else if (def.isJSON === false) {
+      files = files.filter((x) => x.endsWith('.js'))
+    }
 
     return Promise.map(files, async (filepath: string) => ({
       name: path.basename(filepath),
@@ -99,7 +100,7 @@ export class Editor {
     }
 
     const { folder, filename } = getFileLocation(file)
-    await this.bpfs.forBot(this._botId).deleteFile(folder, filename)
+    await Instance.deleteFile(path.join(folder, filename))
   }
 
   async renameFile(file: EditableFile, newName: string): Promise<void> {
@@ -108,13 +109,11 @@ export class Editor {
     const { folder, filename } = getFileLocation(file)
     const newFilename = filename.replace(filename, newName)
 
-    const ghost = this.bpfs.forBot(this._botId)
-
-    if (await ghost.fileExists(folder, newFilename)) {
+    if (await Instance.fileExists(path.join(folder, newFilename))) {
       throw new Error('File already exists')
     }
 
-    return ghost.renameFile(folder, filename, newFilename)
+    return Instance.moveFile(path.join(folder, filename), path.join(folder, newFilename))
   }
 
   async readFile(name: string, filePath: string) {
@@ -138,11 +137,8 @@ export class Editor {
       return this._typings
     }
 
-    const ghost = this.bpfs.root()
-    const botConfigSchema = await ghost.readFileAsString('/', 'bot.config.schema.json')
-    const botpressConfigSchema = await ghost.readFileAsString('/', 'botpress.config.schema.json')
-
-    const moduleTypings = await this.getModuleTypings()
+    const botConfigSchema = (await Instance.readFile('bot.config.schema.json')).toString()
+    const botpressConfigSchema = (await Instance.readFile('botpress.config.schema.json')).toString() // TODO: we need to copy botpress config to bot dir ? if not already done
 
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },
@@ -159,34 +155,9 @@ export class Editor {
       'process.d.ts': buildRestrictedProcessVars(),
       'bot.config.schema.json': botConfigSchema,
       'botpress.config.schema.json': botpressConfigSchema,
-      ...localTypings,
-      ...moduleTypings
+      ...localTypings
     }
 
     return this._typings
-  }
-
-  async getModuleTypings() {
-    const cwd = path.resolve(__dirname, '../../..')
-    try {
-      return _.reduce(
-        fs.readdirSync(cwd),
-        (result, dir) => {
-          const pkgPath = path.join(cwd, dir, 'package.json')
-          if (fs.existsSync(pkgPath)) {
-            const moduleName = require(pkgPath).name
-            const schemaPath = path.join(cwd, dir, 'assets/config.schema.json')
-            result[`modules/${moduleName}/config.schema.json`] = fs.existsSync(schemaPath)
-              ? fs.readFileSync(schemaPath, 'utf-8')
-              : '{}'
-          }
-          return result
-        },
-        {}
-      )
-    } catch (e) {
-      this.logger.attachError(e).error('Error reading typings')
-      return {}
-    }
   }
 }
