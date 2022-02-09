@@ -2,6 +2,7 @@ import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
+import { RootReducer } from '~/reducers'
 
 import LangSwitcher from './LangSwitcher'
 import style from './style.scss'
@@ -32,9 +33,9 @@ const StatusBar: FC<Props> = (props) => {
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootReducer) => ({
   user: state.user,
-  botInfo: state.bot,
+  botInfo: state.bot.bot,
   contentLang: state.language.contentLang
 })
 

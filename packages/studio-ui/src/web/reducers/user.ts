@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import { userReceived } from '~/actions'
+import { userBotPermissionsReceived, userReceived } from '~/actions'
 
 const defaultState = {}
 
@@ -12,7 +12,8 @@ export interface UserReducer {
 
 const reducer = handleActions<UserReducer, string>(
   {
-    [userReceived]: (state, { payload }) => ({ ...state, ...payload })
+    [userReceived]: (state, { payload }) => ({ ...state, ...payload }),
+    [userBotPermissionsReceived]: (state, { payload }) => ({ ...state, ...payload })
   },
   defaultState
 )
