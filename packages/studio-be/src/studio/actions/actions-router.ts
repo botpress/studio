@@ -1,12 +1,15 @@
 import { Serialize } from 'cerialize'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
+import { bpfs } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 export class ActionsRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Actions', services)
   }
+
+  protected bpfs: bpfs
 
   setupRoutes() {
     const router = this.router
