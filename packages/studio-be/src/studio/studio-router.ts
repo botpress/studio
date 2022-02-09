@@ -1,106 +1,62 @@
 import { Logger } from 'botpress/sdk'
 import { gaId } from 'common/stats'
-import { HTTPServer } from 'core/app/server'
-import { resolveStudioAsset, resolveIndexPaths } from 'core/app/server-utils'
-import { BotService } from 'core/bots'
-import { GhostService, MemoryObjectCache } from 'core/bpfs'
-import { CMSService } from 'core/cms'
-import { BotpressConfig } from 'core/config'
-import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService } from 'core/dialog'
-import { MediaServiceProvider } from 'core/media'
-import { CustomRouter } from 'core/routers/customRouter'
-import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility, needPermissions } from 'core/security'
-import { ActionServersService, ActionService, HintsService } from 'core/user-code'
-import { WorkspaceService } from 'core/users'
 import express, { RequestHandler, Router } from 'express'
+import { AsyncMiddleware, asyncMiddleware } from 'common/http'
 import rewrite from 'express-urlrewrite'
 import _ from 'lodash'
-
 import { ActionsRouter } from './actions/actions-router'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
-import { InternalRouter } from './internal-router'
 import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
-import { NLURouter, NLUService } from './nlu'
-import { QNARouter, QNAService } from './qna'
-import { fixStudioMappingMw } from './utils/api-mapper'
+import { NLURouter } from './nlu'
+import { QNARouter } from './qna'
+import { HTTPServer } from './server'
+import fs from 'fs'
+import path from 'path'
 
 export interface StudioServices {
   logger: Logger
-  authService: AuthService
-  workspaceService: WorkspaceService
-  botService: BotService
-  configProvider: ConfigProvider
-  cmsService: CMSService
-  mediaServiceProvider: MediaServiceProvider
-  flowService: FlowService
-  actionService: ActionService
-  actionServersService: ActionServersService
-  hintsService: HintsService
-  bpfs: GhostService
-  objectCache: MemoryObjectCache
-  nluService: NLUService
-  qnaService: QNAService
+}
+
+let indexCache: { [pageUrl: string]: string } = {}
+
+setInterval(() => {
+  indexCache = {}
+}, 5000) // TODO: we probably don't want a page cache
+
+export abstract class CustomRouter {
+  protected readonly asyncMiddleware: AsyncMiddleware
+  public readonly router: Router
+  constructor(name: string, logger: Logger, router: Router) {
+    this.asyncMiddleware = asyncMiddleware(logger, name)
+    this.router = router
+  }
 }
 
 export class StudioRouter extends CustomRouter {
   private checkTokenHeader: RequestHandler
 
-  private botpressConfig?: BotpressConfig
   private cmsRouter: CMSRouter
   private mediaRouter: MediaRouter
   private actionsRouter: ActionsRouter
   private flowsRouter: FlowsRouter
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
-  private internalRouter: InternalRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
   private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
 
-  constructor(
-    logger: Logger,
-    private authService: AuthService,
-    private workspaceService: WorkspaceService,
-    private botService: BotService,
-    private configProvider: ConfigProvider,
-    actionService: ActionService,
-    cmsService: CMSService,
-    flowService: FlowService,
-    bpfs: GhostService,
-    mediaServiceProvider: MediaServiceProvider,
-    actionServersService: ActionServersService,
-    hintsService: HintsService,
-    objectCache: MemoryObjectCache,
-    nluService: NLUService,
-    qnaService: QNAService,
-    private httpServer: HTTPServer
-  ) {
+  constructor(logger: Logger, private httpServer: HTTPServer) {
     super('Studio', logger, Router({ mergeParams: true }))
-    this.checkTokenHeader = checkTokenHeader(this.authService, TOKEN_AUDIENCE)
+    this.checkTokenHeader = (req, res, next) => next()
 
     const studioServices: StudioServices = {
-      logger,
-      authService: this.authService,
-      mediaServiceProvider,
-      workspaceService,
-      actionService,
-      flowService,
-      botService,
-      configProvider,
-      bpfs,
-      cmsService,
-      actionServersService,
-      hintsService,
-      objectCache,
-      nluService,
-      qnaService
+      logger
     }
 
     this.cmsRouter = new CMSRouter(studioServices)
@@ -109,7 +65,6 @@ export class StudioRouter extends CustomRouter {
     this.mediaRouter = new MediaRouter(studioServices)
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
-    this.internalRouter = new InternalRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
@@ -117,33 +72,24 @@ export class StudioRouter extends CustomRouter {
   }
 
   async setupRoutes(app: express.Express) {
-    this.botpressConfig = await this.configProvider.getBotpressConfig()
-
     this.actionsRouter.setupRoutes()
     this.flowsRouter.setupRoutes()
-    await this.mediaRouter.setupRoutes(this.botpressConfig)
+    await this.mediaRouter.setupRoutes()
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
-    this.internalRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
     this.manageRouter.setupRoutes()
     this.codeEditorRouter.setupRoutes()
 
     app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
-    app.use('/api/internal', this.internalRouter.router)
 
     app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))
-
-    // TODO: Temporary in case we forgot to change it somewhere
-    app.use('/api/v1/bots/:botId', fixStudioMappingMw, this.router)
 
     app.use('/api/v1/studio/:botId', this.router)
 
     // This route must be accessible even when the bot is disabled
     this.router.use('/config', this.checkTokenHeader, this.configRouter.router)
-
-    this.router.use(checkBotVisibility(this.configProvider, this.checkTokenHeader))
 
     this.router.get(
       '/workspaceBotsIds',
@@ -176,13 +122,13 @@ export class StudioRouter extends CustomRouter {
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
-        const bot = await this.botService.findBotById(botId)
-        if (!bot) {
-          return res.sendStatus(404)
+        const botInfo = {
+          workspaceId: 'default',
+          name: 'My Bot' // TODO: fix this
         }
 
-        const branding = await this.configProvider.getBrandingConfig('studio')
-        const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
+        const favicon = 'assets/ui-studio/public/img/favicon.png'
+
         const commonEnv = await this.httpServer.getCommonEnv()
 
         const segmentWriteKey = process.core_env.BP_DEBUG_SEGMENT
@@ -198,16 +144,16 @@ export class StudioRouter extends CustomRouter {
               window.BOT_API_PATH = "${process.ROOT_PATH}/api/v1/bots/${botId}";
               window.STUDIO_API_PATH = "${process.ROOT_PATH}/api/v1/studio/${botId}";
               window.BOT_ID = "${botId}";
-              window.BOT_NAME = "${bot.name}";
+              window.BOT_NAME = "${botInfo.name}";
               window.BP_BASE_PATH = "${process.ROOT_PATH}/studio/${botId}";
               window.APP_VERSION = "${process.BOTPRESS_VERSION}";
-              window.APP_NAME = "${branding.title}";
-              window.APP_FAVICON = "${branding.favicon}";
-              window.APP_CUSTOM_CSS = "${branding.customCss}";
-              window.BOT_LOCKED = ${!!bot.locked};
-              window.WORKSPACE_ID = "${workspaceId}";
-              window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
-              window.IS_CLOUD_BOT = ${bot.isCloudBot}
+              window.APP_NAME = "Botpress Studio";
+              window.APP_FAVICON = "${favicon}";
+              window.APP_CUSTOM_CSS = "";
+              window.BOT_LOCKED = false;
+              window.WORKSPACE_ID = "${botInfo.workspaceId}";
+              window.IS_BOT_MOUNTED = ${true}; // TODO: fix this .. the bot might not mount
+              window.IS_CLOUD_BOT = true;
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
               window.IS_PRO_ENABLED = ${process.IS_PRO_ENABLED};
               window.NLU_ENDPOINT = ${process.NLU_ENDPOINT};
@@ -225,4 +171,35 @@ export class StudioRouter extends CustomRouter {
     app.use('/:app(studio)/:botId', resolveIndexPaths('public/index.html'))
     app.get(['/:app(studio)/:botId/*'], resolveIndexPaths('public/index.html'))
   }
+}
+
+// Dynamically updates the static paths of index files
+const resolveIndexPaths = (page: string) => (req, res) => {
+  res.contentType('text/html')
+
+  // Not caching pages in dev (issue with webpack )
+  if (indexCache[page] && process.IS_PRODUCTION) {
+    return res.send(indexCache[page])
+  } // TODO: we probably don't want a page cache
+
+  fs.readFile(resolveStudioAsset(page), (err, data) => {
+    if (data) {
+      indexCache[page] = data
+        .toString()
+        .replace(/\<base href=\"\/\" ?\/\>/, `<base href="${process.ROOT_PATH}/" />`)
+        .replace(/ROOT_PATH=""|ROOT_PATH = ''/, `window.ROOT_PATH="${process.ROOT_PATH}"`)
+
+      res.send(indexCache[page])
+    } else {
+      res.sendStatus(404)
+    }
+  })
+}
+
+const resolveStudioAsset = (file: string) => {
+  if (!process.pkg) {
+    return path.resolve(process.STUDIO_LOCATION, '../../studio-ui/', file)
+  }
+
+  return path.resolve(process.DATA_LOCATION, 'assets/studio/ui', file)
 }

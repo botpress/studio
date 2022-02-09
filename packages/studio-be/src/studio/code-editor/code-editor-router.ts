@@ -6,7 +6,7 @@ import { Editor } from './editor'
 
 export class CodeEditorRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
-    super('CodeEditor', services)
+    super('CodeEditor', services.logger)
     this.setupRoutes()
   }
 
