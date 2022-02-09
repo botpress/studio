@@ -35,7 +35,7 @@ class MediaRouter extends CustomStudioRouter {
     super('User', services)
   }
 
-  async setupRoutes(botpressConfig) {
+  async setupRoutes() {
     // TODO: What do we do about those configs? Should they remain configurable? Are they fixed for Botpress Cloud? Are they per-bot?
     const router = this.router
 

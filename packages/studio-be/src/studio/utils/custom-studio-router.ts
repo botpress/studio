@@ -1,36 +1,10 @@
 import { Logger } from 'botpress/sdk'
 import { AsyncMiddleware, asyncMiddleware } from 'common/http'
-import { BotService } from 'core/bots'
-import { GhostService, MemoryObjectCache } from 'core/bpfs'
-import { CMSService } from 'core/cms'
-import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService } from 'core/dialog'
-import { MediaServiceProvider } from 'core/media'
-import { AuthService, TOKEN_AUDIENCE, needPermissions, checkTokenHeader } from 'core/security'
-import { ActionServersService, ActionService, HintsService } from 'core/user-code'
-import { WorkspaceService } from 'core/users'
 import { RequestHandler, Router } from 'express'
-import { NLUService } from 'studio/nlu'
-import { QNAService } from 'studio/qna'
-import { StudioServices } from 'studio/studio-router'
 
 // TODO: delete this ..
 export abstract class CustomStudioRouter {
   protected logger: Logger
-  protected authService: AuthService
-  protected configProvider: ConfigProvider
-  protected botService: BotService
-  protected mediaServiceProvider: MediaServiceProvider
-  protected cmsService: CMSService
-  protected workspaceService: WorkspaceService
-  protected flowService: FlowService
-  protected actionService: ActionService
-  protected actionServersService: ActionServersService
-  protected hintsService: HintsService
-  protected bpfs: GhostService
-  protected objectCache: MemoryObjectCache
-  protected nluService: NLUService
-  protected qnaService: QNAService
 
   protected readonly needPermissions: (operation: string, resource: string) => RequestHandler
   protected readonly asyncMiddleware: AsyncMiddleware
@@ -38,27 +12,11 @@ export abstract class CustomStudioRouter {
 
   public readonly router: Router
 
-  constructor(name: string, services: StudioServices) {
-    this.asyncMiddleware = asyncMiddleware(services.logger, name)
-    this.needPermissions = needPermissions(services.workspaceService)
-    this.checkTokenHeader = checkTokenHeader(services.authService, TOKEN_AUDIENCE)
-
+  constructor(name: string, logger: Logger) {
+    this.asyncMiddleware = asyncMiddleware(logger, name)
+    this.needPermissions = (resource: string, operation: string) => (req, res, next) => next() // TODO: remove them all
+    this.checkTokenHeader = (req, res, next) => next()
     this.router = Router({ mergeParams: true })
-
-    this.logger = services.logger
-    this.authService = services.authService
-    this.configProvider = services.configProvider
-    this.botService = services.botService
-    this.mediaServiceProvider = services.mediaServiceProvider
-    this.workspaceService = services.workspaceService
-    this.cmsService = services.cmsService
-    this.flowService = services.flowService
-    this.actionService = services.actionService
-    this.actionServersService = services.actionServersService
-    this.bpfs = services.bpfs
-    this.hintsService = services.hintsService
-    this.objectCache = services.objectCache
-    this.nluService = services.nluService
-    this.qnaService = services.qnaService
+    this.logger = logger
   }
 }

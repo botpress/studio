@@ -3,11 +3,27 @@ global['NativePromise'] = global.Promise
 import fs from 'fs'
 import path from 'path'
 import yn from 'yn'
-
-import { getAppDataPath } from './core/misc/app_data'
+import chalk from 'chalk'
 import { Debug } from './debug'
 import getos from './getos'
 import metadata from './metadata.json'
+
+export function getAppDataPath() {
+  const homeDir = process.env.HOME || process.env.APPDATA
+  if (homeDir) {
+    if (process.platform === 'darwin') {
+      return path.join(homeDir, 'Library', 'Application Support', 'botpress')
+    }
+
+    return path.join(homeDir, 'botpress')
+  }
+
+  console.error(
+    chalk.red(`Could not determine your HOME directory.
+Please set the environment variable "APP_DATA_PATH", then start Botpress`)
+  )
+  process.exit()
+}
 
 const printPlainError = (err) => {
   /* eslint-disable no-console */

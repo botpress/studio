@@ -21,7 +21,7 @@ export class NLURouter extends CustomStudioRouter {
   private service: NLUService = new NLUService(this.logger)
 
   constructor(services: StudioServices) {
-    super('NLU', services)
+    super('NLU', services.logger)
   }
 
   setupRoutes() {
