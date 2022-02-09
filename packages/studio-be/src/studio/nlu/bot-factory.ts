@@ -6,13 +6,12 @@ import { ModelEntryService, TrainingEntryService, ModelEntryRepository } from '.
 import { NLUClient } from './nlu-client'
 import pickSeed from './pick-seed'
 
-import { BotDefinition, BotConfig, ConfigResolver, TrainListener } from './typings'
+import { BotDefinition, BotConfig, TrainListener } from './typings'
 
 const CLOUD_NLU_ENDPOINT = process.env.CLOUD_NLU_ENDPOINT || 'https://nlu.botpress.dev'
 
 export class BotFactory {
   constructor(
-    private _configResolver: ConfigResolver,
     private _logger: Logger,
     private _defRepo: DefinitionsRepository,
     private _modelStateRepo: ModelEntryRepository,
@@ -43,15 +42,6 @@ export class BotFactory {
 
     const modelService = new ModelEntryService(this._modelStateRepo)
     const trainService = new TrainingEntryService(this._modelStateRepo)
-    return new Bot(
-      botDefinition,
-      this._configResolver,
-      nluClient,
-      this._defRepo,
-      modelService,
-      trainService,
-      this._logger,
-      this._webSocket
-    )
+    return new Bot(botDefinition, nluClient, this._defRepo, modelService, trainService, this._logger, this._webSocket)
   }
 }

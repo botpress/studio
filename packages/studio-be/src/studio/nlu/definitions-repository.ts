@@ -1,9 +1,7 @@
 import * as sdk from 'botpress/sdk'
-import { GhostService } from 'core/bpfs'
+
 import { EntityRepository } from './entities-repo'
 import { IntentRepository } from './intent-repo'
-
-type FileListener = (fileName: string) => Promise<void>
 
 interface TrainDefinitions {
   intentDefs: sdk.NLU.IntentDefinition[]
@@ -11,11 +9,7 @@ interface TrainDefinitions {
 }
 
 export class DefinitionsRepository {
-  constructor(
-    private entityRepo: EntityRepository,
-    private intentRepo: IntentRepository,
-    private ghost: GhostService
-  ) {}
+  constructor(private entityRepo: EntityRepository, private intentRepo: IntentRepository) {}
 
   public async getTrainDefinitions(botId: string): Promise<TrainDefinitions> {
     const intentDefs = await this.intentRepo.getIntents(botId)
@@ -25,10 +19,5 @@ export class DefinitionsRepository {
       intentDefs,
       entityDefs
     }
-  }
-
-  public onFileChanged(botId: string, listener: FileListener): sdk.ListenHandle {
-    const handle = this.ghost.forBot(botId).onFileChanged(listener)
-    return handle
   }
 }
