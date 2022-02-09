@@ -1365,7 +1365,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@botpress/logger@workspace:packages/logger":
+"@botpress/logger@*, @botpress/logger@workspace:packages/logger":
   version: 0.0.0-use.local
   resolution: "@botpress/logger@workspace:packages/logger"
   dependencies:
@@ -1400,6 +1400,7 @@ __metadata:
   resolution: "@botpress/studio-be@workspace:packages/studio-be"
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^9.0.9
+    "@botpress/logger": "*"
     "@botpress/native-extensions": "*"
     "@botpress/nlu-client": 1.0.0-rc.2
     "@types/bluebird-global": ^3.5.13

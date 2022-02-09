@@ -139,7 +139,7 @@ try {
         process.VERBOSITY_LEVEL = defaultVerbosity
         process.distro = await getos()
 
-        require('./core/app/bootstrap')
+        require('./bootstrap')
       }
     )
     .help().argv
