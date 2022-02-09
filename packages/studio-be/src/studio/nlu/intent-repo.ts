@@ -1,6 +1,7 @@
 import * as sdk from 'botpress/sdk'
 
 import path from 'path'
+
 import _ from 'lodash'
 
 import { NLUService } from './nlu-service'

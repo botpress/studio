@@ -17,3 +17,10 @@ export const sanitizeName = (text: string) =>
     .replace(/\s|\t|\n/g, '-')
     .toLowerCase()
     .replace(/[^a-z0-9-_.]/g, '')
+
+export const sanitizeFileName = (name: string): string => {
+  return name
+    .toLowerCase()
+    .replace(/\.json$/i, '')
+    .replace(/[\t\s]/gi, '-')
+}

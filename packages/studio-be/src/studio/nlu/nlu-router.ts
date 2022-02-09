@@ -216,10 +216,13 @@ export class NLURouter extends CustomStudioRouter {
     )
 
     /**
+     *
      * #######################################
      * ### Trainings / Models :  Lifecycle ###
      * #######################################
      */
+
+    // TODO Move in FE
     this.router.get(
       ['/health', '/info'],
       this.asyncMiddleware(async (req, res) => {
