@@ -220,11 +220,8 @@ export class StudioRouter extends CustomRouter {
   }
 
   setupStaticRoutes(app) {
-    //  app.get('/studio', (req, res, next) => res.redirect('/admin'))
-
     app.use('/:app(studio)/:botId', express.static(resolveStudioAsset('public'), { index: false }))
     app.use('/:app(studio)/:botId', resolveIndexPaths('public/index.html'))
-
     app.get(['/:app(studio)/:botId/*'], resolveIndexPaths('public/index.html'))
   }
 }

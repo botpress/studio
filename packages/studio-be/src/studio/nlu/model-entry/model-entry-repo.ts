@@ -27,6 +27,7 @@ export class ModelEntryRepository {
     return this._db.table<ModelEntryRow>(this._tableName)
   }
 
+  // TODO: can all be in memory because it's now a single player studio (no distributed)
   public async initialize() {
     await this._db.createTableIfNotExists(this._tableName, (table) => {
       table.string('botId').notNullable()

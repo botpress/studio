@@ -22,18 +22,5 @@ export class ActionsRouter extends CustomStudioRouter {
         res.send(Serialize(actions))
       })
     )
-
-    router.get(
-      '/actionServers',
-      this.checkTokenHeader,
-      this.needPermissions('read', 'bot.flows'),
-      this.asyncMiddleware(async (req, res) => {
-        const { botId } = req.params
-
-        const serversWithActions = await this.actionServersService.getServersWithActionsForBot(botId)
-
-        res.send(serversWithActions)
-      })
-    )
   }
 }

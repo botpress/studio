@@ -9,7 +9,7 @@ export class InternalRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Internal', services)
   }
-
+  // TODO: Delete this file as soon as the studio runs standalone
   setupRoutes() {
     if (!process.env.INTERNAL_PASSWORD) {
       return
