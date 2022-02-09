@@ -8,6 +8,12 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 const CONTENT_FOLDER = 'content-elements'
 const LIBRARY_FILE = 'library.json'
 
+export enum ButtonAction {
+  SaySomething = 'Say something',
+  OpenUrl = 'Open URL',
+  Postback = 'Postback'
+}
+
 export class CMSRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('CMS', services)
