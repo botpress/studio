@@ -27,12 +27,10 @@ export class ActionsRouter extends CustomStudioRouter {
         const allFiles = await Instance.directoryListing('actions', {})
         const actionFiles = allFiles.filter((file) => file.endsWith('.js'))
 
-        const actions = await Promise.all(
-          actionFiles.map(async (file) => {
-            const actionCode = await Instance.readFile(path.join('actions', file))
-            return extractMetadata(actionCode.toString())
-          })
-        )
+        const actions = await Promise.map(actionFiles, async (file) => {
+          const actionCode = await Instance.readFile(path.join('actions', file))
+          return extractMetadata(actionCode.toString())
+        })
 
         res.send(Serialize(actions))
       })

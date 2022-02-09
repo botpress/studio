@@ -443,7 +443,8 @@ export class CMSService implements IDisposeOnExit {
     }
 
     if (_.isString(data)) {
-      const m = data.match(/^##ref\((.*)\)$/)
+      // TODO: this doesn't seem to be used but let's keep it anyway since it's probably something we want to keep for the next Inspector panel
+      const m = data.match(/^##ref\((.*)\)$/) //
       if (!m) {
         return data
       }
