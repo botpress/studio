@@ -1,3 +1,18 @@
+## [0.0.48](https://github.com/botpress/studio/compare/v0.0.47...v0.0.48) (2022-02-09)
+
+
+### Bug Fixes
+
+* **qna:** fix scrolling ([#287](https://github.com/botpress/studio/issues/287)) ([c5c826c](https://github.com/botpress/studio/commit/c5c826cd09eb4ccab949f4af59f6d7af4b50b6b1))
+* **studio:** content picker broken ([#283](https://github.com/botpress/studio/issues/283)) ([3a39ebf](https://github.com/botpress/studio/commit/3a39ebf01869f6ab1e768a7836aa3505ceba1d0c))
+
+
+### Reverts
+
+* **deps:** downgrade fs-extra to v9 ([#284](https://github.com/botpress/studio/issues/284)) ([57ae613](https://github.com/botpress/studio/commit/57ae613039a61e4f377fd78911eaae8b1428a222))
+
+
+
 ## [0.0.47](https://github.com/botpress/studio/compare/v0.0.46...v0.0.47) (2022-02-07)
 
 
