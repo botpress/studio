@@ -27,3 +27,5 @@ export const dates: IDates = {
   lastYearEnd: moment().subtract(1, 'years').endOf('year').toDate(),
   last7days: moment().subtract(7, 'days').toDate()
 }
+
+// TODO: not sure this is used anywhere

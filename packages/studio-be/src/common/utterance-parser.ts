@@ -1,5 +1,7 @@
 import _ from 'lodash'
 
+// TODO: only used in UI, so move it there
+
 export interface ParsedSlot {
   name: string
   value: string

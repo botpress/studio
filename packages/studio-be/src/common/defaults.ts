@@ -22,3 +22,5 @@ export const BUILTIN_MODULES = [
   'testing',
   'uipath'
 ]
+
+// TODO: only used for the code editor
