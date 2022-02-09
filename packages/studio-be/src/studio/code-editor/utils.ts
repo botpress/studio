@@ -1,4 +1,4 @@
-import { FileDefinition, FileTypes, EditableFile, FilePermissions, FileType } from 'common/code-editor'
+import { FileDefinition, FileTypes, EditableFile, FilePermissions } from 'common/code-editor'
 import { BUILTIN_MODULES } from 'common/defaults'
 import jsonlintMod from 'jsonlint-mod'
 import _ from 'lodash'
