@@ -1,20 +1,18 @@
 import axios from 'axios'
-import { DirectoryListingOptions, NLU } from 'botpress/sdk'
+import { DirectoryListingOptions, NLU, ContentElement } from 'botpress/sdk'
 import { QnaEntry, QnaItem } from 'common/typings'
 import { sanitizeFileName } from 'common/utils'
 import { validate } from 'joi'
 import _ from 'lodash'
 import moment from 'moment'
 import multer from 'multer'
-import { customAlphabet, nanoid } from 'nanoid'
+import { customAlphabet } from 'nanoid'
 import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import { NLU_PREFIX } from './storage'
 
-import { prepareImport } from './transfer'
-import { QnaDefSchema } from './validation'
+import { QnaDefSchema, QnaItemCmsArraySchema } from './validation'
 
 const QNA_DIR = 'qna'
 const INTENT_DIR = 'intents'
@@ -24,9 +22,23 @@ interface FilteringOptions {
   contextsFilter: string[]
 }
 
+type ContentData = Pick<ContentElement, 'id' | 'contentType' | 'formData'>
+interface ImportData {
+  questions?: QnaItem[]
+  content?: ContentData[]
+}
+
 export class QNARouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('QNA', services)
+  }
+
+  private async _prepareImport(parsedJson: any): Promise<ImportData> {
+    const result = (await validate(parsedJson, QnaItemCmsArraySchema)) as {
+      contentElements: ContentData[]
+      qnas: QnaItem[]
+    }
+    return { questions: result.qnas, content: result.contentElements } as ImportData
   }
 
   private _normalizeQuestion(question: string): string {
@@ -154,7 +166,7 @@ export class QNARouter extends CustomStudioRouter {
             JSON.stringify(intentDef, undefined, 2)
           )
         } else {
-          await Instance.deleteFile(path.join(NLU_PREFIX, this._makeIntentId(qnaItem.id), '.json'))
+          await Instance.deleteFile(path.join(INTENT_DIR, this._makeIntentId(qnaItem.id), '.json'))
         }
 
         res.send(qnaItem)
@@ -231,7 +243,7 @@ export class QNARouter extends CustomStudioRouter {
 
         try {
           const parsed = JSON.parse((req as any).file.buffer)
-          const result = await prepareImport(parsed)
+          const result = await this._prepareImport(parsed)
 
           const contentPromises = (result?.content ?? []).map((content) =>
             axios.post(`/api/v1/studio/${req.params.botId}/cms/${content.contentType}/element/${content.id}`, {
@@ -275,7 +287,7 @@ export class QNARouter extends CustomStudioRouter {
       upload.single('file'),
       this.asyncMiddleware(async (req, res) => {
         const parsed = JSON.parse((req as any).file.buffer)
-        const importData = await prepareImport(parsed)
+        const importData = await this._prepareImport(parsed)
 
         const qnas = await Instance.directoryListing(QNA_DIR, {}).then((filePaths) => {
           return Promise.map(filePaths, (filePath) =>
