@@ -7,12 +7,11 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 import { LocalActionDefinition } from 'common/typings'
 import doctrine from 'doctrine'
-import _ from 'lodash'
 import yn from 'yn'
 
 export class ActionsRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
-    super('Actions', services)
+    super('Actions', services.logger)
   }
 
   setupRoutes() {
