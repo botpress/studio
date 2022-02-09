@@ -1,5 +1,4 @@
 import { BotConfig } from 'botpress/sdk'
-import { Serialize } from 'cerialize' // TODO: we don't use this lib
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
@@ -7,7 +6,7 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 export class ConfigRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
-    super('Config', services)
+    super('Config', services.logger)
   }
 
   setupRoutes() {

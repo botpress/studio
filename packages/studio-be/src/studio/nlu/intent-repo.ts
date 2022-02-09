@@ -6,13 +6,7 @@ import _ from 'lodash'
 
 import { NLUService } from './nlu-service'
 import { Instance } from 'studio/utils/bpfs'
-
-const sanitizeFileName = (name: string): string => {
-  return name
-    .toLowerCase()
-    .replace(/\.json$/i, '')
-    .replace(/[\t\s]/gi, '-')
-}
+import { sanitizeFileName } from 'common/utils'
 
 const INTENTS_DIR = './intents'
 

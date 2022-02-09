@@ -23,7 +23,7 @@ function toUiPath(flowPath: string) {
 
 export class FlowsRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
-    super('Flows', services)
+    super('Flows', services.logger)
   }
 
   private async parseFlow(flowPath: string): Promise<Omit<FlowView, 'currentMutex'>> {

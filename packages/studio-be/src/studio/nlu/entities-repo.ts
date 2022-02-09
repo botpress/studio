@@ -5,15 +5,9 @@ import { getEntityId } from 'common/entity-id'
 import { Instance } from 'studio/utils/bpfs'
 
 import { NLUService } from './nlu-service'
+import { sanitizeFileName } from 'common/utils'
 
 const ENTITIES_DIR = './entities'
-
-const sanitizeFileName = (name: string): string => {
-  return name
-    .toLowerCase()
-    .replace(/\.json$/i, '')
-    .replace(/[\t\s]/gi, '-')
-}
 
 // copied from botpress/nlu repo
 const SYSTEM_ENTITIES = [

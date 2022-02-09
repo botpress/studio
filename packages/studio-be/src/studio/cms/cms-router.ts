@@ -29,7 +29,7 @@ export class CMSRouter extends CustomStudioRouter {
   private contentElementsWithPreviews: ContentElementsByType | null = null
 
   constructor(services: StudioServices) {
-    super('CMS', services)
+    super('CMS', services.logger)
     this.setupRoutes()
   }
 
@@ -99,7 +99,7 @@ export class CMSRouter extends CustomStudioRouter {
 
       // TODO: Delete unreferenced medias in (removed[])
 
-      await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2), false)
+      await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2))
     }
 
     // Refresh previews
