@@ -51,23 +51,12 @@ export class Botpress {
     // TODO: clean this logic
 
     GlobalEvents.events.on(StudioEvents.NLU_TRAINING_UPDATE, (payload) => {
-      console.log('NLU update', payload)
       this.realtime.sendToSocket({
         eventName: 'statusbar.event',
         payload: {
           ...payload
         }
       })
-
-      //       data: {type: "nlu", botId: "smalltalk",…}
-      // botId: "smalltalk"
-      // trainSession: {key: "training:smalltalk:en", language: "en", status: "training", progress: 0.85}
-      // key: "training:smalltalk:en"
-      // language: "en"
-      // progress: 0.85
-      // status: "training"
-      // type: "nlu"
-      // name: "statusbar.event"
     })
 
     AppLifecycle.setDone(AppLifecycleEvents.BOTPRESS_READY)

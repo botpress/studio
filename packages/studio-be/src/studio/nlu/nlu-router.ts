@@ -60,6 +60,7 @@ export class NLURouter extends CustomStudioRouter {
         const { botId, intent } = req.params
         try {
           await this.service.intents.deleteIntent(botId, intent)
+          await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(204)
         } catch (err) {
           this.logger.attachError(err).error('Could not delete intent')
@@ -79,6 +80,7 @@ export class NLURouter extends CustomStudioRouter {
           })
 
           await this.service.intents.saveIntent(botId, intentDef)
+          await this.service.getBot(botId).refreshNeedsTraining()
 
           res.sendStatus(200)
         } catch (err) {
@@ -95,6 +97,7 @@ export class NLURouter extends CustomStudioRouter {
         const { botId, intentName } = req.params
         try {
           await this.service.intents.updateIntent(botId, intentName, req.body)
+          await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(200)
         } catch (err) {
           this.logger.attachError(err).error('Could not update intent')
@@ -158,7 +161,7 @@ export class NLURouter extends CustomStudioRouter {
           })) as sdk.NLU.EntityDefinition
 
           await this.service.entities.saveEntity(botId, entityDef)
-
+          await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(200)
         } catch (err) {
           this.logger.attachError(err).warn('Cannot create entity')
@@ -178,6 +181,7 @@ export class NLURouter extends CustomStudioRouter {
           })) as sdk.NLU.EntityDefinition
 
           await this.service.entities.updateEntity(botId, id, entityDef)
+          await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(200)
         } catch (err) {
           this.logger.attachError(err).error('Could not update entity')
@@ -214,6 +218,8 @@ export class NLURouter extends CustomStudioRouter {
             }
             return this.service.intents.saveIntent(botId, updatedIntent)
           })
+
+          await this.service.getBot(botId).refreshNeedsTraining()
 
           res.sendStatus(204)
         } catch (err) {
