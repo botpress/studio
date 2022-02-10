@@ -20,3 +20,5 @@ metadata.json
 !.yarn/versions
 
 .parcel-cache
+
+packages/logger/tsconfig.tsbuildinfo
