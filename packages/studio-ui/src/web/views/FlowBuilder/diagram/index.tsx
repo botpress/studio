@@ -22,6 +22,7 @@ import {
   createFlowNode,
   fetchFlows,
   insertNewSkillNode,
+  insertNewSkill,
   openFlowNodeProps,
   pasteFlowNode,
   refreshFlowsLinks,
@@ -32,9 +33,11 @@ import {
   updateFlow,
   updateFlowNode,
   updateFlowProblems,
-  zoomToLevel
+  zoomToLevel,
+  insertComponentElementFlow
 } from '~/actions'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
+
 import { DIAGRAM_PADDING } from './constants'
 
 import { prepareEventForDiagram } from './debugger'
@@ -314,6 +317,8 @@ class Diagram extends Component<Props> {
     triggerNode: (point: Point) => {
       this.props.createFlowNode({ ...point, type: 'trigger', conditions: [], next: [defaultTransition] })
     },
+    componentNodes: (point: Point, componentName: string) =>
+      this.props.insertComponentElementFlow({ ...point, componentName }),
     sayNode: (point: Point) => {
       this.props.createFlowNode({
         ...point,
@@ -402,6 +407,23 @@ class Diagram extends Component<Props> {
               tagName="button"
               onClick={wrap(this.add.skillNode, point, skill.id)}
               icon={skill.icon}
+            />
+          ))}
+        </MenuItem>
+        <MenuItem
+          tagName="button"
+          text={lang.tr('templates')}
+          icon="search-template"
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+        >
+          {this.props.components.map((component) => (
+            <MenuItem
+              key={component.id}
+              text={lang.tr(component.name)}
+              tagName="button"
+              onClick={wrap(this.add.componentNodes, point, component.id)}
             />
           ))}
         </MenuItem>
@@ -771,7 +793,8 @@ const mapStateToProps = (state: RootReducer) => ({
   debuggerEvent: state.flows.debuggerEvent,
   zoomLevel: state.ui.zoomLevel,
   conditions: state.ndu.conditions,
-  skills: state.skills.installed
+  skills: state.skills.installed,
+  components: state.components.installed
 })
 
 const mapDispatchToProps = {
@@ -786,6 +809,7 @@ const mapDispatchToProps = {
   updateFlowNode,
   switchFlow,
   updateFlow,
+  insertComponentElementFlow,
   copyFlowNodes,
   pasteFlowNode,
   refreshFlowsLinks,

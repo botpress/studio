@@ -6,6 +6,7 @@ import {
   fetchBotInformation,
   fetchModules,
   fetchSkills,
+  fetchComponents,
   fetchUser,
   getModuleTranslations,
   handleReceiveFlowsModification,
@@ -19,6 +20,7 @@ import Routes, { history } from '../Routes'
 interface Props {
   fetchModules: () => void
   fetchSkills: () => void
+  fetchComponents: () => void
   refreshHints: () => void
   fetchBotInformation: () => void
   getModuleTranslations: () => void
@@ -33,6 +35,7 @@ class App extends Component<Props> {
     this.props.fetchBotInformation()
     this.props.fetchModules()
     this.props.fetchSkills()
+    this.props.fetchComponents()
     this.props.fetchUser()
     if (window.IS_BOT_MOUNTED) {
       this.props.refreshHints()
@@ -113,6 +116,7 @@ const mapDispatchToProps = {
   fetchBotInformation,
   fetchModules,
   fetchSkills,
+  fetchComponents,
   refreshHints,
   handleReceiveFlowsModification,
   getModuleTranslations

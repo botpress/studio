@@ -485,6 +485,9 @@
         "generatingSkillFlow": "Generating your skill flow...",
         "insert": "Insert a new skill"
       },
+      "templateAdder": {
+        "template": "template"
+      },
       "toolbar": {
         "clickDetails": "Click for more details",
         "currentlyEditing": "{name} is currently editing this flow",

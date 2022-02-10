@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import * as sdk from 'botpress/sdk'
 import { FlowPoint, FlowView, NodeProblem } from 'common/typings'
 import _ from 'lodash'
@@ -239,6 +239,85 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     }
   }
 }
+
+export const insertComponentElementFlow =
+  (payload: { x: number; y: number; componentName: string }) => async (dispatch, getState) => {
+    // Create skills nodes is exist
+    // Insert skill node exist
+    const state = getState()
+    const { data } = await axios.get(`${window.BOT_API_PATH}/mod/basic-components/components/${payload.componentName}`)
+    // Transform Post Data content-type into consumable node flow.
+    for (const i in data.flow.nodes) {
+      const normalNode = data.flow.nodes[i]
+      if (normalNode?.onEnter) {
+        for (const j in normalNode?.onEnter) {
+          const onEnter = normalNode?.onEnter[j]
+          if (_.isObject(onEnter)) {
+            const nameBuiltNode = await createContentType(onEnter)
+            data.flow.nodes[i].onEnter[j] = `say #!${nameBuiltNode}`
+          }
+        }
+      }
+
+      if (normalNode?.onReceive) {
+        for (const j in normalNode?.onReceive) {
+          const onReceive = normalNode?.onReceive[j]
+
+          if (_.isObject(onReceive)) {
+            const nameBuiltNode = await createContentType(onReceive)
+            data.flow.nodes[i].onReceive[j] = `say #!${nameBuiltNode}`
+          }
+        }
+      }
+    }
+
+    if (data && data?.skills) {
+      for (const nodeSkill of data?.skills) {
+        // Create ContentType
+        if (nodeSkill?.contentType) {
+          const contentId = await createContentType(nodeSkill?.contentType)
+          // Added the contentId in the skill if necessary
+          nodeSkill.skillData['contentId'] = contentId
+        }
+        // Create Flow
+        const { data } = await axios.post(
+          `${window.API_PATH}/studio/modules/basic-skills/skill/${nodeSkill.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
+          nodeSkill.skillData
+        )
+        const skillNode = {
+          generatedFlow: data.flow,
+          location: nodeSkill.location,
+          flow: nodeSkill.flow,
+          name: nodeSkill.location,
+          skillData: nodeSkill.skillData
+        }
+        try {
+          await FlowsAPI.apiInsertFlow(skillNode)
+          dispatch(requestInsertNewSkillNoBuffer(skillNode))
+        } catch (e) {
+          // Display an error to the frontend
+          continue
+        }
+      }
+    }
+
+    dispatch(refreshFlowsLinks())
+    dispatch(requestPasteFlowNode({ ...payload, nodes: data.flow.nodes }))
+    await updateCurrentFlow(payload, state)
+
+    for (const node of data.flow.nodes || []) {
+      if (node.type === 'trigger' && window.USE_ONEFLOW) {
+        await onTriggerEvent('create', node.conditions, state)
+      }
+    }
+  }
+const createContentType = async (contentElement: any) => {
+  return axios
+    .post(`${window.STUDIO_API_PATH}/cms/${contentElement.contentType}/element/`, { formData: contentElement.formData })
+    .then((resp: AxiosResponse<string>) => {
+      return resp.data
+    })
+}
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
 // actions that do not modify flow
@@ -395,6 +474,7 @@ export const fetchSkills = () => (dispatch) => {
 // Skills
 export const requestInsertNewSkill = createAction('SKILLS/INSERT')
 export const requestInsertNewSkillNode = createAction('SKILLS/INSERT/NODE')
+export const requestInsertNewSkillNoBuffer = createAction('SKILLS/INSERT/FLOW')
 export const requestUpdateSkill = createAction('SKILLS/UPDATE')
 
 export const buildNewSkill: ({ location: any, id: string }) => void = createAction('SKILLS/BUILD')
@@ -440,6 +520,16 @@ export const requestEditSkill = (nodeId) => (dispatch, getState) => {
     )
 }
 
+// Component Snippet
+
+export const componentsReceived = createAction('COMPONENTS/RECEIVED')
+export const fetchComponents = () => (dispatch) => {
+  // api/v1/bots/fallback/mod/basic-components/components
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  axios.get(`${window.BOT_API_PATH}/mod/basic-components/components`).then((res) => {
+    dispatch(componentsReceived(res.data))
+  })
+}
 // Language
 export const changeContentLanguage = createAction('LANGUAGE/CONTENT_LANGUAGE', (contentLang) => ({ contentLang }))
 

@@ -31,6 +31,7 @@ import {
   requestUpdateFlow,
   requestUpdateFlowNode,
   requestUpdateSkill,
+  requestInsertNewSkillNoBuffer,
   setDebuggerEvent,
   setDiagramAction,
   switchFlow,
@@ -39,6 +40,7 @@ import {
 } from '~/actions'
 import { hashCode, prettyId } from '~/util'
 import { copyName } from '~/util/flows'
+import { node } from '~/views/FlowBuilder/nodeProps/style.scss'
 
 export interface FlowReducer {
   currentFlow?: string
@@ -547,6 +549,46 @@ reducer = reduceReducers(
         }
       },
 
+      [requestInsertNewSkillNoBuffer]: (state, { payload }) => {
+        const newFlow = Object.assign({}, payload.generatedFlow, {
+          skillData: payload.skillData,
+          name: payload.name,
+          location: payload.location,
+          next: [...payload.nodes]
+        })
+
+        const newNode = {
+          id: payload.name,
+          type: 'skill-call',
+          skill: payload.name,
+          name: payload.name,
+          flow: payload.flow,
+          next: [_.first(payload.nodes.next)],
+          onEnter: null,
+          onReceive: null
+        }
+        const newFlowHash = computeHashForFlow(newFlow)
+
+        return {
+          ...state,
+          flowsByName: {
+            ...state.flowsByName,
+            [payload.flow]: newFlow,
+            [state.currentFlow]: {
+              ...state.flowsByName[state.currentFlow],
+              nodes: [
+                ...state.flowsByName[state.currentFlow].nodes,
+                _.merge(newNode, _.pick(payload.location, ['x', 'y']))
+              ]
+            }
+          },
+          currentHashes: {
+            ...state.currentHashes,
+            [newFlow.name]: newFlowHash
+          }
+        }
+      },
+
       [requestUpdateSkill]: (state, { payload }) => {
         const modifiedFlow = Object.assign({}, state.flowsByName[payload.editFlowName], payload.generatedFlow, {
           skillData: payload.data,
@@ -733,7 +775,9 @@ reducer = reduceReducers(
 
         const currentFlow = state.flowsByName[state.currentFlow]
         const siblingNames = currentFlow.nodes.map(({ name }) => name)
+
         const newNodes = _.cloneDeep(nodesToPaste).map((node) => {
+          node = _.defaults({ x: _.random(-300, 300), y: _.random(-300, 300) }, node)
           const newNodeId = prettyId()
           const newName = copyName(siblingNames, node.name)
           return { ...node, id: newNodeId, newName, lastModified: new Date() }
@@ -881,6 +925,7 @@ reducer = reduceReducers(
       [requestRemoveFlowNode]: updateCurrentHash,
       [requestPasteFlowNode]: updateCurrentHash,
       [requestInsertNewSkill]: updateCurrentHash,
+      [requestInsertNewSkillNoBuffer]: updateCurrentHash,
       [requestInsertNewSkillNode]: updateCurrentHash,
       [requestUpdateSkill]: updateCurrentHash,
       [requestPasteFlowNodeElement]: updateCurrentHash

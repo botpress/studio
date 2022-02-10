@@ -60,7 +60,7 @@ export namespace FlowsAPI {
     return axios.post(`${window.STUDIO_API_PATH}/flows/${flowName}/delete`)
   }
 
-  const apiInsertFlow = async (flow) => {
+  export const apiInsertFlow = async (flow) => {
     return axios.post(`${window.STUDIO_API_PATH}/flows`, { flow })
   }
 
