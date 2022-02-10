@@ -104,8 +104,11 @@ export class CMSRouter extends CustomStudioRouter {
     const types = await this.loadContentTypes()
 
     for (let type in types) {
-      const file = path.join('content-elements', type + '.json')
-      const buffer = await Instance.readFile(file)
+      const typeFile = path.join('content-elements', type + '.json')
+      if (!(await Instance.fileExists(typeFile))) {
+        continue
+      }
+      const buffer = await Instance.readFile(typeFile)
       const elements = JSON.parse(buffer.toString()) as ContentElement[]
 
       const newElements = [...elements]
@@ -113,7 +116,7 @@ export class CMSRouter extends CustomStudioRouter {
 
       // TODO: Delete unreferenced medias in (removed[])
 
-      await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2))
+      await Instance.upsertFile(typeFile, JSON.stringify(newElements, undefined, 2))
     }
 
     // Refresh previews

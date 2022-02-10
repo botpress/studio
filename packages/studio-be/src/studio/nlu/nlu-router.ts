@@ -227,7 +227,7 @@ export class NLURouter extends CustomStudioRouter {
       ['/health', '/info'],
       this.asyncMiddleware(async (req, res) => {
         if (!this.service.isReady()) {
-          return res.send(200)
+          return res.sendStatus(200)
         }
 
         const info = await this.service.getInfo()
@@ -246,7 +246,7 @@ export class NLURouter extends CustomStudioRouter {
 
         try {
           if (!this.service.isReady()) {
-            return res.send(200)
+            return res.sendStatus(200)
           }
           const state = await this.service.getBot(botId).syncAndGetState(lang)
           res.send(state)
@@ -280,7 +280,7 @@ export class NLURouter extends CustomStudioRouter {
         const { botId, lang } = req.params
         try {
           if (!this.service.isReady()) {
-            return res.send(200)
+            return res.sendStatus(200)
           }
           await this.service.getBot(botId).cancelTraining(lang)
           res.sendStatus(200)
