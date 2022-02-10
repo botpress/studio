@@ -177,8 +177,8 @@ class ConfigView extends Component<Props, State> {
 
     const bot: Partial<BotConfig> = {
       name: this.state.name,
-      disabled: this.state.status.value === 'disabled',
-      private: this.state.status.value === 'private',
+      disabled: this.state?.status?.value === 'disabled',
+      private: this.state?.status?.value === 'private',
       description: this.state.description,
       defaultLanguage: this.state.selectedDefaultLang.value,
       languages: this.state.selectedLanguages.map((x) => x.value),

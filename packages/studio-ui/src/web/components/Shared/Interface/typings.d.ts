@@ -1,33 +1,35 @@
 import { IconName, MaybeElement, Position, IDialogProps } from '@blueprintjs/core'
 import React from 'react'
 
-export const ModuleUI: {
-  Container(props: ContainerProps): JSX.Element
-  SidePanelSection(props: SidePanelSectionProps): JSX.Element
-  SearchBar(props: SearchBarProps): JSX.Element
-  ItemList(props: ItemListProps): JSX.Element
-  KeyboardShortcut(props: KeyboardShortcutsProps): JSX.Element
-  SplashScreen(props: SplashScreenProps): JSX.Element
-  SidePanel(props: SidePanelProps): JSX.Element
-  Toolbar(props: ToolbarProps): JSX.Element
-  LeftToolbarButtons(props: ToolbarButtonsProps): JSX.Element
-  RightToolbarButtons(props: ToolbarButtonsProps): JSX.Element
-  InfoTooltip(props: InfoTooltipProps): JSX.Element
-  ElementPreview(props: ElementPreviewProps): JSX.Element
-  Item
-  ItemAction
-  SectionAction
+/* @deprecated Please use import { ModuleUI } from 'botpress/shared' */
+declare module 'botpress/ui' {
+  export function Container(props: ContainerProps): JSX.Element
+  export function SidePanelSection(props: SidePanelSectionProps): JSX.Element
+
+  export function SearchBar(props: SearchBarProps): JSX.Element
+  export function ItemList(props: ItemListProps): JSX.Element
+  export function KeyboardShortcut(props: KeyboardShortcutsProps): JSX.Element
+  export function SplashScreen(props: SplashScreenProps): JSX.Element
+  export function SidePanel(props: SidePanelProps): JSX.Element
+  export function Toolbar(props: ToolbarProps): JSX.Element
+  export function LeftToolbarButtons(props: ToolbarButtonsProps): JSX.Element
+  export function RightToolbarButtons(props: ToolbarButtonsProps): JSX.Element
+  export function InfoTooltip(props: InfoTooltipProps): JSX.Element
+  export const { Item, ItemAction, SectionAction }
 }
 
+// TODO: Find the best location for this piece of code. I've added it here so modules importing botpress/ui have access to window.*
 declare global {
   interface Window {
     __BP_VISITOR_ID: string
     botpressWebChat: any
     BOT_API_PATH: string
+    STUDIO_API_PATH: string
     API_PATH: string
     BOT_NAME: string
     BOT_ID: string
     BP_BASE_PATH: string
+    IS_CLOUD_BOT: boolean
     SEND_USAGE_STATS: boolean
     botpress: {
       [moduleName: string]: any
@@ -184,10 +186,4 @@ export interface ToolbarProps {
 export interface ToolbarButtonsProps {
   /** Elements of the button group */
   children?: JSX.Element | JSX.Element[]
-}
-
-export interface ElementPreviewProps {
-  itemId: string
-  contentLang: string
-  getAxiosClient: () => any
 }

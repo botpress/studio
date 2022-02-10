@@ -46,7 +46,7 @@ class App extends Component<Props> {
 
   componentDidMount() {
     const appName = window.APP_NAME || 'Botpress Studio'
-    const botName = window.BOT_NAME ? ` – ${window.BOT_NAME}` : ''
+    const botName = window.BOT_ID ? ` – ${window.BOT_ID}` : ''
     window.document.title = `${appName}${botName}`
 
     if (window.APP_FAVICON) {

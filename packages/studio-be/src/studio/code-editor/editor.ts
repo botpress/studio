@@ -68,7 +68,7 @@ export class Editor {
     const { baseDir, dirListingAddFields, dirListingExcluded } = def.ghost
 
     const baseExcluded = listBuiltin ? [] : getBuiltinExclusion()
-    const excluded = [...baseExcluded, ...(dirListingExcluded ?? [])]
+    const excluded = [...baseExcluded, ...(dirListingExcluded ?? []), '.DS_Store']
 
     let files = def.filenames
       ? def.filenames
@@ -137,8 +137,8 @@ export class Editor {
       return this._typings
     }
 
-    const botConfigSchema = (await Instance.readFile('bot.config.schema.json')).toString()
-    const botpressConfigSchema = (await Instance.readFile('botpress.config.schema.json')).toString() // TODO: we need to copy botpress config to bot dir ? if not already done
+    // const botConfigSchema = (await Instance.readFile('bot.config.schema.json')).toString()
+    // const botpressConfigSchema = (await Instance.readFile('botpress.config.schema.json')).toString() // TODO: we need to copy botpress config to bot dir ? if not already done
 
     const files = [
       { name: 'node.d.ts', location: path.join(__dirname, '/../../typings/node.d.txt') },
@@ -153,8 +153,8 @@ export class Editor {
 
     this._typings = {
       'process.d.ts': buildRestrictedProcessVars(),
-      'bot.config.schema.json': botConfigSchema,
-      'botpress.config.schema.json': botpressConfigSchema,
+      // 'bot.config.schema.json': botConfigSchema,
+      // 'botpress.config.schema.json': botpressConfigSchema,
       ...localTypings
     }
 
