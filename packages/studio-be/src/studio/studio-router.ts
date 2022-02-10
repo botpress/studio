@@ -123,7 +123,6 @@ export class StudioRouter extends CustomRouter {
         const { botId } = req.params
 
         const botInfo = {
-          workspaceId: 'default',
           name: 'My Bot' // TODO: fix this
         }
 
@@ -150,7 +149,6 @@ export class StudioRouter extends CustomRouter {
               window.APP_FAVICON = "${favicon}";
               window.APP_CUSTOM_CSS = "";
               window.BOT_LOCKED = false;
-              window.WORKSPACE_ID = "${botInfo.workspaceId}";
               window.IS_BOT_MOUNTED = ${true}; // TODO: fix this .. the bot might not mount
               window.IS_CLOUD_BOT = true;
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
