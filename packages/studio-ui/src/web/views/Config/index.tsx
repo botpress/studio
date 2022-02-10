@@ -106,6 +106,7 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
+    debugger
     const bot = this.props.bot
     await this.fetchLanguages()
     if (!bot) {

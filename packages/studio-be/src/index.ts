@@ -67,8 +67,7 @@ process.STUDIO_LOCATION = process.pkg
   ? path.dirname(process.execPath) // We point at the binary path
   : path.resolve(__dirname) // e.g. /dist/..
 
-process.PROJECT_LOCATION = process.env.PROJECT_LOCATION || process.STUDIO_LOCATION
-process.DATA_LOCATION = path.resolve(process.PROJECT_LOCATION, './data')
+// process.DATA_LOCATION = path.resolve(process.PROJECT_LOCATION, './data')
 
 process.stderr.write = stripDeprecationWrite
 
@@ -89,7 +88,7 @@ process.on('uncaughtException', (err) => {
 })
 
 try {
-  require('dotenv').config({ path: path.resolve(process.PROJECT_LOCATION, '.env') })
+  require('dotenv').config({ path: path.resolve(process.cwd(), '.env') })
   process.core_env = process.env as BotpressEnvironmentVariables
 
   let defaultVerbosity = process.IS_PRODUCTION ? 0 : 2
@@ -97,7 +96,7 @@ try {
     defaultVerbosity = Number(process.env.VERBOSITY_LEVEL)
   }
 
-  process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
+  process.IS_PRO_AVAILABLE = true // TODO: fix this, pull from user profile
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
@@ -120,9 +119,9 @@ try {
       async (argv) => {
         if (process.env.BP_DATA_FOLDER) {
           process.DATA_LOCATION = process.env.BP_DATA_FOLDER
-          process.IS_STANDALONE = yn(process.env.IS_STANDALONE) || false
-        } else if (argv.dataFolder) {
           process.IS_STANDALONE = true
+        } else if (argv.dataFolder) {
+          process.IS_STANDALONE = true // TODO: remove most of this
           process.IS_PRO_ENABLED = false
           process.BPFS_STORAGE = 'disk'
           process.IS_PRODUCTION = false

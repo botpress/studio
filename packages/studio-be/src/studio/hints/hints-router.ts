@@ -21,7 +21,7 @@ export class HintsRouter extends CustomStudioRouter {
           this.hasRefreshed = true // TODO: we should set this to false when  files change
         }
 
-        const allHints = this.hintsService.getHints()
+        const allHints = await this.hintsService.getHints()
         res.send({ inputs: allHints.filter((x) => x.scope === 'inputs') })
       })
     )

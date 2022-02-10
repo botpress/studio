@@ -37,6 +37,7 @@ export class FlowsRouter extends CustomStudioRouter {
     const nodeViews: NodeView[] = flow.nodes.map((n) => {
       const uiNode = uiEq.nodes.find((uiNode) => uiNode.id === n.id)
       return {
+        next: [],
         ...n,
         ...uiNode.position
       }

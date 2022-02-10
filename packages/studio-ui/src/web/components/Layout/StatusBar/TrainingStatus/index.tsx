@@ -26,7 +26,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  languages: state.bot.bot.languages,
+  languages: state.bot?.bot?.languages ?? [],
   trainSessions: state.nlu.trainSessions
 })
 export default connect(mapStateToProps)(TrainingStatusComponent)

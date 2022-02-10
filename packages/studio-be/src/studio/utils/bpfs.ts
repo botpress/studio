@@ -17,22 +17,23 @@ export interface bpfs {
 }
 
 const forceForwardSlashes = (path) => path.replace(/\\/g, '/')
+const resolvePath = (p) => path.resolve(process.DATA_LOCATION, p)
 
 export const Instance: bpfs = {
   upsertFile(filePath: string, content: string | Buffer): Promise<void> {
-    return fse.writeFile(path.resolve(process.PROJECT_LOCATION, filePath), content)
+    return fse.writeFile(resolvePath(filePath), content)
   },
   readFile(filePath: string): Promise<Buffer> {
-    return fse.readFile(path.resolve(process.PROJECT_LOCATION, filePath))
+    return fse.readFile(resolvePath(filePath))
   },
   fileExists(filePath: string): Promise<boolean> {
-    return fse.pathExists(path.resolve(process.PROJECT_LOCATION, filePath))
+    return fse.pathExists(resolvePath(filePath))
   },
   deleteFile(filePath: string): Promise<void> {
-    return fse.unlink(path.resolve(process.PROJECT_LOCATION, filePath))
+    return fse.unlink(resolvePath(filePath))
   },
   deleteDir(dirPath: string): Promise<void> {
-    return fse.remove(path.resolve(process.PROJECT_LOCATION, dirPath))
+    return fse.remove(resolvePath(dirPath))
   },
   async directoryListing(
     folder: string,
@@ -42,7 +43,7 @@ export const Instance: bpfs = {
     }
   ): Promise<string[]> {
     try {
-      await fse.access(path.resolve(process.PROJECT_LOCATION, folder), fse.constants.R_OK)
+      await fse.access(resolvePath(folder), fse.constants.R_OK)
     } catch (e) {
       // if directory doesn't exist we don't care
       if (e.code === 'ENOENT') {
@@ -53,7 +54,7 @@ export const Instance: bpfs = {
     }
 
     const globOptions: glob.IOptions = {
-      cwd: path.resolve(process.PROJECT_LOCATION, folder),
+      cwd: resolvePath(folder),
       dot: options.includeDotFiles
     }
 
@@ -76,7 +77,7 @@ export const Instance: bpfs = {
 
       const filesWithDate = await Promise.map(files, async (filePath) => ({
         filePath,
-        modifiedOn: (await fse.stat(path.join(path.resolve(process.PROJECT_LOCATION, folder), filePath))).mtime
+        modifiedOn: (await fse.stat(path.join(resolvePath(folder), filePath))).mtime
       }))
 
       return _.orderBy(filesWithDate, [column], [desc ? 'desc' : 'asc']).map((x) => forceForwardSlashes(x.filePath))
@@ -86,9 +87,9 @@ export const Instance: bpfs = {
   },
 
   async fileSize(filePath: string): Promise<number> {
-    return (await fse.stat(path.resolve(process.PROJECT_LOCATION, filePath))).size
+    return (await fse.stat(resolvePath(filePath))).size
   },
   moveFile(fromPath: string, toPath: string): Promise<void> {
-    return fse.move(path.resolve(process.PROJECT_LOCATION, fromPath), path.resolve(process.PROJECT_LOCATION, toPath))
+    return fse.move(resolvePath(fromPath), resolvePath(toPath))
   }
 }

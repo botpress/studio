@@ -9,7 +9,7 @@ const defaultFilter: CopyFilter = (path) => true
 
 export async function copyDir(src: string, dest: string, filter: CopyFilter = defaultFilter) {
   if (!path.isAbsolute(dest)) {
-    dest = path.resolve(process.PROJECT_LOCATION, dest)
+    dest = path.resolve(process.DATA_LOCATION, dest)
   }
 
   ensureDirSync(dest)

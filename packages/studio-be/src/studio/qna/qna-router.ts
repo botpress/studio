@@ -75,7 +75,7 @@ export class QNARouter extends CustomStudioRouter {
     const qFilter = options.questionFilter.toLowerCase()
     const { questions, contexts } = qnaItem.data
 
-    const contextMatches = !!_.intersection(contexts, options.contextsFilter).length
+    const contextMatches = !options.contextsFilter.length || !!_.intersection(contexts, options.contextsFilter).length
     if (!qFilter) {
       return contextMatches
     }
@@ -95,7 +95,7 @@ export class QNARouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         try {
           const {
-            query: { questionFilter = '', contextsFilter = [], limit = 50, offset = 0 }
+            query: { question = '', filteredContexts = [], limit = 50, offset = 0 }
           } = req
 
           const options: DirectoryListingOptions = { sortOrder: { column: 'filePath', desc: true } }
@@ -106,7 +106,7 @@ export class QNARouter extends CustomStudioRouter {
           })
 
           const filteredItems = qnas.filter((qnaItem) =>
-            this.applyFilters(qnaItem, <FilteringOptions>{ questionFilter, contextsFilter })
+            this.applyFilters(qnaItem, <FilteringOptions>{ questionFilter: question, contextsFilter: filteredContexts })
           )
 
           const pagedItems = filteredItems.slice(+offset, +offset + +limit)

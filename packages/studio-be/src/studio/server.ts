@@ -185,7 +185,7 @@ export class HTTPServer {
     this.app.use(bodyParser.urlencoded({ extended: true }))
 
     if (defaultConfig.cors?.enabled) {
-      this.app.use(cors(defaultConfig.cors))
+      this.app.use(cors())
     }
 
     this.app.use(

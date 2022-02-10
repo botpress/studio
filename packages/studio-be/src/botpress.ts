@@ -8,6 +8,7 @@ import moment from 'moment'
 import path from 'path'
 
 import { HTTPServer } from './studio/server'
+import { RealtimeService } from './websocket'
 import { copyDir } from 'misc/fse-pkg'
 
 export class Botpress {
@@ -16,12 +17,14 @@ export class Botpress {
   api!: typeof sdk
   httpServer: HTTPServer
   logger: sdk.Logger
+  realtime: RealtimeService
 
   constructor(logger: sdk.Logger) {
     this.botpressPath = path.join(process.cwd(), 'dist')
     this.configLocation = path.join(this.botpressPath, '/config')
     this.logger = logger
     this.httpServer = new HTTPServer(this.logger)
+    this.realtime = new RealtimeService()
   }
 
   async start() {
@@ -42,6 +45,7 @@ export class Botpress {
     await this.initializeServices()
     await this.deployAssets()
     await this.startServer()
+    await this.realtime.installOnHttpServer(this.httpServer.httpServer)
     // TODO: Mount bot
 
     AppLifecycle.setDone(AppLifecycleEvents.BOTPRESS_READY)

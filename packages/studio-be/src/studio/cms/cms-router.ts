@@ -41,7 +41,7 @@ export class CMSRouter extends CustomStudioRouter {
       .filter((file) => !file.startsWith('_')) // content types starting with _ are shared code
 
     const types = await Promise.map(files, async (file) => {
-      const content = require(path.join('content-types', file)) // TODO: does that actually work?
+      const content = require(path.join(process.DATA_LOCATION, 'content-types', file)).default
       return content
     })
 
@@ -58,7 +58,11 @@ export class CMSRouter extends CustomStudioRouter {
 
     const elementByTypes = await Promise.map(files, async (file) => {
       const content = await Instance.readFile(path.join('content-elements', file))
-      return { type: file.replace(/\.json$/i, ''), elements: JSON.parse(content.toString()) as ContentElement[] }
+      const type = file.replace(/\.json$/i, '')
+      return {
+        type: type,
+        elements: (JSON.parse(content.toString()) as ContentElement[]).map((x) => ({ ...x, contentType: type }))
+      }
     })
 
     return elementByTypes
@@ -285,9 +289,10 @@ export class CMSRouter extends CustomStudioRouter {
 
         const typesById = await this.loadContentTypes()
         const allElements = await this.getContentElementsWithPreviews()
-        const type = typesById[contentType]
+        const type = contentType ? typesById[contentType] : null
 
-        const elements = allElements.find((x) => x.type === contentType)?.elements || []
+        const filteredTypes = contentType ? allElements.filter((x) => x.type === contentType) : allElements
+        const elements = _.flatten(filteredTypes.map((x) => x.elements))
 
         // TODO: Move content translation logic to front-end (_translateElement)
 
@@ -318,15 +323,18 @@ export class CMSRouter extends CustomStudioRouter {
           sorted = sorted.slice(0, params.count)
         }
 
-        return sorted.map((element) => ({
+        const result = sorted.map((element) => ({
           ...element,
+
           schema: {
-            json: type.jsonSchema,
-            ui: type.uiSchema,
-            title: type.title,
-            renderer: type.id
+            json: typesById[element.contentType].jsonSchema,
+            ui: typesById[element.contentType].uiSchema,
+            title: typesById[element.contentType].title,
+            renderer: typesById[element.contentType].id
           }
         }))
+
+        res.send(result)
       })
     )
 
