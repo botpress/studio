@@ -57,7 +57,7 @@ export const UsageModal: FC<Props> = (props) => {
       const flowName = x.original.name.replace(/\.flow\.json$/i, '')
       return `/studio/${window.BOT_ID}/flows/${flowName}/#search:${x.original.node}`
     } else {
-      return `/studio/${window.BOT_ID}/modules/qna?id=${x.original.id}`
+      return `/studio/${window.BOT_ID}/qna?id=${x.original.id}`
     }
   }
 

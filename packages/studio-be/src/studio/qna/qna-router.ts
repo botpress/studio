@@ -271,13 +271,17 @@ export class QNARouter extends CustomStudioRouter {
           )
         })
 
-        const usage = _.chain(qnas)
-          .flatMapDeep((qna) => Object.values(qna.data.answers))
-          .filter((a) => a.startsWith('#!'))
-          .groupBy(_.identity)
-          .value()
+        const contentElements = {}
 
-        res.send(usage)
+        for (let qna of qnas) {
+          for (let answer of _.flatten(Object.values(qna.data.answers))) {
+            if (answer.startsWith('#!')) {
+              contentElements[answer] = _.uniq([...(contentElements[answer] || []), qna.id])
+            }
+          }
+        }
+
+        res.send(contentElements)
       })
     )
 
