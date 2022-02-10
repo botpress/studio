@@ -97,7 +97,7 @@ export const FileTypes: { [type: string]: FileDefinition } = {
   action_http: {
     permission: 'actions',
     ghost: {
-      baseDir: '/actions',
+      baseDir: 'actions',
       shouldSyncToDisk: true,
       upsertFilename: (file: EditableFile) => file.location.replace('.js', '.http.js')
     }
@@ -105,14 +105,14 @@ export const FileTypes: { [type: string]: FileDefinition } = {
   action_legacy: {
     permission: 'actions',
     ghost: {
-      baseDir: '/actions',
+      baseDir: 'actions',
       shouldSyncToDisk: true
     }
   },
   hook: {
     permission: 'hooks',
     ghost: {
-      baseDir: '/hooks',
+      baseDir: 'hooks',
       dirListingAddFields: (filepath: string) => ({ hookType: filepath.substr(0, filepath.indexOf('/')) }),
       upsertLocation: (file: EditableFile) => `/hooks/${file.hookType}`,
       upsertFilename: (file: EditableFile) => file.location.replace(file.hookType!, ''),
@@ -125,27 +125,10 @@ export const FileTypes: { [type: string]: FileDefinition } = {
       return HOOK_SIGNATURES[file.hookType!] === undefined && `Invalid hook type "${file.hookType}"`
     }
   },
-  bot_config: {
-    isJSON: true,
-    permission: 'bot_config',
-    filenames: ['bot.config.json'],
-    ghost: {
-      baseDir: '/'
-    },
-    canDelete: () => false
-  },
-  module_config: {
-    isJSON: true,
-    permission: 'module_config',
-    ghost: {
-      baseDir: '/config'
-    },
-    canDelete: (file: EditableFile) => !!file.botId
-  },
   components: {
     permission: 'components',
     ghost: {
-      baseDir: '/components'
+      baseDir: 'components'
     }
   }
 }

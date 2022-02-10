@@ -146,7 +146,6 @@ export class StudioRouter extends CustomRouter {
               window.BOT_ID = "${botId}";
               window.BOT_NAME = "${botInfo.name}";
               window.BP_BASE_PATH = "${process.ROOT_PATH}/studio/${botId}";
-              window.APP_VERSION = "${process.BOTPRESS_VERSION}";
               window.APP_NAME = "Botpress Studio";
               window.APP_FAVICON = "${favicon}";
               window.APP_CUSTOM_CSS = "";

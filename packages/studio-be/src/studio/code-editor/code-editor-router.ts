@@ -4,6 +4,21 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 import { Editor } from './editor'
 
+const permissions = {
+  hooks: {
+    type: 'hook',
+    isGlobal: true,
+    read: true,
+    write: true
+  },
+  actions: {
+    type: 'action_legacy',
+    isGlobal: true,
+    read: true,
+    write: true
+  }
+}
+
 export class CodeEditorRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('CodeEditor', services.logger)
@@ -22,7 +37,8 @@ export class CodeEditorRouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req: any, res) => {
         // TODO: params.botId doesn't exist anymore
         // TODO: remove "include builtin" param from UI
-        res.send(await editor.forBot(req.params.botId).getAllFiles(req.permissions, false))
+
+        res.send(await editor.forBot(req.params.botId).getAllFiles(permissions, false))
       })
     )
 
@@ -92,7 +108,7 @@ export class CodeEditorRouter extends CustomStudioRouter {
       '/permissions',
       this.checkTokenHeader,
       this.asyncMiddleware(async (req: any, res) => {
-        res.send(req.permissions)
+        res.send(permissions)
       })
     )
 
