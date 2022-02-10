@@ -2,10 +2,10 @@ import { Icon } from '@blueprintjs/core'
 import React, { FC, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { buildNewSkill } from '~/actions'
-import Say from '~/components/Shared/Icons/Say'
-import ToolTip from '~/components/Shared/ToolTip'
+import Say from '~/components/shared/Icons/Say'
+import ToolTip from '~/components/shared/ToolTip'
 import { lang } from '~/components/shared/translations'
-import { AccessControl } from '~/components/Shared/Utils'
+import { AccessControl } from '~/components/shared/Utils'
 
 import style from './style.scss'
 

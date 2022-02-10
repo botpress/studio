@@ -1,6 +1,6 @@
 import { Button, Icon } from '@blueprintjs/core'
 import React from 'react'
-import { KeyboardShortcut, SplashScreen } from '~/components/Shared/Interface'
+import { KeyboardShortcut, SplashScreen } from '~/components/shared/Interface'
 import { lang } from '~/components/shared/translations'
 
 import style from '../style.scss'

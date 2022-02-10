@@ -33,11 +33,11 @@ import {
   updateFlowProblems,
   zoomToLevel
 } from '~/actions'
-import contextMenu from '~/components/Shared/ContextMenu'
-import Say from '~/components/Shared/Icons/Say'
-import storage from '~/components/Shared/lite-utils/storage'
-import MainLayout from '~/components/Shared/MainLayout'
-import ShortcutLabel from '~/components/Shared/ShortcutLabel'
+import contextMenu from '~/components/shared/ContextMenu'
+import Say from '~/components/shared/Icons/Say'
+import storage from '~/components/shared/lite-utils/storage'
+import MainLayout from '~/components/shared/MainLayout'
+import ShortcutLabel from '~/components/shared/ShortcutLabel'
 import { lang } from '~/components/shared/translations'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
 import { DIAGRAM_PADDING } from './constants'

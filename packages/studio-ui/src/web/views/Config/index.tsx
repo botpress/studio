@@ -9,11 +9,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { fetchBotInformation, fetchBotLicense } from '~/actions'
-import confirmDialog from '~/components/Shared/ConfirmDialog'
-import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/Shared/Interface'
-import { toast } from '~/components/Shared/Toaster'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/shared/Interface'
+import { toast } from '~/components/shared/Toaster'
 import { lang } from '~/components/shared/translations'
-import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
+import { toastFailure, toastSuccess } from '~/components/shared/Utils/Toaster'
 import { RootReducer } from '~/reducers'
 import { BotReducer } from '~/reducers/bot'
 import { getNLUServerClient } from '~/util/nlu-client-provider'
@@ -107,7 +107,6 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    debugger
     const bot = this.props.bot
     await this.fetchLanguages()
     if (!bot) {

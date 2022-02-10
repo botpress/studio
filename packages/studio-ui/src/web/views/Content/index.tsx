@@ -16,10 +16,10 @@ import {
   upsertContentItem
 } from '~/actions'
 import CreateOrEditModal from '~/components/Content/CreateOrEditModal'
-import { Container } from '~/components/Shared/Interface'
+import { Container } from '~/components/shared/Interface'
 import { lang } from '~/components/shared/translations'
-import { inspect } from '~/components/Shared/utilities/inspect'
-import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
+import { inspect } from '~/components/shared/utilities/inspect'
+import { isOperationAllowed } from '~/components/shared/Utils/AccessControl'
 import DocumentationProvider from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
 import { FlowReducer } from '~/reducers/flows'

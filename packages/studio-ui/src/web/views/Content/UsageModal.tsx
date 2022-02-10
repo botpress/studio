@@ -2,7 +2,7 @@ import { Classes, Dialog } from '@blueprintjs/core'
 import React, { FC, useState } from 'react'
 import ReactTable from 'react-table'
 import { lang } from '~/components/shared/translations'
-import { getFlowLabel } from '~/components/Shared/Utils'
+import { getFlowLabel } from '~/components/shared/Utils'
 
 import { ContentUsage } from '.'
 import style from './style.scss'

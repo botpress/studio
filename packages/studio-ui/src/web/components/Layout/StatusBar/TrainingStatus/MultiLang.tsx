@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { Training } from 'common/nlu-training'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
-import { lang } from '~/components/Shared/translations'
+import { lang } from '~/components/shared/translations'
 import { RootReducer } from '~/reducers'
 
 import SingleLang from './SingleLang'

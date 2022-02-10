@@ -13,12 +13,12 @@ import {
   setDiagramAction,
   switchFlow
 } from '~/actions'
-import { Container } from '~/components/Shared/Interface'
+import { Container } from '~/components/shared/Interface'
 import { lang } from '~/components/shared/translations'
-import { isInputFocused } from '~/components/Shared/utilities/inputs'
-import { inspect } from '~/components/Shared/utilities/inspect'
-import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
-import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
+import { isInputFocused } from '~/components/shared/utilities/inputs'
+import { inspect } from '~/components/shared/utilities/inspect'
+import { Timeout, toastFailure, toastInfo } from '~/components/shared/Utils'
+import { isOperationAllowed } from '~/components/shared/Utils/AccessControl'
 import { RootReducer } from '~/reducers'
 
 import Diagram from './diagram'

@@ -1,7 +1,7 @@
 import { NLU } from 'botpress/sdk'
 import React, { FC, useState } from 'react'
-import confirmDialog from '~/components/Shared/ConfirmDialog'
-import { ItemList, SearchBar } from '~/components/Shared/Interface'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { ItemList, SearchBar } from '~/components/shared/Interface'
 import { lang } from '~/components/shared/translations'
 
 import { NluItem } from '..'

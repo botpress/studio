@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import { flowEditorRedo, flowEditorUndo } from '~/actions'
-import { SearchBar } from '~/components/Shared/Interface'
+import { SearchBar } from '~/components/shared/Interface'
 import { lang } from '~/components/shared/translations'
 import { canFlowRedo, canFlowUndo } from '~/reducers'
 

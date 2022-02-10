@@ -2,7 +2,7 @@ import { Button, Classes } from '@blueprintjs/core'
 import c from 'classnames'
 import React from 'react'
 import { ListGroupItem } from 'react-bootstrap'
-import { lang } from '~/components/Shared/translations'
+import { lang } from '~/components/shared/translations'
 
 import Widget from '../../Content/Select'
 import ContentPickerWidget from '../../Content/Select/Widget'

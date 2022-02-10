@@ -2,9 +2,9 @@ import { NLU } from 'botpress/sdk'
 
 import _ from 'lodash'
 import React, { FC, useState } from 'react'
-import confirmDialog from '~/components/Shared/ConfirmDialog'
-import { ItemList, SearchBar } from '~/components/Shared/Interface'
-import { toast } from '~/components/Shared/Toaster'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { ItemList, SearchBar } from '~/components/shared/Interface'
+import { toast } from '~/components/shared/Toaster'
 import { lang } from '~/components/shared/translations'
 
 import { NluItem } from '..'

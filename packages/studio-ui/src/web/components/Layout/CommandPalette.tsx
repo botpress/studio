@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { fetchBotIds, fetchContentCategories, toggleBottomPanel, toggleExplorer } from '~/actions'
 import { RootReducer } from '~/reducers'
-import { Commander } from '../Shared/Commander'
-import { QuickShortcut } from '../Shared/Commander/typings'
-import { lang } from '../Shared/translations'
+import { Commander } from '../shared/Commander'
+import { QuickShortcut } from '../shared/Commander/typings'
+import { lang } from '../shared/translations'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

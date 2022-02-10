@@ -1,6 +1,6 @@
 import classnames from 'classnames'
 import React from 'react'
-import { lang } from '~/components/Shared/translations'
+import { lang } from '~/components/shared/translations'
 
 import DebuggerIcon from '../components/DebuggerIcon'
 import style from '../style.scss'

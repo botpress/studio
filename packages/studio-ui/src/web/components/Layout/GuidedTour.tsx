@@ -1,7 +1,7 @@
 import React from 'react'
 import Tour from 'reactour'
 import { trackEvent } from '~/util/InjectSegment'
-import storage from '../Shared/lite-utils/storage'
+import storage from '../shared/lite-utils/storage'
 
 // Change this key to display the tour the next time a user opens Botpress
 const TOUR_KEY = 'guidedTour11_9_0'

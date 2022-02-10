@@ -4,7 +4,7 @@ import 'bluebird-global'
 import _ from 'lodash'
 import React, { FC, Fragment, useState } from 'react'
 import { lang } from '~/components/shared/translations'
-import { AccessControl, toastFailure } from '~/components/Shared/Utils'
+import { AccessControl, toastFailure } from '~/components/shared/Utils'
 
 const axiosConfig = { headers: { 'Content-Type': 'multipart/form-data' } }
 

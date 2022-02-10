@@ -5,8 +5,8 @@ import { Button } from 'react-bootstrap'
 import ContentForm from '~/components/ContentForm'
 
 import { getFormData } from '../../util/NodeFormData'
-import { Dialog } from '../Shared/Dialog'
-import { lang } from '../Shared/translations'
+import { Dialog } from '../shared/Dialog'
+import { lang } from '../shared/translations'
 import { isMissingCurlyBraceClosure } from '../Util/form.util'
 import withLanguage from '../Util/withLanguage'
 

@@ -6,7 +6,7 @@ const style = {
   opacity: '0.75'
 }
 
-export const BotpressTooltip = props => (
+export const BotpressTooltip = (props) => (
   <OverlayTrigger
     placement={props.placement || 'right'}
     overlay={<Tooltip id={`tooltip-${props.placement || 'right'}`}>{props.message}</Tooltip>}

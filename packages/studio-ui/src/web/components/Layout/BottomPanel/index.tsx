@@ -1,14 +1,13 @@
-import { Button, Divider, Tab, Tabs, ButtonGroup } from '@blueprintjs/core'
+import { Button, Divider, Tab, Tabs, ButtonGroup, Tooltip } from '@blueprintjs/core'
 import cx from 'classnames'
 import _ from 'lodash'
 import React, { Fragment, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { toggleBottomPanel, toggleBottomPanelExpand } from '~/actions'
-import storage from '~/components/Shared/lite-utils/storage'
-import MainLayout from '~/components/Shared/MainLayout'
-import ToolTip from '~/components/Shared/ToolTip'
-import { lang } from '~/components/Shared/translations'
+import storage from '~/components/shared/lite-utils/storage'
+import MainLayout from '~/components/shared/MainLayout'
+import { lang } from '~/components/shared/translations'
 
 import Debugger from './Debugger'
 import Inspector, { DataEntry } from './Inspector'
@@ -80,20 +79,20 @@ const BottomPanel = (props) => {
   const commonButtons = (
     <Fragment>
       <Divider />
-      <ToolTip content={lang.tr(props.bottomPanelExpanded ? 'minimize' : 'maximize')}>
+      <Tooltip content={lang.tr(props.bottomPanelExpanded ? 'minimize' : 'maximize')}>
         <Button
           id="btn-toggle-expand"
           icon={props.bottomPanelExpanded ? 'minimize' : 'maximize'}
           small
           onClick={props.toggleBottomPanelExpand}
         />
-      </ToolTip>
+      </Tooltip>
 
       <Divider />
 
-      <ToolTip content={lang.tr('bottomPanel.closePanel')}>
+      <Tooltip content={lang.tr('bottomPanel.closePanel')}>
         <Button id="btn-close" icon="cross" small onClick={props.toggleBottomPanel} />
-      </ToolTip>
+      </Tooltip>
     </Fragment>
   )
 

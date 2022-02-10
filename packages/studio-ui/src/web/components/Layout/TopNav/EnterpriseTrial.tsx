@@ -1,16 +1,17 @@
+import { Tooltip } from '@blueprintjs/core'
 import React from 'react'
-import ToolTip from '~/components/Shared/ToolTip'
-import { lang } from '~/components/Shared/translations'
+// import ToolTip from '~/components/Shared/ToolTip'
+// import { lang } from '~/components/Shared/translations'
 import style from './style.scss'
 
 export default () => {
   return window.IS_PRO_ENABLED ? (
-    <span />
+    <div />
   ) : (
-    <ToolTip position="right-bottom" content={lang.tr('topNav.salesCallToActionDescription')}>
+    <Tooltip position="right-bottom" content="topNav.salesCallToActionDescription">
       <a className={style.cta_btn} target="_blank" href="https://botpress.com/request-trial-from-app">
-        {lang.tr('topNav.salesCallToAction')}
+        {/* 'topNav.salesCallToAction' */}
       </a>
-    </ToolTip>
+    </Tooltip>
   )
 }

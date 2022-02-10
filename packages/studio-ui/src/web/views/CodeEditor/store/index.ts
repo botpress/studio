@@ -1,8 +1,8 @@
 import { EditableFile, FilePermissions, FilesDS, FileType } from 'common/code-editor'
 import { action, observable, runInAction } from 'mobx'
 import path from 'path'
-import confirmDialog from '~/components/Shared/ConfirmDialog'
-import { toast } from '~/components/Shared/Toaster'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { toast } from '~/components/shared/Toaster'
 import { lang } from '~/components/shared/translations'
 
 import { FileFilters } from '../typings'

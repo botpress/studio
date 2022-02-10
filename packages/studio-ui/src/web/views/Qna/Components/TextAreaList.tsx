@@ -5,10 +5,10 @@ import React, { FC, Fragment, useEffect, useRef, useState, KeyboardEvent } from 
 
 import BotpressContentTypePicker from '~/components/Content/Select'
 import BotpressContentPicker from '~/components/Content/Select/Widget'
-import ShortcutLabel from '~/components/Shared/ShortcutLabel'
-import Textarea from '~/components/Shared/Textarea'
+import ShortcutLabel from '~/components/shared/ShortcutLabel'
+import Textarea from '~/components/shared/Textarea'
 import { lang } from '~/components/shared/translations'
-import { controlKey } from '~/components/Shared/utilities/keyboardShortcuts'
+import { controlKey } from '~/components/shared/utilities/keyboardShortcuts'
 import style from '../style.scss'
 
 interface Props {

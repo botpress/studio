@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react'
 import { Panel, Tabs, Tab, Badge, Button } from 'react-bootstrap'
 import { lang } from '~/components/shared/translations'
 
-import { AccessControl } from '~/components/Shared/Utils'
+import { AccessControl } from '~/components/shared/Utils'
 import EditableInput from '../common/EditableInput'
 import TransitionSection from './TransitionSection'
 

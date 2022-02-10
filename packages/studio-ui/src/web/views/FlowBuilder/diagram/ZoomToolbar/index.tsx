@@ -1,7 +1,7 @@
 import { Button } from '@blueprintjs/core'
 import React from 'react'
 import { connect } from 'react-redux'
-import ToolTip from '~/components/Shared/ToolTip'
+import ToolTip from '~/components/shared/ToolTip'
 import { lang } from '~/components/shared/translations'
 
 import { RootReducer } from '../../../../reducers'

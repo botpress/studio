@@ -1,16 +1,16 @@
 import { MultiLangText } from 'botpress/sdk'
 import { isEmpty, merge } from 'lodash'
-import { createIntl, createIntlCache, IntlShape } from 'react-intl'
+
+import { createIntl, createIntlCache } from 'react-intl'
 
 import en from './en.json'
 import es from './es.json'
 import fr from './fr.json'
 
 const defaultLocale = 'en'
-let translations = {}
-
-let locale: string
-let intl: IntlShape
+window.locale = undefined
+window.intl = undefined
+window.translations = {}
 const cache = createIntlCache()
 let isDev = false
 
@@ -23,34 +23,34 @@ document.addEventListener('keydown', function (event) {
 })
 
 const langExtend = (langs) => {
-  if (isEmpty(translations)) {
-    translations = { en, fr, es }
+  if (isEmpty(window.translations)) {
+    window.translations = { en, fr, es }
   }
 
   for (const [key, value] of Object.entries(langs)) {
-    if (translations[key]) {
-      merge(translations[key], value)
+    if (window.translations[key]) {
+      merge(window.translations[key], value)
     } else {
-      translations[key] = value
+      window.translations[key] = value
     }
   }
 }
 
 const langInit = () => {
-  locale = getUserLocale()
+  window.locale = getUserLocale()
   isDev = localStorage.getItem('langdebug') === 'true'
 
-  const messages = squash(translations[locale])
-  const defaultLang = squash(translations[defaultLocale])
+  const messages = squash(window.translations[window.locale])
+  const defaultLang = squash(window.translations[defaultLocale])
   for (const key in defaultLang) {
     if (!messages[key]) {
       messages[key] = defaultLang[key]
     }
   }
 
-  intl = createIntl(
+  window.intl = createIntl(
     {
-      locale,
+      locale: window.locale,
       messages,
       defaultLocale,
       onError: (err) => {
@@ -64,11 +64,11 @@ const langInit = () => {
 }
 
 const langLocale = (): string => {
-  return locale
+  return window.locale
 }
 
 const langAvaibale = (): string[] => {
-  return Object.keys(translations)
+  return Object.keys(window.translations)
 }
 
 const squash = (space, root = {}, path = '') => {
@@ -87,7 +87,11 @@ const getUserLocale = () => {
   const browserLocale = code(navigator.language || navigator['userLanguage'] || '')
   const storageLocale = code(localStorage.getItem('uiLanguage') || '')
 
-  return translations[storageLocale] ? storageLocale : translations[browserLocale] ? browserLocale : defaultLocale
+  return window.translations[storageLocale]
+    ? storageLocale
+    : window.translations[browserLocale]
+    ? browserLocale
+    : defaultLocale
 }
 
 /**
@@ -99,13 +103,13 @@ const translate = (id: string | MultiLangText, values?: { [variable: string]: an
   }
 
   if (typeof id === 'object') {
-    return id[locale] || id[defaultLocale] || ''
+    return id[window.locale] || id[defaultLocale] || ''
   }
 
   if (isDev) {
     return id
   } else {
-    return intl.formatMessage({ id }, values)
+    return window.intl.formatMessage({ id }, values)
   }
 }
 

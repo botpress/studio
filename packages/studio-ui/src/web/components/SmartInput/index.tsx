@@ -6,11 +6,11 @@ import createSingleLinePlugin from 'draft-js-single-line-plugin'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { refreshHints } from '~/actions'
-import { lang } from '~/components/Shared/translations'
+import { lang } from '~/components/shared/translations'
 import store from '~/store'
 
 import { isRTLLocale } from '~/translations'
-import ToolTip from '../Shared/ToolTip'
+import ToolTip from '../shared/ToolTip'
 import createMentionPlugin, { defaultSuggestionsFilter } from './Base'
 import style from './styles.scss'
 
