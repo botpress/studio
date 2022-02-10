@@ -1,7 +1,7 @@
 import { configure } from 'mobx'
 import { Provider } from 'mobx-react'
 import React from 'react'
-import { Container } from '~/components/Shared/Interface'
+import { Container } from '~/components/shared/Interface'
 
 import Editor from './Editor'
 import SidePanel from './SidePanel'

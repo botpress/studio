@@ -1,7 +1,9 @@
-import { confirmDialog, lang, toast } from 'botpress/shared'
 import { EditableFile, FilePermissions, FilesDS, FileType } from 'common/code-editor'
 import { action, observable, runInAction } from 'mobx'
 import path from 'path'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
 
 import { FileFilters } from '../typings'
 import { FILENAME_REGEX } from '../utils'

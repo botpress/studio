@@ -1,8 +1,8 @@
 import { Button, Classes, MenuItem } from '@blueprintjs/core'
 import { ItemPredicate, ItemRenderer, Select } from '@blueprintjs/select'
 import { NLU } from 'botpress/sdk'
-import { lang } from 'botpress/shared'
 import React, { FC, useEffect, useState } from 'react'
+import { lang } from '~/components/shared/translations'
 
 interface Props {
   intents?: NLU.IntentDefinition[]

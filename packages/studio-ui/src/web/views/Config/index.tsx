@@ -1,7 +1,6 @@
 import { Button, Callout, FileInput, FormGroup, InputGroup, Intent, TextArea } from '@blueprintjs/core'
 import axios from 'axios'
 import { BotConfig } from 'botpress/sdk'
-import { confirmDialog, lang, toast } from 'botpress/shared'
 import { BotEditSchema } from 'common/validation'
 import Joi from 'joi'
 import _ from 'lodash'
@@ -10,9 +9,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { fetchBotInformation, fetchBotLicense } from '~/actions'
-import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/Shared/Interface'
-import { Item } from '~/components/Shared/Interface/typings'
-import { toastFailure, toastSuccess } from '~/components/Shared/Utils/Toaster'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { Container, SidePanel, SidePanelSection, ItemList } from '~/components/shared/Interface'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
+import { toastFailure, toastSuccess } from '~/components/shared/Utils/Toaster'
 import { RootReducer } from '~/reducers'
 import { BotReducer } from '~/reducers/bot'
 import { getNLUServerClient } from '~/util/nlu-client-provider'
@@ -46,7 +47,7 @@ interface StateVars {
   statuses: SelectItem[]
   error: any
   isSaving: boolean
-  items: Item[]
+  items: any[]
   activeTab?: string
 }
 
@@ -74,7 +75,7 @@ class ConfigView extends Component<Props, State> {
     coverPictureUrl: ''
   }
 
-  sideBarItems: Item[] = [
+  sideBarItems = [
     {
       label: lang.tr('general'),
       value: 'main',
@@ -106,7 +107,6 @@ class ConfigView extends Component<Props, State> {
   }
 
   async componentDidMount() {
-    debugger
     const bot = this.props.bot
     await this.fetchLanguages()
     if (!bot) {
@@ -305,7 +305,7 @@ class ConfigView extends Component<Props, State> {
     }
   }
 
-  handleElementClicked = (item: Item) => {
+  handleElementClicked = (item) => {
     for (const node of this.state.items) {
       node.selected = false
     }

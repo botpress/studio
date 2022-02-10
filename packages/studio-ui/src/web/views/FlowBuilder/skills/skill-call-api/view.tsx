@@ -3,7 +3,7 @@ import React from 'react'
 import { Tabs, Tab, Row, Col, Alert } from 'react-bootstrap'
 import Select from 'react-select'
 import { Input, Label } from 'reactstrap'
-import { BotpressTooltip } from '~/components/Shared/Tooltip'
+import { BotpressTooltip } from '~/components/shared/Tooltip'
 import { LinkDocumentationProvider } from '~/components/Util/DocumentationProvider'
 import style from '../style.scss'
 

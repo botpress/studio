@@ -1,6 +1,7 @@
-import { Button, FormGroup, InputGroup, Intent, TextArea } from '@blueprintjs/core'
-import { lang, toast } from 'botpress/shared'
+import { Button, FormGroup, InputGroup, Intent } from '@blueprintjs/core'
 import React, { useEffect, useState } from 'react'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
 
 import ConfigEditor from './ConfigEditor'
 import RawPayloadSender from './RawPayloadSender'

@@ -1,9 +1,13 @@
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
 import { Flow, FormData } from 'botpress/sdk'
-import { contextMenu, lang, sharedStyle, ShortcutLabel, toast, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import React, { FC } from 'react'
 import { AbstractNodeFactory, DiagramEngine } from 'storm-react-diagrams'
+import contextMenu from '~/components/shared/ContextMenu'
+import ShortcutLabel from '~/components/shared/ShortcutLabel'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
+import { inspect } from '~/components/shared/utilities/inspect'
 import { BaseNodeModel } from '~/views/FlowBuilder/diagram/nodes/BaseNodeModel'
 import { StandardPortWidget } from '~/views/FlowBuilder/diagram/nodes/Ports'
 
@@ -186,7 +190,7 @@ const BlockWidget: FC<BlockProps> = ({
     <NodeWrapper
       isHighlighed={node.isHighlighted || node.isSelected()}
       isLarge={isOldNode}
-      onClick={() => utils.inspect(getCurrentFlow().nodes.find((x) => x.id === node.id))}
+      onClick={() => inspect(getCurrentFlow().nodes.find((x) => x.id === node.id))}
     >
       <NodeHeader
         className={style[nodeType]}

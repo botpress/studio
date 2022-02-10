@@ -1,4 +1,4 @@
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 import classnames from 'classnames'
 import Mustache from 'mustache'
 import React, { Component } from 'react'

@@ -1,10 +1,9 @@
 import { Button, Icon } from '@blueprintjs/core'
-import { lang, ModuleUI } from 'botpress/shared'
 import React from 'react'
+import { KeyboardShortcut, SplashScreen } from '~/components/shared/Interface'
+import { lang } from '~/components/shared/translations'
 
 import style from '../style.scss'
-
-const { KeyboardShortcut, SplashScreen } = ModuleUI
 
 export default ({ hasRawPermissions, isAdvanced, setAdvanced }) => (
   <SplashScreen

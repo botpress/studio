@@ -1,5 +1,4 @@
 import { Button, Intent } from '@blueprintjs/core'
-import { lang, Dialog } from 'botpress/shared'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
 import React, { useState, useEffect } from 'react'
@@ -7,16 +6,17 @@ import Loader from 'react-loaders'
 import { connect } from 'react-redux'
 import { cancelNewSkill, insertNewSkill, updateSkill } from '~/actions'
 import InjectedModuleView from '~/components/PluginInjectionSite/module'
+import { Dialog } from '~/components/shared/Dialog'
+import { lang } from '~/components/shared/translations'
 import { RootReducer } from '~/reducers'
 import withLanguage from '../../../components/Util/withLanguage'
 
-import { Choice } from './skill-choice'
-import { CallAPI } from './skill-call-api'
-import { Slot } from './skill-Slot'
-import { SendEmail } from './skill-send-email'
-import { AuthGate } from './skill-auth-gate'
-
 import { doGenerateFlow } from './flowGenerator'
+import { AuthGate } from './skill-auth-gate'
+import { CallAPI } from './skill-call-api'
+import { Choice } from './skill-choice'
+import { SendEmail } from './skill-send-email'
+import { Slot } from './skill-Slot'
 
 const style = require('./style.scss')
 

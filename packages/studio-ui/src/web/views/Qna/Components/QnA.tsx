@@ -1,14 +1,20 @@
-import { Button, Icon, Position, Tooltip } from '@blueprintjs/core'
+import { Button, Icon, Position } from '@blueprintjs/core'
 import { Flow, FlowNode } from 'botpress/sdk'
-import { confirmDialog, lang, MoreOptions, MoreOptionsItems, toast, utils } from 'botpress/shared'
 import cx from 'classnames'
 import { QnaItem } from 'common/typings'
 import _uniqueId from 'lodash/uniqueId'
 import React, { FC, Fragment, useMemo, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Select from 'react-select'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import MoreOptions from '~/components/shared/MoreOptions'
+import { MoreOptionsItems } from '~/components/shared/MoreOptions/typings'
+import { toast } from '~/components/shared/Toaster'
+import ToolTip from '~/components/shared/ToolTip'
+import { lang } from '~/components/shared/translations'
+import { inspect } from '~/components/shared/utilities/inspect'
 
-import { getFlowLabel } from '~/components/Shared/Utils'
+import { getFlowLabel } from '~/components/shared/Utils'
 import { isRTLLocale } from '~/translations'
 import style from '../style.scss'
 import { NEW_QNA_PREFIX } from '../utils/qnaList.utils'
@@ -46,8 +52,7 @@ const QnA: FC<Props> = (props) => {
     setExpanded,
     errorMessages,
     defaultLanguage,
-    flows,
-    isLite
+    flows
   } = props
 
   const [showRedirectToFlow, setShowRedirectToFlow] = useState(!!(data.redirectFlow || data.redirectNode))
@@ -92,7 +97,7 @@ const QnA: FC<Props> = (props) => {
     }
   ]
 
-  if (expanded && !isLite) {
+  if (expanded) {
     moreOptionsItems.push({
       label: lang.tr(!showRedirectToFlow ? 'qna.form.enableRedirection' : 'qna.form.disableRedirection'),
       action: () => {
@@ -164,7 +169,7 @@ const QnA: FC<Props> = (props) => {
           minimal
           small
           onClick={() => {
-            utils.inspect(props.qnaItem)
+            inspect(props.qnaItem)
             setExpanded(!expanded)
           }}
           className={style.questionHeader}
@@ -172,7 +177,7 @@ const QnA: FC<Props> = (props) => {
           <div className={style.left}>
             <Icon icon={!expanded ? 'chevron-right' : 'chevron-down'} />{' '}
             {!isNewQna && (
-              <Tooltip
+              <ToolTip
                 className={cx(style.tag, style.qnaId)}
                 position={Position.BOTTOM}
                 content={lang.tr('qna.form.copyIdToClipboard')}
@@ -180,13 +185,13 @@ const QnA: FC<Props> = (props) => {
                 <CopyToClipboard text={id} onCopy={() => toast.info(lang.tr('qna.form.idCopiedToClipboard'))}>
                   <span onClick={(e) => e.stopPropagation()}>ID</span>
                 </CopyToClipboard>
-              </Tooltip>
+              </ToolTip>
             )}
             <h1>{questions?.[0] || <span className={style.refTitle}>{refQuestions?.[0]}</span>}</h1>
           </div>
           <div className={style.right}>
             {(!!errorMessages.length || saveError === 'duplicated_question') && (
-              <Tooltip
+              <ToolTip
                 position={Position.BOTTOM}
                 content={
                   <ul className={style.errorsList}>
@@ -198,17 +203,17 @@ const QnA: FC<Props> = (props) => {
                 }
               >
                 <span className={cx(style.tag, style.warning)}>{lang.tr('qna.form.cantBeSaved')}</span>
-              </Tooltip>
+              </ToolTip>
             )}
             {!data.enabled && (
-              <Tooltip position={Position.BOTTOM} content={lang.tr('qna.form.disabledTooltip')}>
+              <ToolTip position={Position.BOTTOM} content={lang.tr('qna.form.disabledTooltip')}>
                 <span className={style.tag}>{lang.tr('disabled')}</span>
-              </Tooltip>
+              </ToolTip>
             )}
             {showIncomplete && (
-              <Tooltip position={Position.BOTTOM} content={lang.tr('qna.form.incompleteTooltip')}>
+              <ToolTip position={Position.BOTTOM} content={lang.tr('qna.form.incompleteTooltip')}>
                 <span className={cx(style.tag)}>{lang.tr('qna.form.incomplete')}</span>
-              </Tooltip>
+              </ToolTip>
             )}
             <span className={style.tag}>
               {`${questions?.filter((q) => q.trim()).length || 0} ${lang.tr('qna.form.q')}
@@ -220,19 +225,17 @@ const QnA: FC<Props> = (props) => {
       </div>
       {expanded && (
         <div key={contentLang} className={style.collapsibleWrapper}>
-          {!isLite && (
-            <ContextSelector
-              className={cx(style.contextSelector)}
-              contexts={data.contexts}
-              customIdSuffix={id}
-              saveContexts={(contexts) =>
-                updateQnA({
-                  id,
-                  data: { ...data, contexts }
-                })
-              }
-            />
-          )}
+          <ContextSelector
+            className={cx(style.contextSelector)}
+            contexts={data.contexts}
+            customIdSuffix={id}
+            saveContexts={(contexts) =>
+              updateQnA({
+                id,
+                data: { ...data, contexts }
+              })
+            }
+          />
           <TextAreaList
             key="questions"
             items={questions || ['']}
@@ -277,7 +280,6 @@ const QnA: FC<Props> = (props) => {
                 <h2>{lang.tr('qna.form.workflow')}</h2>
 
                 <Select
-                  tabIndex="-1"
                   value={flowsList.find((item) => item.value === data.redirectFlow)}
                   options={flowsList}
                   placeholder={lang.tr('qna.form.pickWorkflow')}
@@ -294,7 +296,6 @@ const QnA: FC<Props> = (props) => {
                 <h2>{lang.tr('qna.form.node')}</h2>
 
                 <Select
-                  tabIndex="-1"
                   value={nodeList.find((item) => item.value === data.redirectNode)}
                   options={nodeList}
                   placeholder={lang.tr('qna.form.pickNode')}

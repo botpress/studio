@@ -1,9 +1,11 @@
 import axios from 'axios'
-import { FormFields, lang, SupportedFileType } from 'botpress/shared'
 import cn from 'classnames'
 import { isBpUrl } from 'common/url'
 import React, { FC, Fragment, useState } from 'react'
-import { AccessControl } from '~/components/Shared/Utils'
+import FormFields from '~/components/shared/Form/FormFields'
+import { SupportedFileType } from '~/components/shared/Form/FormFields/typings'
+import { lang } from '~/components/shared/translations'
+import { AccessControl } from '~/components/shared/Utils'
 
 import { Schema } from '../typings'
 

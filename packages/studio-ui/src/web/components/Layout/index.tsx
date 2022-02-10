@@ -1,4 +1,3 @@
-import { lang, utils } from 'botpress/shared'
 import cx from 'classnames'
 import { Training } from 'common/nlu-training'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
@@ -16,6 +15,9 @@ import FlowBuilder from '~/views/FlowBuilder'
 import Module from '~/views/Module'
 import NLU from '~/views/Nlu'
 import QNA from '~/views/Qna'
+import storage from '../shared/lite-utils/storage'
+import { lang } from '../shared/translations'
+import { isInputFocused } from '../shared/utilities/inputs'
 
 import BottomPanel from './BottomPanel'
 import BotUmountedWarning from './BotUnmountedWarning'
@@ -28,7 +30,6 @@ import StatusBar from './StatusBar'
 import TopNav from './TopNav'
 import { TrainingStatusService } from './training-status-service'
 
-const { isInputFocused } = utils
 const WEBCHAT_PANEL_STATUS = 'bp::webchatOpened'
 
 interface OwnProps {
@@ -67,17 +68,17 @@ const Layout: FC<Props> = (props: Props) => {
         return // event is not coming from emulator
       }
 
-      if (message.data.name === 'webchatLoaded' && utils.storage.get(WEBCHAT_PANEL_STATUS) !== 'closed') {
+      if (message.data.name === 'webchatLoaded' && storage.get(WEBCHAT_PANEL_STATUS) !== 'closed') {
         toggleEmulator()
       }
 
       if (message.data.name === 'webchatOpened') {
-        utils.storage.set(WEBCHAT_PANEL_STATUS, 'opened')
+        storage.set(WEBCHAT_PANEL_STATUS, 'opened')
         props.setEmulatorOpen(true)
       }
 
       if (message.data.name === 'webchatClosed') {
-        utils.storage.set(WEBCHAT_PANEL_STATUS, 'closed')
+        storage.set(WEBCHAT_PANEL_STATUS, 'closed')
         props.setEmulatorOpen(false)
       }
     }

@@ -1,9 +1,10 @@
 import { Button, Callout, Classes, Dialog, FileInput, FormGroup, Intent, Radio, RadioGroup } from '@blueprintjs/core'
 import 'bluebird-global'
 import axios from 'axios'
-import { lang, toast } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, Fragment, useState } from 'react'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
 
 const axiosConfig = { headers: { 'Content-Type': 'multipart/form-data' } }
 
@@ -57,9 +58,10 @@ export const ImportModal: FC<Props> = (props) => {
       const form = new FormData()
       form.append('file', file)
       form.append('action', importAction)
-
-      setIsLoading(true)
       await axios.post(`${window.STUDIO_API_PATH}/qna/import`, form, axiosConfig)
+      props.onImportCompleted()
+      toast.success(lang.tr('qna.import.uploadSuccessful'))
+      closeDialog()
     } catch (err) {
       setHasError(true)
       toast.failure(err.message)

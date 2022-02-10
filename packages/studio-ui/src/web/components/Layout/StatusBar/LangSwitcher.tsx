@@ -1,7 +1,7 @@
 import { Button } from '@blueprintjs/core'
-import { Dropdown } from 'botpress/shared'
 import _ from 'lodash'
 import React, { useEffect } from 'react'
+import Dropdown from '~/components/shared/Dropdown'
 
 import withLanguage from '../../Util/withLanguage'
 
@@ -49,7 +49,7 @@ export const LanguageSwitcher = (props: Props) => {
         filterable={false}
         defaultItem={items.find((i) => i.value === props.contentLang)}
         onChange={(item) => {
-          switchLang(item.value)
+          switchlang.tr(item.value)
         }}
       >
         <Button minimal icon={<Flag languageCode={props.contentLang} />} text={props.contentLang.toUpperCase()} />

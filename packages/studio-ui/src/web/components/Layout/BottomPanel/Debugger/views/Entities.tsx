@@ -1,7 +1,7 @@
 import { HTMLTable } from '@blueprintjs/core'
 import * as sdk from 'botpress/sdk'
-import { lang } from 'botpress/shared'
 import React, { FC, Fragment } from 'react'
+import { lang } from '~/components/shared/translations'
 
 import style from '../style.scss'
 

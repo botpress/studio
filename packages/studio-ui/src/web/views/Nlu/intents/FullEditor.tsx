@@ -1,7 +1,7 @@
 import { NLU } from 'botpress/sdk'
-import { utils } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, useEffect, useRef, useState } from 'react'
+import { inspect } from '~/components/shared/utilities/inspect'
 
 import { NluClient } from '../client'
 
@@ -29,7 +29,7 @@ export const IntentEditor: FC<Props> = (props) => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     props.api.fetchIntent(props.intent).then((intent) => {
       setIntent(intent)
-      utils.inspect(intent)
+      inspect(intent)
     })
 
     return () => debouncedApiSaveIntent.current.flush()

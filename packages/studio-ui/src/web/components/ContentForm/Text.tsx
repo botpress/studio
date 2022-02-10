@@ -1,6 +1,6 @@
-import { lang } from 'botpress/shared'
 import React, { FC, useEffect, useRef } from 'react'
 import SmartInput from '~/components/SmartInput'
+import { lang } from '../shared/translations'
 import { isMissingCurlyBraceClosure } from '../Util/form.util'
 import style from './style.scss'
 

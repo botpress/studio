@@ -1,5 +1,4 @@
 import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
-import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
 import { Categories, FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
@@ -17,8 +16,10 @@ import {
   upsertContentItem
 } from '~/actions'
 import CreateOrEditModal from '~/components/Content/CreateOrEditModal'
-import { Container } from '~/components/Shared/Interface'
-import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
+import { Container } from '~/components/shared/Interface'
+import { lang } from '~/components/shared/translations'
+import { inspect } from '~/components/shared/utilities/inspect'
+import { isOperationAllowed } from '~/components/shared/Utils/AccessControl'
 import DocumentationProvider from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
 import { FlowReducer } from '~/reducers/flows'
@@ -192,7 +193,7 @@ class ContentView extends Component<Props, State> {
 
   handleModalShowForEdit = (id: string) => {
     const contentToEdit = _.find(this.props.contentItems, { id })
-    utils.inspect(contentToEdit)
+    inspect(contentToEdit)
     this.setState({ modifyId: id, showModal: true, contentToEdit: contentToEdit.formData })
   }
 

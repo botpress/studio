@@ -16,7 +16,6 @@ import 'expose-loader?ReactBootstrap!react-bootstrap'
 import 'expose-loader?Reactstrap!reactstrap' // TODO Remove me once we migrated to blueprint
 import 'expose-loader?BlueprintJsCore!@blueprintjs/core'
 import 'expose-loader?BlueprintJsSelect!@blueprintjs/select'
-import 'expose-loader?BotpressShared!@botpress/ui-shared'
 import 'expose-loader?BotpressContentTypePicker!~/components/Content/Select'
 import 'expose-loader?BotpressContentPicker!~/components/Content/Select/Widget'
 import 'expose-loader?SmartInput!~/components/SmartInput'
@@ -27,16 +26,15 @@ import 'expose-loader?BotpressUI!~/components/Shared/Interface'
 import 'expose-loader?BotpressUtils!~/components/Shared/Utils'
 import 'expose-loader?DocumentationProvider!~/components/Util/DocumentationProvider'
 import { initializeTranslations } from './translations'
-/* eslint-enable */
-import { utils, auth, telemetry } from 'botpress/shared'
 import store from './store'
 
-import '@botpress/ui-shared/dist/theme.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'storm-react-diagrams/dist/style.min.css'
 import './theme.scss'
+import { getToken } from './components/Shared/auth'
+import { keyMap } from './components/Shared/utilities/keyboardShortcuts'
 
-const token = auth.getToken()
+const token = getToken()
 if (token) {
   if (window.USE_JWT_COOKIES) {
     axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
@@ -56,7 +54,7 @@ if (!window.BOT_ID) {
 
   ReactDOM.render(
     <Provider store={store}>
-      <HotKeys keyMap={utils.keyMap}>
+      <HotKeys keyMap={keyMap}>
         <App />
       </HotKeys>
     </Provider>,

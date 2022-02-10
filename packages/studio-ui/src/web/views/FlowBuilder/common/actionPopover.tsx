@@ -1,4 +1,4 @@
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 import classnames from 'classnames'
 import { parseActionInstruction } from 'common/action'
 import React, { FC, useState } from 'react'

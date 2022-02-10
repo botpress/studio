@@ -18,7 +18,7 @@ const webConfig = {
   cache: false,
   mode: isProduction ? 'production' : 'development',
   bail: true,
-  devtool: process.argv.find(x => x.toLowerCase() === '--nomap') ? false : 'source-map',
+  devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
   entry: {
     web: './src/web/index.jsx'
   },
@@ -37,7 +37,6 @@ const webConfig = {
     alias: {
       '~': path.resolve(__dirname, './src/web'),
       common: path.resolve(__dirname, '../studio-be/out/common'),
-      'botpress/shared': '@botpress/ui-shared',
       'botpress/sdk': path.resolve(__dirname, '../studio-be/src/sdk/botpress.d.ts')
     }
   },
@@ -249,18 +248,18 @@ const webConfig = {
   }
 }
 
-if (!isProduction) {
-  webConfig.plugins.push(
-    new HardSourceWebpackPlugin({
-      info: {
-        mode: 'test',
-        level: 'debug'
-      }
-    })
-  )
-}
+// if (!isProduction) {
+//   webConfig.plugins.push(
+//     new HardSourceWebpackPlugin({
+//       info: {
+//         mode: 'test',
+//         level: 'debug'
+//       }
+//     })
+//   )
+// }
 
-if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
+if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
@@ -275,7 +274,7 @@ const showNodeEnvWarning = () => {
 
 const compiler = webpack(webConfig)
 
-compiler.hooks.done.tap('ExitCodePlugin', stats => {
+compiler.hooks.done.tap('ExitCodePlugin', (stats) => {
   const errors = stats.compilation.errors
   if (errors && errors.length && process.argv.indexOf('--watch') === -1) {
     for (const e of errors) {

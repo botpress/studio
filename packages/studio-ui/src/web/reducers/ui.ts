@@ -1,4 +1,3 @@
-import { utils } from 'botpress/shared'
 import _ from 'lodash'
 import { handleActions } from 'redux-actions'
 import {
@@ -14,6 +13,7 @@ import {
   viewModeChanged,
   zoomToLevel
 } from '~/actions'
+import storage from '~/components/shared/lite-utils/storage'
 
 export interface UiReducer {
   viewMode: any
@@ -31,9 +31,9 @@ const bottomPanelStorageKey = `bp::${window.BOT_ID}::bottom-panel-open`
 const inspectorEnabledStorageKey = `bp::${window.BOT_ID}::enable-inspector`
 const explorerStorageKey = `bp::${window.BOT_ID}::explorer-open`
 
-const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
-const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
-const defaultExplorerOpen = utils.storage.get<boolean>(explorerStorageKey) === true
+const defaultBottomPanelOpen = storage.get<boolean>(bottomPanelStorageKey) === true
+const defaultInspectorEnabled = storage.get<boolean>(inspectorEnabledStorageKey) === true
+const defaultExplorerOpen = storage.get<boolean>(explorerStorageKey) === true
 
 const defaultState = {
   viewMode: -1,

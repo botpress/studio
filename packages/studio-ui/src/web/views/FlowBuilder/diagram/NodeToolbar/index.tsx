@@ -1,9 +1,11 @@
-import { Icon, Tooltip } from '@blueprintjs/core'
-import { Icons, lang } from 'botpress/shared'
-import React, { FC, Fragment, useState } from 'react'
+import { Icon } from '@blueprintjs/core'
+import React, { FC, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { buildNewSkill } from '~/actions'
-import { AccessControl } from '~/components/Shared/Utils'
+import Say from '~/components/shared/Icons/Say'
+import ToolTip from '~/components/shared/ToolTip'
+import { lang } from '~/components/shared/translations'
+import { AccessControl } from '~/components/shared/Utils'
 
 import style from './style.scss'
 
@@ -20,7 +22,7 @@ const Toolbar: FC = (props: any) => {
       <ToolItem label={lang.tr('studio.flow.sidePanel.node')} type="node" id="standard" icon="chat" />
       {window.EXPERIMENTAL && (
         <Fragment>
-          <ToolItem label={lang.tr('say')} type="node" id="say_something" icon={<Icons.Say />} />
+          <ToolItem label={lang.tr('say')} type="node" id="say_something" icon={<Say />} />
           <ToolItem label={lang.tr('execute')} type="node" id="execute" icon="code" />
           <ToolItem label={lang.tr('listen')} type="node" id="listen" icon="hand" />
           <ToolItem label={lang.tr('router')} type="node" id="router" icon="fork" />
@@ -47,9 +49,9 @@ const ToolItem: FC<ToolItemProps> = ({ label, type, id, icon }) => {
         event.dataTransfer.setData('diagram-node', JSON.stringify({ type, id }))
       }}
     >
-      <Tooltip content={label}>
+      <ToolTip content={label}>
         <Icon icon={icon} />
-      </Tooltip>
+      </ToolTip>
     </div>
   )
 }

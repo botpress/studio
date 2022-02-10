@@ -1,7 +1,7 @@
 import { Icon } from '@blueprintjs/core'
 import sdk from 'botpress/sdk'
-import { lang } from 'botpress/shared'
 import React, { FC } from 'react'
+import { lang } from '~/components/shared/translations'
 
 const MIN_NB_UTTERANCES = 3
 const GOOD_NB_UTTERANCES = 10

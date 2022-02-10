@@ -1,7 +1,7 @@
 import { MenuItem, Position } from '@blueprintjs/core'
 import { ItemRenderer, MultiSelect } from '@blueprintjs/select'
-import { lang } from 'botpress/shared'
 import React, { FC, useEffect, useState } from 'react'
+import { lang } from '~/components/shared/translations'
 import { NluClient } from '../../client'
 import style from '../style.scss'
 

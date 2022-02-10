@@ -1,8 +1,9 @@
 import { Colors, Icon, Position, Tooltip } from '@blueprintjs/core'
 import * as sdk from 'botpress/sdk'
-import { ContentSection, lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, Fragment } from 'react'
+import ContentSection from '~/components/shared/ContentSection'
+import { lang } from '~/components/shared/translations'
 
 import { Intents } from '../components/Intents'
 import style from '../style.scss'

@@ -1,8 +1,8 @@
 import { NLU } from 'botpress/sdk'
-import { confirmDialog, lang } from 'botpress/shared'
 import React, { FC, useState } from 'react'
-import { ItemList, SearchBar } from '~/components/Shared/Interface'
-import { Item } from '~/components/Shared/Interface/typings'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { ItemList, SearchBar } from '~/components/shared/Interface'
+import { lang } from '~/components/shared/translations'
 
 import { NluItem } from '..'
 import { NluClient } from '../client'
@@ -53,7 +53,7 @@ export const EntitySidePanelSection: FC<Props> = (props) => {
   }
 
   const customEntities = props.entities.filter((e) => e.type !== 'system')
-  const entityItems: Item[] = customEntities
+  const entityItems = customEntities
     .filter((entity) => !entitiesFilter || entity.name.includes(entitiesFilter))
     .map((entity) => ({
       key: entity.name,

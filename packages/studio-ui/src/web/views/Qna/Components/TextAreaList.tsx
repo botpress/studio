@@ -1,12 +1,14 @@
 import { Button, Icon, Position, Tooltip } from '@blueprintjs/core'
-import { props } from 'bluebird'
-import { lang, ShortcutLabel, Textarea, utils } from 'botpress/shared'
 import cx from 'classnames'
 import _uniqueId from 'lodash/uniqueId'
 import React, { FC, Fragment, useEffect, useRef, useState, KeyboardEvent } from 'react'
 
 import BotpressContentTypePicker from '~/components/Content/Select'
 import BotpressContentPicker from '~/components/Content/Select/Widget'
+import ShortcutLabel from '~/components/shared/ShortcutLabel'
+import Textarea from '~/components/shared/Textarea'
+import { lang } from '~/components/shared/translations'
+import { controlKey } from '~/components/shared/utilities/keyboardShortcuts'
 import style from '../style.scss'
 
 interface Props {
@@ -120,7 +122,7 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
         )}
         <Tooltip
           content={lang.tr('qna.form.quickAddAlternative', {
-            shortcut: <ShortcutLabel light keys={[utils.controlKey, 'enter']} />
+            shortcut: <ShortcutLabel light keys={[controlKey, 'enter']} />
           })}
           position={Position.BOTTOM}
         >

@@ -1,10 +1,11 @@
 import { NLU } from 'botpress/sdk'
-import { confirmDialog, lang, toast } from 'botpress/shared'
 
 import _ from 'lodash'
 import React, { FC, useState } from 'react'
-import { ItemList, SearchBar } from '~/components/Shared/Interface'
-import { Item } from '~/components/Shared/Interface/typings'
+import confirmDialog from '~/components/shared/ConfirmDialog'
+import { ItemList, SearchBar } from '~/components/shared/Interface'
+import { toast } from '~/components/shared/Toaster'
+import { lang } from '~/components/shared/translations'
 
 import { NluItem } from '..'
 import { NluClient } from '../client'
@@ -93,32 +94,29 @@ export const IntentSidePanelSection: FC<Props> = (props) => {
 
   const intentItems = props.intents
     .filter((intent) => !intentsFilter || intent.name.includes(intentsFilter))
-    .map(
-      (intent) =>
-        ({
-          key: intent.name,
-          label: intent.name,
-          value: intent.name,
-          selected: props.currentItem && props.currentItem.name === intent.name,
-          contextMenu: [
-            {
-              label: lang.tr('rename'),
-              icon: 'edit',
-              onClick: () => showIntentNameModal(intent.name, 'rename')
-            },
-            {
-              label: lang.tr('duplicate'),
-              icon: 'duplicate',
-              onClick: () => showIntentNameModal(intent.name, 'duplicate')
-            },
-            {
-              label: lang.tr('delete'),
-              icon: 'delete',
-              onClick: () => deleteIntent(intent.name)
-            }
-          ]
-        } as Item)
-    )
+    .map((intent) => ({
+      key: intent.name,
+      label: intent.name,
+      value: intent.name,
+      selected: props.currentItem && props.currentItem.name === intent.name,
+      contextMenu: [
+        {
+          label: lang.tr('rename'),
+          icon: 'edit',
+          onClick: () => showIntentNameModal(intent.name, 'rename')
+        },
+        {
+          label: lang.tr('duplicate'),
+          icon: 'duplicate',
+          onClick: () => showIntentNameModal(intent.name, 'duplicate')
+        },
+        {
+          label: lang.tr('delete'),
+          icon: 'delete',
+          onClick: () => deleteIntent(intent.name)
+        }
+      ]
+    }))
 
   return (
     <div>

@@ -1,8 +1,7 @@
-import { Button } from '@blueprintjs/core'
-import { utils } from 'botpress/shared'
 import React from 'react'
 import Tour from 'reactour'
 import { trackEvent } from '~/util/InjectSegment'
+import storage from '../shared/lite-utils/storage'
 
 // Change this key to display the tour the next time a user opens Botpress
 const TOUR_KEY = 'guidedTour11_9_0'
@@ -14,8 +13,8 @@ interface Props {
 
 export default class GuidedTour extends React.Component<Props> {
   componentDidMount() {
-    if (!Boolean(utils.storage.get<boolean>(TOUR_KEY))) {
-      utils.storage.set(TOUR_KEY, true)
+    if (!Boolean(storage.get<boolean>(TOUR_KEY))) {
+      storage.set(TOUR_KEY, true)
       this.props.onToggle()
     }
   }

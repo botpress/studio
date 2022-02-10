@@ -1,5 +1,4 @@
-import { Button, Icon, Position, Tooltip } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
+import { Button, Icon, Position } from '@blueprintjs/core'
 import cx from 'classnames'
 import { ContentState, EditorState, getDefaultKeyBinding, KeyBindingUtil, Modifier } from 'draft-js'
 import Editor from 'draft-js-plugins-editor'
@@ -7,9 +6,11 @@ import createSingleLinePlugin from 'draft-js-single-line-plugin'
 import * as React from 'react'
 import { connect } from 'react-redux'
 import { refreshHints } from '~/actions'
+import { lang } from '~/components/shared/translations'
 import store from '~/store'
 
 import { isRTLLocale } from '~/translations'
+import ToolTip from '../shared/ToolTip'
 import createMentionPlugin, { defaultSuggestionsFilter } from './Base'
 import style from './styles.scss'
 
@@ -164,9 +165,9 @@ class SmartInput extends React.Component<ConnectedProps, State> {
           <>
             <MentionSuggestions onSearchChange={this.onSearchChange} suggestions={this.state.suggestions} />
             <div className={cx(style.insertBtn, { [style.insertBtnMoreSpacing]: this.props.isSideForm })}>
-              <Tooltip content={lang.tr('studio.content.insertVariable')} position={Position.TOP}>
+              <ToolTip content={lang.tr('studio.content.insertVariable')} position={Position.TOP}>
                 <Button minimal small icon={<Icon icon="code" />} text={undefined} onClick={this.insertVariable} />
-              </Tooltip>
+              </ToolTip>
               {this.props.children}
             </div>
           </>

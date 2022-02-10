@@ -1,10 +1,10 @@
 import { Button, Spinner } from '@blueprintjs/core'
 import axios from 'axios'
-import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import { Training, TrainError } from 'common/nlu-training'
 import React, { FC, useEffect, useRef, useState } from 'react'
-import { AccessControl, Timeout, toastFailure } from '~/components/Shared/Utils'
+import { lang } from '~/components/shared/translations'
+import { AccessControl, Timeout, toastFailure } from '~/components/shared/Utils'
 
 import style from './style.scss'
 

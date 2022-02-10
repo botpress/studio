@@ -1,5 +1,5 @@
 import { Button, Icon, Intent, Popover, Position, Tag, Tooltip } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 import { FlowMutex } from 'common/typings'
 import _ from 'lodash'
 import React, { FC, Fragment } from 'react'

@@ -1,7 +1,7 @@
 import { Spinner } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
 import classnames from 'classnames'
 import React from 'react'
+import { lang } from '~/components/shared/translations'
 
 import style from '../style.scss'
 

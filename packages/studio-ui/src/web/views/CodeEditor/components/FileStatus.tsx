@@ -1,7 +1,7 @@
 import { Tab, Tabs } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
 import { inject, observer } from 'mobx-react'
 import React, { useState } from 'react'
+import { lang } from '~/components/shared/translations'
 import { RootStore } from '../store'
 import style from './style.scss'
 

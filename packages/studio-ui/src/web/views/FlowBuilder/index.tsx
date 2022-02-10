@@ -1,4 +1,3 @@
-import { lang, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
@@ -14,9 +13,12 @@ import {
   setDiagramAction,
   switchFlow
 } from '~/actions'
-import { Container } from '~/components/Shared/Interface'
-import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
-import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
+import { Container } from '~/components/shared/Interface'
+import { lang } from '~/components/shared/translations'
+import { isInputFocused } from '~/components/shared/utilities/inputs'
+import { inspect } from '~/components/shared/utilities/inspect'
+import { Timeout, toastFailure, toastInfo } from '~/components/shared/Utils'
+import { isOperationAllowed } from '~/components/shared/Utils/AccessControl'
 import { RootReducer } from '~/reducers'
 
 import Diagram from './diagram'
@@ -60,7 +62,7 @@ const FlowBuilder = (props: Props) => {
 
   useEffect(() => {
     props.currentFlow && pushFlowState(props.currentFlow)
-    utils.inspect(props.flowsByName[props.currentFlow])
+    inspect(props.flowsByName[props.currentFlow])
   }, [props.currentFlow])
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const FlowBuilder = (props: Props) => {
       toastInfo(lang.tr('studio.flow.nowSaveAuto'), Timeout.LONG)
     },
     delete: (e) => {
-      if (!utils.isInputFocused()) {
+      if (!isInputFocused()) {
         e.preventDefault()
         diagram?.deleteSelectedElements()
       }
