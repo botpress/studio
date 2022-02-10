@@ -1,6 +1,6 @@
 import { ContentElement, ContentType, SearchParams } from 'botpress/sdk'
 
-import _ from 'lodash'
+import _, { find } from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -78,11 +78,21 @@ export class CMSRouter extends CustomStudioRouter {
     return this.contentElementsWithPreviews
   }
 
-  async upsertContentElement(contentType: string, content: ContentElement) {
-    const file = path.join('content-elements', contentType)
-    const buffer = await Instance.readFile(file)
-    const elements = JSON.parse(buffer.toString()) as ContentElement[]
-    const newElements = [...elements.filter((x) => x.id !== content.id), { ...content }]
+  async upsertContentElement(contentType: string, content: Partial<ContentElement>) {
+    const file = path.join('content-elements', contentType + '.json')
+
+    let elements = [] as ContentElement[]
+    if (await Instance.fileExists(file)) {
+      const buffer = await Instance.readFile(file)
+      elements = JSON.parse(buffer.toString()) as ContentElement[]
+    }
+
+    const existingElement = elements.find((x) => x.id == content.id) || { createdBy: 'admin', createdOn: new Date() } // TODO: fixme for studio user
+    const newElements = [
+      ...elements.filter((x) => x.id !== content.id),
+      { ...existingElement, ...content, modifiedOn: new Date() }
+    ]
+
     await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2))
 
     // Refresh previews
@@ -94,7 +104,7 @@ export class CMSRouter extends CustomStudioRouter {
     const types = await this.loadContentTypes()
 
     for (let type in types) {
-      const file = path.join('content-elements', type)
+      const file = path.join('content-elements', type + '.json')
       const buffer = await Instance.readFile(file)
       const elements = JSON.parse(buffer.toString()) as ContentElement[]
 
@@ -228,7 +238,10 @@ export class CMSRouter extends CustomStudioRouter {
           return result
         }, {})
 
-        temp.elements.push({ ...element, ...{ previews } })
+        temp.elements.push({
+          ...element,
+          previews
+        })
       }
       computed.push(temp)
     }
@@ -247,7 +260,7 @@ export class CMSRouter extends CustomStudioRouter {
         const typesById = await this.loadContentTypes()
         const allElements = await this.getContentElementsWithPreviews()
 
-        return Object.keys(typesById).map((type) => ({
+        const result = Object.keys(typesById).map((type) => ({
           id: type,
           count: allElements.find((x) => x.type === type)?.elements?.length,
           title: typesById[type].title,
@@ -259,6 +272,8 @@ export class CMSRouter extends CustomStudioRouter {
             renderer: type
           }
         }))
+
+        res.send({ registered: result, unregistered: [] })
       })
     )
 
@@ -388,11 +403,15 @@ export class CMSRouter extends CustomStudioRouter {
         // TODO: get languages and defaultLang necessary for computing previews
 
         const formData = { ...req.body.formData }
-        formData['id'] = formData['id'] || elementId || `${contentType.replace('#', '')}-${nanoid(6)}`
-        await this.upsertContentElement(contentType, formData)
+        const id = elementId || req.body.id || `${contentType.replace('#', '')}-${nanoid(6)}`
 
-        const element = await this.getContentElementById(formData.id)
-        res.send(element)
+        await this.upsertContentElement(contentType, {
+          id: id,
+          modifiedOn: new Date(),
+          formData
+        })
+
+        res.send(id)
       })
     )
 

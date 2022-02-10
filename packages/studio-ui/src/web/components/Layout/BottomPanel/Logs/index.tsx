@@ -96,15 +96,17 @@ class BottomPanel extends React.Component<Props, State> {
       }
     })
 
-    this.setState({
-      initialLogs: data.map((x, idx) => ({
-        id: `initial-log-${idx}`,
-        message: x.message,
-        level: x.level || 'debug',
-        ts: new Date(x.timestamp),
-        args: x.metadata
-      }))
-    })
+    data &&
+      data.length &&
+      this.setState({
+        initialLogs: data.map((x, idx) => ({
+          id: `initial-log-${idx}`,
+          message: x.message,
+          level: x.level || 'debug',
+          ts: new Date(x.timestamp),
+          args: x.metadata
+        }))
+      })
   }
 
   renderEntry(log: LogEntry): JSX.Element {

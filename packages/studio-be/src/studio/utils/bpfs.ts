@@ -20,7 +20,8 @@ const forceForwardSlashes = (path) => path.replace(/\\/g, '/')
 const resolvePath = (p) => path.resolve(process.DATA_LOCATION, p)
 
 export const Instance: bpfs = {
-  upsertFile(filePath: string, content: string | Buffer): Promise<void> {
+  async upsertFile(filePath: string, content: string | Buffer): Promise<void> {
+    await fse.ensureDir(path.dirname(resolvePath(filePath)))
     return fse.writeFile(resolvePath(filePath), content)
   },
   readFile(filePath: string): Promise<Buffer> {
