@@ -61,7 +61,7 @@ export class FlowsRouter extends CustomStudioRouter {
       this.needPermissions('read', 'bot.flows'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
-        const options: DirectoryListingOptions = { excludes: '*.flow.ui.json', sortOrder: { column: 'filePath' } }
+        const options: DirectoryListingOptions = { excludes: '*.ui.json', sortOrder: { column: 'filePath' } }
         const flowsPath = await Instance.directoryListing(FLOW_DIR, options)
         const flows = await Promise.map(flowsPath, (flowPath) => this.parseFlow(flowPath))
         res.send(flows)

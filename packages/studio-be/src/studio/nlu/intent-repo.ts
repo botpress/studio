@@ -24,7 +24,7 @@ export class IntentRepository {
   }
 
   public async getIntents(botId: string): Promise<sdk.NLU.IntentDefinition[]> {
-    const intentNames = await Instance.directoryListing(path.join(INTENTS_DIR, '*.json'), {})
+    const intentNames = await Instance.directoryListing(INTENTS_DIR, {})
     return Promise.map(intentNames, (n) => this.getIntent(botId, n))
   }
 
@@ -37,7 +37,7 @@ export class IntentRepository {
     if (!(await this.intentExists(botId, intentName))) {
       throw new Error('Intent does not exist')
     }
-    const buffer = Instance.readFile(path.join(INTENTS_DIR, `${intentName}.json`))
+    const buffer = await Instance.readFile(path.join(INTENTS_DIR, `${intentName}.json`))
     return JSON.parse(buffer.toString())
   }
 
