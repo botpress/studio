@@ -1,6 +1,7 @@
 import { Specifications as StanSpecifications } from '@botpress/nlu-client'
 import { Logger } from 'botpress/sdk'
 import { NLUProgressEvent, Training as BpTraining } from 'common/nlu-training'
+import { GlobalEvents, StudioEvents } from 'studio/events'
 
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
@@ -149,8 +150,7 @@ export class NLUService {
   private _getWebsocket = () => {
     return async (ts: BpTraining) => {
       const ev: NLUProgressEvent = { type: 'nlu', ...ts }
-      // TODO: needs to be fixed (the logic of notifyTrainUpdate is in the BP codebase)
-      // return coreActions.notifyTrainUpdate(ev)
+      GlobalEvents.fireEvent(StudioEvents.NLU_TRAINING_UPDATE, ev)
     }
   }
 }
