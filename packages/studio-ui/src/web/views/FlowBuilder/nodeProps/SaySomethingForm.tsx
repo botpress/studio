@@ -11,13 +11,12 @@ import {
   requestEditSkill,
   updateFlow
 } from '~/actions'
-import ContentForm from '~/components/ContentForm'
+import ContentForm from '~/components/ContentForm/index'
+import style from '~/components/ContentForm/style.scss'
 import { toastInfo } from '~/components/Shared/Utils'
 import withLanguage from '~/components/Util/withLanguage'
 import { getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
 import EditableInput from '~/views/FlowBuilder/common/EditableInput'
-
-import style from './style.scss'
 
 interface OwnProps {
   onDeleteSelectedElements: () => void
