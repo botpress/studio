@@ -40,7 +40,7 @@ export class EntityRepository {
   }
 
   public async getCustomEntities(botId: string): Promise<sdk.NLU.EntityDefinition[]> {
-    const intentNames = await Instance.directoryListing(path.join(ENTITIES_DIR, '*.json'), {})
+    const intentNames = await Instance.directoryListing(ENTITIES_DIR, {})
     return Promise.mapSeries(intentNames, (n) => this.getEntity(botId, n))
   }
 
