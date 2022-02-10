@@ -1301,7 +1301,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^3.23.0, @blueprintjs/core@npm:^3.23.1, @blueprintjs/core@npm:^3.45.0":
+"@blueprintjs/core@npm:^3.23.1, @blueprintjs/core@npm:^3.45.0":
   version: 3.45.0
   resolution: "@blueprintjs/core@npm:3.45.0"
   dependencies:
@@ -1323,21 +1323,6 @@ __metadata:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
   checksum: b7f1dd6fbcbb813e1ef3d6ec119d06e5fb68df11bb7a522b8e1fe59e5b336933dc69091ec2db896493730eafab76ed0f0db8d07a5ae94f6092e275512d09ed13
-  languageName: node
-  linkType: hard
-
-"@blueprintjs/datetime@npm:3.15.2":
-  version: 3.15.2
-  resolution: "@blueprintjs/datetime@npm:3.15.2"
-  dependencies:
-    "@blueprintjs/core": ^3.23.0
-    classnames: ^2.2
-    react-day-picker: 7.3.2
-    tslib: ~1.9.0
-  peerDependencies:
-    react: ^15.3.0 || 16
-    react-dom: ^15.3.0 || 16
-  checksum: 47f339428825f542203ba224322bc2ffab6f9d0d2c2137867bba990eff483600c5aad3fb30d5d6bbe3363e5b93ceab65fd14dfca0cd97d6a23f380c9db5cfe81
   languageName: node
   linkType: hard
 
@@ -1395,7 +1380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@botpress/studio-be@*, @botpress/studio-be@workspace:packages/studio-be":
+"@botpress/studio-be@workspace:packages/studio-be":
   version: 0.0.0-use.local
   resolution: "@botpress/studio-be@workspace:packages/studio-be"
   dependencies:
@@ -1482,7 +1467,6 @@ __metadata:
     "@blueprintjs/core": ^3.23.1
     "@blueprintjs/select": ^3.12.0
     "@botpress/nlu-client": 1.0.0-rc.2
-    "@botpress/ui-shared": "*"
     "@types/bluebird-global": ^3.5.13
     "@types/classnames": ^2.3.1
     "@types/lodash": ^4.14.178
@@ -1560,6 +1544,7 @@ __metadata:
     react: 16.8.6
     react-bootstrap: ^0.33.1
     react-checkbox-tree: 1.7.2
+    react-command-palette: ^0.17.1
     react-copy-to-clipboard: ^5.0.2
     react-dom: 16.8.6
     react-ga: ^2.7.0
@@ -1686,65 +1671,6 @@ __metadata:
     core-js: "*"
     react: "*"
     react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
-"@botpress/ui-shared-lite@workspace:packages/ui-shared-lite":
-  version: 0.0.0-use.local
-  resolution: "@botpress/ui-shared-lite@workspace:packages/ui-shared-lite"
-  dependencies:
-    "@types/classnames": ^2.3.1
-    "@types/js-cookie": ^2.2.7
-    classnames: ^2.3.1
-    js-cookie: ^2.2.1
-    moment: ^2.29.1
-    nanoid: ^3.2.0
-  languageName: unknown
-  linkType: soft
-
-"@botpress/ui-shared@*, @botpress/ui-shared@workspace:packages/ui-shared":
-  version: 0.0.0-use.local
-  resolution: "@botpress/ui-shared@workspace:packages/ui-shared"
-  dependencies:
-    "@blueprintjs/core": ^3.23.1
-    "@blueprintjs/datetime": 3.15.2
-    "@blueprintjs/select": ^3.12.0
-    "@botpress/studio-be": "*"
-    "@types/react": ^16.8.19
-    "@types/react-dom": ^16.8.4
-    axios: ^0.25.0
-    cross-env: ^7.0.3
-    css-loader: ^0.28.11
-    css-modules-typescript-loader: ^2.0.3
-    filemanager-webpack-plugin: 3.1.1
-    hard-source-webpack-plugin: ^0.13.1
-    js-cookie: ^2.2.1
-    moment: ^2.29.1
-    node-sass: ^4.14.1
-    node-sass-tilde-importer: ^1.0.2
-    postcss-loader: ^2.0.8
-    prop-types: ^15.6.0
-    react: ^16.8.6
-    react-command-palette: ^0.12.0-0
-    react-copy-to-clipboard: ^5.0.2
-    react-dom: ^16.8.6
-    react-dotdotdot: ^1.3.1
-    react-hotkeys: ^1.1.4
-    react-intl: ^3.12.1
-    react-router: 4.3.1
-    react-router-dom: 4.3.1
-    react-split-pane: ^0.1.89
-    rimraf: ^3.0.2
-    sass-loader: ^6.0.6
-    script-loader: ^0.7.0
-    snarkdown: ^1.2.2
-    style-loader: ^0.13.1
-    terser-webpack-plugin: ^2.2.2
-    ts-loader: ^6.0.2
-    typescript: ^4.5.5
-    webpack: 4.46
-    webpack-bundle-analyzer: ^3.5.2
-    webpack-node-externals: ^1.7.2
   languageName: unknown
   linkType: soft
 
@@ -4015,13 +3941,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/js-cookie@npm:^2.2.7":
-  version: 2.2.7
-  resolution: "@types/js-cookie@npm:2.2.7"
-  checksum: 851f47e94ca1fc43661d8f51614d67a613e7810c91b876d0a3b311ce72f7df800107fd02a08cb6948184e12c120b4f058edca2f50424d8798bdcffd6627281e3
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.6, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.9
   resolution: "@types/json-schema@npm:7.0.9"
@@ -4166,7 +4085,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^16.8.4, @types/react-dom@npm:^16.8.6":
+"@types/react-dom@npm:^16.8.6":
   version: 16.9.13
   resolution: "@types/react-dom@npm:16.9.13"
   dependencies:
@@ -4244,7 +4163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16, @types/react@npm:^16.8.19, @types/react@npm:^16.8.6":
+"@types/react@npm:^16, @types/react@npm:^16.8.6":
   version: 16.14.8
   resolution: "@types/react@npm:16.14.8"
   dependencies:
@@ -10489,7 +10408,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es6-promise@npm:^4.0.3":
+"es6-promise@npm:^4.0.3, es6-promise@npm:^4.2.8":
   version: 4.2.8
   resolution: "es6-promise@npm:4.2.8"
   checksum: 95614a88873611cb9165a85d36afa7268af5c03a378b35ca7bda9508e1d4f1f6f19a788d4bc755b3fd37c8ebba40782018e02034564ff24c9d6fa37e959ad57d
@@ -11588,13 +11507,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-parent-dir@npm:^0.3.0":
-  version: 0.3.1
-  resolution: "find-parent-dir@npm:0.3.1"
-  checksum: 55e722584760cfbc6611901c7ced5081345cf629e2ecd6a4f6704b13b5a1876c8d9d9db5fd4965ba23e1ecbc24a8b62af40379cfef1ffa0231719b9d924eebdd
-  languageName: node
-  linkType: hard
-
 "find-up@npm:^1.0.0":
   version: 1.1.2
   resolution: "find-up@npm:1.1.2"
@@ -12639,7 +12551,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hard-source-webpack-plugin@git+https://github.com/botpress/hard-source-webpack-plugin.git, hard-source-webpack-plugin@npm:^0.13.1":
+"hard-source-webpack-plugin@git+https://github.com/botpress/hard-source-webpack-plugin.git":
   version: 0.13.1
   resolution: "hard-source-webpack-plugin@git+https://github.com/botpress/hard-source-webpack-plugin.git#commit=320854a142661294dd4ecf8ab6a8a1eee9b9fddf"
   dependencies:
@@ -15653,7 +15565,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-cookie@npm:^2.2.0, js-cookie@npm:^2.2.1":
+"js-cookie@npm:^2.2.0":
   version: 2.2.1
   resolution: "js-cookie@npm:2.2.1"
   checksum: 9b1fb980a1c5e624fd4b28ea4867bb30c71e04c4484bb3a42766344c533faa684de9498e443425479ec68609e96e27b60614bfe354877c449c631529b6d932f2
@@ -18133,15 +18045,6 @@ __metadata:
   version: 2.0.1
   resolution: "node-releases@npm:2.0.1"
   checksum: b20dd8d4bced11f75060f0387e05e76b9dc4a0451f7bb3516eade6f50499ea7768ba95d8a60d520c193402df1e58cb3fe301510cc1c1ad68949c3d57b5149866
-  languageName: node
-  linkType: hard
-
-"node-sass-tilde-importer@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "node-sass-tilde-importer@npm:1.0.2"
-  dependencies:
-    find-parent-dir: ^0.3.0
-  checksum: 144581bb430c48b700322d40bb15e029996f58cb1c4f1cb62be1aeaa58648b991b4d0e92c772c55fdeb8b3432ea6a01db86c60b894726862e9138a7c9d3c16b9
   languageName: node
   linkType: hard
 
@@ -21258,29 +21161,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-autosuggest@npm:^9.4.3":
-  version: 9.4.3
-  resolution: "react-autosuggest@npm:9.4.3"
+"react-autosuggest@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "react-autosuggest@npm:10.1.0"
   dependencies:
-    prop-types: ^15.5.10
-    react-autowhatever: ^10.1.2
-    shallow-equal: ^1.0.0
-  peerDependencies:
-    react: ">=0.14.7"
-  checksum: 41e983bd4e84a4dee85b1cc61a9d09ad60c22922bb9fdf483815dfdd498a36955872912f78c020ced80d96c07a72ff1c32f9831df50cf119d81418265d8efd0d
-  languageName: node
-  linkType: hard
-
-"react-autowhatever@npm:^10.1.2":
-  version: 10.2.1
-  resolution: "react-autowhatever@npm:10.2.1"
-  dependencies:
-    prop-types: ^15.5.8
+    es6-promise: ^4.2.8
+    prop-types: ^15.7.2
     react-themeable: ^1.1.0
     section-iterator: ^2.0.0
+    shallow-equal: ^1.2.1
   peerDependencies:
-    react: ">=0.14.7"
-  checksum: 507a287d46984c6bc9fa3342ada2faf9002fee72568ce8151448908de553fd6daa501b32bec3406e18dee93939d403b8e8800c0d723f7b8435859b1ce36886e7
+    react: ">=16.3.0"
+  checksum: 3526b02bb1938374c2a0d108a03666eae24cddd8bef7686e7f6271bb4c25ad34f8b09e84d1cc2e9206aff577a742c1f8481964e75442a9e080326676ad71f8ae
   languageName: node
   linkType: hard
 
@@ -21356,19 +21248,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-command-palette@npm:^0.12.0-0":
-  version: 0.12.0-0
-  resolution: "react-command-palette@npm:0.12.0-0"
+"react-command-palette@npm:^0.17.1":
+  version: 0.17.1
+  resolution: "react-command-palette@npm:0.17.1"
   dependencies:
-    fast-deep-equal: ^3.1.1
+    fast-deep-equal: ^3.1.3
     fuzzysort: ^1.1.4
     mousetrap: ^1.6.5
-    react-autosuggest: ^9.4.3
-    react-modal: ^3.11.1
+    react-autosuggest: ^10.1.0
+    react-modal: ^3.14.4
   peerDependencies:
-    react: ^16.12.0
-    react-dom: ^16.12.0
-  checksum: b75e272df0c2b169fcacb358c95568218f23ea941003aadab69d9c32d5a46e1a3b84669f214506e9df8f00a49584189b4160fdf2f7d3f8920d617ee82b5720de
+    react: 17.x
+    react-dom: 17.x
+  checksum: 8f3bf371366993c30c76b507a18826cd4319cc49265e54dec82f7883df9c32915f64263882eb88524c436f9101a72879a4fd526b359cd0a4dcaaa5a92b43a1ff
   languageName: node
   linkType: hard
 
@@ -21384,17 +21276,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-day-picker@npm:7.3.2":
-  version: 7.3.2
-  resolution: "react-day-picker@npm:7.3.2"
-  dependencies:
-    prop-types: ^15.6.2
-  peerDependencies:
-    react: ~0.13.x || ~0.14.x || ^15.0.0 || ^16.0.0
-  checksum: ebe02c9b786a9b587f19aee315378a8c0bfd3579ae5838368cea20d08b58bd48a38ffb6d2acb2fd410ea86830670d8a0d061632d18f3152799fd58fea6ac43be
-  languageName: node
-  linkType: hard
-
 "react-dom@npm:16.8.6":
   version: 16.8.6
   resolution: "react-dom@npm:16.8.6"
@@ -21406,33 +21287,6 @@ __metadata:
   peerDependencies:
     react: ^16.0.0
   checksum: 7f8ebd8523eb4a14a1439efa009d020abc0529da25d0de251a4f3d5b3781061f6b30d72425f5fe944317850997efc6c1d667e99b1fd70172f30a976a00008bf6
-  languageName: node
-  linkType: hard
-
-"react-dom@npm:^16.8.6":
-  version: 16.14.0
-  resolution: "react-dom@npm:16.14.0"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-    prop-types: ^15.6.2
-    scheduler: ^0.19.1
-  peerDependencies:
-    react: ^16.14.0
-  checksum: 5a5c49da0f106b2655a69f96c622c347febcd10532db391c262b26aec225b235357d9da1834103457683482ab1b229af7a50f6927a6b70e53150275e31785544
-  languageName: node
-  linkType: hard
-
-"react-dotdotdot@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "react-dotdotdot@npm:1.3.1"
-  dependencies:
-    object.pick: ^1.3.0
-  peerDependencies:
-    prop-types: "*"
-    react: "*"
-    react-dom: "*"
-  checksum: b89048f91779704c239fdfa78f928553fb8be222ae71866000b5315d45a953ee780b05eb2321ae19d63e6cbf5cb7a7a6c48574340968a385c4e7ff98e8cee4ab
   languageName: node
   linkType: hard
 
@@ -21631,9 +21485,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-modal@npm:^3.11.1":
-  version: 3.14.2
-  resolution: "react-modal@npm:3.14.2"
+"react-modal@npm:^3.14.4":
+  version: 3.14.4
+  resolution: "react-modal@npm:3.14.4"
   dependencies:
     exenv: ^1.2.0
     prop-types: ^15.7.2
@@ -21642,7 +21496,7 @@ __metadata:
   peerDependencies:
     react: ^0.14.0 || ^15.0.0 || ^16 || ^17
     react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17
-  checksum: 65f5df62c1060b5cbfa8b97e8a9d7dc17a82d5f36503a25a338023562f5cbd987b1135071f7910a7502e138e43588206c8f3c50d428454171223bb0778484da4
+  checksum: 71457de902d45de390932fb68380c4a72fcd51e64faaf8b96138c3cb402d2e445002220560614ef6035eb349ff933bcbbe35c4cb85fb66c1129e65ad40336b8b
   languageName: node
   linkType: hard
 
@@ -21869,7 +21723,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^16.3.2, react@npm:^16.8.6":
+"react@npm:^16.3.2":
   version: 16.14.0
   resolution: "react@npm:16.14.0"
   dependencies:
@@ -23064,16 +22918,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.19.1":
-  version: 0.19.1
-  resolution: "scheduler@npm:0.19.1"
-  dependencies:
-    loose-envify: ^1.1.0
-    object-assign: ^4.1.1
-  checksum: 73e185a59e2ff5aa3609f5b9cb97ddd376f89e1610579d29939d952411ca6eb7a24907a4ea4556569dacb931467a1a4a56d94fe809ef713aa76748642cd96a6c
-  languageName: node
-  linkType: hard
-
 "schema-utils@npm:^0.4.0, schema-utils@npm:^0.4.5":
   version: 0.4.7
   resolution: "schema-utils@npm:0.4.7"
@@ -23383,7 +23227,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shallow-equal@npm:^1.0.0, shallow-equal@npm:^1.2.1":
+"shallow-equal@npm:^1.2.1":
   version: 1.2.1
   resolution: "shallow-equal@npm:1.2.1"
   checksum: 4f1645cc516e7754c4438db687e1da439a5f29a7dba2ba90c5f88e5708aeb17bc4355ba45cad805b0e95dc898e37d8bf6d77d854919c7512f89939986cff8cd1
@@ -25431,13 +25275,6 @@ __metadata:
   version: 1.13.0
   resolution: "tslib@npm:1.13.0"
   checksum: 50e9327361f94f328c0715582a7f725f69838ab3c2559d143643c5367262fe14552768ba8cfc65bc7dc924a619aea599b3a28b6653458cdca77bbebaf9bc8df4
-  languageName: node
-  linkType: hard
-
-"tslib@npm:~1.9.0":
-  version: 1.9.3
-  resolution: "tslib@npm:1.9.3"
-  checksum: 56ef6325adb72c6477fb48256304507a2c475d69d7ead4644d61f5685fac2a275a38cf217c556e63fc3c177e729426d730e2c2e71c8042dc6cc57338a849edb2
   languageName: node
   linkType: hard
 
