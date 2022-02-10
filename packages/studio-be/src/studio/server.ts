@@ -14,7 +14,6 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 
 import _ from 'lodash'
-import ms from 'ms'
 import path from 'path'
 import portFinder from 'portfinder'
 import { StudioRouter } from 'studio/studio-router'

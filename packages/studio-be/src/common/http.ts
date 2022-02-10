@@ -53,7 +53,7 @@ export const asyncMiddleware =
         if (!botId) {
           logger.attachError(err).debug(`[${routerName || 'api'}]`)
         } else {
-          logger.forBot(botId).attachError(err).debug(`[${botId}]`)
+          logger.attachError(err).debug(`[${botId}]`)
         }
       }
 

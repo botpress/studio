@@ -356,7 +356,7 @@ export class CMSRouter extends CustomStudioRouter {
           const element = await this.getContentElementById(elementId)
           res.send(element)
         } catch (e) {
-          this.logger.forBot(botId).warn(`The requested element doesn't exist: "${elementId}"`)
+          this.logger.warn(`The requested element doesn't exist: "${elementId}"`)
           return res.status(404).send(`Element ${elementId} not found`)
         }
       })

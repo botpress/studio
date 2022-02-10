@@ -1,6 +1,6 @@
 import 'bluebird-global'
 // eslint-disable-next-line import/order
-import '../../sdk/rewire'
+import './sdk/rewire'
 
 import { makeLogger } from '@botpress/logger'
 

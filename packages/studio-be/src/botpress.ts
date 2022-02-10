@@ -36,6 +36,7 @@ export class Botpress {
 
     AppLifecycle.setDone(AppLifecycleEvents.CONFIGURATION_LOADED)
 
+    await this.httpServer.initialize()
     await this.checkJwtSecret()
     await this.checkNLUEndpoint()
     await this.initializeServices()
