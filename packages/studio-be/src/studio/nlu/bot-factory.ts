@@ -1,5 +1,6 @@
 import { Logger } from 'botpress/sdk'
 import _ from 'lodash'
+import { CLOUD_NLU_ENDPOINT } from '.'
 import { Bot } from './bot'
 import { DefinitionsRepository } from './definitions-repository'
 import { ModelEntryService, TrainingEntryService, ModelEntryRepository } from './model-entry'
@@ -7,8 +8,6 @@ import { NLUClient } from './nlu-client'
 import pickSeed from './pick-seed'
 
 import { BotDefinition, BotConfig, TrainListener } from './typings'
-
-const CLOUD_NLU_ENDPOINT = process.env.CLOUD_NLU_ENDPOINT || 'https://nlu.botpress.dev'
 
 export class BotFactory {
   constructor(

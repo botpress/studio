@@ -6,6 +6,7 @@ import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import { Instance } from 'studio/utils/bpfs'
 import yn from 'yn'
+import { CLOUD_NLU_ENDPOINT } from '.'
 import { Bot } from './bot'
 import { BotFactory } from './bot-factory'
 import { DefinitionsRepository } from './definitions-repository'
@@ -44,15 +45,15 @@ export class NLUService {
   }
 
   public async initialize() {
-    if (!process.NLU_ENDPOINT) {
-      throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
-    }
+    // if (!process.NLU_ENDPOINT) {
+    //   throw new Error('NLU Service expects variable "NLU_ENDPOINT" to be set.')
+    // }
 
     const queueTrainingOnBotMount = false
     const trainingEnabled = !yn(process.env.BP_NLU_DISABLE_TRAINING)
 
     const baseClient = new NLUClient({
-      baseURL: process.NLU_ENDPOINT
+      baseURL: CLOUD_NLU_ENDPOINT // process.NLU_ENDPOINT
     })
 
     const socket = this._getWebsocket()
@@ -60,7 +61,7 @@ export class NLUService {
     const modelRepo = new ModelEntryRepository()
 
     const defRepo = new DefinitionsRepository(this.entities, this.intents)
-    const botFactory = new BotFactory(this._logger, defRepo, modelRepo, socket, process.NLU_ENDPOINT)
+    const botFactory = new BotFactory(this._logger, defRepo, modelRepo, socket, CLOUD_NLU_ENDPOINT)
 
     this._app = {
       baseClient,

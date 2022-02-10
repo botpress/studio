@@ -26,7 +26,8 @@ export class NLURouter extends CustomStudioRouter {
 
     // TODO: Move this in the application instead of router
     this.service.initialize().then(async (x) => {
-      const botInfo = JSON.parse(await Instance.readFile('bot.config.json').toString()) as sdk.BotConfig
+      const botConfig = (await Instance.readFile('bot.config.json')).toString()
+      const botInfo = JSON.parse(botConfig) as sdk.BotConfig
       this.service.mountBot(botInfo.id)
     })
   }

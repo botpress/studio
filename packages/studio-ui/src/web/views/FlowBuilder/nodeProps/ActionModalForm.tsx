@@ -113,6 +113,7 @@ class ActionModalForm extends Component<Props, State> {
 
   // Only allow builtin actions and internal actions on cloud-enabled bots
   isCloudSafeAction = (action: LocalActionDefinition) => {
+    // TODO: remove this
     return !this.props.isCloudBot || action.name.indexOf('builtin') === 0 || action.name.indexOf('/') === -1
   }
 

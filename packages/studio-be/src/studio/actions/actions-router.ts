@@ -27,8 +27,14 @@ export class ActionsRouter extends CustomStudioRouter {
         const actionFiles = allFiles.filter((file) => file.endsWith('.js'))
 
         const actions = await Promise.map(actionFiles, async (file) => {
+          const actionName = file.replace(/\.js$/i, '')
           const actionCode = await Instance.readFile(path.join('actions', file))
-          return extractMetadata(actionCode.toString())
+          return {
+            name: actionName,
+            legacy: true,
+            scope: 'bot',
+            ...extractMetadata(actionCode.toString())
+          }
         })
 
         res.send(Serialize(actions))

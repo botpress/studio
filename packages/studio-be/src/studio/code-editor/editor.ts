@@ -45,22 +45,22 @@ export class Editor {
 
   async fileExists(file: EditableFile): Promise<boolean> {
     const { folder, filename } = getFileLocation(file)
-    return Instance.fileExists(path.join(folder, filename))
+    return Instance.fileExists(path.join('./', folder, filename))
   }
 
   async readFileContent(file: EditableFile): Promise<string> {
     const { folder, filename } = getFileLocation(file)
-    return (await Instance.readFile(path.join(folder, filename))).toString()
+    return (await Instance.readFile(path.join('./', folder, filename))).toString()
   }
 
   async readFileBuffer(file: EditableFile): Promise<Buffer> {
     const { folder, filename } = getFileLocation(file)
-    return Instance.readFile(path.join(folder, filename))
+    return Instance.readFile(path.join('./', folder, filename))
   }
 
   async saveFile(file: EditableFile): Promise<void> {
     const { folder, filename } = getFileLocation(file)
-    return Instance.upsertFile(path.join(folder, filename), file.content!)
+    return Instance.upsertFile(path.join('./', folder, filename), file.content!)
   }
 
   async loadFiles(fileTypeId: string, botId: string, listBuiltin?: boolean): Promise<EditableFile[]> {
@@ -72,7 +72,7 @@ export class Editor {
 
     let files = def.filenames
       ? def.filenames
-      : await Instance.directoryListing(baseDir, {
+      : await Instance.directoryListing(path.join('./', baseDir), {
           excludes: excluded,
           includeDotFiles: true
         })
@@ -100,7 +100,7 @@ export class Editor {
     }
 
     const { folder, filename } = getFileLocation(file)
-    await Instance.deleteFile(path.join(folder, filename))
+    await Instance.deleteFile(path.join('./', folder, filename))
   }
 
   async renameFile(file: EditableFile, newName: string): Promise<void> {
@@ -109,11 +109,11 @@ export class Editor {
     const { folder, filename } = getFileLocation(file)
     const newFilename = filename.replace(filename, newName)
 
-    if (await Instance.fileExists(path.join(folder, newFilename))) {
+    if (await Instance.fileExists(path.join('./', folder, newFilename))) {
       throw new Error('File already exists')
     }
 
-    return Instance.moveFile(path.join(folder, filename), path.join(folder, newFilename))
+    return Instance.moveFile(path.join('./', folder, filename), path.join('./', folder, newFilename))
   }
 
   async readFile(name: string, filePath: string) {

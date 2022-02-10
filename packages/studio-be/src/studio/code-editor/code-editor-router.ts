@@ -5,18 +5,24 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { Editor } from './editor'
 
 const permissions = {
-  hooks: {
+  'bot.hooks': {
     type: 'hook',
-    isGlobal: true,
+    isGlobal: false,
     read: true,
     write: true
   },
-  actions: {
+  'bot.actions': {
     type: 'action_legacy',
-    isGlobal: true,
+    isGlobal: false,
     read: true,
     write: true
   }
+  // 'bot.components': {
+  //   type: 'components',
+  //   isGlobal: false,
+  //   read: true,
+  //   write: true
+  // }
 }
 
 export class CodeEditorRouter extends CustomStudioRouter {
