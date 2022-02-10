@@ -85,9 +85,9 @@ export class BotState {
   }
 
   private async _updateBotConfig(language: string, modelId: string) {
-    const botConfig = JSON.parse((await Instance.readFile('bot.config')).toString())
+    const botConfig = JSON.parse((await Instance.readFile('bot.config.json')).toString())
     botConfig.nluModels = { ...botConfig.nluModels, [language]: modelId }
-    await Instance.upsertFile('bot.config', JSON.stringify(botConfig, undefined, 2))
+    await Instance.upsertFile('bot.config.json', JSON.stringify(botConfig, undefined, 2))
   }
 
   private async _getTrainSet(languageCode: string): Promise<StanTrainInput & { contexts: string[] }> {
