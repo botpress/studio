@@ -1,7 +1,8 @@
 import axios from 'axios'
-import { lang, toast } from 'botpress/shared'
 import { EditableFile, FilePermissions, FilesDS } from 'common/code-editor'
 import _ from 'lodash'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/Shared/translations'
 
 export default class CodeEditorApi {
   constructor() {}

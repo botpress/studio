@@ -1,11 +1,12 @@
 import { Button, FormGroup, HTMLSelect, Intent, NonIdealState } from '@blueprintjs/core'
 import { ItemRenderer, Select } from '@blueprintjs/select'
 import axios from 'axios'
-import { Dialog, lang } from 'botpress/shared'
 import { ActionDefinition, ActionParameterDefinition, ActionServer, ActionServerWithActions } from 'common/typings'
 import _ from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
+import { Dialog } from '~/components/Shared/Dialog'
 import { InfoTooltip } from '~/components/Shared/Interface'
+import { lang } from '~/components/shared/translations'
 
 import { ActionParameters } from './ActionParameters'
 import style from './style.scss'

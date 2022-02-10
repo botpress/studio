@@ -1,7 +1,8 @@
 import { Button } from '@blueprintjs/core'
-import { lang, ToolTip } from 'botpress/shared'
 import React from 'react'
 import { connect } from 'react-redux'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/shared/translations'
 
 import { RootReducer } from '../../../../reducers'
 import { ZOOM_MAX, ZOOM_MIN } from '../constants'

@@ -1,6 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
 import { ContentElement, FormData, SearchParams } from 'botpress/sdk'
-import { Dialog, lang } from 'botpress/shared'
 import classnames from 'classnames'
 import { ParsedContentType } from 'common/typings'
 import React, { Component } from 'react'

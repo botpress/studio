@@ -3,7 +3,10 @@ import { handleActions } from 'redux-actions'
 
 import { botInfoReceived, botLicenseReceived } from '~/actions'
 
-const defaultState = {}
+const defaultState = {
+  bot: {},
+  license: false
+}
 
 export interface BotReducer {
   bot: BotConfig

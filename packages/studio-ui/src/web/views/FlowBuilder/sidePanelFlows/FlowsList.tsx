@@ -1,7 +1,9 @@
 import { Classes, ContextMenu, ITreeNode, Menu, MenuItem, Tree } from '@blueprintjs/core'
-import { confirmDialog, lang } from 'botpress/shared'
+import { FlowNode } from 'botpress/sdk'
 import { isEqual } from 'lodash'
 import React, { Component } from 'react'
+import confirmDialog from '~/components/Shared/ConfirmDialog'
+import { lang } from '~/components/shared/translations'
 
 import { buildFlowsTree } from './util'
 
@@ -58,7 +60,7 @@ export default class FlowsList extends Component<Props, State> {
   }
 
   updateFlows() {
-    const nodes = buildFlowsTree(this.props.flows, this.props.filter)
+    const nodes = buildFlowsTree(this.props.flows, this.props.filter) as FlowNode[]
 
     if (this.props.filter) {
       traverseTree(nodes, (n) => (n.isExpanded = true))

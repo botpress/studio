@@ -1,9 +1,9 @@
 import { Icon, Popover, Position } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import { Training } from 'common/nlu-training'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
+import { lang } from '~/components/Shared/translations'
 import { RootReducer } from '~/reducers'
 
 import SingleLang from './SingleLang'

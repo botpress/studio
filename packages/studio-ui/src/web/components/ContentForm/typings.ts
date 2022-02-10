@@ -1,7 +1,6 @@
-import { SupportedFileType } from 'botpress/shared'
-
 import { JSONSchema6 } from 'json-schema'
 import { FormProps } from 'react-jsonschema-form'
+import { SupportedFileType } from '../Shared/Form/FormFields/typings'
 
 export type Schema = JSONSchema6 & {
   $subtype: 'ref' | 'flow' | SupportedFileType

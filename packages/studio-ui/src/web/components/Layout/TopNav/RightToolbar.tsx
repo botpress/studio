@@ -1,8 +1,11 @@
-import { Icon, Tooltip } from '@blueprintjs/core'
-import { lang, ShortcutLabel, utils } from 'botpress/shared'
+import { Icon } from '@blueprintjs/core'
 import classNames from 'classnames'
-import React, { FC } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
+import ShortcutLabel from '~/components/Shared/ShortcutLabel'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/Shared/translations'
+import { shortControlKey } from '~/components/Shared/utilities/keyboardShortcuts'
 import { RootReducer } from '~/reducers'
 
 import style from './style.scss'
@@ -28,9 +31,9 @@ const RightToolBar = (props: Props) => {
     <div>
       {props.docHints.length > 0 && (
         <>
-          <Tooltip
+          <ToolTip
             content={
-              <div className={style.tooltip}>
+              <div className={style.ToolTip}>
                 {lang.tr('topNav.help')}
                 <div className={style.shortcutLabel}>
                   <ShortcutLabel light shortcut="docs-toggle" />
@@ -41,13 +44,13 @@ const RightToolBar = (props: Props) => {
             <button className={style.item} onClick={toggleDocs}>
               <Icon color="#1a1e22" icon="help" iconSize={16} />
             </button>
-          </Tooltip>
+          </ToolTip>
           <span className={style.divider}></span>
         </>
       )}
 
       {window.IS_BOT_MOUNTED && (
-        <Tooltip content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}>
+        <ToolTip content={lang.tr('topNav.toggleEmulator', { shortcut: `${shortControlKey} E` })}>
           <button
             className={classNames(style.item, style.itemSpacing, { [style.active]: props.isEmulatorOpen })}
             onClick={toggleEmulator}
@@ -56,7 +59,7 @@ const RightToolBar = (props: Props) => {
             <Icon color="#1a1e22" icon="chat" iconSize={16} />
             <span className={style.label}>{lang.tr('topNav.emulator')}</span>
           </button>
-        </Tooltip>
+        </ToolTip>
       )}
     </div>
   )

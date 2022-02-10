@@ -1,9 +1,11 @@
-import { Commander, lang, QuickShortcut } from 'botpress/shared'
 import React, { FC, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RouteComponentProps, withRouter } from 'react-router'
 import { fetchBotIds, fetchContentCategories, toggleBottomPanel, toggleExplorer } from '~/actions'
 import { RootReducer } from '~/reducers'
+import { Commander } from '../Shared/Commander'
+import { QuickShortcut } from '../Shared/Commander/typings'
+import { lang } from '../Shared/translations'
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps

@@ -1,6 +1,6 @@
 import { Tag } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 import classnames from 'classnames'
 import React from 'react'
 import ReactDOM from 'react-dom'

@@ -1,5 +1,4 @@
 import { H4 } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
@@ -13,6 +12,7 @@ import {
   updateFlow,
   updateFlowNode
 } from '~/actions'
+import { lang } from '~/components/shared/translations'
 import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
 
 import { nodeTypes } from '../diagram/manager'

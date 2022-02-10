@@ -1,4 +1,4 @@
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 
 import en from './en.json'
 import es from './es.json'

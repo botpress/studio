@@ -1,7 +1,7 @@
-import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
 import { connect } from 'react-redux'
+import { lang } from '~/components/Shared/translations'
 import { RootReducer } from '~/reducers'
 
 import LangSwitcher from './LangSwitcher'

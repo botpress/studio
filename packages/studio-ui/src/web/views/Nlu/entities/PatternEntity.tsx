@@ -11,10 +11,10 @@ import {
   Tooltip
 } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
-import { lang } from 'botpress/shared'
 import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
+import { lang } from '~/components/shared/translations'
 
 import style from './style.scss'
 

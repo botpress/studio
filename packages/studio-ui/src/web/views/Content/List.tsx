@@ -1,5 +1,4 @@
 import { AnchorButton, Button, Divider, InputGroup, Position, Tooltip } from '@blueprintjs/core'
-import { confirmDialog, lang } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import moment from 'moment'
@@ -8,6 +7,7 @@ import Markdown from 'react-markdown'
 import ReactTable from 'react-table'
 import 'react-table/react-table.css'
 import { LeftToolbarButtons, Toolbar } from '~/components/Shared/Interface'
+import { lang } from '~/components/shared/translations'
 import { Downloader } from '~/components/Shared/Utils'
 import withLanguage from '~/components/Util/withLanguage'
 

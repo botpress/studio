@@ -15,9 +15,9 @@ export const getFormData = (
     return defaultValue
   }
 
-  const translatedData = getFormDataForLang(node, contentLang)
+  const translatedData = getFormDataForlang.tr(node, contentLang)
   if (isFormEmpty(translatedData)) {
-    return getFormDataForLang(node, defaultLanguage)
+    return getFormDataForlang.tr(node, defaultLanguage)
   }
 
   return translatedData

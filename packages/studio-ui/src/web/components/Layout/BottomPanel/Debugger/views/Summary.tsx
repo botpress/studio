@@ -1,6 +1,8 @@
 import sdk from 'botpress/sdk'
-import { ContentSection, lang } from 'botpress/shared'
-import React, { Fragment } from 'react'
+
+import React from 'react'
+import ContentSection from '~/components/Shared/ContentSection'
+import { lang } from '~/components/Shared/translations'
 
 import style from '../style.scss'
 

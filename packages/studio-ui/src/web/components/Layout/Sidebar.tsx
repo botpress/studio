@@ -1,6 +1,5 @@
 import { Icon, Position, Tooltip } from '@blueprintjs/core'
 import { IconSvgPaths16 } from '@blueprintjs/icons'
-import { lang } from 'botpress/shared'
 import classnames from 'classnames'
 import _ from 'lodash'
 import React, { FC, Fragment } from 'react'
@@ -8,6 +7,7 @@ import { connect } from 'react-redux'
 import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom'
 import { RootReducer } from '~/reducers'
 
+import { lang } from '../Shared/translations'
 import { AccessControl } from '../Shared/Utils'
 
 import style from './Sidebar.scss'

@@ -1,4 +1,3 @@
-import { Dialog, lang } from 'botpress/shared'
 import classnames from 'classnames'
 import _ from 'lodash'
 import React from 'react'
@@ -6,6 +5,8 @@ import { Button } from 'react-bootstrap'
 import ContentForm from '~/components/ContentForm'
 
 import { getFormData } from '../../util/NodeFormData'
+import { Dialog } from '../Shared/Dialog'
+import { lang } from '../Shared/translations'
 import { isMissingCurlyBraceClosure } from '../Util/form.util'
 import withLanguage from '../Util/withLanguage'
 
@@ -52,7 +53,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
     }
   }
 
-  renderSwitchLang() {
+  renderSwitchlang() {
     return (
       <div>
         <div style={{ height: 100 }}>
@@ -121,7 +122,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
   render() {
     return (
       <Dialog.Wrapper isOpen={this.props.show} onClose={this.props.handleClose}>
-        <Dialog.Body>{this.state.mustChangeLang ? this.renderSwitchLang() : this.renderForm()}</Dialog.Body>
+        <Dialog.Body>{this.state.mustChangeLang ? this.renderSwitchlang.tr() : this.renderForm()}</Dialog.Body>
       </Dialog.Wrapper>
     )
   }

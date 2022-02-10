@@ -4,7 +4,6 @@ import React from 'react'
 import ReactGA from 'react-ga'
 import { connect } from 'react-redux'
 import { Router, Switch } from 'react-router-dom'
-import EnsureAuthenticated from '~/components/Authentication'
 import Layout from '~/components/Layout'
 import injectSegment from '~/util/InjectSegment'
 
@@ -45,7 +44,7 @@ const RoutesRouter = (props) => {
       }
     })
   }
-  const AuthenticatedLayout = window.IS_STANDALONE ? Layout : EnsureAuthenticated(Layout)
+  const AuthenticatedLayout = Layout
 
   return (
     <Router history={history}>

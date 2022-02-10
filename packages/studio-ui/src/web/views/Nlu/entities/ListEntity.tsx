@@ -1,9 +1,11 @@
 import { Button, Colors, FormGroup, Icon, InputGroup, Position, Radio, RadioGroup, Tooltip } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
-import { lang, toast, utils } from 'botpress/shared'
 import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState, useReducer } from 'react'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/shared/translations'
+import { inspect } from '~/components/Shared/utilities/inspect'
 
 import { Occurrence } from './ListEntityOccurrence'
 import style from './style.scss'
@@ -51,7 +53,7 @@ export const ListEntityEditor: React.FC<Props> = (props) => {
 
   useEffect(() => {
     dispatch({ type: 'setStateFromEntity', data: { entity: props.entity } })
-    utils.inspect(props.entity)
+    inspect(props.entity)
   }, [props.entity.name])
 
   useEffect(() => {

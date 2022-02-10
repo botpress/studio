@@ -1,9 +1,9 @@
 import { Button } from '@blueprintjs/core'
-import { lang, ToolTip } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import React, { FC, Fragment } from 'react'
 import { history } from '~/components/Routes'
+import { lang } from '~/components/shared/translations'
 
 import { NodeDebugInfo } from '../../debugger'
 
@@ -14,14 +14,7 @@ type NodeDebugInfoProps = {
   nodeType?: string
 } & NodeDebugInfo
 
-export const DebugInfo: FC<NodeDebugInfoProps> = ({
-  isEndOfFlow,
-  nextWorkflow,
-  prevWorkflow,
-  hasError,
-  nodeType,
-  className
-}) => {
+export const DebugInfo: FC<NodeDebugInfoProps> = ({ isEndOfFlow, nextWorkflow, prevWorkflow, hasError, className }) => {
   const goToFlow = (flow) => history.push(`/flows/${flow.replace(/\.flow\.json/, '')}`)
 
   const infos: JSX.Element[] = []

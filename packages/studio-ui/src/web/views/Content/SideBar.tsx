@@ -1,10 +1,10 @@
 import { IconName } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
 import { Categories } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import { ItemList, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
 import { SectionAction } from '~/components/Shared/Interface/typings'
+import { lang } from '~/components/shared/translations'
 
 export default class SidebarView extends Component<Props> {
   CATEGORY_ALL = {

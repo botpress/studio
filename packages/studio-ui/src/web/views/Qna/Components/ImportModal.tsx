@@ -1,9 +1,10 @@
 import { Button, Callout, Classes, Dialog, FileInput, FormGroup, Intent, Radio, RadioGroup } from '@blueprintjs/core'
 import 'bluebird-global'
 import axios from 'axios'
-import { lang, toast } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC, Fragment, useState } from 'react'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/shared/translations'
 
 const axiosConfig = { headers: { 'Content-Type': 'multipart/form-data' } }
 

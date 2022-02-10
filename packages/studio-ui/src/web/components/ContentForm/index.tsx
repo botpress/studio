@@ -1,11 +1,12 @@
 import { Icon } from '@blueprintjs/core'
-import { lang, SupportedFileType } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
 import Form, { FieldProps, IChangeEvent, UiSchema, WidgetProps } from 'react-jsonschema-form'
 import CheckboxWidget from 'react-jsonschema-form/lib/components/widgets/CheckboxWidget'
 import SmartInput from '~/components/SmartInput'
 import { getFormData } from '~/util/NodeFormData'
+import { SupportedFileType } from '../Shared/Form/FormFields/typings'
+import { lang } from '../Shared/translations'
 
 import withLanguage from '../Util/withLanguage'
 

@@ -1,9 +1,10 @@
-import { lang, toast } from 'botpress/shared'
 import { EditableFile, FilePermissions, FileDefinition, FileTypes } from 'common/code-editor'
 import { action, computed, observable, runInAction } from 'mobx'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import path from 'path'
 
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/shared/translations'
 import { FileWithMetadata } from '../Editor'
 import { wrapper } from '../utils/wrapper'
 import { RootStore } from '.'

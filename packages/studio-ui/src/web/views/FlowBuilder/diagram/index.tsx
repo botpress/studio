@@ -1,6 +1,5 @@
 import { Intent, Menu, MenuDivider, MenuItem, Position, Toaster } from '@blueprintjs/core'
 import { IO } from 'botpress/sdk'
-import { contextMenu, Icons, lang, MainLayout, sharedStyle, ShortcutLabel, utils } from 'botpress/shared'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 import ReactDOM from 'react-dom'
@@ -34,6 +33,12 @@ import {
   updateFlowProblems,
   zoomToLevel
 } from '~/actions'
+import contextMenu from '~/components/Shared/ContextMenu'
+import Say from '~/components/Shared/Icons/Say'
+import storage from '~/components/Shared/lite-utils/storage'
+import MainLayout from '~/components/Shared/MainLayout'
+import ShortcutLabel from '~/components/Shared/ShortcutLabel'
+import { lang } from '~/components/shared/translations'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
 import { DIAGRAM_PADDING } from './constants'
 
@@ -77,7 +82,7 @@ export const MAX_NUMBER_OF_POINTS_PER_LINK = 3
 
 const getExpandedNodes = () => {
   try {
-    return utils.storage.get<any[]>(EXPANDED_NODES_KEY) || []
+    return storage.get<any[]>(EXPANDED_NODES_KEY) || []
   } catch (error) {
     return []
   }
@@ -164,7 +169,7 @@ class Diagram extends Component<Props> {
       expandedNodes.push(nodeId)
     }
 
-    utils.storage.set(EXPANDED_NODES_KEY, expandedNodes)
+    storage.set(EXPANDED_NODES_KEY, expandedNodes)
     this.setState({ expandedNodes })
   }
 
@@ -356,7 +361,7 @@ class Diagram extends Component<Props> {
         />
         {window.EXPERIMENTAL && (
           <Fragment>
-            <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Icons.Say />} />
+            <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Say />} />
             <MenuItem text={lang.tr('execute')} onClick={wrap(this.add.executeNode, point)} icon="code" />
             <MenuItem text={lang.tr('listen')} onClick={wrap(this.add.listenNode, point)} icon="hand" />
             <MenuItem text={lang.tr('router')} onClick={wrap(this.add.routerNode, point)} icon="fork" />

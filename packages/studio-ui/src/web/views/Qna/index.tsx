@@ -1,9 +1,11 @@
 import { Spinner } from '@blueprintjs/core'
 import axios from 'axios'
-import { EmptyState, HeaderButtonProps, lang, MainLayout } from 'botpress/shared'
 import cx from 'classnames'
 import { debounce } from 'lodash'
 import React, { FC, useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import EmptyState from '~/components/Shared/EmptyState'
+import MainLayout from '~/components/Shared/MainLayout'
+import { lang } from '~/components/shared/translations'
 import { reorderFlows } from '~/components/Shared/Utils'
 import withLanguage from '~/components/Util/withLanguage'
 
@@ -133,62 +135,33 @@ const QnAList: FC<Props> = (props) => {
     languesTooltip = lang.tr('qna.form.onlyOneLanguage')
   }
 
-  const buttons: HeaderButtonProps[] = [
+  const buttons = [
     {
       icon: 'translate',
       optionsItems: languages?.map((language) => ({
         label: lang.tr(`isoLangs.${language}.name`),
         selected: currentLang === language,
         action: () => {
-          setCurrentLang(language)
+          setCurrentlang.tr(language)
         }
       })),
       disabled: !items.length || languages?.length <= 1,
       tooltip: noItemsTooltip || languesTooltip
     },
-    /*{
-      icon: 'filter',
-      disabled: true,
-      onClick: () => {},
-      tooltip: noItemsTooltip || lang.tr('filterBy')
-    },
-    {
-      icon: 'sort',
-      disabled: true,
-      onClick: () => {},
-      tooltip: noItemsTooltip || lang.tr('sortBy')
-    },*/
     {
       icon: allExpanded ? 'collapse-all' : 'expand-all',
       disabled: !items.length,
       onClick: () => dispatch({ type: allExpanded ? 'collapseAll' : 'expandAll' }),
       tooltip: noItemsTooltip || lang.tr(allExpanded ? 'collapseAll' : 'expandAll')
+    },
+    {
+      icon: 'plus',
+      onClick: () => {
+        dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
+      },
+      tooltip: lang.tr('qna.form.addQuestion')
     }
   ]
-
-  if (!isLite) {
-    buttons.push(
-      {
-        icon: 'export',
-        disabled: !items.length,
-        onClick: startDownload,
-        tooltip: noItemsTooltip || lang.tr('exportToJson')
-      },
-      {
-        icon: 'import',
-        onClick: () => setShowImportModal(true),
-        tooltip: lang.tr('importJson')
-      }
-    )
-  }
-
-  buttons.push({
-    icon: 'plus',
-    onClick: () => {
-      dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
-    },
-    tooltip: lang.tr('qna.form.addQuestion')
-  })
 
   const fetchData = async (page = 1) => {
     dispatch({ type: 'loading' })
@@ -236,6 +209,7 @@ const QnAList: FC<Props> = (props) => {
         className={style.header}
         tabChange={setCurrentTab}
         tabs={tabs}
+        // @ts-ignore
         buttons={buttons}
         rightContent={toolBarRightContent}
       />

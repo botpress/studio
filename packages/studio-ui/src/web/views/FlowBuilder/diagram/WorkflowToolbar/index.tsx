@@ -1,9 +1,9 @@
-import { HeaderButtonProps, lang, MainLayout } from 'botpress/shared'
 import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import { flowEditorRedo, flowEditorUndo } from '~/actions'
 import { SearchBar } from '~/components/Shared/Interface'
+import { lang } from '~/components/shared/translations'
 import { canFlowRedo, canFlowUndo } from '~/reducers'
 
 import style from './style.scss'

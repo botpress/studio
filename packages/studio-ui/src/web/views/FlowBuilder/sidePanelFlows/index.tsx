@@ -1,5 +1,5 @@
 import { Icon } from '@blueprintjs/core'
-import { lang } from 'botpress/shared'
+import { lang } from '~/components/shared/translations'
 import _ from 'lodash'
 import reject from 'lodash/reject'
 import React, { FC, useState } from 'react'

@@ -1,8 +1,9 @@
 import { Button, ButtonGroup, Intent, Tab, Tabs } from '@blueprintjs/core'
-import { lang, ToolTip } from 'botpress/shared'
 import cx from 'classnames'
 import React, { FC, useEffect, useState } from 'react'
 import JSONTree from 'react-json-tree'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/Shared/translations'
 
 import inspectorTheme from '../Debugger/inspectorTheme'
 import style from '../style.scss'

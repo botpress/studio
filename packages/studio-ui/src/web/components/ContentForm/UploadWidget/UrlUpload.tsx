@@ -1,6 +1,8 @@
 import { Button, Icon, Intent, Position, Tooltip } from '@blueprintjs/core'
-import { lang, FileDisplay, UploadFieldProps } from 'botpress/shared'
 import React, { FC, Fragment, useEffect, useState } from 'react'
+import FileDisplay from '~/components/Shared/FileDisplay'
+import { UploadFieldProps } from '~/components/Shared/Form/FormFields/typings'
+import { lang } from '~/components/Shared/translations'
 import SmartInput from '~/components/SmartInput'
 
 import parentStyle from '../style.scss'

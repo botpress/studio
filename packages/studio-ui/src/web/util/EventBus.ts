@@ -1,6 +1,6 @@
-import { auth } from 'botpress/shared'
 import { EventEmitter2 } from 'eventemitter2'
 import { Socket, io } from 'socket.io-client'
+import * as auth from '~/components/Shared/auth'
 import { authEvents } from '~/util/Auth'
 
 class EventBus extends EventEmitter2 {

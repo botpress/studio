@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { lang } from 'botpress/shared'
 import { QnaItem } from 'common/typings'
 import _ from 'lodash'
 import _uniqueId from 'lodash/uniqueId'
+import { lang } from '~/components/Shared/translations'
 
 export const ITEMS_PER_PAGE = 50
 export const NEW_QNA_PREFIX = 'qna-'
@@ -45,10 +45,10 @@ export const itemHasError = (qnaItem: QnaItem, currentLang: string): string[] =>
       [...data.questions[currentLang].slice(0, index).filter((item2) => item2.length)].includes(item)
     ) || []
 
-  if (!hasPopulatedLang(data.questions)) {
+  if (!hasPopulatedlang.tr(data.questions)) {
     errors.push(lang.tr('qna.form.missingQuestion'))
   }
-  if (!hasPopulatedLang(data.answers) && !data.redirectFlow && !data.redirectNode) {
+  if (!hasPopulatedlang.tr(data.answers) && !data.redirectFlow && !data.redirectNode) {
     errors.push(lang.tr('qna.form.missingAnswer'))
   }
   if (hasDuplicateQuestions.length) {
@@ -68,7 +68,7 @@ export const dispatchMiddleware = async (dispatch, action) => {
 
       if (!itemHasError(qnaItem, currentLang).length) {
         const { answers, questions, redirectFlow, redirectNode } = qnaItem.data
-        const hasAnswers = hasPopulatedLang(answers)
+        const hasAnswers = hasPopulatedlang.tr(answers)
         const hasRedirect = redirectFlow || redirectNode
         let action = 'text'
 

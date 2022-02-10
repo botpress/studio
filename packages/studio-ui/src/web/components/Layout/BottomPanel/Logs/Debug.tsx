@@ -1,6 +1,5 @@
 import { Button, Intent } from '@blueprintjs/core'
 import axios from 'axios'
-import { lang, toast } from 'botpress/shared'
 import cx from 'classnames'
 import React from 'react'
 import CheckboxTree from 'react-checkbox-tree'
@@ -16,6 +15,8 @@ import {
   FaPlusSquare,
   FaSquare
 } from 'react-icons/fa'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/Shared/translations'
 
 import style from '../style.scss'
 

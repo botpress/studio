@@ -1,11 +1,14 @@
 import { Button, Divider, Tab, Tabs, ButtonGroup } from '@blueprintjs/core'
-import { lang, ToolTip, MainLayout, utils } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
 import React, { Fragment, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { toggleBottomPanel, toggleBottomPanelExpand } from '~/actions'
+import storage from '~/components/Shared/lite-utils/storage'
+import MainLayout from '~/components/Shared/MainLayout'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/Shared/translations'
 
 import Debugger from './Debugger'
 import Inspector, { DataEntry } from './Inspector'
@@ -20,10 +23,8 @@ const CODE_EDITOR = 'Code Editor'
 const DevPanel = MainLayout.BottomPanel
 
 const BottomPanel = (props) => {
-  const [tab, setTab] = useState<string>(utils.storage.get(BOTTOM_PANEL_TAB) || 'debugger')
-  const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(
-    utils.storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true
-  )
+  const [tab, setTab] = useState<string>(storage.get(BOTTOM_PANEL_TAB) || 'debugger')
+  const [autoFocusDebugger, setAutoFocusDebugger] = useState<boolean>(storage.get<boolean>(AUTO_FOCUS_DEBUGGER) ?? true)
   const [messageId, setMessageId] = useState()
   const [dataHistory, setDataHistory] = useState<DataEntry[]>([])
   const [customTabs, setCustomTabs] = useState([])
@@ -52,7 +53,7 @@ const BottomPanel = (props) => {
   })
 
   const handleChangeTab = (newTab: string) => {
-    utils.storage.set(BOTTOM_PANEL_TAB, newTab)
+    storage.set(BOTTOM_PANEL_TAB, newTab)
     setTab(newTab)
   }
 
@@ -73,7 +74,7 @@ const BottomPanel = (props) => {
 
   const handleAutoFocus = (newValue: boolean) => {
     setAutoFocusDebugger(newValue)
-    utils.storage.set(AUTO_FOCUS_DEBUGGER, newValue)
+    storage.set(AUTO_FOCUS_DEBUGGER, newValue)
   }
 
   const commonButtons = (

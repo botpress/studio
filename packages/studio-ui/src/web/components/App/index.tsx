@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { TokenRefresher } from 'botpress/shared'
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import {
@@ -15,6 +14,7 @@ import { authEvents, setToken } from '~/util/Auth'
 import EventBus from '~/util/EventBus'
 
 import Routes, { history } from '../Routes'
+import TokenRefresher from '../Shared/TokenRefresher'
 
 interface Props {
   fetchModules: () => void

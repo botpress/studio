@@ -1,10 +1,12 @@
 import { Button, Position } from '@blueprintjs/core'
-import { lang, ToolTip, utils } from 'botpress/shared'
 import cx from 'classnames'
-import React, { FC } from 'react'
+import React from 'react'
 import { RiLayoutLeftLine, RiLayoutRightLine, RiLayoutBottomLine } from 'react-icons/ri'
 import { connect } from 'react-redux'
 import { toggleBottomPanel, toggleExplorer } from '~/actions'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/Shared/translations'
+import { shortControlKey } from '~/components/Shared/utilities/keyboardShortcuts'
 
 import { RootReducer } from '../../../reducers'
 import EnterPriseTrial from './EnterpriseTrial'
@@ -26,7 +28,7 @@ const Toolbar = (props: Props) => (
     <EnterPriseTrial />
     <div className={style.layoutControls}>
       <ToolTip
-        content={lang.tr('topNav.toggleExplorer', { shortcut: `${utils.shortControlKey} B` })}
+        content={lang.tr('topNav.toggleExplorer', { shortcut: `${shortControlKey} B` })}
         position={Position.BOTTOM}
       >
         <Button
@@ -37,7 +39,7 @@ const Toolbar = (props: Props) => (
         />
       </ToolTip>
       <ToolTip
-        content={lang.tr('topNav.toggleDebugger', { shortcut: `${utils.shortControlKey} J` })}
+        content={lang.tr('topNav.toggleDebugger', { shortcut: `${shortControlKey} J` })}
         position={Position.BOTTOM}
       >
         <Button
@@ -49,7 +51,7 @@ const Toolbar = (props: Props) => (
       </ToolTip>
       {window.IS_BOT_MOUNTED && (
         <ToolTip
-          content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}
+          content={lang.tr('topNav.toggleEmulator', { shortcut: `${shortControlKey} E` })}
           position={Position.BOTTOM}
         >
           <Button

@@ -1,11 +1,12 @@
 import { Button, Checkbox, FormGroup, InputGroup } from '@blueprintjs/core'
-import { lang, toast } from 'botpress/shared'
 
 import cx from 'classnames'
 import React, { FC, useEffect, useState } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import ContentPickerWidget from '~/components/Content/Select/Widget'
 import { InfoTooltip } from '~/components/Shared/Interface'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/shared/translations'
 import { SkillProps } from '../typings'
 
 import style from './style.scss'
