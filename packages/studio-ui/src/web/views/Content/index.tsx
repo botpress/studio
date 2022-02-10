@@ -121,13 +121,15 @@ class ContentView extends Component<Props, State> {
       })
 
       const usage = this.props.qnaUsage?.[`#!${element.id}`]
-      usage &&
+
+      usage?.forEach((qna) => {
         element.usage.push({
           type: 'Q&A',
-          id: usage.qna,
-          name: usage.qna.substr(usage.qna.indexOf('_') + 1),
-          count: usage.count
+          id: qna,
+          name: qna.substr(usage[0]?.indexOf('_') + 1),
+          count: 1
         })
+      })
     })
 
     return this.state.modifyId
