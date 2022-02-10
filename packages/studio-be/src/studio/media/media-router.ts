@@ -1,3 +1,4 @@
+import { sanitizeFileName } from 'common/utils'
 import _ from 'lodash'
 
 import path from 'path'
@@ -15,7 +16,7 @@ class MediaRouter extends CustomStudioRouter {
   botId: string = 'smalltalk'
   getFileUrl(fileName: string) {
     // TODO: we need a router that returns those files (GET). I think it's part of the BP backend atm
-    return `/api/v1/bots/${this.botId}/media/${encodeURIComponent(fileName)}`
+    return `/api/v1/studio/${this.botId}/media/${encodeURIComponent(fileName)}`
   }
 
   getMediaFiles(formData): string[] {
@@ -46,6 +47,20 @@ class MediaRouter extends CustomStudioRouter {
       // botpressConfig.fileUpload.maxFileSize ?? DEFAULT_MAX_FILE_SIZE
     )
 
+    this.router.get(
+      '/:file',
+      this.asyncMiddleware(async (req, res) => {
+        const { botId, file } = req.params
+
+        // TODO: we need to guard against a malicious filename here (not to serve any file on the system)
+        if (await Instance.fileExists(path.join('media', file))) {
+          res.sendFile(path.resolve(process.DATA_LOCATION, 'media', file))
+        } else {
+          res.sendStatus(404)
+        }
+      })
+    )
+
     router.post(
       '/',
       this.checkTokenHeader,
@@ -59,7 +74,7 @@ class MediaRouter extends CustomStudioRouter {
           const file = req['file']
           const fileName = sanitize(`${safeId(20)}-${path.basename(file.originalname)}`)
 
-          await Instance.upsertFile(path.resolve('media', fileName), file.buffer)
+          await Instance.upsertFile(path.join('media', fileName), file.buffer)
 
           res.json({ url: this.getFileUrl(fileName) })
         })

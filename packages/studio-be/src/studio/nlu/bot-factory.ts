@@ -30,7 +30,7 @@ export class BotFactory {
     const languages = _.intersection(botConfig.languages, engineLanguages)
     if (botConfig.languages.length !== languages.length) {
       const missingLangMsg = `Bot ${botId} has configured languages that are not supported by language sources. Configure a before incoming hook to call an external NLU provider for those languages.`
-      this._logger.forBot(botId).warn(missingLangMsg, { notSupported: _.difference(botConfig.languages, languages) })
+      this._logger.warn(missingLangMsg, { notSupported: _.difference(botConfig.languages, languages) })
     }
 
     const botDefinition: BotDefinition = {

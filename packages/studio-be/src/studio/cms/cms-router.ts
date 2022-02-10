@@ -1,6 +1,6 @@
 import { ContentElement, ContentType, SearchParams } from 'botpress/sdk'
 
-import _ from 'lodash'
+import _, { find } from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -41,7 +41,7 @@ export class CMSRouter extends CustomStudioRouter {
       .filter((file) => !file.startsWith('_')) // content types starting with _ are shared code
 
     const types = await Promise.map(files, async (file) => {
-      const content = require(path.join('content-types', file)) // TODO: does that actually work?
+      const content = require(path.join(process.DATA_LOCATION, 'content-types', file)).default
       return content
     })
 
@@ -58,7 +58,11 @@ export class CMSRouter extends CustomStudioRouter {
 
     const elementByTypes = await Promise.map(files, async (file) => {
       const content = await Instance.readFile(path.join('content-elements', file))
-      return { type: file.replace(/\.json$/i, ''), elements: JSON.parse(content.toString()) as ContentElement[] }
+      const type = file.replace(/\.json$/i, '')
+      return {
+        type: type,
+        elements: (JSON.parse(content.toString()) as ContentElement[]).map((x) => ({ ...x, contentType: type }))
+      }
     })
 
     return elementByTypes
@@ -74,11 +78,21 @@ export class CMSRouter extends CustomStudioRouter {
     return this.contentElementsWithPreviews
   }
 
-  async upsertContentElement(contentType: string, content: ContentElement) {
-    const file = path.join('content-elements', contentType)
-    const buffer = await Instance.readFile(file)
-    const elements = JSON.parse(buffer.toString()) as ContentElement[]
-    const newElements = [...elements.filter((x) => x.id !== content.id), { ...content }]
+  async upsertContentElement(contentType: string, content: Partial<ContentElement>) {
+    const file = path.join('content-elements', contentType + '.json')
+
+    let elements = [] as ContentElement[]
+    if (await Instance.fileExists(file)) {
+      const buffer = await Instance.readFile(file)
+      elements = JSON.parse(buffer.toString()) as ContentElement[]
+    }
+
+    const existingElement = elements.find((x) => x.id == content.id) || { createdBy: 'admin', createdOn: new Date() } // TODO: fixme for studio user
+    const newElements = [
+      ...elements.filter((x) => x.id !== content.id),
+      { ...existingElement, ...content, modifiedOn: new Date() }
+    ]
+
     await Instance.upsertFile(file, JSON.stringify(newElements, undefined, 2))
 
     // Refresh previews
@@ -90,7 +104,7 @@ export class CMSRouter extends CustomStudioRouter {
     const types = await this.loadContentTypes()
 
     for (let type in types) {
-      const file = path.join('content-elements', type)
+      const file = path.join('content-elements', type + '.json')
       const buffer = await Instance.readFile(file)
       const elements = JSON.parse(buffer.toString()) as ContentElement[]
 
@@ -224,7 +238,10 @@ export class CMSRouter extends CustomStudioRouter {
           return result
         }, {})
 
-        temp.elements.push({ ...element, ...{ previews } })
+        temp.elements.push({
+          ...element,
+          previews
+        })
       }
       computed.push(temp)
     }
@@ -243,7 +260,7 @@ export class CMSRouter extends CustomStudioRouter {
         const typesById = await this.loadContentTypes()
         const allElements = await this.getContentElementsWithPreviews()
 
-        return Object.keys(typesById).map((type) => ({
+        const result = Object.keys(typesById).map((type) => ({
           id: type,
           count: allElements.find((x) => x.type === type)?.elements?.length,
           title: typesById[type].title,
@@ -255,6 +272,8 @@ export class CMSRouter extends CustomStudioRouter {
             renderer: type
           }
         }))
+
+        res.send({ registered: result, unregistered: [] })
       })
     )
 
@@ -285,9 +304,10 @@ export class CMSRouter extends CustomStudioRouter {
 
         const typesById = await this.loadContentTypes()
         const allElements = await this.getContentElementsWithPreviews()
-        const type = typesById[contentType]
+        const type = contentType ? typesById[contentType] : null
 
-        const elements = allElements.find((x) => x.type === contentType)?.elements || []
+        const filteredTypes = contentType ? allElements.filter((x) => x.type === contentType) : allElements
+        const elements = _.flatten(filteredTypes.map((x) => x.elements))
 
         // TODO: Move content translation logic to front-end (_translateElement)
 
@@ -318,15 +338,18 @@ export class CMSRouter extends CustomStudioRouter {
           sorted = sorted.slice(0, params.count)
         }
 
-        return sorted.map((element) => ({
+        const result = sorted.map((element) => ({
           ...element,
+
           schema: {
-            json: type.jsonSchema,
-            ui: type.uiSchema,
-            title: type.title,
-            renderer: type.id
+            json: typesById[element.contentType].jsonSchema,
+            ui: typesById[element.contentType].uiSchema,
+            title: typesById[element.contentType].title,
+            renderer: typesById[element.contentType].id
           }
         }))
+
+        res.send(result)
       })
     )
 
@@ -356,7 +379,7 @@ export class CMSRouter extends CustomStudioRouter {
           const element = await this.getContentElementById(elementId)
           res.send(element)
         } catch (e) {
-          this.logger.forBot(botId).warn(`The requested element doesn't exist: "${elementId}"`)
+          this.logger.warn(`The requested element doesn't exist: "${elementId}"`)
           return res.status(404).send(`Element ${elementId} not found`)
         }
       })
@@ -380,11 +403,15 @@ export class CMSRouter extends CustomStudioRouter {
         // TODO: get languages and defaultLang necessary for computing previews
 
         const formData = { ...req.body.formData }
-        formData['id'] = formData['id'] || elementId || `${contentType.replace('#', '')}-${nanoid(6)}`
-        await this.upsertContentElement(contentType, formData)
+        const id = elementId || req.body.id || `${contentType.replace('#', '')}-${nanoid(6)}`
 
-        const element = await this.getContentElementById(formData.id)
-        res.send(element)
+        await this.upsertContentElement(contentType, {
+          id: id,
+          modifiedOn: new Date(),
+          formData
+        })
+
+        res.send(id)
       })
     )
 

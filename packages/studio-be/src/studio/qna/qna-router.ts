@@ -75,7 +75,7 @@ export class QNARouter extends CustomStudioRouter {
     const qFilter = options.questionFilter.toLowerCase()
     const { questions, contexts } = qnaItem.data
 
-    const contextMatches = !!_.intersection(contexts, options.contextsFilter).length
+    const contextMatches = !options.contextsFilter.length || !!_.intersection(contexts, options.contextsFilter).length
     if (!qFilter) {
       return contextMatches
     }
@@ -95,7 +95,7 @@ export class QNARouter extends CustomStudioRouter {
       this.asyncMiddleware(async (req, res) => {
         try {
           const {
-            query: { questionFilter = '', contextsFilter = [], limit = 50, offset = 0 }
+            query: { question = '', filteredContexts = [], limit = 50, offset = 0 }
           } = req
 
           const options: DirectoryListingOptions = { sortOrder: { column: 'filePath', desc: true } }
@@ -106,7 +106,7 @@ export class QNARouter extends CustomStudioRouter {
           })
 
           const filteredItems = qnas.filter((qnaItem) =>
-            this.applyFilters(qnaItem, <FilteringOptions>{ questionFilter, contextsFilter })
+            this.applyFilters(qnaItem, <FilteringOptions>{ questionFilter: question, contextsFilter: filteredContexts })
           )
 
           const pagedItems = filteredItems.slice(+offset, +offset + +limit)
@@ -126,12 +126,12 @@ export class QNARouter extends CustomStudioRouter {
         const id = this._makeID(qnaEntry)
         const qnaItem: QnaItem = { data: qnaEntry, id }
 
-        await Instance.upsertFile(path.join(QNA_DIR), JSON.stringify(qnaItem, undefined, 2))
+        await Instance.upsertFile(path.join(QNA_DIR, qnaItem.id + '.json'), JSON.stringify(qnaItem, undefined, 2))
 
         if (qnaEntry.enabled) {
           const intentDef = this._makeIntentFromQna(qnaItem)
           await Instance.upsertFile(
-            path.join(INTENT_DIR, sanitizeFileName(intentDef.name)),
+            path.join(INTENT_DIR, sanitizeFileName(intentDef.name) + '.json'),
             JSON.stringify(intentDef, undefined, 2)
           )
         }
@@ -158,15 +158,15 @@ export class QNARouter extends CustomStudioRouter {
         const qnaEntry = (await validate(req.body, QnaDefSchema)) as QnaEntry
         const qnaItem: QnaItem = { data: qnaEntry, id: req.params.id }
 
-        await Instance.upsertFile(path.join(QNA_DIR), JSON.stringify(qnaItem, undefined, 2))
+        await Instance.upsertFile(path.join(QNA_DIR, qnaItem.id + '.json'), JSON.stringify(qnaItem, undefined, 2))
         if (qnaItem.data.enabled) {
           const intentDef = this._makeIntentFromQna(qnaItem)
           await Instance.upsertFile(
-            path.join(INTENT_DIR, sanitizeFileName(intentDef.name)),
+            path.join(INTENT_DIR, sanitizeFileName(intentDef.name) + '.json'),
             JSON.stringify(intentDef, undefined, 2)
           )
         } else {
-          await Instance.deleteFile(path.join(INTENT_DIR, this._makeIntentId(qnaItem.id), '.json'))
+          await Instance.deleteFile(path.join(INTENT_DIR, this._makeIntentId(qnaItem.id) + '.json'))
         }
 
         res.send(qnaItem)
@@ -177,7 +177,7 @@ export class QNARouter extends CustomStudioRouter {
       '/questions/:id/delete',
       this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
-        await Instance.deleteFile(path.join(QNA_DIR, req.params.id, '.json'))
+        await Instance.deleteFile(path.join(QNA_DIR, req.params.id + '.json'))
         res.sendStatus(200)
       })
     )
@@ -187,14 +187,14 @@ export class QNARouter extends CustomStudioRouter {
       this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         const intentId = this._makeIntentId(req.params.id)
-        const intentPath = path.join(INTENT_DIR, intentId, '.json')
+        const intentPath = path.join(INTENT_DIR, intentId + '.json')
         if (!(await Instance.fileExists(intentPath))) {
           return res.sendStatus(404)
         }
 
         await Promise.all([
           Instance.moveFile(intentPath, intentPath.replace('__qna__', '')),
-          await Instance.deleteFile(path.join(QNA_DIR, req.params.id, '.json'))
+          await Instance.deleteFile(path.join(QNA_DIR, req.params.id + '.json'))
         ])
 
         res.sendStatus(200)
@@ -224,10 +224,10 @@ export class QNARouter extends CustomStudioRouter {
             .then((res) => _.pick(res.data, ['id', 'contentType', 'formData']))
         })
 
-        const data = JSON.stringify({ qnas, contentElements })
+        const data = JSON.stringify({ qnas, contentElements }, undefined, 2)
         res.setHeader('Content-Type', 'application/json')
         res.setHeader('Content-disposition', `attachment; filename=qna_${moment().format('DD-MM-YYYY')}.json`)
-        res.end(JSON.stringify(data, undefined, 2))
+        res.end(data)
       })
     )
 
@@ -251,7 +251,7 @@ export class QNARouter extends CustomStudioRouter {
             })
           )
           const qnaPromises = (result?.questions ?? []).map((item) =>
-            Instance.upsertFile(path.join(QNA_DIR), JSON.stringify(item, undefined, 2))
+            Instance.upsertFile(path.join(QNA_DIR, item.id + '.json'), JSON.stringify(item, undefined, 2))
           )
           await Promise.all([...contentPromises, ...qnaPromises])
           res.end()

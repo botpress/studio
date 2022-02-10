@@ -1,4 +1,3 @@
-import { injectable } from 'inversify'
 import { Dictionary } from 'lodash'
 
 export enum AppLifecycleEvents {
@@ -14,7 +13,6 @@ interface CacheEntry {
   reject: Function
 }
 
-@injectable()
 export class AppLifecycle {
   private static _cache: Dictionary<CacheEntry> = {}
 

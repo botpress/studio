@@ -34,8 +34,6 @@ declare namespace NodeJS {
     ROOT_PATH: string
     /** Path to the studio executable */
     STUDIO_LOCATION: string
-    /** Either equal to studio location, or to the botpress source code file */
-    PROJECT_LOCATION: string
     /** Location of the bots/, global/ and storage/ folders à */
     DATA_LOCATION: string
     LOADED_MODULES: { [module: string]: string }
@@ -53,7 +51,7 @@ declare namespace NodeJS {
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
     /** This property is set when the binary is built in a branch other than master */
-    DEV_BRANCH?: string,
+    DEV_BRANCH?: string
     NLU_ENDPOINT?: string
   }
 }
@@ -69,7 +67,6 @@ declare interface BotpressEnvironmentVariables {
   readonly STUDIO_PORT?: number
   readonly CORE_PORT?: number
   readonly ROOT_PATH?: string
-  readonly PROJECT_LOCATION?: string
 
   readonly APP_SECRET?: string
   readonly PRO_ENABLED?: boolean

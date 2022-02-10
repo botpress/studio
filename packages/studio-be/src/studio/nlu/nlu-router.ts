@@ -54,7 +54,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.intents.deleteIntent(botId, intent)
           res.sendStatus(204)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).error('Could not delete intent')
+          this.logger.attachError(err).error('Could not delete intent')
           res.status(400).send(err.message)
         }
       })
@@ -74,7 +74,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(200)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).warn('Cannot create intent')
+          this.logger.attachError(err).warn('Cannot create intent')
           res.status(400).send(err.message)
         }
       })
@@ -89,7 +89,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.intents.updateIntent(botId, intentName, req.body)
           res.sendStatus(200)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).error('Could not update intent')
+          this.logger.attachError(err).error('Could not update intent')
           res.sendStatus(400)
         }
       })
@@ -133,7 +133,7 @@ export class NLURouter extends CustomStudioRouter {
           const entity = await this.service.entities.getEntity(botId, entityName)
           res.send(entity)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).error(`Could not get entity ${entityName}`)
+          this.logger.attachError(err).error(`Could not get entity ${entityName}`)
           res.sendStatus(400)
         }
       })
@@ -153,7 +153,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(200)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).warn('Cannot create entity')
+          this.logger.attachError(err).warn('Cannot create entity')
           res.status(400).send(err.message)
         }
       })
@@ -172,7 +172,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.entities.updateEntity(botId, id, entityDef)
           res.sendStatus(200)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).error('Could not update entity')
+          this.logger.attachError(err).error('Could not update entity')
           res.status(400).send(err.message)
         }
       })
@@ -209,7 +209,7 @@ export class NLURouter extends CustomStudioRouter {
 
           res.sendStatus(204)
         } catch (err) {
-          this.logger.forBot(botId).attachError(err).error('Could not delete entity')
+          this.logger.attachError(err).error('Could not delete entity')
           res.status(404).send(err.message)
         }
       })
@@ -298,7 +298,7 @@ export class NLURouter extends CustomStudioRouter {
     }
 
     const msg = 'An unexpected error occured.'
-    this.logger.forBot(botId).attachError(error).error(msg)
+    this.logger.attachError(error).error(msg)
     return res.status(500).send(msg)
   }
 }

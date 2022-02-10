@@ -1,4 +1,9 @@
+import path from 'path'
+import fse from 'fs-extra'
+import glob from 'glob'
 import { DirectoryListingOptions } from 'botpress/sdk'
+import VError from 'verror'
+import _ from 'lodash'
 
 export interface bpfs {
   upsertFile(filePath: string, content: Buffer | string): Promise<void>
@@ -11,29 +16,81 @@ export interface bpfs {
   moveFile(fromPath: string, toPath: string): Promise<void>
 }
 
+const forceForwardSlashes = (path) => path.replace(/\\/g, '/')
+const resolvePath = (p) => path.resolve(process.DATA_LOCATION, p)
+
 export const Instance: bpfs = {
-  upsertFile(filePath: string, content: string | Buffer): Promise<void> {
-    throw new Error('Function not implemented.')
+  async upsertFile(filePath: string, content: string | Buffer): Promise<void> {
+    await fse.ensureDir(path.dirname(resolvePath(filePath)))
+    return fse.writeFile(resolvePath(filePath), content)
   },
   readFile(filePath: string): Promise<Buffer> {
-    throw new Error('Function not implemented.')
+    return fse.readFile(resolvePath(filePath))
   },
   fileExists(filePath: string): Promise<boolean> {
-    throw new Error('Function not implemented.')
+    return fse.pathExists(resolvePath(filePath))
   },
   deleteFile(filePath: string): Promise<void> {
-    throw new Error('Function not implemented.')
+    return fse.unlink(resolvePath(filePath))
   },
   deleteDir(dirPath: string): Promise<void> {
-    throw new Error('Function not implemented.')
+    return fse.remove(resolvePath(dirPath))
   },
-  directoryListing(folder: string, options: DirectoryListingOptions): Promise<string[]> {
-    throw new Error('Function not implemented.')
+  async directoryListing(
+    folder: string,
+    options: DirectoryListingOptions = {
+      excludes: [],
+      includeDotFiles: false
+    }
+  ): Promise<string[]> {
+    try {
+      await fse.access(resolvePath(folder), fse.constants.R_OK)
+    } catch (e) {
+      // if directory doesn't exist we don't care
+      if (e.code === 'ENOENT') {
+        return []
+      }
+
+      throw new VError(e, `[Disk Storage] No read access to directory "${folder}"`)
+    }
+
+    const globOptions: glob.IOptions = {
+      cwd: resolvePath(folder),
+      dot: options.includeDotFiles
+    }
+
+    // options.excludes can either be a string or an array of strings or undefined
+    if (Array.isArray(options.excludes)) {
+      globOptions['ignore'] = options.excludes
+    } else if (options.excludes) {
+      globOptions['ignore'] = [options.excludes]
+    } else {
+      globOptions['ignore'] = []
+    }
+
+    try {
+      const files = await Promise.fromCallback<string[]>((cb) => glob('**/*.*', globOptions, cb))
+      if (!options.sortOrder) {
+        return files.map((filePath) => forceForwardSlashes(filePath))
+      }
+
+      const { column, desc } = options.sortOrder
+
+      const filesWithDate = await Promise.map(files, async (filePath) => ({
+        filePath,
+        modifiedOn: (await fse.stat(path.join(resolvePath(folder), filePath))).mtime
+      }))
+
+      return _.orderBy(filesWithDate, [column], [desc ? 'desc' : 'asc']).map((x) => forceForwardSlashes(x.filePath))
+    } catch (e) {
+      return []
+    }
   },
-  fileSize(filePath: string): Promise<number> {
-    throw new Error('Function not implemented.')
+
+  async fileSize(filePath: string): Promise<number> {
+    return (await fse.stat(resolvePath(filePath))).size
   },
   moveFile(fromPath: string, toPath: string): Promise<void> {
-    throw new Error('Function not implemented.')
+    return fse.move(resolvePath(fromPath), resolvePath(toPath))
   }
 }

@@ -134,7 +134,7 @@ const Sidebar: FC<Props> = (props) => {
 const mapStateToProps = (state: RootReducer) => ({
   viewMode: state.ui.viewMode,
   modules: state.modules,
-  isCloudBot: Boolean(state.bot.bot.isCloudBot)
+  isCloudBot: Boolean(state.bot?.bot?.isCloudBot)
 })
 
 export default withRouter(connect(mapStateToProps)(Sidebar))

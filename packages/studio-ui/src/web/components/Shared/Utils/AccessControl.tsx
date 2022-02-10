@@ -1,4 +1,3 @@
-import { checkRule } from 'common/auth'
 import React from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
@@ -26,7 +25,7 @@ export const isOperationAllowed = (params: PermissionAllowedProps) => {
     return false
   }
 
-  if (!user || (user.permissions && !checkRule(user.permissions, operation, resource))) {
+  if (!user || user.permissions) {
     return false
   }
 
