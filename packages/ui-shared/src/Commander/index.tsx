@@ -43,7 +43,6 @@ const Commander: FC<CommanderProps> = (props) => {
         switch (shortcut.type) {
           case 'goto':
             const path = generatePath(shortcut.url, {
-              workspaceId: window['WORKSPACE_ID'],
               botId: window['BOT_ID']
             })
 

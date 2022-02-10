@@ -122,10 +122,6 @@ export class StudioRouter extends CustomRouter {
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
-        const botInfo = {
-          name: 'My Bot' // TODO: fix this
-        }
-
         const favicon = 'assets/ui-studio/public/img/favicon.png'
 
         const commonEnv = await this.httpServer.getCommonEnv()
@@ -143,7 +139,6 @@ export class StudioRouter extends CustomRouter {
               window.BOT_API_PATH = "${process.ROOT_PATH}/api/v1/bots/${botId}";
               window.STUDIO_API_PATH = "${process.ROOT_PATH}/api/v1/studio/${botId}";
               window.BOT_ID = "${botId}";
-              window.BOT_NAME = "${botInfo.name}";
               window.BP_BASE_PATH = "${process.ROOT_PATH}/studio/${botId}";
               window.APP_NAME = "Botpress Studio";
               window.APP_FAVICON = "${favicon}";
@@ -153,7 +148,7 @@ export class StudioRouter extends CustomRouter {
               window.IS_CLOUD_BOT = true;
               window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
               window.IS_PRO_ENABLED = ${process.IS_PRO_ENABLED};
-              window.NLU_ENDPOINT = ${process.NLU_ENDPOINT};
+              window.NLU_ENDPOINT = "${process.NLU_ENDPOINT}";
             })(typeof window != 'undefined' ? window : {})
           `
 

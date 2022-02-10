@@ -10,7 +10,6 @@ declare global {
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
     botpressWebChat: any
     APP_NAME: string
-    APP_VERSION: string
     APP_FAVICON: string
     APP_CUSTOM_CSS: string
     BOT_API_PATH: string
@@ -18,14 +17,12 @@ declare global {
     SEGMENT_WRITE_KEY: string
 
     ROOT_PATH: string
-    BOT_NAME: string
     BOT_ID: string
     BP_BASE_PATH: string
     SEND_USAGE_STATS: boolean
     IS_STANDALONE: boolean
     IS_BOT_MOUNTED: boolean
     BOT_LOCKED: boolean
-    WORKSPACE_ID: string
     SOCKET_TRANSPORTS: string[]
     /** When the studio runs as a standalone, this is the URL of the runtime  */
     BP_SERVER_URL: string

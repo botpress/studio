@@ -26,7 +26,6 @@ declare global {
     BOT_API_PATH: string
     STUDIO_API_PATH: string
     API_PATH: string
-    BOT_NAME: string
     BOT_ID: string
     BP_BASE_PATH: string
     IS_CLOUD_BOT: boolean

@@ -43,8 +43,6 @@ if (token) {
   } else {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
-
-  axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
 }
 
 if (!window.BOT_ID) {

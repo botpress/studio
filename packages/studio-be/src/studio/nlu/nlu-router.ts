@@ -4,6 +4,7 @@ import { Response as ExpressResponse } from 'express'
 import { validate } from 'joi'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
+import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import yn from 'yn'
 import { NLUService } from '.'
@@ -22,6 +23,12 @@ export class NLURouter extends CustomStudioRouter {
 
   constructor(services: StudioServices) {
     super('NLU', services.logger)
+
+    // TODO: Move this in the application instead of router
+    this.service.initialize().then(async (x) => {
+      const botInfo = JSON.parse(await Instance.readFile('bot.config.json').toString()) as sdk.BotConfig
+      this.service.mountBot(botInfo.id)
+    })
   }
 
   setupRoutes() {
