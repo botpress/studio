@@ -3,6 +3,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { flowEditorRedo, flowEditorUndo } from '~/actions'
 import { SearchBar } from '~/components/shared/Interface'
+import MainLayout from '~/components/shared/MainLayout'
 import { lang } from '~/components/shared/translations'
 import { canFlowRedo, canFlowUndo } from '~/reducers'
 
@@ -25,7 +26,7 @@ const WorkflowToolbar = ({
     }
   ]
 
-  const flowButtons: HeaderButtonProps[] = [
+  const flowButtons = [
     {
       icon: 'undo',
       disabled: !canUndo,
