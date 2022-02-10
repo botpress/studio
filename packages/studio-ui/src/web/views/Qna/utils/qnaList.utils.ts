@@ -45,10 +45,10 @@ export const itemHasError = (qnaItem: QnaItem, currentLang: string): string[] =>
       [...data.questions[currentLang].slice(0, index).filter((item2) => item2.length)].includes(item)
     ) || []
 
-  if (!hasPopulatedlang.tr(data.questions)) {
+  if (!hasPopulatedLang(data.questions)) {
     errors.push(lang.tr('qna.form.missingQuestion'))
   }
-  if (!hasPopulatedlang.tr(data.answers) && !data.redirectFlow && !data.redirectNode) {
+  if (!hasPopulatedLang(data.answers) && !data.redirectFlow && !data.redirectNode) {
     errors.push(lang.tr('qna.form.missingAnswer'))
   }
   if (hasDuplicateQuestions.length) {
@@ -68,7 +68,7 @@ export const dispatchMiddleware = async (dispatch, action) => {
 
       if (!itemHasError(qnaItem, currentLang).length) {
         const { answers, questions, redirectFlow, redirectNode } = qnaItem.data
-        const hasAnswers = hasPopulatedlang.tr(answers)
+        const hasAnswers = hasPopulatedLang(answers)
         const hasRedirect = redirectFlow || redirectNode
         let action = 'text'
 

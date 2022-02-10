@@ -52,8 +52,7 @@ const QnA: FC<Props> = (props) => {
     setExpanded,
     errorMessages,
     defaultLanguage,
-    flows,
-    isLite
+    flows
   } = props
 
   const [showRedirectToFlow, setShowRedirectToFlow] = useState(!!(data.redirectFlow || data.redirectNode))
@@ -98,7 +97,7 @@ const QnA: FC<Props> = (props) => {
     }
   ]
 
-  if (expanded && !isLite) {
+  if (expanded) {
     moreOptionsItems.push({
       label: lang.tr(!showRedirectToFlow ? 'qna.form.enableRedirection' : 'qna.form.disableRedirection'),
       action: () => {
@@ -226,19 +225,17 @@ const QnA: FC<Props> = (props) => {
       </div>
       {expanded && (
         <div key={contentLang} className={style.collapsibleWrapper}>
-          {!isLite && (
-            <ContextSelector
-              className={cx(style.contextSelector)}
-              contexts={data.contexts}
-              customIdSuffix={id}
-              saveContexts={(contexts) =>
-                updateQnA({
-                  id,
-                  data: { ...data, contexts }
-                })
-              }
-            />
-          )}
+          <ContextSelector
+            className={cx(style.contextSelector)}
+            contexts={data.contexts}
+            customIdSuffix={id}
+            saveContexts={(contexts) =>
+              updateQnA({
+                id,
+                data: { ...data, contexts }
+              })
+            }
+          />
           <TextAreaList
             key="questions"
             items={questions || ['']}

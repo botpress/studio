@@ -142,7 +142,7 @@ const QnAList: FC<Props> = (props) => {
         label: lang.tr(`isoLangs.${language}.name`),
         selected: currentLang === language,
         action: () => {
-          setCurrentlang.tr(language)
+          setCurrentLang(language)
         }
       })),
       disabled: !items.length || languages?.length <= 1,
@@ -155,9 +155,20 @@ const QnAList: FC<Props> = (props) => {
       tooltip: noItemsTooltip || lang.tr(allExpanded ? 'collapseAll' : 'expandAll')
     },
     {
+      icon: 'export',
+      disabled: !items.length,
+      onClick: startDownload,
+      tooltip: noItemsTooltip || lang.tr('exportToJson')
+    },
+    {
+      icon: 'import',
+      onClick: () => setShowImportModal(true),
+      tooltip: lang.tr('importJson')
+    },
+    {
       icon: 'plus',
       onClick: () => {
-        dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
+        dispatch({ type: 'addQnA', data: { languages, contexts: ['global'] } })
       },
       tooltip: lang.tr('qna.form.addQuestion')
     }

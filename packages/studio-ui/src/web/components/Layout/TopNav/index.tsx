@@ -28,7 +28,10 @@ const TopNav = (props: Props) => {
     <nav className={style.topNav}>
       <EnterPriseTrial />
       <div className={style.layoutControls}>
-        <ToolTip content={'caca'} position={Position.BOTTOM}>
+        <ToolTip
+          content={lang.tr('topNav.toggleExplorer', { shortcut: `${shortControlKey} B` })}
+          position={Position.BOTTOM}
+        >
           <Button
             minimal
             onClick={props.toggleExplorer}

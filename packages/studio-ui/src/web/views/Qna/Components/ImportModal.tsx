@@ -58,9 +58,10 @@ export const ImportModal: FC<Props> = (props) => {
       const form = new FormData()
       form.append('file', file)
       form.append('action', importAction)
-
-      setIsLoading(true)
       await axios.post(`${window.STUDIO_API_PATH}/qna/import`, form, axiosConfig)
+      props.onImportCompleted()
+      toast.success(lang.tr('qna.import.uploadSuccessful'))
+      closeDialog()
     } catch (err) {
       setHasError(true)
       toast.failure(err.message)

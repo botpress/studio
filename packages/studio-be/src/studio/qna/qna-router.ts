@@ -67,7 +67,7 @@ export class QNARouter extends CustomStudioRouter {
 
   private _makeID(qna: QnaEntry) {
     const firstQuestion = qna.questions[Object.keys(qna.questions)[0]][0]
-    const safeId = customAlphabet('1234567890abcdefghijklmnopqrsuvwxyz', length)()
+    const safeId = customAlphabet('1234567890abcdefghijklmnopqrsuvwxyz', 10)()
     return `${safeId}_${sanitizeFileName(firstQuestion).replace(/^_+/, '').substring(0, 50).replace(/_+$/, '')}`
   }
 
@@ -144,7 +144,7 @@ export class QNARouter extends CustomStudioRouter {
       '/questions/:id',
       this.needPermissions('read', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
-        const question = await Instance.readFile(path.join(QNA_DIR, req.params.id, '.json')).then(
+        const question = await Instance.readFile(path.join(QNA_DIR, req.params.id + '.json')).then(
           (buff) => JSON.parse(buff.toString()) as QnaItem
         )
         res.send(question)
@@ -187,14 +187,23 @@ export class QNARouter extends CustomStudioRouter {
       this.needPermissions('write', 'module.qna'),
       this.asyncMiddleware(async (req, res) => {
         const intentId = this._makeIntentId(req.params.id)
-        const intentPath = path.join(INTENT_DIR, intentId + '.json')
-        if (!(await Instance.fileExists(intentPath))) {
+        const initialIntentPath = path.join(INTENT_DIR, intentId + '.json')
+        if (!(await Instance.fileExists(initialIntentPath))) {
           return res.sendStatus(404)
         }
 
+        const intent = await Instance.readFile(initialIntentPath).then((buf) => JSON.parse(buf.toString()))
+        if (!intent) {
+          return res.sendStatus(404)
+        }
+
+        intent.name = intent.name.replace('__qna__', '')
+        const newIntentPath = initialIntentPath.replace('__qna__', '')
+
         await Promise.all([
-          Instance.moveFile(intentPath, intentPath.replace('__qna__', '')),
-          await Instance.deleteFile(path.join(QNA_DIR, req.params.id + '.json'))
+          Instance.upsertFile(newIntentPath, JSON.stringify(intent, undefined, 2)),
+          Instance.deleteFile(initialIntentPath),
+          Instance.deleteFile(path.join(QNA_DIR, req.params.id + '.json'))
         ])
 
         res.sendStatus(200)
@@ -215,12 +224,13 @@ export class QNARouter extends CustomStudioRouter {
         const contentElementIds = _.chain(qnas)
           .flatMapDeep((qna) => Object.values(qna.data.answers))
           .filter((a) => a.startsWith('#!'))
+          .map((a) => a.replace('#!', ''))
           .uniq()
           .value()
 
-        const contentElements = Promise.map(contentElementIds, (id) => {
+        const contentElements = await Promise.map(contentElementIds, (id) => {
           return axios
-            .get(`/api/v1/studio/${req.params.botId}/cms/element/${id}`)
+            .get(`http://${process.HOST}:${process.PORT}/api/v1/studio/${req.params.botId}/cms/element/${id}`)
             .then((res) => _.pick(res.data, ['id', 'contentType', 'formData']))
         })
 
@@ -246,9 +256,12 @@ export class QNARouter extends CustomStudioRouter {
           const result = await this._prepareImport(parsed)
 
           const contentPromises = (result?.content ?? []).map((content) =>
-            axios.post(`/api/v1/studio/${req.params.botId}/cms/${content.contentType}/element/${content.id}`, {
-              formData: content
-            })
+            axios.post(
+              `http://${process.HOST}:${process.PORT}/api/v1/studio/${req.params.botId}/cms/${content.contentType}/element/${content.id}`,
+              {
+                formData: content
+              }
+            )
           )
           const qnaPromises = (result?.questions ?? []).map((item) =>
             Instance.upsertFile(path.join(QNA_DIR, item.id + '.json'), JSON.stringify(item, undefined, 2))
