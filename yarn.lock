@@ -1468,6 +1468,7 @@ __metadata:
     "@analytics/segment": ^1.1.3
     "@blueprintjs/core": ^3.23.1
     "@blueprintjs/select": ^3.12.0
+    "@botpress/superinput": "workspace:^"
     "@botpress/ui-shared": "*"
     "@types/bluebird-global": ^3.5.13
     "@types/classnames": ^2.3.1
@@ -1621,7 +1622,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@botpress/superinput@workspace:packages/superinput":
+"@botpress/superinput@workspace:^, @botpress/superinput@workspace:packages/superinput":
   version: 0.0.0-use.local
   resolution: "@botpress/superinput@workspace:packages/superinput"
   dependencies:
