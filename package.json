@@ -63,7 +63,9 @@
     "packages/studio-ui",
     "packages/studio-be",
     "packages/superinput",
-    "packages/logger"
+    "packages/logger",
+    "packages/runtime",
+    "packages/typings"
   ],
   "engines": {
     "node": "12.18.1"

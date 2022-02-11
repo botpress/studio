@@ -2,7 +2,6 @@
   "ts-node": {
     "files": true
   },
-  // "extends": "../../tsconfig.packages.json",
   "references": [],
   "compilerOptions": {
     "declaration": true,
@@ -24,24 +23,3 @@
   "include": ["src/**/*.ts"],
   "typeRoots": ["./node_modules/@types", "../../node_modules/@types"]
 }
-
-// {
-//   "compilerOptions": {
-//     "esModuleInterop": true,
-//     "resolveJsonModule": true,
-//     "target": "es2019",
-//     "noImplicitAny": false,
-//     "moduleResolution": "node",
-//     "experimentalDecorators": true,
-//     "useUnknownInCatchVariables": false,
-//     "baseUrl": "./src",
-//     "outDir": "./out",
-//     "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
-//     "paths": {
-//       "botpress/sdk": ["./sdk/botpress.d.ts"]
-//     },
-//     "types": ["reflect-metadata", "jest"]
-//   },
-//   "include": ["src"],
-//   "exclude": ["**/*.test.ts"]
-// }

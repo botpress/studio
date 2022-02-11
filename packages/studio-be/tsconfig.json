@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../logger" }],
+  "references": [{ "path": "../logger" }, { "path": "../runtime" }],
   "compilerOptions": {
     "declaration": true,
     "sourceMap": true,

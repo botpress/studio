@@ -16,6 +16,7 @@
     "@botpress/logger": "*",
     "@botpress/native-extensions": "*",
     "@botpress/nlu-client": "1.0.0-rc.2",
+    "@botpress/runtime": "*",
     "axios": "^0.25.0",
     "bluebird": "^3.7.2",
     "bluebird-global": "^1.0.1",
