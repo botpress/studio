@@ -75,6 +75,13 @@ export class Bot {
     }
   }
 
+  public refreshNeedsTraining = async (): Promise<void> => {
+    await Promise.map(this._languages, async (l) => {
+      const state = await this.syncAndGetState(l)
+      this._webSocket(state)
+    })
+  }
+
   public syncAndGetState = async (language: string): Promise<BpTraining> => {
     const needsTraining = this._needsTraining(language)
     const doneTraining = this._doneTraining(language)

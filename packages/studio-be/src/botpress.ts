@@ -6,7 +6,7 @@ import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
 import moment from 'moment'
 import path from 'path'
-
+import { GlobalEvents, StudioEvents } from 'studio/events'
 import { HTTPServer } from './studio/server'
 import { RealtimeService } from './websocket'
 import { copyDir } from 'misc/fse-pkg'
@@ -47,6 +47,17 @@ export class Botpress {
     await this.startServer()
     await this.realtime.installOnHttpServer(this.httpServer.httpServer)
     // TODO: Mount bot
+
+    // TODO: clean this logic
+
+    GlobalEvents.events.on(StudioEvents.NLU_TRAINING_UPDATE, (payload) => {
+      this.realtime.sendToSocket({
+        eventName: 'statusbar.event',
+        payload: {
+          ...payload
+        }
+      })
+    })
 
     AppLifecycle.setDone(AppLifecycleEvents.BOTPRESS_READY)
   }
