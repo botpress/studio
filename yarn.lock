@@ -1417,6 +1417,7 @@ __metadata:
     express: ^4.17.2
     express-rate-limit: ^3.5.1
     express-urlrewrite: ^1.4.0
+    form-data: ^4.0.0
     fs-extra: ^9.1.0
     getos: ^3.2.1
     globrex: ^0.1.2
@@ -11347,6 +11348,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"form-data@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "form-data@npm:4.0.0"
+  dependencies:
+    asynckit: ^0.4.0
+    combined-stream: ^1.0.8
+    mime-types: ^2.1.12
+  checksum: 01135bf8675f9d5c61ff18e2e2932f719ca4de964e3be90ef4c36aacfc7b9cb2fceb5eca0b7e0190e3383fe51c5b37f4cb80b62ca06a99aaabfcfd6ac7c9328c
+  languageName: node
+  linkType: hard
+
 "form-data@npm:~2.3.2":
   version: 2.3.3
   resolution: "form-data@npm:2.3.3"
@@ -16705,6 +16717,22 @@ __metadata:
   linkType: hard
 
 "multer@npm:^1.4.2, multer@npm:^1.4.4":
+  version: 1.4.4
+  resolution: "multer@npm:1.4.4"
+  dependencies:
+    append-field: ^1.0.0
+    busboy: ^0.2.11
+    concat-stream: ^1.5.2
+    mkdirp: ^0.5.4
+    object-assign: ^4.1.1
+    on-finished: ^2.3.0
+    type-is: ^1.6.4
+    xtend: ^4.0.0
+  checksum: b5550d250aeee9c4d630eaecd133af0899239f6b10cec4b448ddd0a808025b383520b8227198a8612f60c2cd2094bcb60de93d973084f889d4e40efe6dbd641e
+  languageName: node
+  linkType: hard
+
+"multer@npm:^1.4.4":
   version: 1.4.4
   resolution: "multer@npm:1.4.4"
   dependencies:

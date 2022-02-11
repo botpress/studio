@@ -32,6 +32,7 @@
     "express": "^4.17.2",
     "express-rate-limit": "^3.5.1",
     "express-urlrewrite": "^1.4.0",
+    "form-data": "^4.0.0",
     "fs-extra": "^9.1.0",
     "getos": "^3.2.1",
     "globrex": "^0.1.2",
