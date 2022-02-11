@@ -23,7 +23,7 @@ interface Props {
   layoutv2?: boolean
 }
 
-export const textToItemId = text => text?.match(/^say #!(.*)$/)?.[1]
+export const textToItemId = (text) => text?.match(/^say #!(.*)$/)?.[1]
 
 class ActionItem extends Component<Props> {
   state = {
@@ -68,8 +68,8 @@ class ActionItem extends Component<Props> {
         <Markdown
           source={preview}
           renderers={{
-            image: props => <img {...props} className={style.imagePreview} />,
-            link: props => (
+            image: (props) => <img {...props} className={style.imagePreview} />,
+            link: (props) => (
               <a href={props.href} target="_blank">
                 {props.children}
               </a>
@@ -100,10 +100,10 @@ class ActionItem extends Component<Props> {
       item && this.props.layoutv2 ? preview : item ? `${lang.tr(item.schema?.title)} | ${preview}` : ''
     const vars = {}
 
-    const stripDots = str => str.replace(/\./g, '--dot--')
-    const restoreDots = str => str.replace(/--dot--/g, '.')
+    const stripDots = (str) => str.replace(/\./g, '--dot--')
+    const restoreDots = (str) => str.replace(/--dot--/g, '.')
 
-    const htmlTpl = textContent.replace(/{{([a-z$@0-9. _-]*?)}}/gi, x => {
+    const htmlTpl = textContent.replace(/{{([a-z$@0-9. _-]*?)}}/gi, (x) => {
       const name = stripDots(x.replace(/{|}/g, ''))
       vars[name] = `<span class="var">${x}</span>`
       return `{${stripDots(x)}}`
@@ -140,7 +140,7 @@ class ActionItem extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({ items: state.content.itemsById })
+const mapStateToProps = (state) => ({ items: state.content.itemsById })
 const mapDispatchToProps = { fetchContentItem, refreshFlowsLinks }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withLanguage(ActionItem))

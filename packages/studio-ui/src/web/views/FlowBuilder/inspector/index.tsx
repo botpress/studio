@@ -15,9 +15,9 @@ import {
 } from '~/actions'
 import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
 
-import SaySomethingForm from '../../FlowBuilder/sidePanelTopics/form/SaySomethingForm'
 import { nodeTypes } from '../diagram/manager'
 import FlowInformation from '../nodeProps/FlowInformation'
+import SaySomethingForm from '../nodeProps/SaySomethingForm'
 import SkillCallNode from '../nodeProps/SkillCallNode'
 import StandardNode from '../nodeProps/StandardNode'
 
@@ -79,8 +79,8 @@ class Inspector extends Component<Props> {
     } = this.props
 
     const subflows = _.filter(
-      _.map(flows, f => f.name),
-      f => f !== currentFlow?.name
+      _.map(flows, (f) => f.name),
+      (f) => f !== currentFlow?.name
     )
 
     const updateNodeAndRefresh = (...args) => {
@@ -88,6 +88,19 @@ class Inspector extends Component<Props> {
       setImmediate(() => {
         refreshFlowsLinks()
       })
+    }
+
+    if (nodeType === 'say_something') {
+      return (
+        <SaySomethingForm
+          onDeleteSelectedElements={onDeleteSelectedElements}
+          contentType={currentFlowNode.content?.contentType}
+          formData={currentFlowNode.content?.formData}
+          updateNode={updateNodeAndRefresh}
+          readOnly={readOnly}
+          subflows={subflows}
+        />
+      )
     }
 
     if (nodeType === 'skill-call') {
@@ -104,19 +117,6 @@ class Inspector extends Component<Props> {
           copyFlowNodeElement={copyFlowNodeElement}
           pasteFlowNodeElement={pasteFlowNodeElement}
           buffer={buffer}
-        />
-      )
-    }
-
-    if (nodeType === 'say_something') {
-      return (
-        <SaySomethingForm
-          onDeleteSelectedElements={onDeleteSelectedElements}
-          contentType={currentFlowNode.content?.contentType}
-          formData={currentFlowNode.content?.formData}
-          updateNode={updateNodeAndRefresh}
-          readOnly={readOnly}
-          subflows={subflows}
         />
       )
     }
@@ -147,7 +147,7 @@ class Inspector extends Component<Props> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   flows: _.values(state.flows.flowsByName),
   currentFlow: getCurrentFlow(state),
   currentFlowNode: getCurrentFlowNode(state) as any,

@@ -50,7 +50,7 @@ const SkillsBuilder = (props: Props) => {
     setModuleProps(buildModuleProps(props.data))
   }, [props.skillId, props.opened])
 
-  const onWindowResized = size => {
+  const onWindowResized = (size) => {
     if (!includes(VALID_WINDOW_SIZES, size)) {
       const sizes = VALID_WINDOW_SIZES.join(', ')
       return console.warn(lang.tr('studio.flow.skills.error', { size, sizes }))
@@ -59,7 +59,7 @@ const SkillsBuilder = (props: Props) => {
     setWindowSize(size)
   }
 
-  const buildModuleProps = data => ({
+  const buildModuleProps = (data) => ({
     initialData: data,
     onDataChanged: setData,
     onValidChanged: setCanSubmit,
@@ -73,7 +73,7 @@ const SkillsBuilder = (props: Props) => {
     setLoading(true)
     setCanSubmit(false)
 
-    return generateFlow().then(generated => {
+    return generateFlow().then((generated) => {
       if (props.action === 'edit') {
         props.updateSkill({
           skillId: props.skillId,
@@ -113,10 +113,10 @@ const SkillsBuilder = (props: Props) => {
       return
     }
 
-    return find(props.installedSkills, x => x.id.toLowerCase() === skillId.toLowerCase())
+    return find(props.installedSkills, (x) => x.id.toLowerCase() === skillId.toLowerCase())
   }
 
-  const renderInternalView = skillId => {
+  const renderInternalView = (skillId) => {
     switch (skillId) {
       case 'choice':
         return <Choice {...moduleProps}></Choice>

@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default class SlotItem extends React.Component<Props, State> {
-  handleDeleteClicked = async e => {
+  handleDeleteClicked = async (e) => {
     e.preventDefault()
 
     if (
@@ -26,7 +26,7 @@ export default class SlotItem extends React.Component<Props, State> {
     }
   }
 
-  handleEditClicked = e => {
+  handleEditClicked = (e) => {
     e.preventDefault()
     this.props.onEdit && this.props.onEdit(this.props.slot)
   }

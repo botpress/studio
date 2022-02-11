@@ -9,7 +9,7 @@ const HTTP_ACTIONS_PARAM_TYPES = ['string', 'number', 'boolean']
 export const ActionParameters: FC<{
   parameterValues: ParameterValue[]
   onUpdate: (parameterValues: ParameterValue[]) => void
-}> = props => {
+}> = (props) => {
   const { onUpdate, parameterValues } = props
 
   return (
@@ -21,7 +21,7 @@ export const ActionParameters: FC<{
             key={name}
             unknownType={!HTTP_ACTIONS_PARAM_TYPES.includes(type)}
             parameterValue={parameterValue}
-            onValueUpdated={parameterValue => {
+            onValueUpdated={(parameterValue) => {
               const copy = [...parameterValues]
               copy[idx] = { ...parameterValue }
               onUpdate(copy)

@@ -2,13 +2,12 @@ import { AnchorButton, Button, ButtonGroup, Intent, Position, Tooltip } from '@b
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import React, { Fragment, useEffect, useRef } from 'react'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
 import SmartInput from '../SmartInput'
 
-import localStyle from './style.scss'
+import style from './style.scss'
 
-const ArrayFieldTemplate = props => {
+const ArrayFieldTemplate = (props) => {
   const { canAdd, onAddClick, items, schema, formContext } = props
   const key = useRef(`${formContext?.customKey}`)
 
@@ -31,7 +30,7 @@ const ArrayFieldTemplate = props => {
   return (
     <div className={style.fieldWrapper}>
       <span className={style.formLabel}>{schema.title}</span>
-      {items?.map(element => {
+      {items?.map((element) => {
         const { type } = schema.items
 
         return (
@@ -50,7 +49,7 @@ const ArrayFieldTemplate = props => {
             ) : (
               <div className={cx(style.multipleInputs)}>
                 {element.children}
-                <ButtonGroup className={localStyle.actionsWrapper}>
+                <ButtonGroup className={style.actionsWrapper}>
                   {props.uiSchema?.['ui:options']?.orderable !== false && (
                     <Fragment>
                       <Tooltip content={lang.tr('moveUp')} position={Position.TOP}>

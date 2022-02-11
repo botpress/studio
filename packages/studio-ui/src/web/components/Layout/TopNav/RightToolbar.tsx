@@ -16,7 +16,7 @@ const RightToolBar = (props: Props) => {
   const toggleEmulator = () => {
     window.botpressWebChat.sendEvent({ type: 'toggle' })
   }
-  const toggleDocs = e => {
+  const toggleDocs = (e) => {
     e.preventDefault()
 
     if (props.docHints.length) {

@@ -10,7 +10,6 @@ import { makeNLUClient } from './client'
 
 import { EntityEditor } from './entities/EntityEditor'
 import { IntentEditor } from './intents/FullEditor'
-import { LiteEditor } from './intents/LiteEditor'
 import { NLUSidePanel } from './SidePanel'
 import style from './style.scss'
 
@@ -27,7 +26,7 @@ interface Props {
 const ITEM_TYPE_PARAM = 'type'
 const ITEM_NAME_PARAM = 'id'
 
-const NLU: FC<Props> = props => {
+const NLU: FC<Props> = (props) => {
   const api = makeNLUClient()
   const [currentItem, setCurrentItem] = useState<NluItem | undefined>()
   const [intents, setIntents] = useState([])
@@ -37,8 +36,8 @@ const NLU: FC<Props> = props => {
     api
       .fetchIntents()
       .then(setIntents)
-      .then(x => setCurrentItem(undefined))
-      .then(x => setCurrentItem(currentItem)) // this is little hack to trigger update for IntentEditor->Slots->SlotModal
+      .then((x) => setCurrentItem(undefined))
+      .then((x) => setCurrentItem(currentItem)) // this is little hack to trigger update for IntentEditor->Slots->SlotModal
   const loadEntities = () => api.fetchEntities().then(setEntities)
 
   useEffect(() => {
@@ -83,7 +82,7 @@ const NLU: FC<Props> = props => {
   const updateEntity = (targetEntity: string, entity) => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     api.updateEntity(targetEntity, entity)
-    const i = entities.findIndex(ent => ent.name === entity.name)
+    const i = entities.findIndex((ent) => ent.name === entity.name)
     setEntities([...entities.slice(0, i), entity, ...entities.slice(i + 1)])
   }
 
@@ -91,8 +90,8 @@ const NLU: FC<Props> = props => {
     return (
       currentItem &&
       (currentItem.type === 'intent'
-        ? intents.find(i => i.name === currentItem.name)
-        : entities.find(e => e.name === currentItem.name))
+        ? intents.find((i) => i.name === currentItem.name)
+        : entities.find((e) => e.name === currentItem.name))
     )
   }
 
@@ -121,7 +120,7 @@ const NLU: FC<Props> = props => {
         {currentItem && currentItem.type === 'entity' && (
           <EntityEditor
             entities={entities}
-            entity={entities.find(ent => ent.name === currentItem.name)}
+            entity={entities.find((ent) => ent.name === currentItem.name)}
             updateEntity={_.debounce(updateEntity, 2500)}
           />
         )}
@@ -132,4 +131,4 @@ const NLU: FC<Props> = props => {
 
 export default withLanguage(NLU)
 
-export { LiteEditor, EntityEditor }
+export { EntityEditor }

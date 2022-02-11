@@ -207,61 +207,6 @@
   color: #2458b3;
 }
 
-.topicsNavbar {
-  $height: 34px;
-
-  height: $height !important;
-  padding: 0 var(--spacing-large) !important;
-  box-shadow: unset !important;
-  margin-bottom: var(--spacing-medium) !important;
-
-  :global {
-    .bp3-button {
-      box-shadow: unset !important;
-      background-image: unset !important;
-      border-radius: 5px !important;
-      background-color: var(--white) !important;
-    }
-
-    .bp3-tab {
-      text-transform: uppercase;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    .bp3-tab[aria-selected='true'] {
-      color: var(--shark) !important;
-    }
-
-    .bp3-tab[aria-selected='false'] {
-      color: var(--gray);
-    }
-
-    .bp3-tab:hover {
-      color: #d6d6d6;
-    }
-
-    .bp3-icon {
-      color: var(--shark) !important;
-    }
-
-    .bp3-tab-indicator-wrapper {
-      height: 2px !important;
-    }
-
-    .bp3-tab-list > *:not(:last-child) {
-      margin-right: var(--spacing-x-large);
-    }
-
-    .bp3-tab:not([aria-disabled='true']):hover {
-      color: var(--reef) !important;
-    }
-
-    .bp3-tab-indicator {
-      background-color: var(--ocean) !important;
-    }
-  }
-}
 .rightPanel {
   position: absolute;
   width: 0;

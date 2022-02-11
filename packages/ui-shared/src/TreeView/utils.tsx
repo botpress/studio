@@ -97,7 +97,7 @@ export function traverseTree<T>(nodes: TreeNode<T>[], callback: (node: TreeNode<
 
 function addNode<T>(tree: TreeNode<T>, folders: TreeNode<T>[], leafNode: TreeNode<T>, data) {
   for (const folderDesc of folders) {
-    let folder = _.find(tree.childNodes, x => x.id === folderDesc.id)
+    let folder = _.find(tree.childNodes, (x) => x.id === folderDesc.id)
     if (!folder) {
       folder = { ...folderDesc, parent: tree, childNodes: [] }
       tree.childNodes?.push(folder)
@@ -108,7 +108,7 @@ function addNode<T>(tree: TreeNode<T>, folders: TreeNode<T>[], leafNode: TreeNod
   tree.childNodes?.push({ ...leafNode, parent: tree, ...data })
 }
 
-const sortChildren = tree => {
+const sortChildren = (tree) => {
   if (!tree.childNodes) {
     return
   }
@@ -127,7 +127,7 @@ const sortChildren = tree => {
   tree.childNodes.forEach(sortChildren)
 }
 
-export const usePrevious = value => {
+export const usePrevious = (value) => {
   const ref = useRef()
 
   useEffect(() => {

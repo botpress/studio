@@ -42,7 +42,7 @@ function EntityContentReducer(state: EntityState, action): EntityState {
   }
 }
 
-export const ListEntityEditor: React.FC<Props> = props => {
+export const ListEntityEditor: React.FC<Props> = (props) => {
   const [state, dispatch] = useReducer(EntityContentReducer, {
     fuzzy: props.entity.fuzzy,
     occurrences: props.entity.occurrences
@@ -65,8 +65,8 @@ export const ListEntityEditor: React.FC<Props> = props => {
 
   const isUniqueInEntity = (newElement: string) =>
     !props.entities
-      .filter(entity => entity.type === 'list')
-      .filter(entity => entity.id === props.entity.id)
+      .filter((entity) => entity.type === 'list')
+      .filter((entity) => entity.id === props.entity.id)
       .some(({ occurrences }) => occurrences.some(({ name, synonyms }) => [name, ...synonyms].includes(newElement)))
 
   const addOccurrence = () => {
@@ -145,8 +145,8 @@ export const ListEntityEditor: React.FC<Props> = props => {
             id="occurrence"
             placeholder={lang.tr('nlu.entities.occurrencePlaceholder')}
             value={newOccurrence}
-            onKeyDown={e => e.keyCode === 13 && addOccurrence()}
-            onChange={e => setNewOccurrence(e.target.value)}
+            onKeyDown={(e) => e.keyCode === 13 && addOccurrence()}
+            onChange={(e) => setNewOccurrence(e.target.value)}
           />
         </FormGroup>
         {state.occurrences.length > 0 && (

@@ -110,7 +110,7 @@ class SelectContent extends Component<Props, State> {
       const itemsCount = contentItems?.length ?? 0
       this.setState({ activeItemIndex: index < itemsCount - 1 ? index + 1 : index })
     } else if (e.key === 'Enter' && this.state.step === FormSteps.PICK_CATEGORY) {
-      this.setCurrentCategory(this.props.categories.filter(cat => !cat.hidden)[this.state.activeItemIndex].id)
+      this.setCurrentCategory(this.props.categories.filter((cat) => !cat.hidden)[this.state.activeItemIndex].id)
     } else if (e.key === 'Enter' && !this.state.newItemCategory) {
       this.handlePick(this.props.contentItems[this.state.activeItemIndex])
     }
@@ -147,32 +147,34 @@ class SelectContent extends Component<Props, State> {
     this.setState({ newItemData: data })
   }
 
-  resetCreateContent = (resetSearch = false) => (response: AxiosResponse<{ id: string }>) => {
-    const { data: id } = response || {}
+  resetCreateContent =
+    (resetSearch = false) =>
+    (response: AxiosResponse<{ id: string }>) => {
+      const { data: id } = response || {}
 
-    if (!id && CONTENT_TYPES_MEDIA.includes(this.state.newItemCategory.id)) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      this.props.deleteMedia(this.state.newItemData)
+      if (!id && CONTENT_TYPES_MEDIA.includes(this.state.newItemCategory.id)) {
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.props.deleteMedia(this.state.newItemData)
+      }
+
+      const stateUpdate = { newItemCategory: null, newItemData: null }
+      if (resetSearch) {
+        Object.assign(stateUpdate, {
+          searchTerm: '',
+          activeItemIndex: 0
+        })
+      }
+      return new Promise((resolve) =>
+        this.setState(stateUpdate, async () => {
+          if (id) {
+            const { data: item } = await axios.get(`${window.STUDIO_API_PATH}/cms/element/${id}`)
+            this.handlePick(item)
+          }
+
+          resolve()
+        })
+      )
     }
-
-    const stateUpdate = { newItemCategory: null, newItemData: null }
-    if (resetSearch) {
-      Object.assign(stateUpdate, {
-        searchTerm: '',
-        activeItemIndex: 0
-      })
-    }
-    return new Promise(resolve =>
-      this.setState(stateUpdate, async () => {
-        if (id) {
-          const { data: item } = await axios.get(`${window.STUDIO_API_PATH}/cms/element/${id}`)
-          this.handlePick(item)
-        }
-
-        resolve()
-      })
-    )
-  }
 
   onClose = () => {
     this.setState({ show: false }, () => {
@@ -187,7 +189,7 @@ class SelectContent extends Component<Props, State> {
     }
 
     const { contentType } = this.state
-    return contentType ? categories.filter(({ id }) => id === contentType) : categories.filter(cat => !cat.hidden)
+    return contentType ? categories.filter(({ id }) => id === contentType) : categories.filter((cat) => !cat.hidden)
   }
 
   setCurrentCategory(contentType: string | null) {
@@ -207,7 +209,7 @@ class SelectContent extends Component<Props, State> {
             {lang.tr('all')}
           </a>
           {categories
-            .filter(cat => !cat.hidden)
+            .filter((cat) => !cat.hidden)
             .map((category, i) => (
               <a
                 key={i}
@@ -293,15 +295,15 @@ class SelectContent extends Component<Props, State> {
       )
     }
 
-    const renderContentItem = contentItem => {
+    const renderContentItem = (contentItem) => {
       const preview = contentItem.previews[this.props.contentLang]
       if (preview && contentItem?.schema?.title === 'Image') {
         return (
           <Markdown
             source={`\\[${contentItem.contentType}\\] ${preview}`}
             renderers={{
-              image: props => <img {...props} className={style.imagePreview} />,
-              link: props => (
+              image: (props) => <img {...props} className={style.imagePreview} />,
+              link: (props) => (
                 <a href={props.href} target="_blank">
                   {props.children}
                 </a>

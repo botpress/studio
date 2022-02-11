@@ -62,7 +62,7 @@ const WorkflowToolbar = ({
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   canUndo: canFlowUndo(state),
   canRedo: canFlowRedo(state)
 })

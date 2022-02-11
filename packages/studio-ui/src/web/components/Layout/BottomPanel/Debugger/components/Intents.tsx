@@ -26,7 +26,7 @@ export const Intents = (props: Props) => {
     <ContentSection title={lang.tr('bottomPanel.debugger.topIntents')} className={style.section}>
       {intents.length > 1 && (
         <ul>
-          {_.take(intents, 4).map(i => (
+          {_.take(intents, 4).map((i) => (
             <li key={i.name}>
               <Intent name={i.name} confidence={i.confidence} elected={i.name === intent.name} />
             </li>

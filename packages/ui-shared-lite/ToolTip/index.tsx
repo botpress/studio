@@ -74,7 +74,7 @@ const ToolTip: FC<ToolTipProps> = ({ childId, children, content, position = 'top
   const tooltipRef = useRef<HTMLDivElement>(null)
   const tipRef = useRef<HTMLDivElement>(null)
 
-  const pastShow = el => {
+  const pastShow = (el) => {
     const elementRect = el?.getBoundingClientRect()
     const tooltipRect = tooltipRef.current?.getBoundingClientRect()
 
@@ -185,14 +185,14 @@ const ToolTip: FC<ToolTipProps> = ({ childId, children, content, position = 'top
     }
   }
 
-  const show = e => {
+  const show = (e) => {
     document.addEventListener('mousemove', mouseMove)
     clearTimeout(timeout.current)
     handleHtmlRendering()
     pastShow(e.currentTarget)
   }
 
-  const mouseMove = e => {
+  const mouseMove = (e) => {
     if (!e.target?.closest(`#${childId || `${id.current}-trigger`}`)) {
       hide()
     }

@@ -63,7 +63,7 @@ const Layout: FC<Props> = (props: Props) => {
 
     setTimeout(() => BotUmountedWarning(), 500)
 
-    const handleWebChatPanel = message => {
+    const handleWebChatPanel = (message) => {
       if (message.data.chatId) {
         return // event is not coming from emulator
       }
@@ -112,18 +112,18 @@ const Layout: FC<Props> = (props: Props) => {
     setGuidedTourOpen(!guidedTourOpen)
   }
 
-  const focusEmulator = e => {
+  const focusEmulator = (e) => {
     if (!isInputFocused() || e.ctrlKey) {
       e.preventDefault()
       window.botpressWebChat.sendEvent({ type: 'show' })
     }
   }
 
-  const closeEmulator = e => {
+  const closeEmulator = (e) => {
     window.botpressWebChat.sendEvent({ type: 'hide' })
   }
 
-  const toggleDocs = e => {
+  const toggleDocs = (e) => {
     e.preventDefault()
 
     if (props.docHints.length) {
@@ -131,7 +131,7 @@ const Layout: FC<Props> = (props: Props) => {
     }
   }
 
-  const toggleLangSwitcher = e => {
+  const toggleLangSwitcher = (e) => {
     e && e.preventDefault()
     if (!isInputFocused()) {
       setLangSwitcherOpen(() => {
@@ -150,14 +150,14 @@ const Layout: FC<Props> = (props: Props) => {
     }
   }
 
-  const gotoUrl = url => {
+  const gotoUrl = (url) => {
     if (!isInputFocused()) {
       props.history.push(url)
       focusMain()
     }
   }
 
-  const toggleBottomPanel = e => {
+  const toggleBottomPanel = (e) => {
     e.preventDefault()
     props.toggleBottomPanel()
   }
@@ -199,7 +199,7 @@ const Layout: FC<Props> = (props: Props) => {
           <SplitPane
             split={'horizontal'}
             defaultSize={bottomPanelDefaultSize}
-            onChange={size => localStorage.setItem(bottomPanelSizeKey, size.toString())}
+            onChange={(size) => localStorage.setItem(bottomPanelSizeKey, size.toString())}
             size={props.bottomPanel ? bottomPanelSize : '100%'}
             maxSize={-topPanelMinSize}
             minSize={props.bottomPanel ? bottomPanelMinSize : undefined}
@@ -226,7 +226,7 @@ const Layout: FC<Props> = (props: Props) => {
                 <Route exact path="/qna" component={QNA} />
                 <Route exact path="/code-editor" component={CodeEditor} />
 
-                <Route exact path="/modules/:moduleName/:componentName?" render={props => <Module {...props} />} />
+                <Route exact path="/modules/:moduleName/:componentName?" render={(props) => <Module {...props} />} />
               </Switch>
             </main>
             <BottomPanel />
@@ -250,7 +250,7 @@ const Layout: FC<Props> = (props: Props) => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   viewMode: state.ui.viewMode,
   docHints: state.ui.docHints,
   bottomPanel: state.ui.bottomPanel,

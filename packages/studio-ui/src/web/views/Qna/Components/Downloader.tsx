@@ -11,7 +11,7 @@ export interface DownloaderProps {
   onDownloadCompleted?: () => void
 }
 
-export const Downloader: FC<DownloaderProps> = props => {
+export const Downloader: FC<DownloaderProps> = (props) => {
   const downloadLink = useRef(null)
   const [content, setContent] = useState<string>()
   const [filename, setFilename] = useState<string>()

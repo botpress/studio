@@ -36,7 +36,7 @@ interface Props {
   toggleEnabledQnA: () => void
 }
 
-const QnA: FC<Props> = props => {
+const QnA: FC<Props> = (props) => {
   const [showOption, setShowOption] = useState(false)
   const {
     contentLang,
@@ -143,15 +143,15 @@ const QnA: FC<Props> = props => {
     items.map((item, index) =>
       items
         .slice(0, index)
-        .filter(item2 => item2.length)
+        .filter((item2) => item2.length)
         .includes(item)
         ? errorMsg
         : ''
     )
 
   const showIncomplete =
-    questions?.filter(q => !!q.trim()).length < 3 ||
-    (answers?.filter(q => !!q.trim()).length < 1 && !data.redirectFlow && !data.redirectNode)
+    questions?.filter((q) => !!q.trim()).length < 3 ||
+    (answers?.filter((q) => !!q.trim()).length < 1 && !data.redirectFlow && !data.redirectNode)
   const currentFlow = flows ? flows.find(({ name }) => name === data.redirectFlow) || { nodes: [] } : { nodes: [] }
   const nodeList = (currentFlow.nodes as FlowNode[])?.map(({ name }) => ({ label: name, value: name }))
   const flowsList = flows.map(({ name }) => ({ label: getFlowLabel(name), value: name }))
@@ -178,7 +178,7 @@ const QnA: FC<Props> = props => {
                 content={lang.tr('qna.form.copyIdToClipboard')}
               >
                 <CopyToClipboard text={id} onCopy={() => toast.info(lang.tr('qna.form.idCopiedToClipboard'))}>
-                  <span onClick={e => e.stopPropagation()}>ID</span>
+                  <span onClick={(e) => e.stopPropagation()}>ID</span>
                 </CopyToClipboard>
               </Tooltip>
             )}
@@ -211,8 +211,8 @@ const QnA: FC<Props> = props => {
               </Tooltip>
             )}
             <span className={style.tag}>
-              {`${questions?.filter(q => q.trim()).length || 0} ${lang.tr('qna.form.q')}
-               · ${answers?.filter(a => a.trim()).length || 0}  ${lang.tr('qna.form.a')}`}
+              {`${questions?.filter((q) => q.trim()).length || 0} ${lang.tr('qna.form.q')}
+               · ${answers?.filter((a) => a.trim()).length || 0}  ${lang.tr('qna.form.a')}`}
             </span>
           </div>
         </Button>
@@ -225,7 +225,7 @@ const QnA: FC<Props> = props => {
               className={cx(style.contextSelector)}
               contexts={data.contexts}
               customIdSuffix={id}
-              saveContexts={contexts =>
+              saveContexts={(contexts) =>
                 updateQnA({
                   id,
                   data: { ...data, contexts }
@@ -236,7 +236,7 @@ const QnA: FC<Props> = props => {
           <TextAreaList
             key="questions"
             items={questions || ['']}
-            updateItems={items =>
+            updateItems={(items) =>
               updateQnA({
                 id,
                 data: { ...data, questions: { ...data.questions, [contentLang]: items }, answers: data.answers }
@@ -246,7 +246,7 @@ const QnA: FC<Props> = props => {
             keyPrefix="question-"
             duplicateMsg={lang.tr('qna.form.duplicateQuestion')}
             itemListValidator={validateItemsList}
-            placeholder={index => getPlaceholder('question', index)}
+            placeholder={(index) => getPlaceholder('question', index)}
             label={lang.tr('qna.question')}
             contentDirection={contentDirection}
             addItemLabel={lang.tr('qna.form.addQuestionAlternative')}
@@ -257,7 +257,7 @@ const QnA: FC<Props> = props => {
             duplicateMsg={lang.tr('qna.form.duplicateAnswer')}
             itemListValidator={validateItemsList}
             contentDirection={contentDirection}
-            updateItems={items =>
+            updateItems={(items) =>
               updateQnA({
                 id,
                 data: { ...data, questions: data.questions, answers: { ...data.answers, [contentLang]: items } }
@@ -265,7 +265,7 @@ const QnA: FC<Props> = props => {
             }
             refItems={refAnswers}
             keyPrefix="answer-"
-            placeholder={index => getPlaceholder('answer', index)}
+            placeholder={(index) => getPlaceholder('answer', index)}
             label={lang.tr('qna.answer')}
             canAddContent
             addItemLabel={lang.tr('qna.form.addAnswerAlternative')}
@@ -278,7 +278,7 @@ const QnA: FC<Props> = props => {
 
                 <Select
                   tabIndex="-1"
-                  value={flowsList.find(item => item.value === data.redirectFlow)}
+                  value={flowsList.find((item) => item.value === data.redirectFlow)}
                   options={flowsList}
                   placeholder={lang.tr('qna.form.pickWorkflow')}
                   onChange={(selected: RedirectItem) =>
@@ -295,7 +295,7 @@ const QnA: FC<Props> = props => {
 
                 <Select
                   tabIndex="-1"
-                  value={nodeList.find(item => item.value === data.redirectNode)}
+                  value={nodeList.find((item) => item.value === data.redirectNode)}
                   options={nodeList}
                   placeholder={lang.tr('qna.form.pickNode')}
                   onChange={(selected: RedirectItem) =>

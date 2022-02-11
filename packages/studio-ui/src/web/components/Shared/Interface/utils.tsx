@@ -4,13 +4,13 @@ import React from 'react'
 
 import { SectionAction } from './typings'
 
-export const buildMenu = items => {
-  return <Menu>{items.map(item => buildMenuItems(item))}</Menu>
+export const buildMenu = (items) => {
+  return <Menu>{items.map((item) => buildMenuItems(item))}</Menu>
 }
 
-const buildMenuItems = items => {
+const buildMenuItems = (items) => {
   if (_.isArray(items)) {
-    return items.map(item => renderMenuItem(item))
+    return items.map((item) => renderMenuItem(item))
   }
 
   return renderMenuItem(items)
@@ -28,7 +28,7 @@ const renderMenuItem = (element: SectionAction) => {
       text={element.label}
       icon={element.icon}
       disabled={element.disabled}
-      onClick={e => !element.disabled && element.onClick && element.onClick(e)}
+      onClick={(e) => !element.disabled && element.onClick && element.onClick(e)}
       tagName={'button'} // Fix for https://github.com/palantir/blueprint/issues/3352#issuecomment-464111159
     >
       {element.items && buildMenuItems(element.items)}

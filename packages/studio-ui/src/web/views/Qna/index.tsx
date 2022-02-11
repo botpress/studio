@@ -15,7 +15,7 @@ import EmptyStateIcon from './Icons/EmptyStateIcon'
 import style from './style.scss'
 import { dispatchMiddleware, fetchReducer, itemHasError, ITEMS_PER_PAGE, Props } from './utils/qnaList.utils'
 
-const QnAList: FC<Props> = props => {
+const QnAList: FC<Props> = (props) => {
   const [flows, setFlows] = useState([])
   const [filterContexts, setFilterContexts] = useState([])
   const [questionSearch, setQuestionSearch] = useState('')
@@ -97,18 +97,12 @@ const QnAList: FC<Props> = props => {
 
   const fetchFlows = async () => {
     await axios.get('/flows', { baseURL: window.STUDIO_API_PATH }).then(({ data }) => {
-      setFlows(reorderFlows(data.filter(flow => !flow.name.startsWith('skills/'))))
+      setFlows(reorderFlows(data.filter((flow) => !flow.name.startsWith('skills/'))))
     })
   }
 
   const startDownload = () => {
     setUrl(`${window['STUDIO_API_PATH']}/qna/export`)
-  }
-
-  const getQueryParams = () => {
-    return {
-      filteredContexts: [props.topicName]
-    }
   }
 
   const handleScroll = () => {
@@ -126,7 +120,7 @@ const QnAList: FC<Props> = props => {
     }
   ]
 
-  const allExpanded = Object.keys(expandedItems).filter(itemId => expandedItems[itemId]).length === items.length
+  const allExpanded = Object.keys(expandedItems).filter((itemId) => expandedItems[itemId]).length === items.length
 
   let noItemsTooltip
   let languesTooltip = lang.tr('qna.form.translate')
@@ -142,7 +136,7 @@ const QnAList: FC<Props> = props => {
   const buttons: HeaderButtonProps[] = [
     {
       icon: 'translate',
-      optionsItems: languages?.map(language => ({
+      optionsItems: languages?.map((language) => ({
         label: lang.tr(`isoLangs.${language}.name`),
         selected: currentLang === language,
         action: () => {
@@ -191,16 +185,14 @@ const QnAList: FC<Props> = props => {
   buttons.push({
     icon: 'plus',
     onClick: () => {
-      dispatch({ type: 'addQnA', data: { languages, contexts: [props.topicName || 'global'] } })
+      dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
     },
     tooltip: lang.tr('qna.form.addQuestion')
   })
 
   const fetchData = async (page = 1) => {
     dispatch({ type: 'loading' })
-    const params = !isLite
-      ? { limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, filteredContexts: filterContexts }
-      : getQueryParams()
+    const params = { limit: ITEMS_PER_PAGE, offset: (page - 1) * ITEMS_PER_PAGE, filteredContexts: filterContexts }
 
     const { data } = await axios.get(`${window.STUDIO_API_PATH}/qna/questions`, {
       params: { ...params, question: questionSearch }
@@ -209,7 +201,7 @@ const QnAList: FC<Props> = props => {
     dispatch({ type: 'dataSuccess', data: { ...data, page } })
   }
 
-  const fetchHighlightedQna = async id => {
+  const fetchHighlightedQna = async (id) => {
     const { data } = await axios.get(`${window.STUDIO_API_PATH}/qna/questions/${id}`)
 
     dispatch({ type: 'highlightedSuccess', data })
@@ -223,7 +215,7 @@ const QnAList: FC<Props> = props => {
         className={style.input}
         type="text"
         value={questionSearch}
-        onChange={e => setQuestionSearch(e.currentTarget.value)}
+        onChange={(e) => setQuestionSearch(e.currentTarget.value)}
         placeholder={lang.tr('qna.search')}
       />
 
@@ -231,7 +223,7 @@ const QnAList: FC<Props> = props => {
         <ContextSelector
           className={style.contextInput}
           contexts={filterContexts}
-          saveContexts={contexts => setFilterContexts(contexts)}
+          saveContexts={(contexts) => setFilterContexts(contexts)}
           isSearch
         />
       )}
@@ -239,7 +231,7 @@ const QnAList: FC<Props> = props => {
   )
 
   return (
-    <MainLayout.Wrapper childRef={ref => (wrapperRef.current = ref)}>
+    <MainLayout.Wrapper childRef={(ref) => (wrapperRef.current = ref)}>
       <MainLayout.Toolbar
         className={style.header}
         tabChange={setCurrentTab}
@@ -251,7 +243,7 @@ const QnAList: FC<Props> = props => {
         {highlighted && (
           <div className={style.highlightedQna}>
             <QnA
-              updateQnA={data =>
+              updateQnA={(data) =>
                 debounceDispatchMiddleware(dispatch, {
                   type: 'updateQnA',
                   data: { qnaItem: data, index: 'highlighted', bp, currentLang }
@@ -280,17 +272,17 @@ const QnAList: FC<Props> = props => {
               }
               contentLang={currentLang}
               errorMessages={itemHasError(highlighted, currentLang)}
-              setExpanded={isExpanded => dispatch({ type: 'toggleExpandOne', data: { highlighted: isExpanded } })}
+              setExpanded={(isExpanded) => dispatch({ type: 'toggleExpandOne', data: { highlighted: isExpanded } })}
               expanded={expandedItems['highlighted']}
               qnaItem={highlighted}
             />
           </div>
         )}
         {items
-          .filter(item => highlighted?.id !== item.id)
+          .filter((item) => highlighted?.id !== item.id)
           .map((item, index) => (
             <QnA
-              updateQnA={data =>
+              updateQnA={(data) =>
                 debounceDispatchMiddleware(dispatch, {
                   type: 'updateQnA',
                   data: { qnaItem: data, index, bp, currentLang }
@@ -307,7 +299,7 @@ const QnAList: FC<Props> = props => {
               }
               contentLang={currentLang}
               errorMessages={itemHasError(item, currentLang)}
-              setExpanded={isExpanded =>
+              setExpanded={(isExpanded) =>
                 dispatch({ type: 'toggleExpandOne', data: { [item.key || item.id]: isExpanded } })
               }
               expanded={expandedItems[item.key || item.id]}

@@ -35,7 +35,7 @@ const fetchReducer = (state, action) => {
   }
 }
 
-const UploadLibrary: FC<Props> = props => {
+const UploadLibrary: FC<Props> = (props) => {
   const [state, dispatch] = React.useReducer(fetchReducer, {
     file: undefined,
     fullPath: '',
@@ -86,15 +86,15 @@ const UploadLibrary: FC<Props> = props => {
 
   return (
     <div
-      onDragOver={e => e.preventDefault()}
-      onDrop={e => {
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
         e.preventDefault()
         readFile(e.dataTransfer.files)
       }}
     >
       <FileInput
         text={filePath || `${lang.tr('chooseFile')}...`}
-        onChange={e => readFile((e.target as HTMLInputElement).files)}
+        onChange={(e) => readFile((e.target as HTMLInputElement).files)}
       />
 
       <Button

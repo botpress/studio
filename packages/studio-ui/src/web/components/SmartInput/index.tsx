@@ -104,7 +104,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
     return placeholder.length > 50 ? placeholder.substring(0, 50) + '...' : placeholder
   }
 
-  handleKeydown = e => {
+  handleKeydown = (e) => {
     if (e.keyCode === A_KEY && hasCommandModifier(e)) {
       return 'myeditor-save'
     }
@@ -157,7 +157,7 @@ class SmartInput extends React.Component<ConnectedProps, State> {
           keyBindingFn={this.handleKeydown}
           onChange={this.onChange}
           plugins={plugins}
-          ref={el => (this.editor = el)}
+          ref={(el) => (this.editor = el)}
           readOnly={this.props.readOnly}
         />
         {!this.props.readOnly && (

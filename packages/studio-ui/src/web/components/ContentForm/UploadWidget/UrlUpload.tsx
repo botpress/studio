@@ -2,10 +2,9 @@ import { Button, Icon, Intent, Position, Tooltip } from '@blueprintjs/core'
 import { lang, FileDisplay, UploadFieldProps } from 'botpress/shared'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 import SmartInput from '~/components/SmartInput'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
 import parentStyle from '../style.scss'
-import localStyle from './style.scss'
+import style from './style.scss'
 
 interface IUrlUploadProps {
   value: string | null
@@ -15,7 +14,7 @@ interface IUrlUploadProps {
   onDelete(): void
 }
 
-const UrlUpload: FC<IUrlUploadProps> = props => {
+const UrlUpload: FC<IUrlUploadProps> = (props) => {
   const { value, type } = props
 
   const [url, setUrl] = useState(props.value)
@@ -50,9 +49,9 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
       {value && isUrlOrRelativePath(value) && <FileDisplay url={value} type={type} onDelete={onDelete} deletable />}
 
       {value && !isUrlOrRelativePath(value) && (
-        <div className={localStyle.expressionWrapper}>
-          {lang.tr('contentTypes.infoInterpreted')} <span className={localStyle.italic}>{value}</span>
-          <div className={localStyle.expressionWrapperActions}>
+        <div className={style.expressionWrapper}>
+          {lang.tr('contentTypes.infoInterpreted')} <span className={style.italic}>{value}</span>
+          <div className={style.expressionWrapperActions}>
             <Tooltip content={lang.tr('delete')} position={Position.TOP}>
               <Button minimal small intent={Intent.DANGER} icon="trash" onClick={onDelete}></Button>
             </Tooltip>
@@ -62,7 +61,7 @@ const UrlUpload: FC<IUrlUploadProps> = props => {
 
       {!value && (
         <Fragment>
-          <div className={localStyle.flexContainer}>
+          <div className={style.flexContainer}>
             <SmartInput singleLine className={style.textarea} value={url} onChange={handleUrlChange} />
 
             <Button intent={Intent.NONE} onClick={saveUrl}>

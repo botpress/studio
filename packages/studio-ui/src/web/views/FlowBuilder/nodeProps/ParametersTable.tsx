@@ -158,7 +158,7 @@ export default class ParametersTable extends Component<Props, State> {
             <th>Value</th>
           </tr>
         </thead>
-        <tbody>{_.orderBy(_.keys(this.state.arguments), x => x).map(renderRow)}</tbody>
+        <tbody>{_.orderBy(_.keys(this.state.arguments), (x) => x).map(renderRow)}</tbody>
       </Table>
     )
   }

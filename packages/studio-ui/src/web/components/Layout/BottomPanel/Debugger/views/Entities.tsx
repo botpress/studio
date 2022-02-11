@@ -5,7 +5,7 @@ import React, { FC, Fragment } from 'react'
 
 import style from '../style.scss'
 
-export const Entities: FC<{ entities: sdk.NLU.Entity[] }> = props => (
+export const Entities: FC<{ entities: sdk.NLU.Entity[] }> = (props) => (
   <Fragment>
     <HTMLTable condensed className={style.summaryTable}>
       <thead>
@@ -16,7 +16,7 @@ export const Entities: FC<{ entities: sdk.NLU.Entity[] }> = props => (
         </tr>
       </thead>
       <tbody>
-        {props.entities.map(entity => (
+        {props.entities.map((entity) => (
           <tr key={entity.name}>
             <td>{entity.name}</td>
             <td>

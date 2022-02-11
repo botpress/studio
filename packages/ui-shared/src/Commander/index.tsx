@@ -14,7 +14,7 @@ import bpTheme from './theme/bp-theme'
 import './theme/custom.css'
 import { Command, CommanderProps } from './typings'
 
-const Commander: FC<CommanderProps> = props => {
+const Commander: FC<CommanderProps> = (props) => {
   const [commands, setCommands] = useState<Command[]>([])
 
   useEffect(() => {
@@ -23,7 +23,7 @@ const Commander: FC<CommanderProps> = props => {
     }
 
     const allowedShortcuts = [...props.shortcuts, ...getCommonShortcuts()].filter(
-      x => !x.permission || (x.permission && isOperationAllowed({ ...x.permission, user: props.user }))
+      (x) => !x.permission || (x.permission && isOperationAllowed({ ...x.permission, user: props.user }))
     )
 
     const getLabel = (label: string, shortcutType: string) => {
@@ -35,7 +35,7 @@ const Commander: FC<CommanderProps> = props => {
       return label
     }
 
-    const commands: Command[] = allowedShortcuts.map(shortcut => ({
+    const commands: Command[] = allowedShortcuts.map((shortcut) => ({
       name: getLabel(shortcut.label, shortcut.type),
       category: shortcut.category,
       shortcut: shortcut.shortcut,
@@ -72,7 +72,7 @@ const Commander: FC<CommanderProps> = props => {
       }
     }))
 
-    setCommands(_.orderBy(commands, x => x.name))
+    setCommands(_.orderBy(commands, (x) => x.name))
   }, [props.shortcuts])
 
   const options = {
@@ -82,7 +82,7 @@ const Commander: FC<CommanderProps> = props => {
     allowTypo: true
   }
 
-  const commandRenderer = suggestion => {
+  const commandRenderer = (suggestion) => {
     const { name, highlight, shortcut, category } = suggestion
 
     return (

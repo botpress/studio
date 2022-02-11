@@ -10,7 +10,7 @@ import injectSegment from '~/util/InjectSegment'
 
 // react-router doesn't do query parsing anymore since V4
 // https://github.com/ReactTraining/react-router/issues/4410
-const addLocationQuery = history => {
+const addLocationQuery = (history) => {
   history.location = Object.assign(history.location, {
     query: queryString.parse(history.location.search)
   })
@@ -35,7 +35,7 @@ const logPageView = () => {
   ReactGA.pageview(page)
 }
 
-const RoutesRouter = props => {
+const RoutesRouter = (props) => {
   if (window.SEND_USAGE_STATS) {
     injectSegment(props.user)
 
@@ -56,7 +56,7 @@ const RoutesRouter = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user
 })
 

@@ -13,12 +13,12 @@ interface Props {
 const SelectDropdown = Select.ofType<NLU.IntentDefinition>()
 const noIntent: any = { name: lang.tr('nlu.intents.selectIntentLabel') }
 
-const IntentDropdown: FC<Props> = props => {
+const IntentDropdown: FC<Props> = (props) => {
   const [selected, setSelected] = useState<NLU.IntentDefinition>()
 
   useEffect(() => {
     if (props.intents && props.currentIntent) {
-      setSelected(props.intents.find(x => x.name === props.currentIntent))
+      setSelected(props.intents.find((x) => x.name === props.currentIntent))
     }
   }, [props.intents])
 
@@ -37,8 +37,8 @@ const IntentDropdown: FC<Props> = props => {
       activeItem={selected}
       popoverProps={{ minimal: true }}
       noResults={<MenuItem disabled={true} text={lang.tr('nlu.intents.selectIntentNoResults')} />}
-      onItemSelect={option => selectItem(option)}
-      onActiveItemChange={option => selectItem(option)}
+      onItemSelect={(option) => selectItem(option)}
+      onActiveItemChange={(option) => selectItem(option)}
     >
       <Button
         id="select-intent"

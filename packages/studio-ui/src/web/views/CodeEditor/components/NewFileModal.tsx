@@ -23,14 +23,14 @@ const sanitizeName = (text: string) =>
     .replace(/[^a-zA-Z0-9\/_.-]/g, '')
     .replace(/\/\//, '/')
 
-const NewFileModal: FC<Props> = props => {
+const NewFileModal: FC<Props> = (props) => {
   const [name, setName] = useState('')
 
   useEffect(() => {
     setName('')
   }, [props.isOpen])
 
-  const submit = async e => {
+  const submit = async (e) => {
     e.preventDefault()
 
     const finalName = name.endsWith('.js') || name.endsWith('.json') ? name : `${name}.js`
@@ -91,7 +91,7 @@ const NewFileModal: FC<Props> = props => {
               tabIndex={1}
               placeholder="my-file.js"
               value={name}
-              onChange={e => setName(sanitizeName(e.currentTarget.value))}
+              onChange={(e) => setName(sanitizeName(e.currentTarget.value))}
               required
               autoFocus
             />

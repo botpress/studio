@@ -12,7 +12,7 @@ interface Props {
   className: string
 }
 
-export const ActionPopover: FC<Props> = props => {
+export const ActionPopover: FC<Props> = (props) => {
   const [show, setShow] = useState<boolean>(false)
   const [target, setTarget] = useState<HTMLElement>(null)
 

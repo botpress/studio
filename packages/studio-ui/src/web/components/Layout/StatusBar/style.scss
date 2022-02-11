@@ -23,6 +23,15 @@
       margin-left: 20px;
     }
   }
+
+  :global(.bp3-button) {
+    color: var(--seashell);
+    background-color: var(--c-background--dark-2);
+    &:hover {
+      background-color: var(--c-background--dark-2);
+      color: white;
+    }
+  }
 }
 
 .flag {

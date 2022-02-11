@@ -107,7 +107,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
       if (marks.size) {
         event.preventDefault()
         editor.moveEndToEndOfText().moveStartToStartOfText()
-        marks.forEach(m => editor.removeMark(m))
+        marks.forEach((m) => editor.removeMark(m))
         return
       }
     }
@@ -159,7 +159,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
 
     this.utteranceKeys = editor.value
       .getIn(['document', 'nodes'])
-      .map(x => x.key)
+      .map((x) => x.key)
       .toJS()
 
     return (
@@ -176,7 +176,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
     )
   }
 
-  onCopy = event => {
+  onCopy = (event) => {
     const selection = document.getSelection().toString()
     let lines: string[]
     if (!selection.length) {
@@ -186,12 +186,12 @@ export class UtterancesEditor extends React.Component<Props, State> {
       // Partial selection, we remove the heading numbers and empty lines
       lines = selection
         .split('\n')
-        .map(txt => txt.replace(/^\d{1,4}$/, ''))
-        .filter(x => x.length)
+        .map((txt) => txt.replace(/^\d{1,4}$/, ''))
+        .filter((x) => x.length)
     }
 
     event.clipboardData.setData('text/plain', lines.join('\n'))
-    event.clipboardData.setData('text/html', `<ul>${lines.map(x => `<li>${x}</li>`).join('')}</ul>`)
+    event.clipboardData.setData('text/html', `<ul>${lines.map((x) => `<li>${x}</li>`).join('')}</ul>`)
     event.preventDefault()
   }
 
@@ -220,7 +220,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
 
     const marks = (editor.value.get('document') as Document).getActiveMarksAtRange(range)
     if (marks.size) {
-      marks.forEach(m => editor.select(range).replaceMark(m, mark))
+      marks.forEach((m) => editor.select(range).replaceMark(m, mark))
     } else {
       editor.select(range).addMark(mark)
     }
@@ -232,13 +232,13 @@ export class UtterancesEditor extends React.Component<Props, State> {
 
   dispatchNeeded = (operations: Immutable.List<Operation>) => {
     return operations
-      .map(x => x.get('type'))
-      .filter(x => ['insert_text', 'remove_text', 'add_mark', 'remove_mark', 'split_node'].includes(x)).size
+      .map((x) => x.get('type'))
+      .filter((x) => ['insert_text', 'remove_text', 'add_mark', 'remove_mark', 'split_node'].includes(x)).size
   }
 
   onChange = ({ value, operations }: { value: Value; operations: Immutable.List<Operation> }) => {
     let selection: Selected | undefined
-    if (operations.filter(x => x.get('type') === 'set_selection').size) {
+    if (operations.filter((x) => x.get('type') === 'set_selection').size) {
       selection = this.onSelectionChanged(value)
     }
 
@@ -305,7 +305,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
       }
     }
 
-    const modifiedMarks = marks.filter(m => {
+    const modifiedMarks = marks.filter((m) => {
       const { type, data } = m
       if (type !== 'slot') {
         return true
@@ -330,14 +330,14 @@ export class UtterancesEditor extends React.Component<Props, State> {
   }
 
   private _slotExists = (slotName: string) => {
-    return this.props.slots.map(s => s.name).includes(slotName)
+    return this.props.slots.map((s) => s.name).includes(slotName)
   }
 
   renderMark = (props: RenderMarkProps, editor: CoreEditor, next: () => any) => {
     switch (props.mark.type) {
       case 'slot':
         const slotMark = props.mark.data.toJS()
-        const color = this.props.slots.find(s => s.name === slotMark.slotName).color
+        const color = this.props.slots.find((s) => s.name === slotMark.slotName).color
         const cn = classnames(style.slotMark, style[`label-colors-${color}`])
         // @ts-ignore
         const remove = () => editor.moveToRangeOfNode(props.node).removeMark(props.mark)

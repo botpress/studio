@@ -8,7 +8,7 @@ import { tokenNeedsRefresh, getToken, setToken } from '~/../../ui-shared-lite/au
 
 const REFRESH_INTERVAL = ms('5m')
 
-const TokenRefresher: FC<TokenRefresherProps> = props => {
+const TokenRefresher: FC<TokenRefresherProps> = (props) => {
   const [tokenInterval, setTokenInterval] = useState<any>()
 
   useEffect(() => {

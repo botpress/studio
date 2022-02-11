@@ -18,7 +18,7 @@ const TrainingStatusCenter: FC<Props> = (props: Props) => {
   const { languages, trainSessions } = props
   return (
     <div className={style.trainCenter}>
-      {languages.map(l => (
+      {languages.map((l) => (
         <div className={classNames(style.trainCenter_lang, style.trainStatus_message_dark)}>
           <div className={style.trainCenter_lang_code}>{l}:</div>
           <SingleLang dark={true} trainSession={trainSessions[l]} />
@@ -29,7 +29,7 @@ const TrainingStatusCenter: FC<Props> = (props: Props) => {
 }
 
 const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
-  const needsTraining = Object.values(props.trainSessions).some(ts => ts.status !== 'done')
+  const needsTraining = Object.values(props.trainSessions).some((ts) => ts.status !== 'done')
   const currentlyTraining = Object.values(props.trainSessions).some(
     ({ status }) => status === 'training' || status === 'training-pending'
   )

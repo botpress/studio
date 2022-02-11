@@ -118,7 +118,7 @@ class ConfigView extends Component<Props, State> {
     const languages = await this.fetchLanguages(bot.id)
     const licensing = await this.fetchLicensing()
 
-    const statuses = statusList.map<SelectItem>(x => ({
+    const statuses = statusList.map<SelectItem>((x) => ({
       label: lang.tr(`status.${x}`),
       value: x
     }))
@@ -128,10 +128,10 @@ class ConfigView extends Component<Props, State> {
     this.initialFormState = {
       id: bot.id,
       name: bot.name || '',
-      status: statuses.find(s => s.value === status),
+      status: statuses.find((s) => s.value === status),
       description: bot.description || '',
-      selectedDefaultLang: languages.find(l => l.value === bot.defaultLanguage),
-      selectedLanguages: languages.filter(x => bot.languages && bot.languages.includes(x.value)),
+      selectedDefaultLang: languages.find((l) => l.value === bot.defaultLanguage),
+      selectedLanguages: languages.filter((x) => bot.languages && bot.languages.includes(x.value)),
       website: bot.details.website || '',
       phoneNumber: bot.details.phoneNumber || '',
       emailAddress: bot.details.emailAddress || '',
@@ -152,7 +152,7 @@ class ConfigView extends Component<Props, State> {
   async fetchLanguages(botId: string): Promise<SelectItem[]> {
     const languagePath = `studio/${botId}/config/nlu/languages`
     const { data: languages } = await axios.get(languagePath, axiosConfig)
-    return (languages as string[]).map(language => ({
+    return (languages as string[]).map((language) => ({
       label: lang.tr(`isoLangs.${language.toLowerCase()}.name`),
       value: language
     }))
@@ -176,7 +176,7 @@ class ConfigView extends Component<Props, State> {
       private: this.state.status.value === 'private',
       description: this.state.description,
       defaultLanguage: this.state.selectedDefaultLang.value,
-      languages: this.state.selectedLanguages.map(x => x.value),
+      languages: this.state.selectedLanguages.map((x) => x.value),
       details: {
         website: this.state.website,
         phoneNumber: this.state.phoneNumber,
@@ -223,18 +223,18 @@ class ConfigView extends Component<Props, State> {
     }
   }
 
-  handleInputChanged = event => {
+  handleInputChanged = (event) => {
     // @ts-ignore
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  handleStatusChanged = status => {
+  handleStatusChanged = (status) => {
     this.setState({ status })
   }
 
-  handleDefaultLangChanged = async language => {
+  handleDefaultLangChanged = async (language) => {
     let langs = this.state.selectedLanguages
-    if (!langs.find(x => x.value === language.value)) {
+    if (!langs.find((x) => x.value === language.value)) {
       langs = [...langs, language]
     }
 
@@ -244,8 +244,8 @@ class ConfigView extends Component<Props, State> {
     }
 
     if (this.state.selectedDefaultLang !== language) {
-      const currentName = this.state.languages.find(x => x.value === this.state.selectedDefaultLang.value).label
-      const newName = this.state.languages.find(x => x.value === language.value).label
+      const currentName = this.state.languages.find((x) => x.value === this.state.selectedDefaultLang.value).label
+      const newName = this.state.languages.find((x) => x.value === language.value).label
       const conf = await confirmDialog(lang.tr('confirmChangeLanguage', { currentName, newName }), {
         acceptLabel: 'Change'
       })
@@ -256,19 +256,19 @@ class ConfigView extends Component<Props, State> {
     }
   }
 
-  handleLanguagesChanged = langs => {
-    if (!langs.find(x => x.value === this.state.selectedDefaultLang.value)) {
+  handleLanguagesChanged = (langs) => {
+    if (!langs.find((x) => x.value === this.state.selectedDefaultLang.value)) {
       langs = [...langs, this.state.selectedDefaultLang]
     }
 
     this.setState({ selectedLanguages: langs })
   }
 
-  handleCommunityLanguageChanged = lang => {
+  handleCommunityLanguageChanged = (lang) => {
     this.setState({ selectedDefaultLang: lang, selectedLanguages: [lang] })
   }
 
-  handleImageFileChanged = async event => {
+  handleImageFileChanged = async (event) => {
     const targetProp = event.target.name
     if (!event.target.files) {
       return
@@ -313,7 +313,7 @@ class ConfigView extends Component<Props, State> {
     const keyMap = { save: 'ctrl+s' }
 
     const keyHandlers = {
-      save: async e => {
+      save: async (e) => {
         e.preventDefault()
         await this.saveChanges()
       }
@@ -526,7 +526,7 @@ class ConfigView extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({ bot: state.bot })
+const mapStateToProps = (state) => ({ bot: state.bot })
 
 const mapDispatchToProps = {
   fetchBotInformation

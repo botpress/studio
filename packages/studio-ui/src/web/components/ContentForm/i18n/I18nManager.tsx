@@ -49,7 +49,7 @@ export default class I18nManager extends React.Component<Props, State> {
     return true
   }
 
-  handleOnChange = value => {
+  handleOnChange = (value) => {
     this.props.onChange(value)
   }
 

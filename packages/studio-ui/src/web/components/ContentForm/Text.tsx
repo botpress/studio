@@ -1,9 +1,8 @@
 import { lang } from 'botpress/shared'
-import React, { FC, useEffect, useRef, useState } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import SmartInput from '~/components/SmartInput'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
-
 import { isMissingCurlyBraceClosure } from '../Util/form.util'
+import style from './style.scss'
 
 interface Props {
   formData: any
@@ -14,7 +13,7 @@ interface Props {
   onChange: () => any
 }
 
-const Text: FC<Props> = props => {
+const Text: FC<Props> = (props) => {
   const { formContext, formData, schema, required, uiSchema, onChange } = props
   const key = useRef(`${formContext?.customKey}`)
 

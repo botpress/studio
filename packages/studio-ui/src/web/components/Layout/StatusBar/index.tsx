@@ -16,7 +16,7 @@ interface Props {
   toggleLangSwitcher: (e: any) => void
 }
 
-const StatusBar: FC<Props> = props => {
+const StatusBar: FC<Props> = (props) => {
   const isCloudBot = Boolean(props.botInfo?.cloud?.clientId)
   return (
     <footer className={style.statusBar}>
@@ -34,7 +34,7 @@ const StatusBar: FC<Props> = props => {
   )
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user,
   botInfo: state.bot,
   contentLang: state.language.contentLang

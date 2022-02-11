@@ -23,7 +23,7 @@ interface Props {
   updateEntity: (targetEntity: string, entity: NLU.EntityDefinition) => void
 }
 
-export const PatternEntityEditor: React.FC<Props> = props => {
+export const PatternEntityEditor: React.FC<Props> = (props) => {
   const [matchCase, setMatchCase] = useState<boolean>(props.entity.matchCase)
   const [sensitive, setSensitive] = useState<boolean>(props.entity.sensitive)
   const [pattern, setPattern] = useState<string>(props.entity.pattern)
@@ -49,14 +49,14 @@ export const PatternEntityEditor: React.FC<Props> = props => {
     const rx = new RegExp(p, matchCase ? '' : 'i')
     const allMatching = examplesStr
       .split('\n')
-      .filter(ex => ex !== '')
-      .map(ex => rx.test(ex))
+      .filter((ex) => ex !== '')
+      .map((ex) => rx.test(ex))
       .every(Boolean)
 
     setExamplesMatch(allMatching)
   }, 750)
 
-  const updateEntity = _.debounce(newEntity => {
+  const updateEntity = _.debounce((newEntity) => {
     if (!_.isEqual(props.entity, newEntity)) {
       props.updateEntity(getEntityId(newEntity.name), newEntity)
     }
@@ -102,7 +102,7 @@ export const PatternEntityEditor: React.FC<Props> = props => {
             placeholder={lang.tr('nlu.entities.patternPlaceholder')}
             value={pattern}
             intent={patternValid ? 'none' : 'danger'}
-            onChange={e => setPattern(e.target.value)}
+            onChange={(e) => setPattern(e.target.value)}
           />
         </FormGroup>
         <FormGroup
@@ -125,7 +125,7 @@ export const PatternEntityEditor: React.FC<Props> = props => {
             placeholder={lang.tr('nlu.entities.examplesPlaceholder')}
             value={examplesStr}
             intent={allExamplesMatch ? 'none' : 'danger'}
-            onChange={e => setExampleStr(e.target.value)}
+            onChange={(e) => setExampleStr(e.target.value)}
           />
         </FormGroup>
       </div>

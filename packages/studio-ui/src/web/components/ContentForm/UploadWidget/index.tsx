@@ -4,11 +4,10 @@ import cn from 'classnames'
 import { isBpUrl } from 'common/url'
 import React, { FC, Fragment, useState } from 'react'
 import { AccessControl } from '~/components/Shared/Utils'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
 import { Schema } from '../typings'
 
-import localStyle from './style.scss'
+import style from './style.scss'
 import UrlUpload from './UrlUpload'
 interface IUploadWidgetProps {
   value: string | null
@@ -18,7 +17,7 @@ interface IUploadWidgetProps {
   }
 }
 
-const UploadWidget: FC<IUploadWidgetProps> = props => {
+const UploadWidget: FC<IUploadWidgetProps> = (props) => {
   const { value } = props
   const [error, setError] = useState<string>(null)
   const [enterUrlManually, setEnterUrlManually] = useState(false)
@@ -70,7 +69,7 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
         {!enterUrlManually && (
           <FormFields.Upload
             axios={axios.create({ baseURL: window.STUDIO_API_PATH })}
-            onChange={value => onChange(value, true)}
+            onChange={(value) => onChange(value, true)}
             value={value}
             type={subtype}
             filter={filter}
@@ -82,12 +81,12 @@ const UploadWidget: FC<IUploadWidgetProps> = props => {
         )}
 
         {!value && (
-          <div className={localStyle.fieldContainer}>
-            <a className={localStyle.toggleLink} onClick={handleToggleManually}>
+          <div className={style.fieldContainer}>
+            <a className={style.toggleLink} onClick={handleToggleManually}>
               {!enterUrlManually ? lang.tr('contentTypes.enterUrlChoice') : lang.tr('contentTypes.uploadFileChoice')}
             </a>
 
-            {error && <p className={cn(style.fieldError, localStyle.fieldError)}>{error}</p>}
+            {error && <p className={cn(style.fieldError, style.fieldError)}>{error}</p>}
           </div>
         )}
       </Fragment>
