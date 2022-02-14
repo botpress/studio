@@ -31,21 +31,9 @@
   },
   "scripts": {
     "build": "yarn doctree && rollup -c",
-    "dev": "rollup -c -w",
+    "watch": "yarn doctree && rollup -c -w",
     "demo": "parcel demo/index.html",
     "doctree": "ts-node --skip-project ./scripts/genDocTree.ts"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "peerDependencies": {
     "@blueprintjs/core": "*",
