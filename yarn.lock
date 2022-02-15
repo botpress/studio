@@ -1395,7 +1395,7 @@ __metadata:
     tmp: ^0.2.1
     typescript: ^4.5.5
     verror: ^1.10.1
-    vm2: ^3.9.5
+    vm2: ^3.9.6
     yargs: ^17.3.1
     yn: ^4.0.0
   dependenciesMeta:
@@ -3200,7 +3200,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-walk@npm:^8.1.1":
+"acorn-walk@npm:^8.1.1, acorn-walk@npm:^8.2.0":
   version: 8.2.0
   resolution: "acorn-walk@npm:8.2.0"
   checksum: 1715e76c01dd7b2d4ca472f9c58968516a4899378a63ad5b6c2d668bba8da21a71976c14ec5f5b75f887b6317c4ae0b897ab141c831d741dc76024d8745f1ad1
@@ -21544,12 +21544,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vm2@npm:^3.9.5":
-  version: 3.9.5
-  resolution: "vm2@npm:3.9.5"
+"vm2@npm:^3.9.6":
+  version: 3.9.7
+  resolution: "vm2@npm:3.9.7"
+  dependencies:
+    acorn: ^8.7.0
+    acorn-walk: ^8.2.0
   bin:
     vm2: bin/vm2
-  checksum: d83dbe929ca4d1c9fca71cda34a5aee9a6b4bdc1de1ddb11777c4f6e1e48a471764195258dbf608f962df1a1c3d6ae917c9755f11a8f37b9e0bbf691313a725c
+  checksum: d85dc2ea3219daed7b9ad6d3bd17e405c60155cf162d977e28d8e12f237a95d8ed2d9ad34df2c89bab40a738cc717e3f83feb206df0c1a4964d891b1e39dbd54
   languageName: node
   linkType: hard
 
