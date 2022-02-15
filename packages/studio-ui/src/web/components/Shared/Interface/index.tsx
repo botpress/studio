@@ -50,7 +50,7 @@ export const Container = (props: ContainerProps) => {
 
   return (
     <HotKeys handlers={keyHandlers} keyMap={props.keyMap || {}} className={style.fullsize} focused>
-      <div className={cx(style.container, { [style.sidePanel_hidden]: !sidePanelVisible })}>
+      <div className={cx(style.container, { [style.sidePanel_hidden]: !sidePanelVisible }, props.className)}>
         <SplitPane
           split={'vertical'}
           defaultSize={width}

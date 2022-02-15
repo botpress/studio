@@ -6,7 +6,7 @@ $status-bar-height: 30px;
 }
 
 .fullsize,
-.fullsize > div {
+.fullsize > :where(div) {
   height: 100%;
 }
 
