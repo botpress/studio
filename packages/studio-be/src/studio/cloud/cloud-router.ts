@@ -9,11 +9,11 @@ export class CloudRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Cloud', services)
   }
-
+  // bots/botBot
   setupRoutes() {
     this.router.get(
-      '/deploy',
-      // this.needPermissions('read', 'bot.content'), // if you can read content you can get suggestions
+      '/info',
+      this.needPermissions('read', 'bot.content'), // if you can read content you can deploy to cloud...right?
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const { cloud } = (await this.botService.findBotById(botId)) || {}
@@ -22,7 +22,53 @@ export class CloudRouter extends CustomStudioRouter {
         }
         const { oauthUrl, clientId, clientSecret } = cloud
 
-        console.log('testing here! ')
+        const bearerToken = await axios
+          .post(
+            oauthUrl,
+            qs.stringify({
+              client_id: clientId,
+              client_secret: clientSecret,
+              grant_type: 'client_credentials'
+            })
+          )
+          .then((res) => `Bearer ${res.data?.access_token}`)
+
+        const introspect = await axios
+          .get('https://controllerapi.botpress.dev/v1/introspect', {
+            headers: {
+              Authorization: bearerToken
+            }
+          })
+          .then((res) => res.data)
+
+        await await axios
+          .get(`https://controllerapi.botpress.dev/v1/bots/${introspect.botId}`, {
+            headers: {
+              Authorization: bearerToken
+            }
+          })
+          .then((cloudBotRes) => {
+            const { status, data } = cloudBotRes
+            res.status(status).send(data)
+          })
+          .catch((e) => {
+            const { status, data } = e
+            res.status(status).send(data)
+          })
+      })
+    )
+
+    this.router.get(
+      '/deploy',
+      this.needPermissions('read', 'bot.content'), // if you can read content you can deploy to cloud...right?
+      this.asyncMiddleware(async (req, res) => {
+        const botId = req.params.botId
+        const { cloud } = (await this.botService.findBotById(botId)) || {}
+        if (!cloud) {
+          return
+        }
+        const { oauthUrl, clientId, clientSecret } = cloud
+
         const bearerToken = await axios
           .post(
             oauthUrl,
@@ -49,22 +95,23 @@ export class CloudRouter extends CustomStudioRouter {
         botMultipart.append('botFileName', `bot_${botId}_${Date.now()}.tgz`)
         botMultipart.append('botArchive', botBlob, 'bot.tgz')
 
-        const testRes = await axios
+        await axios
           .post('https://controllerapi.botpress.dev/v1/bots/upload', botMultipart, {
             headers: {
               'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
               Authorization: bearerToken
             }
           })
-          .then((res) => {
-            console.log(res.status)
-            return res.data
+          .then((cloudBotRes) => {
+            const { status, data } = cloudBotRes
+            console.log(cloudBotRes)
+            res.status(status).send(data)
           })
           .catch((e) => {
+            const { status, data } = e
             console.log(e)
-            console.log(e.response.data)
+            res.status(status).send(data)
           })
-        res.send({ deployed: true })
       })
     )
   }
