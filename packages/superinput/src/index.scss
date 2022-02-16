@@ -161,12 +161,7 @@ $pt-border-radius: 3px;
   padding: 0.5rem;
   color: $black;
   border-radius: $pt-border-radius;
-
-  p {
-    margin: 0;
-    white-space: pre;
-    line-height: normal;
-  }
+  overflow-wrap: normal;
 
   &.valid {
     background: mix($success, white, 20%);
