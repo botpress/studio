@@ -54,3 +54,4 @@ export const LoggerLevel: {
   Debug: 4
 }
 export const makeLogger: (config?: Partial<LoggerConfig>) => Logger
+export const ConsoleTransport: LogTransporter

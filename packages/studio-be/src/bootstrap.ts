@@ -3,7 +3,7 @@ import 'bluebird-global'
 import './sdk/rewire'
 import * as runtime from '@botpress/runtime'
 
-import { makeLogger } from '@botpress/logger'
+import { makeLogger, ConsoleTransport } from '@botpress/logger'
 
 import sdk, { Logger, LogLevel } from 'botpress/sdk'
 import chalk from 'chalk'
@@ -12,6 +12,36 @@ import _ from 'lodash'
 import { Botpress } from './botpress'
 
 import { showBanner } from 'misc/banner'
+
+import { FormattedLogEntry, LoggerConfig, LogTransporter } from '@botpress/logger'
+import { GlobalEvents, StudioEvents } from 'studio/events'
+
+export class StudioUITransport implements LogTransporter {
+  private callback: any
+
+  send(config: LoggerConfig, entry: FormattedLogEntry) {
+    if (config.minLevel && entry.level <= config.minLevel) {
+      this._log(entry.formatted)
+      return
+    }
+
+    if (entry.level <= config.level) {
+      if (!config.filters) {
+        this._log(entry.formatted)
+        return
+      }
+    }
+  }
+
+  setCallback(callback: any) {
+    this.callback = callback
+  }
+
+  private _log(msg: string) {
+    // eslint-disable-next-line no-console
+    this.callback && this.callback(msg)
+  }
+}
 
 async function setupDebugLogger(logger: Logger) {
   global.printBotLog = (botId, args) => {
@@ -30,10 +60,18 @@ async function setupDebugLogger(logger: Logger) {
 }
 
 async function start() {
-  const logger = makeLogger({}) as never as sdk.Logger
+  const stream = new StudioUITransport()
+  const logger = makeLogger({
+    prefix: 'Studio',
+    transports: [new (ConsoleTransport as any)(), stream]
+  }) as never as sdk.Logger
   await setupDebugLogger(logger)
 
   showBanner({ title: 'Botpress Studio', version: process.STUDIO_VERSION, logScopeLength: 9, bannerWidth: 75, logger })
+
+  stream.setCallback((message: string) => {
+    GlobalEvents.fireEvent(StudioEvents.CONSOLE_LOGS, { message, level: 'info', args: {} })
+  })
 
   const studio = new Botpress(logger)
 

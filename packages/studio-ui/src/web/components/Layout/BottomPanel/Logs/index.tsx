@@ -57,7 +57,7 @@ class BottomPanel extends React.Component<Props, State> {
 
   componentDidMount() {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    this.queryLogs()
+    // this.queryLogs() // TODO: Re-enable this
     this.setupListener()
   }
 
@@ -74,7 +74,7 @@ class BottomPanel extends React.Component<Props, State> {
         id: nanoid(10),
         level,
         message: anser.ansiToHtml(message),
-        args: anser.ansiToHtml(args)
+        args: anser.ansiToHtml(_.isString(args) ? args : JSON.stringify(args, undefined, 2))
       })
 
       if (this.logs.length > MAX_LOGS_LIMIT) {
@@ -97,17 +97,19 @@ class BottomPanel extends React.Component<Props, State> {
       }
     })
 
-    data &&
-      data.length &&
-      this.setState({
-        initialLogs: data.map((x, idx) => ({
-          id: `initial-log-${idx}`,
-          message: x.message,
-          level: x.level || 'debug',
-          ts: new Date(x.timestamp),
-          args: x.metadata
-        }))
-      })
+    this.setState({
+      initialLogs:
+        (data &&
+          data.length &&
+          data.map((x, idx) => ({
+            id: `initial-log-${idx}`,
+            message: x.message,
+            level: x.level || 'debug',
+            ts: new Date(x.timestamp),
+            args: x.metadata
+          }))) ||
+        []
+    })
   }
 
   renderEntry(log: LogEntry): JSX.Element {

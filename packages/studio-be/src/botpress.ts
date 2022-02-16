@@ -51,10 +51,20 @@ export class Botpress {
     // TODO: clean this logic
 
     GlobalEvents.events.on(StudioEvents.NLU_TRAINING_UPDATE, (payload) => {
+      this.logger.info('NLU Training Progress') // TODO: this is just to show that logs work
       this.realtime.sendToSocket({
         eventName: 'statusbar.event',
         payload: {
           ...payload
+        }
+      })
+    })
+
+    GlobalEvents.events.on(StudioEvents.CONSOLE_LOGS, (payload) => {
+      this.realtime.sendToSocket({
+        eventName: 'logs::*',
+        payload: {
+          ...payload // TODO: Format "args" to have colors
         }
       })
     })

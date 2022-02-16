@@ -2,6 +2,7 @@ import _ from 'lodash'
 import { LoggerLevel as EnumLoggerLevel } from './config'
 import { Logger } from './logger'
 import * as sdk from './typings'
+import { ConsoleTransport as DefaultTransport } from './transports/console'
 
 export const centerText: typeof sdk.centerText = (text: string, width: number, indent: number = 0) => {
   const padding = Math.floor((width - text.length) / 2)
@@ -21,3 +22,5 @@ export const makeLogger: typeof sdk.makeLogger = (config: Partial<sdk.LoggerConf
   logger.configure(config)
   return logger
 }
+
+export const ConsoleTransport = DefaultTransport
