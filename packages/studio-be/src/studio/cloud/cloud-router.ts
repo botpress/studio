@@ -34,33 +34,34 @@ export class CloudRouter extends CustomStudioRouter {
           .then((res) => `Bearer ${res.data?.access_token}`)
 
         const introspect = await axios
-          .get('https://controllerapi.botpress.dev/v1/introspect', {
+          .get(`${process.CONTROLLERAPI_ENDPOINT}/v1/introspect`, {
             headers: {
               Authorization: bearerToken
             }
           })
           .then((res) => res.data)
 
-        await await axios
-          .get(`https://controllerapi.botpress.dev/v1/bots/${introspect.botId}`, {
+        const { status, data } = await axios
+          .get(`${process.CONTROLLERAPI_ENDPOINT}/v1/bots/${introspect.botId}`, {
             headers: {
               Authorization: bearerToken
             }
           })
-          .then((cloudBotRes) => {
-            const { status, data } = cloudBotRes
-            res.status(status).send(data)
+          .then((res) => {
+            const { status, data } = res
+            return { status, data }
           })
           .catch((e) => {
             const { status, data } = e
-            res.status(status).send(data)
+            return { status, data }
           })
+        res.status(status).send(data)
       })
     )
 
     this.router.get(
       '/deploy',
-      this.needPermissions('read', 'bot.content'), // if you can read content you can deploy to cloud...right?
+      this.needPermissions('read', 'bot.content'),
       this.asyncMiddleware(async (req, res) => {
         const botId = req.params.botId
         const { cloud } = (await this.botService.findBotById(botId)) || {}
@@ -82,7 +83,7 @@ export class CloudRouter extends CustomStudioRouter {
 
         const botBlob = await this.botService.exportBot(botId)
         const introspect = await axios
-          .get('https://controllerapi.botpress.dev/v1/introspect', {
+          .get(`${process.CONTROLLERAPI_ENDPOINT}/v1/introspect`, {
             headers: {
               Authorization: bearerToken
             }
@@ -95,23 +96,22 @@ export class CloudRouter extends CustomStudioRouter {
         botMultipart.append('botFileName', `bot_${botId}_${Date.now()}.tgz`)
         botMultipart.append('botArchive', botBlob, 'bot.tgz')
 
-        await axios
-          .post('https://controllerapi.botpress.dev/v1/bots/upload', botMultipart, {
+        const { status, data } = await axios
+          .post(`${process.CONTROLLERAPI_ENDPOINT}/v1/bots/upload`, botMultipart, {
             headers: {
               'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
               Authorization: bearerToken
             }
           })
-          .then((cloudBotRes) => {
-            const { status, data } = cloudBotRes
-            console.log(cloudBotRes)
-            res.status(status).send(data)
+          .then((res) => {
+            const { status, data } = res
+            return { status, data }
           })
           .catch((e) => {
             const { status, data } = e
-            console.log(e)
-            res.status(status).send(data)
+            return { status, data }
           })
+        res.status(status).send(data)
       })
     )
   }

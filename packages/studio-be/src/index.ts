@@ -83,6 +83,7 @@ try {
 
   process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
+  process.CONTROLLERAPI_ENDPOINT = process.core_env.CONTROLLERAPI_ENDPOINT || 'https://controllerapi.botpress.dev'
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
