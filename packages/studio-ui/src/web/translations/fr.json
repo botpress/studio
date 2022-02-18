@@ -683,6 +683,20 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Déployer le robot",
+        "lastDeploy": "Dernier déploiement",
+        "needsTraining": "Le bot a besoin d'une formation",
+        "deploying": "Déploiement du robot"
+      },
+      "btn": "Déployer dans le cloud",
+      "toaster": {
+        "success": "Le bot a été déployé avec succès",
+        "info": "Le bot se déploie...",
+        "error": "Le bot n'a pas pu se déployer"
+      }
+    },
     "help": "Aide",
     "emulator": "Émulateur",
     "readDoc": "Lire la documentation",

@@ -708,6 +708,20 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Deploy Bot",
+        "lastDeploy": "Last Deployed",
+        "needsTraining": "Bot Needs Training",
+        "deploying": "Deploying Bot"
+      },
+      "btn": "Deploy to Cloud",
+      "toaster": {
+        "success": "Bot has successfuly been deoployed",
+        "info": "Bot is deploying...",
+        "error": "Bot failed to dpeloy"
+      }
+    },
     "help": "Help",
     "emulator": "Emulator",
     "readDoc": "Read Documentation",
