@@ -1,5 +1,6 @@
-import { completionKeymap } from '@codemirror/autocomplete'
+import { completionKeymap, closeCompletion } from '@codemirror/autocomplete'
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets'
+import { cursorSubwordForward, cursorDocEnd } from '@codemirror/commands'
 import { classHighlightStyle } from '@codemirror/highlight'
 import { history, historyKeymap } from '@codemirror/history'
 import { javascript } from '@codemirror/lang-javascript'
@@ -33,12 +34,19 @@ export default function SuperInput({
 
       if (!view.hasFocus) {
         setPanel('')
+        closeCompletion(view)
       } else if (focusChanged || docChanged) {
         setPanel(!eventState ? noGlobsEvalMsg : evalStrTempl(value, eventState) || '')
       }
 
-      if (docChanged && onChange) {
-        onChange(value)
+      if (docChanged) {
+        if (view.state.doc.length === 1) {
+          cursorSubwordForward(view)
+        }
+
+        if (onChange) {
+          onChange(value)
+        }
       }
     }
 
@@ -53,10 +61,10 @@ export default function SuperInput({
     }
 
     const extensions = [
+      placeholderExt(placeholder || ''),
       EditorView.updateListener.of(onUpdate),
       EditorView.lineWrapping,
       classHighlightStyle,
-      placeholderExt(placeholder || ''),
       ...typeExt,
       hoverInspect(eventState),
       bpAutocomplete(eventState),
@@ -74,6 +82,7 @@ export default function SuperInput({
 
     if (autoFocus) {
       newView.focus()
+      cursorDocEnd(newView)
     }
 
     return () => {

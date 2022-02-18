@@ -37,7 +37,7 @@ function App() {
         </section>
         <section>
           <h2>expression (no eventState)</h2>
-          <SuperInput type={SiTypes.EXPRESSION} value={code0} {...msgs} />
+          <SuperInput type={SiTypes.EXPRESSION} value={code0} {...msgs} placeholder="something" />
         </section>
         <section>
           <h2>Valid</h2>
