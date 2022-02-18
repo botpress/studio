@@ -7,7 +7,7 @@ const axios = require('axios')
  */
 const updateContexts = async intentName => {
   const botId = event.botId
-  const axiosConfig = await bp.http.getAxiosConfigForBot(botId, { localUrl: true })
+  const axiosConfig = await bp.http.getAxiosConfigForBot(botId, { localUrl: true, studioUrl: true })
   const { data } = await axios.get(`/nlu/intents/${intentName}`, axiosConfig)
 
   const nluContexts = data.contexts.map(context => {
