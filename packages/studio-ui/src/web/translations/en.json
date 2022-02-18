@@ -713,7 +713,7 @@
         "deployBot": "Deploy Bot",
         "lastDeploy": "Last Deployed",
         "needsTraining": "Bot Needs Training",
-        "deploying": "Deploying Bot"
+        "deploying": "Deploying Bot..."
       },
       "btn": "Deploy to Cloud",
       "toaster": {

@@ -685,10 +685,10 @@
   "topNav": {
     "deploy": {
       "tooltip": {
-        "deployBot": "Déployer le robot",
+        "deployBot": "Déployer le bot",
         "lastDeploy": "Dernier déploiement",
         "needsTraining": "Le bot a besoin d'une formation",
-        "deploying": "Déploiement du robot"
+        "deploying": "Déploiement du bot..."
       },
       "btn": "Déployer dans le cloud",
       "toaster": {

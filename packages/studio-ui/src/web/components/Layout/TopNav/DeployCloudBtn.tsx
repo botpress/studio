@@ -54,7 +54,19 @@ const DeployCloudBtn = (props: Props) => {
       .catch((e) => {})
   }, [])
 
+  const isTrained = useCallback(() => {
+    return Object.keys(trainSession).reduce((trained, lang) => {
+      if (trainSession[lang].status !== 'done') {
+        trained = false
+      }
+      return trained
+    }, true)
+  }, [trainSession])
+
   const deployToCloud = useCallback(() => {
+    if (deployLoading || !isTrained()) {
+      return
+    }
     toast.info(lang.tr('topNav.deploy.toaster.info'))
     setDeployLoading(true)
     axios
@@ -72,16 +84,7 @@ const DeployCloudBtn = (props: Props) => {
         toast.failure(lang.tr('topNav.deploy.toaster.error'))
         setDeployLoading(false)
       })
-  }, [setLastImportDate, setDeployLoading])
-
-  const isTrained = useCallback(() => {
-    return Object.keys(trainSession).reduce((trained, lang) => {
-      if (trainSession[lang].status !== 'done') {
-        trained = false
-      }
-      return trained
-    }, true)
-  }, [trainSession])
+  }, [setLastImportDate, setDeployLoading, deployLoading, isTrained])
 
   return (
     <Tooltip
@@ -93,7 +96,6 @@ const DeployCloudBtn = (props: Props) => {
         className={classNames(style.item, { [style.disabled]: deployLoading || !isTrained() }, style.itemSpacing)}
         onClick={deployToCloud}
         id="statusbar_deploy"
-        disabled={deployLoading || !isTrained()}
       >
         {deployLoading ? <Spinner size={16} /> : <Icon icon="cloud-upload" iconSize={16} />}
         <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>

@@ -665,7 +665,7 @@
         "deployBot": "Implementar bot",
         "lastDeploy": "Último implementado",
         "needsTraining": "El bot necesita capacitación",
-        "deploying": "Bot de implementación"
+        "deploying": "Bot de implementación..."
       },
       "btn": "Implementar en la nube",
       "toaster": {
