@@ -1,6 +1,7 @@
 .content {
   flex-grow: 1;
   margin-top: var(--spacing-large);
+  overflow-y: auto;
 
   &.empty {
     display: flex;
