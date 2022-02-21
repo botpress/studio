@@ -26,7 +26,6 @@ interface CssExports {
   'label-colors-6': string;
   'label-colors-7': string;
   'label-colors-8': string;
-  'lightEditorHint': string;
   'link': string;
   'liteIntentEditor': string;
   'selectionText': string;

@@ -15,16 +15,19 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  gap: 10px;
   margin: 10px 0;
 
   .hint {
     color: #738694;
+    margin: 0;
+  }
 
-    &:not(.lightEditorHint) {
-      max-width: 50%;
-    }
+  @media (min-width: 1025px) {
+    grid-auto-flow: column;
+    align-items: end;
+    justify-content: space-between;
   }
 }
 
@@ -211,6 +214,7 @@ p.utterance {
   border-left: solid 1px #eee;
   flex-grow: 0.2;
   overflow: auto;
+  background-color: white;
 }
 
 .centerContainer {
