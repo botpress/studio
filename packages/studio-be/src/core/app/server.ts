@@ -170,7 +170,7 @@ export class HTTPServer {
         logLevel: 'silent',
         onProxyReq: (proxyReq, req) => {
           // Prevent redirecting studio URL to the main process
-          if (req.originalUrl.includes('/studio/')) {
+          if (req.originalUrl.includes('/studio')) {
             proxyReq.abort()
           }
 
