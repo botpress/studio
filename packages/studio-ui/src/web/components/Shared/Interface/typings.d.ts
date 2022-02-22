@@ -58,6 +58,7 @@ export interface ContainerProps {
     [id: string]: (keyEvent?: KeyboardEvent) => void
   }
   readonly children: React.ReactNode
+  className?: string
 }
 
 export interface SplashScreenProps {

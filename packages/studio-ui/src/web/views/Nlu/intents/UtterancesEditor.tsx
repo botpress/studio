@@ -31,7 +31,12 @@ import { makeSlotMark, utterancesToValue, valueToUtterances } from './utterances
 const plugins = [
   PlaceholderPlugin({
     placeholder: lang.tr('nlu.intents.utterancePlaceholder'),
-    when: (_, node) => node.text.trim() === ''
+    when: (_, node) => node.text.trim() === '',
+    style: {
+      display: 'inline-block',
+      transform: 'translateX(var(--hanging-indent))',
+      verticalAlign: 'inherit'
+    }
   })
 ]
 
@@ -163,7 +168,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
       .toJS()
 
     return (
-      <div className={style['editor-body']}>
+      <div>
         <TagSlotPopover
           slots={this.props.slots}
           show={this.state.showSlotMenu}

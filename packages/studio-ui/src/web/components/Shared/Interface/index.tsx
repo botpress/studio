@@ -31,8 +31,6 @@ import {
 } from './typings'
 import { buildMenu, showContextMenu } from './utils'
 
-export { Container }
-
 export const SidePanelSection = (props: SidePanelSectionProps) => {
   const [isOpen, setOpen] = useState(!props.collapsed)
 
@@ -217,3 +215,5 @@ export const InfoTooltip = (props: InfoTooltipProps) => (
     <Icon icon={props.icon || 'info-sign'} iconSize={13} className={style.infoTooltip} />
   </Tooltip>
 )
+
+export { Container }

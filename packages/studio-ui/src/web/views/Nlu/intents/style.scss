@@ -6,15 +6,8 @@
 }
 
 .intentEditor {
-  display: flex;
-  justify-content: flex-end;
-  flex-grow: 1;
-  min-height: 1px;
-
-  > div:first-child {
-    overflow: auto;
-    flex-grow: 1;
-  }
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
 
   &:not(.liteIntentEditor) > div:first-child {
     padding: 10px;
@@ -22,29 +15,24 @@
 }
 
 .header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  gap: 10px;
   margin: 10px 0;
 
   .hint {
     color: #738694;
+    margin: 0;
+  }
 
-    &:not(.lightEditorHint) {
-      max-width: 50%;
-    }
+  @media (min-width: 1025px) {
+    grid-auto-flow: column;
+    align-items: end;
+    justify-content: space-between;
   }
 }
 
-.editor-body {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: stretch;
-}
-
-.utterances {
-  flex: 1;
-  min-width: 300px;
+.utterances p {
+  margin-bottom: 0;
 }
 
 .entities-list {
@@ -55,11 +43,13 @@
 }
 
 p.utterance {
-  margin: 0;
   font-size: 16px;
   line-height: 25px;
-  z-index: 0;
-  display: flex;
+  --index-width: 20px;
+  --index-margin-right: 5px;
+  --hanging-indent: calc(var(--index-width) + var(--index-margin-right));
+  padding-left: var(--hanging-indent);
+  text-indent: calc(-1 * var(--hanging-indent));
 
   &.title {
     font-weight: bold;
@@ -74,8 +64,10 @@ p.utterance {
   }
 
   .index {
-    width: 20px;
-    margin-right: 5px;
+    display: inline-block;
+    width: var(--index-width);
+    margin-right: var(--index-margin-right);
+    text-indent: 0;
     opacity: 0.5;
     text-align: center;
     user-select: none;
@@ -86,6 +78,18 @@ p.utterance {
       padding: 0 5px;
       border-radius: 5px;
     }
+  }
+
+  // Fix duplicate placeholder
+  [data-slate-leaf='true'] > span > [contenteditable='false'] + span > [contenteditable='false'],
+  [data-slate-leaf='true']
+    > span
+    > [contenteditable='false']
+    + span
+    > [contenteditable='false']
+    + span
+    > [contenteditable='false'] {
+    display: none !important;
   }
 }
 
@@ -109,6 +113,8 @@ p.utterance {
 
 .slotMark {
   cursor: pointer;
+  text-indent: 0;
+  transform: translateY(-1px);
   &:hover {
     font-weight: bold;
   }
@@ -208,6 +214,7 @@ p.utterance {
   border-left: solid 1px #eee;
   flex-grow: 0.2;
   overflow: auto;
+  background-color: white;
 }
 
 .centerContainer {
