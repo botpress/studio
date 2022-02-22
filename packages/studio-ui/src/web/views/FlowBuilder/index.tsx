@@ -14,7 +14,7 @@ import {
   setDiagramAction,
   switchFlow
 } from '~/actions'
-import { Container } from '~/components/Shared/Interface'
+import Container from '~/components/Shared/Interface/Container'
 import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
 import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
 import { RootReducer } from '~/reducers'
