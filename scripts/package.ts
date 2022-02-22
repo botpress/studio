@@ -10,7 +10,7 @@ const installBindings = async () => {
 
   for (const platform of platforms) {
     await execute(
-      `./node_modules/.bin/node-pre-gyp install --directory=./node_modules/sqlite3 --target_platform=${platform} --target_arch=x64`,
+      `cross-env ./node_modules/.bin/node-pre-gyp install --directory=./node_modules/sqlite3 --target_platform=${platform} --target_arch=x64`,
       undefined,
       { silent: true }
     )
@@ -27,7 +27,9 @@ const renameBinaries = async () => {
 
   for (const [oldPath, newPath] of mappings) {
     await new Promise((resolve, reject) =>
-      fs.rename(`${outputPath}/${oldPath}`, `${outputPath}/${newPath}`, err => (err ? reject(err) : resolve(undefined)))
+      fs.rename(`${outputPath}/${oldPath}`, `${outputPath}/${newPath}`, (err) =>
+        err ? reject(err) : resolve(undefined)
+      )
     )
   }
 }
