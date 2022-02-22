@@ -4,6 +4,7 @@
     "declaration": true,
     "sourceMap": true,
     "strict": true,
+    "composite": true,
     "module": "commonjs",
     "esModuleInterop": true,
     "resolveJsonModule": true,

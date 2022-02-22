@@ -1,7 +1,7 @@
 import 'bluebird-global'
 // eslint-disable-next-line import/order
 import './sdk/rewire'
-import * as runtime from '@botpress/runtime'
+// import * as runtime from '@botpress/runtime'
 
 import { makeLogger, ConsoleTransport } from '@botpress/logger'
 
@@ -93,7 +93,7 @@ This is a fatal error, process will exit.`
 
   try {
     await studio.start()
-    await runtime.start()
+    // await runtime.start()
     logger.info(chalk.gray(`Studio is listening at: ${process.LOCAL_URL}`))
   } catch (err) {
     logger.error(`Could not start Botpress: ${err.message}`, err)
