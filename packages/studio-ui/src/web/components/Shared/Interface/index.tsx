@@ -15,6 +15,7 @@ import cx from 'classnames'
 import _ from 'lodash'
 import React, { useState } from 'react'
 
+import Container from './Container'
 import style from './style.scss'
 import {
   InfoTooltipProps,
@@ -214,3 +215,5 @@ export const InfoTooltip = (props: InfoTooltipProps) => (
     <Icon icon={props.icon || 'info-sign'} iconSize={13} className={style.infoTooltip} />
   </Tooltip>
 )
+
+export { Container }
