@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 5
+  version: 6
   cacheKey: 8
 
 "@ampproject/remapping@npm:^2.0.0":
@@ -1564,7 +1564,6 @@ __metadata:
     "@blueprintjs/select": ^3.12.0
     "@botpress/nlu-client": 1.0.0-rc.2
     "@botpress/superinput": "workspace:^"
-    "@botpress/ui-shared": "*"
     "@types/bluebird-global": ^3.5.13
     "@types/classnames": ^2.3.1
     "@types/lodash": ^4.14.178
@@ -1793,47 +1792,6 @@ __metadata:
   checksum: 88f395ca0af2f3c0665b8ce7bb29e83647ec5d141e8735712aeeee4117081555436712966b6957aa1c461f6f826a4d23b0034e379c443a10e919f81c8748bf29
   languageName: node
   linkType: hard
-    "@blueprintjs/core": ^3.23.1
-    "@blueprintjs/datetime": 3.15.2
-    "@blueprintjs/select": ^3.12.0
-    "@botpress/studio-be": "*"
-    "@types/react": ^16.8.19
-    "@types/react-dom": ^16.8.4
-    axios: ^0.25.0
-    cross-env: ^7.0.3
-    css-loader: ^0.28.11
-    css-modules-typescript-loader: ^2.0.3
-    filemanager-webpack-plugin: 3.1.1
-    hard-source-webpack-plugin: ^0.13.1
-    js-cookie: ^2.2.1
-    moment: ^2.29.1
-    node-sass: ^7.0.0
-    node-sass-tilde-importer: ^1.0.2
-    postcss-loader: ^2.0.8
-    prop-types: ^15.6.0
-    react: ^16.8.6
-    react-command-palette: ^0.12.0-0
-    react-copy-to-clipboard: ^5.0.2
-    react-dom: ^16.8.6
-    react-dotdotdot: ^1.3.1
-    react-hotkeys: ^1.1.4
-    react-intl: ^3.12.1
-    react-router: 4.3.1
-    react-router-dom: 4.3.1
-    react-split-pane: ^0.1.89
-    rimraf: ^3.0.2
-    sass-loader: ^6.0.6
-    script-loader: ^0.7.0
-    snarkdown: ^1.2.2
-    style-loader: ^0.13.1
-    terser-webpack-plugin: ^2.2.2
-    ts-loader: ^6.0.2
-    typescript: ^4.5.5
-    webpack: 4.46
-    webpack-bundle-analyzer: ^3.5.2
-    webpack-node-externals: ^1.7.2
-  languageName: unknown
-  linkType: soft
 
 "@codemirror/autocomplete@npm:^0.19.0, @codemirror/autocomplete@npm:^0.19.9":
   version: 0.19.12
@@ -4993,7 +4951,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.7.0":
+"acorn@npm:^8.5.0, acorn@npm:^8.7.0":
   version: 8.7.0
   resolution: "acorn@npm:8.7.0"
   bin:
@@ -17029,7 +16987,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.1.1, lodash@npm:^4.15.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.17.4, lodash@npm:^4.2.0, lodash@npm:^4.2.1, lodash@npm:^4.5.1, lodash@npm:^4.7.0, lodash@npm:~4.17.10":
+"lodash@npm:4.x, lodash@npm:^4.1.1, lodash@npm:^4.15.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.3, lodash@npm:^4.17.4, lodash@npm:^4.2.0, lodash@npm:^4.2.1, lodash@npm:^4.5.1, lodash@npm:^4.7.0, lodash@npm:~4.17.10":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -18381,15 +18339,6 @@ __metadata:
   version: 2.0.1
   resolution: "node-releases@npm:2.0.1"
   checksum: b20dd8d4bced11f75060f0387e05e76b9dc4a0451f7bb3516eade6f50499ea7768ba95d8a60d520c193402df1e58cb3fe301510cc1c1ad68949c3d57b5149866
-  languageName: node
-  linkType: hard
-
-"node-sass-tilde-importer@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "node-sass-tilde-importer@npm:1.0.2"
-  dependencies:
-    find-parent-dir: ^0.3.0
-  checksum: 144581bb430c48b700322d40bb15e029996f58cb1c4f1cb62be1aeaa58648b991b4d0e92c772c55fdeb8b3432ea6a01db86c60b894726862e9138a7c9d3c16b9
   languageName: node
   linkType: hard
 
@@ -22771,7 +22720,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request@npm:^2.88.0":
+"request-promise-core@npm:1.1.4":
+  version: 1.1.4
+  resolution: "request-promise-core@npm:1.1.4"
+  dependencies:
+    lodash: ^4.17.19
+  peerDependencies:
+    request: ^2.34
+  checksum: c798bafd552961e36fbf5023b1d081e81c3995ab390f1bc8ef38a711ba3fe4312eb94dbd61887073d7356c3499b9380947d7f62faa805797c0dc50f039425699
+  languageName: node
+  linkType: hard
+
+"request-promise-native@npm:^1.0.5":
+  version: 1.0.9
+  resolution: "request-promise-native@npm:1.0.9"
+  dependencies:
+    request-promise-core: 1.1.4
+    stealthy-require: ^1.1.1
+    tough-cookie: ^2.3.3
+  peerDependencies:
+    request: ^2.34
+  checksum: 3e2c694eefac88cb20beef8911ad57a275ab3ccbae0c4ca6c679fffb09d5fd502458aab08791f0814ca914b157adab2d4e472597c97a73be702918e41725ed69
+  languageName: node
+  linkType: hard
+
+"request@npm:^2.87.0, request@npm:^2.88.0":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
   dependencies:
@@ -25885,17 +25858,17 @@ __metadata:
 
 "typescript@patch:typescript@4.4.4#~builtin<compat/typescript>":
   version: 4.4.4
-  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=493e53"
+  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bd629ad0da4a15d79aaad56baf3ee7d96f6a181760d430ae77f8c5325df7bffd9edee57544a3970e3651e8b796fe03a5838a7eb39c6d46cc3866c0b23d36a0dd
+  checksum: 3d1b04449662193544b81d055479d03b4c5dca95f1a82f8922596f089d894c9fefbe16639d1d9dfe26a7054419645530cef44001bc17aed1fe1eb3c237e9b3c7
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@^2.5.0#~builtin<compat/typescript>":
   version: 2.9.2
-  resolution: "typescript@patch:typescript@npm%3A2.9.2#~builtin<compat/typescript>::version=2.9.2&hash=493e53"
+  resolution: "typescript@patch:typescript@npm%3A2.9.2#~builtin<compat/typescript>::version=2.9.2&hash=bda367"
   bin:
     tsc: ./bin/tsc
     tsserver: ./bin/tsserver
@@ -25905,7 +25878,7 @@ __metadata:
 
 "typescript@patch:typescript@^3.9.10#~builtin<compat/typescript>":
   version: 3.9.10
-  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=493e53"
+  resolution: "typescript@patch:typescript@npm%3A3.9.10#~builtin<compat/typescript>::version=3.9.10&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
@@ -25915,11 +25888,11 @@ __metadata:
 
 "typescript@patch:typescript@^4.1.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.2.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.5#~builtin<compat/typescript>, typescript@patch:typescript@~4.5.0#~builtin<compat/typescript>":
   version: 4.5.5
-  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=493e53"
+  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: c05c318d79c690f101d7ffb34cd6c7d6bbd884d3af9cefe7749ad0cd6be43c7082f098280982ca945dcba23fde34a08fed9602bb26540936baf8c0520727d3ba
+  checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
   languageName: node
   linkType: hard
 
@@ -26609,6 +26582,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"vm2@npm:^3.9.5":
+  version: 3.9.8
+  resolution: "vm2@npm:3.9.8"
+  dependencies:
+    acorn: ^8.7.0
+    acorn-walk: ^8.2.0
+  bin:
+    vm2: bin/vm2
+  checksum: 1e665a45ce76612922368462a8b98876698e866c1f201393b0b646f07a00449dc4170e987152cf1443af664ca8f2b82bb52a0760456a71912fa63f22980de7b4
+  languageName: node
+  linkType: hard
+
 "vm2@npm:^3.9.6":
   version: 3.9.7
   resolution: "vm2@npm:3.9.7"
@@ -27282,6 +27267,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yargs-parser@npm:^13.1.2":
+  version: 13.1.2
+  resolution: "yargs-parser@npm:13.1.2"
+  dependencies:
+    camelcase: ^5.0.0
+    decamelize: ^1.2.0
+  checksum: c8bb6f44d39a4acd94462e96d4e85469df865de6f4326e0ab1ac23ae4a835e5dd2ddfe588317ebf80c3a7e37e741bd5cb0dc8d92bcc5812baefb7df7c885e86b
+  languageName: node
+  linkType: hard
+
 "yargs-parser@npm:^15.0.1":
   version: 15.0.3
   resolution: "yargs-parser@npm:15.0.3"
@@ -27322,6 +27317,24 @@ __metadata:
   dependencies:
     camelcase: ^4.1.0
   checksum: af411d144801c374f059b9f955976891cf4ec0c0f721516a232ba0c6df59cdb2b05a5ed306aa228fdeee1da2103cd4c335e2e9c3e0d82d15477b33e6479c027c
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^13.3.0":
+  version: 13.3.2
+  resolution: "yargs@npm:13.3.2"
+  dependencies:
+    cliui: ^5.0.0
+    find-up: ^3.0.0
+    get-caller-file: ^2.0.1
+    require-directory: ^2.1.1
+    require-main-filename: ^2.0.0
+    set-blocking: ^2.0.0
+    string-width: ^3.0.0
+    which-module: ^2.0.0
+    y18n: ^4.0.0
+    yargs-parser: ^13.1.2
+  checksum: 75c13e837eb2bb25717957ba58d277e864efc0cca7f945c98bdf6477e6ec2f9be6afa9ed8a876b251a21423500c148d7b91e88dee7adea6029bdec97af1ef3e8
   languageName: node
   linkType: hard
 
