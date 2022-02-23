@@ -19,6 +19,6 @@
     "typeRoots": ["./src/typings", "../../node_modules/@types", "./src/common"],
     "types": ["reflect-metadata", "jest"]
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "src/metadata.json"],
   "exclude": ["**/*.test.ts", "scripts/", "**/*.__test__.(ts|js)", "dist", "**/node_modules/**/*.(ts|js)"]
 }

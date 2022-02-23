@@ -5,7 +5,7 @@ import ReactDOM from 'expose-loader?ReactDOM!react-dom'
 import axios from 'axios'
 import { HotKeys } from 'react-hotkeys'
 import { Provider } from 'react-redux'
-import { CSRF_TOKEN_HEADER } from 'common/auth'
+// import { CSRF_TOKEN_HEADER } from 'common/auth'
 
 // Required to fix outline issue
 import './style.scss'
@@ -37,7 +37,7 @@ import { keyMap } from './components/Shared/utilities/keyboardShortcuts'
 const token = getToken()
 if (token) {
   if (window.USE_JWT_COOKIES) {
-    axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
+    // TODO: remove all CSRF notion in studio
   } else {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
   }
