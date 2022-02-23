@@ -42,7 +42,7 @@ const botpressLang = LRLanguage.define({
   }
 })
 
-function BPlang.tr() {
+function BPLang() {
   return new LanguageSupport(botpressLang, [javascript().support])
 }
 export default BPLang

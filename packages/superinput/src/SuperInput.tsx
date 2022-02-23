@@ -54,7 +54,7 @@ export default function SuperInput({
     const keymapList = [...closeBracketsKeymap, ...historyKeymap]
 
     if (type === SiTypes.TEMPLATE) {
-      typeExt = [BPlang.tr(), exprDecorator(eventState)]
+      typeExt = [BPLang(), exprDecorator(eventState)]
       keymapList.push(...completionKeymap)
     } else if (type === SiTypes.EXPRESSION || type === SiTypes.BOOL) {
       typeExt = [javascript()]
