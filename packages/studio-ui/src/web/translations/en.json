@@ -41,6 +41,8 @@
       "title": "Action Button"
     },
     "card": {
+      "title": "Card",
+      "actionButtons": "Card action buttons",
       "description": "A card message with a title with optional subtitle, image and action buttons."
     },
     "carousel": {
