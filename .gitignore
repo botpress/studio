@@ -21,4 +21,4 @@ metadata.json
 
 .parcel-cache
 
-packages/logger/tsconfig.tsbuildinfo
+packages/*/tsconfig.tsbuildinfo
