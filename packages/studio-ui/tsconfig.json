@@ -16,6 +16,7 @@
     "paths": {
       "~/*": ["src/web/*"],
       "common/*": ["../studio-be/src/common/*"],
+      "runtime/*": ["../runtime/src/common/*"],
       "botpress/shared": ["../ui-shared/src/typings.d.ts"],
       "botpress/sdk": ["../studio-be/src/sdk/botpress.d.ts"]
     }

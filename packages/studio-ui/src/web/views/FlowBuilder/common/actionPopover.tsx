@@ -1,6 +1,6 @@
 import { lang } from '~/components/shared/translations'
 import classnames from 'classnames'
-import { parseActionInstruction } from 'common/action'
+import { parseActionInstruction } from 'runtime/action'
 import React, { FC, useState } from 'react'
 import { Overlay, Popover } from 'react-bootstrap'
 import ReactDOM from 'react-dom'

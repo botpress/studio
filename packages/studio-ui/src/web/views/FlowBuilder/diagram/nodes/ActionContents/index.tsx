@@ -1,4 +1,4 @@
-import { parseActionInstruction } from 'common/action'
+import { parseActionInstruction } from 'runtime/action'
 import { ActionServer } from 'common/typings'
 import React, { FC, Fragment } from 'react'
 

@@ -37,6 +37,7 @@ const webConfig = {
     alias: {
       '~': path.resolve(__dirname, './src/web'),
       common: path.resolve(__dirname, '../studio-be/out/common'),
+      runtime: path.resolve(__dirname, '../runtime/dist/src/common'),
       'botpress/sdk': path.resolve(__dirname, '../studio-be/src/sdk/botpress.d.ts')
     }
   },
