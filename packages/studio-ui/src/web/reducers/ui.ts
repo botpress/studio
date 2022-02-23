@@ -33,7 +33,8 @@ const explorerStorageKey = `bp::${window.BOT_ID}::explorer-open`
 
 const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
 const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
-const defaultExplorerOpen = utils.storage.get<boolean>(explorerStorageKey) === true
+const storageExplorerOpen = utils.storage.get<boolean>(explorerStorageKey)
+const defaultExplorerOpen = storageExplorerOpen === undefined || storageExplorerOpen === true
 
 const defaultState = {
   viewMode: -1,
@@ -76,7 +77,7 @@ const reducer = handleActions(
     }),
     [toggleBottomPanel]: (state, {}) => {
       const value = !state.bottomPanel
-      localStorage.setItem(bottomPanelStorageKey, value.toString())
+      utils.storage.set(bottomPanelStorageKey, value)
       return {
         ...state,
         bottomPanel: value
@@ -84,7 +85,7 @@ const reducer = handleActions(
     },
     [toggleInspector]: (state, {}) => {
       const value = !state.inspectorEnabled
-      localStorage.setItem(inspectorEnabledStorageKey, value.toString())
+      utils.storage.set(inspectorEnabledStorageKey, value)
       return {
         ...state,
         inspectorEnabled: value
@@ -92,7 +93,7 @@ const reducer = handleActions(
     },
     [toggleExplorer]: (state, {}) => {
       const value = !state.explorerOpen
-      localStorage.setItem(explorerStorageKey, value.toString())
+      utils.storage.set(explorerStorageKey, value)
       return {
         ...state,
         explorerOpen: value
