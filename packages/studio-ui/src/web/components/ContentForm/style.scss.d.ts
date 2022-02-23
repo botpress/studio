@@ -3,6 +3,8 @@
 interface CssExports {
   'actionsWrapper': string;
   'addContentBtn': string;
+  'contentFormFooter': string;
+  'controlButton': string;
   'deleteBtn': string;
   'fieldError': string;
   'fieldWrapper': string;
