@@ -1,7 +1,7 @@
+import { Button, Intent } from '@blueprintjs/core'
 import { Dialog, lang } from 'botpress/shared'
 import _ from 'lodash'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import ContentForm from '~/components/ContentForm'
 import withLanguage from '../Util/withLanguage'
 
@@ -47,6 +47,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
   }
 
   renderSwitchLang() {
+    const defaultLang = this.props.defaultLanguage.toUpperCase()
     return (
       <div>
         <div style={{ height: 100 }}>
@@ -54,15 +55,13 @@ class CreateOrEditModal extends React.Component<Props, State> {
           {lang.tr('studio.content.mustBeDefaultLang')}
         </div>
         <p>
-          <Button onClick={this.useDefaultLang} bsStyle="primary">
-            {lang.tr('studio.content.switchToDefaultLang', {
-              defaultLang: this.props.defaultLanguage.toUpperCase()
-            })}
-          </Button>
+          <Button
+            onClick={this.useDefaultLang}
+            intent={Intent.PRIMARY}
+            text={lang.tr('studio.content.switchToDefaultLang', { defaultLang })}
+          />
           &nbsp;
-          <Button bsStyle="danger" onClick={this.props.handleClose}>
-            {lang.tr('cancel')}
-          </Button>
+          <Button intent={Intent.DANGER} onClick={this.props.handleClose} text={lang.tr('cancel')} />
         </p>
       </div>
     )
