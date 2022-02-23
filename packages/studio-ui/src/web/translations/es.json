@@ -41,6 +41,8 @@
       "title": "Action Button"
     },
     "card": {
+      "title": "Carta",
+      "actionButtons": "Botones de acción",
       "description": "Un mensaje de tarjeta con un título con subtítulos opcionales, imagen y botones de acción."
     },
     "carousel": {
