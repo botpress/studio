@@ -106,7 +106,7 @@ export const NLUSidePanel: FC<Props> = ({
     <SidePanel>
       <HotKeys keyMap={{ [TOGGLE_LINTING]: 'l i n t' }} handlers={{ [TOGGLE_LINTING]: onLintingShortcut }}>
         <MainLayout.Toolbar
-          tabChange={tab => setCurrentTab(tab as NLUItemType)}
+          tabChange={onTabChange}
           tabs={tabs}
           currentTab={currentTab}
           buttons={buttons}

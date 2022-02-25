@@ -92,12 +92,17 @@ const NLU: FC<Props> = props => {
   }
 
   const currentItemExists = () => {
-    return (
-      currentItem &&
-      (currentItem.type === 'linting' ||
-        (currentItem.type === 'intent' && intents.find(i => i.name === currentItem.name)) ||
-        entities.find(e => e.name === currentItem.name && entities.find(e => e.name === currentItem.name)))
-    )
+    if (!currentItem) {
+      return false
+    }
+
+    if (currentItem.type === 'linting') {
+      return true
+    }
+
+    return currentItem.type === 'intent'
+      ? intents.find(i => i.name === currentItem.name)
+      : entities.find(e => e.name === currentItem.name && entities.find(e => e.name === currentItem.name))
   }
 
   return (
