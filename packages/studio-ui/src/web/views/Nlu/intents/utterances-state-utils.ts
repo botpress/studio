@@ -1,9 +1,11 @@
+import { DatasetIssue } from '@botpress/nlu-client'
 import { NLU } from 'botpress/sdk'
 import { parseUtterance } from 'common/utterance-parser'
 import _ from 'lodash'
 import { MarkJSON, NodeJSON, TextJSON, Value, ValueJSON } from 'slate'
 
 export const SLOT_MARK = 'slotName'
+export const ISSUE_MARK = 'slotIssue'
 
 interface ParsedSlot {
   name: string
@@ -24,10 +26,10 @@ const textNode = (text: string, from: number, to: number | undefined = undefined
   marks: []
 })
 
-const slotNode = (slot: ParsedSlot, uttIdx: number): TextJSON => ({
+const slotNode = (slot: ParsedSlot, uttIdx: number, issue?: DatasetIssue<'E_000'>): TextJSON => ({
   object: 'text',
   text: slot.value,
-  marks: [makeSlotMark(slot.name, uttIdx)]
+  marks: [makeSlotMark(slot.name, uttIdx, issue)]
 })
 
 const emptySlotNode = (slot: ParsedSlot): TextJSON => ({
@@ -39,6 +41,7 @@ const emptySlotNode = (slot: ParsedSlot): TextJSON => ({
 export const textNodesFromUtterance = (
   allSlots: NLU.SlotDefinition[],
   rawUtterance: string,
+  issues: DatasetIssue<'E_000'>[],
   idx: number = 0
 ): TextJSON[] => {
   const { utterance, parsedSlots } = parseUtterance(rawUtterance)
@@ -49,8 +52,12 @@ export const textNodesFromUtterance = (
       const from = previousSlot?.cleanPosition.end ?? 0
       const to = pslot.cleanPosition.start
 
+      const issue: DatasetIssue<'E_000'> | undefined = issues.find(
+        (issue) => issue.data.charStart === pslot.cleanPosition.start && issue.data.charEnd === pslot.cleanPosition.end
+      )
+
       const slotExists = allSlots.some((s) => s.name === pslot.name)
-      const pslotNode = slotExists ? slotNode(pslot, idx) : emptySlotNode(pslot)
+      const pslotNode = slotExists ? slotNode(pslot, idx, issue) : emptySlotNode(pslot)
 
       return [textNode(utterance, from, to), pslotNode]
     })
@@ -67,6 +74,7 @@ export const textNodesFromUtterance = (
 // uncomment when editing this function
 export const utterancesToValue = (
   allSlots: NLU.SlotDefinition[],
+  issues: DatasetIssue<'E_000'>[],
   utterances: string[],
   selection = undefined
 ): Value => {
@@ -82,13 +90,23 @@ export const utterancesToValue = (
           object: 'block',
           type: 'title',
           data: {},
-          nodes: textNodesFromUtterance(allSlots, summary, 0)
+          nodes: textNodesFromUtterance(
+            allSlots,
+            summary,
+            issues.filter((issue) => issue.data.utteranceIdx === 0),
+            0
+          )
         },
         ...rest.map((text: string, i: number) => ({
           object: 'block',
           type: 'paragraph',
           data: {},
-          nodes: textNodesFromUtterance(allSlots, text, i + 1)
+          nodes: textNodesFromUtterance(
+            allSlots,
+            text,
+            issues.filter((issue) => issue.data.utteranceIdx - 1 === i),
+            i + 1
+          )
         }))
       ] as NodeJSON[]
     }
@@ -129,8 +147,8 @@ export const renameSlotInUtterances = (utterances: string[], prevSlotName: strin
   return utterances.map((u) => u.replace(regex, `[$1](${newSlotName})`))
 }
 
-export const makeSlotMark = (slotName: string, utteranceIdx: number): MarkJSON => ({
+export const makeSlotMark = (slotName: string, utteranceIdx: number, issue?: DatasetIssue<'E_000'>): MarkJSON => ({
   object: 'mark',
   type: 'slot',
-  data: { [SLOT_MARK]: slotName, utteranceIdx }
+  data: { [SLOT_MARK]: slotName, utteranceIdx, [ISSUE_MARK]: issue }
 })

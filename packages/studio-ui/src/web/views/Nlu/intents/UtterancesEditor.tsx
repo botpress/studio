@@ -1,4 +1,5 @@
-import { Tag } from '@blueprintjs/core'
+import { Tag, Tooltip } from '@blueprintjs/core'
+import { DatasetIssue } from '@botpress/nlu-client'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
@@ -26,7 +27,7 @@ import PlaceholderPlugin from 'slate-react-placeholder'
 
 import { TagSlotPopover } from './slots/SlotPopover'
 import style from './style.scss'
-import { makeSlotMark, utterancesToValue, valueToUtterances } from './utterances-state-utils'
+import { ISSUE_MARK, makeSlotMark, SLOT_MARK, utterancesToValue, valueToUtterances } from './utterances-state-utils'
 
 const plugins = [
   PlaceholderPlugin({
@@ -44,6 +45,7 @@ interface Props {
   intentName: string
   utterances: string[]
   slots: NLU.SlotDefinition[]
+  issues: DatasetIssue<'E_000'>[]
   onChange: (x: string[]) => void
 }
 
@@ -68,7 +70,7 @@ interface NodeModification<T extends NodeJSON> {
 export class UtterancesEditor extends React.Component<Props, State> {
   state = {
     selection: { utterance: -1, block: -1, from: -1, to: -1 },
-    value: utterancesToValue([], []),
+    value: utterancesToValue([], this.props.issues, []),
     showSlotMenu: false
   }
   utteranceKeys = []
@@ -78,15 +80,20 @@ export class UtterancesEditor extends React.Component<Props, State> {
   }
 
   init = (utterances: string[]) => {
-    const value = utterancesToValue(this.props.slots, utterances)
+    const value = utterancesToValue(this.props.slots, this.props.issues, utterances)
     this.setState({ value })
   }
 
   componentDidUpdate(prevProps: Props) {
-    if (prevProps.intentName !== this.props.intentName) {
+    if (prevProps.intentName !== this.props.intentName || !_.isEqual(this.props.issues, prevProps.issues)) {
       this.init(this.props.utterances)
     } else if (!_.isEqual(this.props.utterances, prevProps.utterances)) {
-      const value = utterancesToValue(this.props.slots, this.props.utterances, this.state.value.get('selection'))
+      const value = utterancesToValue(
+        this.props.slots,
+        this.props.issues,
+        this.props.utterances,
+        this.state.value.get('selection')
+      )
       this.setState({ value })
     }
   }
@@ -134,7 +141,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
     return next()
   }
 
-  onBlur = (event, editor: CoreEditor, next) => {
+  onBlur = (event: Event, editor: CoreEditor, next: () => any) => {
     const newUtts = valueToUtterances(editor.value)
     if (!_.isEqual(this.props.utterances, newUtts)) {
       this.dispatchChanges(editor.value)
@@ -342,15 +349,34 @@ export class UtterancesEditor extends React.Component<Props, State> {
     switch (props.mark.type) {
       case 'slot':
         const slotMark = props.mark.data.toJS()
-        const color = this.props.slots.find((s) => s.name === slotMark.slotName).color
-        const cn = classnames(style.slotMark, style[`label-colors-${color}`])
+        const color = this.props.slots.find((s) => s.name === slotMark[SLOT_MARK]).color
+
         // @ts-ignore
         const remove = () => editor.moveToRangeOfNode(props.node).removeMark(props.mark)
 
+        const issue: DatasetIssue<'E_000'> | undefined = slotMark[ISSUE_MARK]
+        if (!issue) {
+          return (
+            <Tag
+              large={slotMark.utteranceIdx === 0}
+              className={classnames(style.slotMark, style[`label-colors-${color}`])}
+              round
+              onClick={remove}
+            >
+              {props.children}
+            </Tag>
+          )
+        }
         return (
-          <Tag large={slotMark.utteranceIdx === 0} className={cn} round onClick={remove}>
-            {props.children}
-          </Tag>
+          <Tooltip
+            className={classnames(style.slotMark, style.slotIssue)}
+            content={`These tokens are incorrectly labeled as [${issue.data.entities.join(',')}]`}
+            intent={'danger'}
+          >
+            <Tag large={slotMark.utteranceIdx === 0} className={style[`label-colors-${color}`]} round onClick={remove}>
+              {props.children}
+            </Tag>
+          </Tooltip>
         )
       default:
         return next()

@@ -30,6 +30,7 @@ interface CssExports {
   'liteIntentEditor': string;
   'selectionText': string;
   'shortcutLabel': string;
+  'slotIssue': string;
   'slotMark': string;
   'slotMenu': string;
   'slotMenuItem': string;
