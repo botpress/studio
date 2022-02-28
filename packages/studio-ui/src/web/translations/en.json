@@ -719,7 +719,7 @@
       "toaster": {
         "success": "Bot has successfully been deployed",
         "info": "Bot is deploying...",
-        "error": "Bot failed to dpeloy"
+        "error": "Bot failed to deploy"
       }
     },
     "help": "Help",
