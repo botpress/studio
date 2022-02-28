@@ -717,7 +717,7 @@
       },
       "btn": "Deploy to Cloud",
       "toaster": {
-        "success": "Bot has successfuly been deoployed",
+        "success": "Bot has successfully been deployed",
         "info": "Bot is deploying...",
         "error": "Bot failed to dpeloy"
       }
