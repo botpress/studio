@@ -694,7 +694,7 @@
       "toaster": {
         "success": "Le bot a été déployé avec succès",
         "info": "Déploiement en cours...",
-        "error": "Le bot n'a pas pu se déployer"
+        "error": "Le bot n'a pas pu être déployé"
       }
     },
     "help": "Aide",
