@@ -83,6 +83,7 @@ try {
 
   process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
+  // @TODO: move hardcoded dev endpoint to `.env.development` file
   process.CONTROLLERAPI_ENDPOINT = process.core_env.CONTROLLERAPI_ENDPOINT || 'https://controllerapi.botpress.dev'
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
