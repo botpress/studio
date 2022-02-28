@@ -13,7 +13,7 @@ module.exports = {
       './scripts/tsconfig.json',
       './packages/builder/tsconfig.json',
       './packages/components/tsconfig-*.json',
-      './packages/superinput/tsconfig.json'
+      './packages/inspector-kit/tsconfig.json'
     ],
     tsconfigRootDir: __dirname,
     sourceType: 'module'

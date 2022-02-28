@@ -64,7 +64,7 @@
     "packages/studio-be",
     "packages/ui-shared",
     "packages/ui-shared-lite",
-    "packages/superinput"
+    "packages/inspector-kit"
   ],
   "engines": {
     "node": "12.18.1"

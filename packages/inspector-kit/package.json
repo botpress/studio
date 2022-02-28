@@ -1,5 +1,5 @@
 {
-  "name": "@botpress/superinput",
+  "name": "@botpress/inspector-kit",
   "version": "0.1.0",
   "private": true,
   "main": "lib/cjs/index.js",
