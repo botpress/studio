@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react'
+import style from './EditorFrame.module.scss'
 
 const EditorFrame = forwardRef((props: any, ref: any) => {
   return (
-    <div className="bp-editor" ref={ref}>
+    <div className={style.bpEditor} ref={ref}>
       {props.children}
     </div>
   )
