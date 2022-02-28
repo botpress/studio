@@ -693,7 +693,7 @@
       "btn": "Déployer dans le cloud",
       "toaster": {
         "success": "Le bot a été déployé avec succès",
-        "info": "Le bot se déploie...",
+        "info": "Déploiement en cours...",
         "error": "Le bot n'a pas pu se déployer"
       }
     },
