@@ -185,7 +185,7 @@ const QnAList: FC<Props> = (props) => {
   buttons.push({
     icon: 'plus',
     onClick: () => {
-      dispatch({ type: 'addQnA', data: { languages, contexts: 'global' } })
+      dispatch({ type: 'addQnA', data: { languages, contexts: ['global'] } })
     },
     tooltip: lang.tr('qna.form.addQuestion')
   })
