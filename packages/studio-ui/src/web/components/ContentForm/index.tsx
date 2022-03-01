@@ -1,4 +1,4 @@
-import { Icon } from '@blueprintjs/core'
+import { Icon, Button, Intent } from '@blueprintjs/core'
 import { lang, SupportedFileType } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
@@ -6,6 +6,7 @@ import Form, { FieldProps, IChangeEvent, UiSchema, WidgetProps } from 'react-jso
 import CheckboxWidget from 'react-jsonschema-form/lib/components/widgets/CheckboxWidget'
 import SmartInput from '~/components/SmartInput'
 import { getFormData } from '~/util/NodeFormData'
+import { isMissingCurlyBraceClosure } from '../Util/form.util'
 
 import withLanguage from '../Util/withLanguage'
 
@@ -21,8 +22,9 @@ import UploadWidget from './UploadWidget'
 
 interface Props {
   contentLang: string
-  onChange: any
-  onSubmit: any
+  onChange: Function
+  onSubmit: Function
+  onCancel: Function
   formData: FormData
   customKey: string
   schema: Schema
@@ -192,7 +194,16 @@ const ContentForm: FC<Props> = (props) => {
       onChange={handleOnChange}
       schema={translatePropsRecursive(schema)}
     >
-      {props.children}
+      <div className={style.contentFormFooter}>
+        <Button className={style.controlButton} text={lang.tr('cancel')} onClick={() => props.onCancel()} />
+        <Button
+          className={style.controlButton}
+          intent={Intent.PRIMARY}
+          type="submit"
+          text={lang.tr('submit')}
+          disabled={isMissingCurlyBraceClosure(currentFormData?.text)}
+        />
+      </div>
     </Form>
   )
 }

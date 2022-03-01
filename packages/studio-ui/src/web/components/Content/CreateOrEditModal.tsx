@@ -1,15 +1,9 @@
+import { Button, Intent } from '@blueprintjs/core'
 import { Dialog, lang } from 'botpress/shared'
-import classnames from 'classnames'
 import _ from 'lodash'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import ContentForm from '~/components/ContentForm'
-
-import { getFormData } from '../../util/NodeFormData'
-import { isMissingCurlyBraceClosure } from '../Util/form.util'
 import withLanguage from '../Util/withLanguage'
-
-import style from './style.scss'
 
 interface Props {
   handleEdit: any
@@ -53,6 +47,7 @@ class CreateOrEditModal extends React.Component<Props, State> {
   }
 
   renderSwitchLang() {
+    const defaultLang = this.props.defaultLanguage.toUpperCase()
     return (
       <div>
         <div style={{ height: 100 }}>
@@ -60,61 +55,32 @@ class CreateOrEditModal extends React.Component<Props, State> {
           {lang.tr('studio.content.mustBeDefaultLang')}
         </div>
         <p>
-          <Button onClick={this.useDefaultLang} bsStyle="primary">
-            {lang.tr('studio.content.switchToDefaultLang', {
-              defaultLang: this.props.defaultLanguage.toUpperCase()
-            })}
-          </Button>
+          <Button
+            onClick={this.useDefaultLang}
+            intent={Intent.PRIMARY}
+            text={lang.tr('studio.content.switchToDefaultLang', { defaultLang })}
+          />
           &nbsp;
-          <Button bsStyle="danger" onClick={this.props.handleClose}>
-            {lang.tr('cancel')}
-          </Button>
+          <Button intent={Intent.DANGER} onClick={this.props.handleClose} text={lang.tr('cancel')} />
         </p>
       </div>
     )
   }
 
   renderForm() {
-    const formData = getFormData(
-      { formData: this.props.formData },
-      this.props.contentLang,
-      this.props.defaultLanguage,
-      {}
-    )
-
     const formId = 'content-form'
 
     return (
-      <div>
-        <ContentForm
-          schema={this.props.schema}
-          uiSchema={this.props.uiSchema}
-          formData={this.props.formData}
-          isEditing={this.props.isEditing}
-          onChange={this.handleEdit}
-          onSubmit={this.handleSave}
-          id={formId}
-        >
-          <div className={style.formBtns}>
-            <button
-              form={formId}
-              className={classnames('bp-button', 'bp-button-danger')}
-              onClick={this.props.handleClose}
-              type="button"
-            >
-              {lang.tr('cancel')}
-            </button>
-            <button
-              form={formId}
-              className={classnames('bp-button')}
-              type="submit"
-              disabled={isMissingCurlyBraceClosure(formData?.text)}
-            >
-              {lang.tr('submit')}
-            </button>
-          </div>
-        </ContentForm>
-      </div>
+      <ContentForm
+        schema={this.props.schema}
+        uiSchema={this.props.uiSchema}
+        formData={this.props.formData}
+        isEditing={this.props.isEditing}
+        onChange={this.handleEdit}
+        onSubmit={this.handleSave}
+        onCancel={this.props.handleClose}
+        id={formId}
+      />
     )
   }
 
