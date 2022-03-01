@@ -28,7 +28,9 @@
       "./node_modules/xml-encryption/lib/templates/*.tpl.xml",
       "./node_modules/npm/**/*",
       "./packages/studio-be/out/ui/**",
-      "./packages/studio-be/out/builtin/**"
+      "./packages/studio-be/out/builtin/**",
+      "./packages/studio-be/out/sdk/*.txt",
+      "./packages/studio-be/out/typings/*.txt"
     ],
     "targets": [
       "node12-win32-x64",
