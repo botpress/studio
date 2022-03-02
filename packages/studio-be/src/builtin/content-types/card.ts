@@ -1,6 +1,6 @@
 import { ContentType } from 'botpress/sdk'
 import utils from './_utils'
-import actionButtonSchema from './action_button'
+import actionButton from './action_button'
 
 export const cardSchema = {
   description: 'contentTypes.card.description',
@@ -24,7 +24,7 @@ export const cardSchema = {
     actions: {
       type: 'array',
       title: 'contentTypes.card.actionButtons',
-      items: actionButtonSchema
+      items: actionButton.jsonSchema
     }
   }
 }
