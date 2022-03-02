@@ -59,7 +59,7 @@ const wrapper = {
   },
   beginning: (content: string) => {
     const lines = content.split('\n')
-    const startIndex = lines.findIndex((line) => line.includes(START_COMMENT))
+    const startIndex = lines.findIndex(line => line.includes(START_COMMENT))
 
     if (startIndex === -1) {
       return 0
@@ -69,7 +69,7 @@ const wrapper = {
   },
   end: (content: string) => {
     const lines = content.split('\n')
-    const endIndex = lines.findIndex((line) => line.includes(END_COMMENT))
+    const endIndex = lines.findIndex(line => line.includes(END_COMMENT))
 
     if (endIndex === -1) {
       return lines.length + 1
@@ -90,14 +90,15 @@ const findLastIndex = <T>(array: T[], predicate: (value: T, index: number, array
 }
 
 const getContentZone = (lines: string[]) => {
-  let startLine = lines.findIndex((x) => x.includes(START_COMMENT))
+  let startLine = lines.findIndex(x => x.includes(START_COMMENT))
   if (startLine !== -1) {
     startLine += 2
   }
 
-  const endLine = findLastIndex(lines, (x) => x.includes(END_COMMENT))
+  const endLine = findLastIndex(lines, x => x.includes(END_COMMENT))
+  const noContent = startLine > endLine
 
-  return { startLine, endLine }
+  return { startLine, endLine, noContent }
 }
 
 export { wrapper, getContentZone }
