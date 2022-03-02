@@ -43,18 +43,18 @@ export class LibrariesRouter extends CustomStudioRouter {
       })
     )
 
-    router.get(
-      '/search/:name',
+    router.post(
+      '/search',
       this.asyncMiddleware(async (req: any, res: any) => {
-        const { data } = await axios.get(`https://www.npmjs.com/search/suggestions?q=${req.params.name}`)
+        const { data } = await axios.get(`https://www.npmjs.com/search/suggestions?q=${req.body.name}`)
         res.send(data)
       })
     )
 
-    router.get(
-      '/details/:name',
+    router.post(
+      '/details',
       this.asyncMiddleware(async (req: any, res: any) => {
-        const { data } = await axios.get(`https://registry.npmjs.org/${req.params.name}`, {
+        const { data } = await axios.get(`https://registry.npmjs.org/${req.body.name}`, {
           headers: {
             accept: 'application/vnd.npm.install-v1+json'
           }
