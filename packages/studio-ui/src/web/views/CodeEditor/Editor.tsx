@@ -130,7 +130,7 @@ class Editor extends React.Component<Props> {
       preventDelete.set(noContent || (lineNumber === endLine && column === lineLastColumn))
     }
 
-    this.editor.onDidChangeCursorPosition(e => {
+    this.editor.onDidChangeCursorPosition((e) => {
       const { lineNumber } = e.position
       const { startLine, endLine } = this.getEditableZone()
 
@@ -196,7 +196,7 @@ class Editor extends React.Component<Props> {
       uri = this.props.editor.currentFile.uri
     }
 
-    const file = this.props.editor.openedFiles.find(x => x.uri === uri)
+    const file = this.props.editor.openedFiles.find((x) => x.uri === uri)
     if (file?.hasChanges) {
       if (
         await confirmDialog(lang.tr('code-editor.store.confirmSaveFile', { file: file.name }), {
@@ -258,7 +258,7 @@ class Editor extends React.Component<Props> {
     const uri = this.editor.getModel().uri
     const markers = monaco.editor
       .getModelMarkers({ resource: uri })
-      .filter(x => x.severity === MONACO_MARKER_ERROR_SEVERITY)
+      .filter((x) => x.severity === MONACO_MARKER_ERROR_SEVERITY)
 
     this.props.editor.setFileProblems(markers)
   }
@@ -296,7 +296,7 @@ class Editor extends React.Component<Props> {
               )
             })}{' '}
           </div>
-          <div id="monaco-editor" ref={ref => (this.editorContainer = ref)} className={style.editor}>
+          <div id="monaco-editor" ref={(ref) => (this.editorContainer = ref)} className={style.editor}>
             <div className={style.floatingButtons}>
               {this.props.editor.canSaveFile && (
                 <Tooltip content={lang.tr('save')} position={Position.TOP}>
