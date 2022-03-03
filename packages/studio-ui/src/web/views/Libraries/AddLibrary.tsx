@@ -34,7 +34,7 @@ const AddLibrary = (props) => {
   const searchChanged = async (query, event) => {
     if (event) {
       try {
-        const { data } = await axios.get(`${window.STUDIO_API_PATH}/libraries/search/${query}`)
+        const { data } = await axios.post(`${window.STUDIO_API_PATH}/libraries/search`, { name: query })
 
         setItems(data)
         setRepoName('')
