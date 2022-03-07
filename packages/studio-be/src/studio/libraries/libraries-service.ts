@@ -55,7 +55,10 @@ export class LibrariesService {
       return
     }
 
-    const archivePath = await createArchive(`${nodeModules}.tgz`, nodeModules, glob.sync('**/*', { cwd: nodeModules }))
+    // @ is a special character in tar and must be prepended
+    const files = glob.sync('**/*', { cwd: nodeModules }).map((name) => (name.startsWith('@') ? `./${name}` : name))
+
+    const archivePath = await createArchive(`${nodeModules}.tgz`, nodeModules, files)
 
     if (process.BPFS_STORAGE === 'disk') {
       return
