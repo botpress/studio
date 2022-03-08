@@ -1,4 +1,5 @@
 {
+  "references": [{ "path": "../runtime" }],
   "compilerOptions": {
     "experimentalDecorators": true,
     "esModuleInterop": true,
