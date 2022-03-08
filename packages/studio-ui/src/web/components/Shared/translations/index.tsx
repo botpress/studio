@@ -8,9 +8,6 @@ import es from './es.json'
 import fr from './fr.json'
 
 const defaultLocale = 'en'
-window.locale = undefined
-window.intl = undefined
-window.translations = {}
 const cache = createIntlCache()
 let isDev = false
 
