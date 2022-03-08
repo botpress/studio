@@ -181,3 +181,12 @@
     }
   }
 }
+
+.contentFormFooter {
+  display: flex;
+  justify-content: flex-end;
+
+  .controlButton {
+    margin-left: var(--spacing-large);
+  }
+}

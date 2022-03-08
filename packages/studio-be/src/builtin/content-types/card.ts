@@ -1,7 +1,6 @@
 import { ContentType } from 'botpress/sdk'
 import utils from './_utils'
-import ActionButton from './action_button'
-import Carousel from './carousel'
+import actionButton from './action_button'
 
 export const cardSchema = {
   description: 'contentTypes.card.description',
@@ -24,8 +23,8 @@ export const cardSchema = {
     },
     actions: {
       type: 'array',
-      title: 'contentTypes.actionButton',
-      items: ActionButton.jsonSchema
+      title: 'contentTypes.card.actionButtons',
+      items: actionButton.jsonSchema
     }
   }
 }
@@ -33,7 +32,7 @@ export const cardSchema = {
 const contentType: ContentType = {
   id: 'builtin_card',
   group: 'Built-in Messages',
-  title: 'card',
+  title: 'contentTypes.card.title',
   jsonSchema: cardSchema,
   uiSchema: {},
 

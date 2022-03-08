@@ -41,6 +41,8 @@
       "title": "Bouton d'action"
     },
     "card": {
+      "title": "Carte",
+      "actionButtons": "Boutons d'action de la carte",
       "description": "Une carte est un message avec un titre, sous-titre optionnel, une image et des boutons d'actions."
     },
     "carousel": {
