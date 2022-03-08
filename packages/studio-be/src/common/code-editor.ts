@@ -142,7 +142,7 @@ export const FileTypes: { [type: string]: FileDefinition } = {
       shouldSyncToDisk: true
     },
     canDelete: (file) => {
-      return !file.name.endsWith('.json')
+      return file.name !== 'package.json' && file.name !== 'package-lock.json'
     }
   },
   module_config: {
