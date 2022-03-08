@@ -1,10 +1,9 @@
 import axios from 'axios'
-import { BotConfig } from 'botpress/sdk'
+import { CloudConfig } from 'botpress/sdk'
 import FormData from 'form-data'
 import qs from 'querystring'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import { CloudConfig } from 'botpress/sdk'
 
 export class CloudRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
@@ -49,10 +48,14 @@ export class CloudRouter extends CustomStudioRouter {
         }
 
         const bearerToken = await this.getBearerToken(cloud)
-        if (!bearerToken) return res.status(401)
+        if (!bearerToken) {
+          return res.status(401)
+        }
 
         const introspect = await this.getIntrospect(bearerToken)
-        if (!introspect) return res.status(404)
+        if (!introspect) {
+          return res.status(404)
+        }
 
         try {
           const { status, data } = await axios.get(`${process.CONTROLLERAPI_ENDPOINT}/v1/bots/${introspect.botId}`, {
@@ -82,10 +85,14 @@ export class CloudRouter extends CustomStudioRouter {
         }
 
         const bearerToken = await this.getBearerToken(cloud)
-        if (!bearerToken) return res.status(401)
+        if (!bearerToken) {
+          return res.status(401)
+        }
 
         const introspect = await this.getIntrospect(bearerToken)
-        if (!introspect) return res.status(404)
+        if (!introspect) {
+          return res.status(404)
+        }
 
         const botBlob = await this.botService.exportBot(botId)
 
