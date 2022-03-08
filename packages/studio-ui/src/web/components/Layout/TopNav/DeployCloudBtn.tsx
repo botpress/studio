@@ -69,19 +69,27 @@ const DeployCloudBtn = (props: Props) => {
     }
     toast.info(lang.tr('topNav.deploy.toaster.info'))
     setDeployLoading(true)
+
     axios
       .get(`${window.STUDIO_API_PATH}/cloud/deploy`)
       .then((res) => res.data)
       .then((data) => {
         const { imported_on } = data
-        setTimeout(() => {
-          toast.success(lang.tr('topNav.deploy.toaster.success'))
-          setLastImportDate(imported_on)
-          setDeployLoading(false)
-        }, 10000)
+        toast.success(lang.tr('topNav.deploy.toaster.success'))
+        setLastImportDate(imported_on)
+        setDeployLoading(false)
       })
-      .catch((e) => {
-        toast.failure(lang.tr('topNav.deploy.toaster.error'))
+      .catch((err) => {
+        switch (err.status) {
+          case 401:
+            toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
+            break
+          case 404:
+            toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
+            break
+          default:
+            toast.failure(lang.tr('topNav.deploy.toaster.error.default'))
+        }
         setDeployLoading(false)
       })
   }, [setLastImportDate, setDeployLoading, deployLoading, isTrained])

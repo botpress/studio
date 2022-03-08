@@ -671,7 +671,11 @@
       "toaster": {
         "success": "El bot se implementó con éxito",
         "info": "El bot se está desplegando...",
-        "error": "El bot no se pudo implementar"
+        "error": {
+          "token": "No se pudo autenticar con la nube",
+          "introspect": "No se pudo obtener la información del bot de la nube",
+          "default": "El bot no se pudo implementar"
+        }
       }
     },
     "help": "Ayuda",

@@ -694,7 +694,11 @@
       "toaster": {
         "success": "Le bot a été déployé avec succès",
         "info": "Déploiement en cours...",
-        "error": "Le bot n'a pas pu être déployé"
+        "error": {
+          "token": "Échec de l'authentification avec le cloud",
+          "introspect": "Impossible de récupérer les informations du bot à partir du cloud",
+          "default": "Le bot n'a pas pu être déployé"
+        }
       }
     },
     "help": "Aide",
