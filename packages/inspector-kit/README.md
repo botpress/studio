@@ -1,16 +1,11 @@
-# Super Input
+# Inspector Kit
 
-VsCode-like autocomplete for input boxes. Uses Codemirror6 under the hood.
+Reusable components for the Botpress Studio Inspector
 
-## Usage & Commands
+## Usage
 
----
-
-### Importing in Studio
-
-1. Install `@botpress/inspector-kit` (only in studio for now)
-   - `yarn workspace @botpress/studio-ui add @botpress/inspector-kit`
-   - this set may already be done, check `package.json` for `@botpress/inspector-kit`
+1. Install `@botpress/inspector-kit`
+   - `yarn add @botpress/inspector-kit`
 2. Import component
 
    ```jsx
@@ -24,7 +19,7 @@ VsCode-like autocomplete for input boxes. Uses Codemirror6 under the hood.
    }
    ```
 
-3. Import different type
+3. Import types when necessary
 
    ```jsx
    import { Superinput, SI_TYPES } from '@botpress/inspector-kit'
@@ -32,6 +27,32 @@ VsCode-like autocomplete for input boxes. Uses Codemirror6 under the hood.
      return <Superinput type={SI_TYPES.EXPRESSION} value={value} onChange={setValue} />
 
    ```
+
+## Storybook
+
+This package includes a storybook which details the capabilities of each component. Run it using:
+
+```shell
+yarn workspace @botpress/inspector-kit storybook
+```
+
+## Build package
+
+```shell
+yarn workspace @botpress/inspector-kit build
+```
+
+## Watch Build
+
+Does not create `doctree` for you, must be generated separately
+
+```shell
+yarn workspace @botpress/inspector-kit dev
+```
+
+## Super Input
+
+VsCode-like autocomplete for input boxes. Uses Codemirror6 under the hood.
 
 ### Building `doctree`
 
@@ -41,29 +62,7 @@ Building the doctree generates a JSON file that exports documentation from `botp
 yarn workspace @botpress/inspector-kit doctree
 ```
 
-### Run Demo environment
-
-After building the `doctree` (see above), you can spin up the dev environment to test it out
-
-```shell
-yarn workspace @botpress/inspector-kit demo
-```
-
-### Build package
-
-```shell
-yarn workspace @botpress/inspector-kit build
-```
-
-### Watch build
-
-Does not create `doctree` for you, must be generated separately
-
-```shell
-yarn workspace @botpress/inspector-kit dev
-```
-
-## Props
+### Props
 
 ---
 
@@ -85,7 +84,7 @@ export interface ISiProps {
 }
 ```
 
-## Adding Documentation to Autocomplete
+### Adding Documentation to Autocomplete
 
 ---
 
@@ -114,7 +113,7 @@ to add links add a double square brackets around the link and make sure its on t
 export interface EventState {
 ```
 
-## Useful links
+### Useful links
 
 - [Codemirror 6, and all extentions](https://codemirror.net/6/docs/ref/)
 - [Lezer, Codemirror's parser](https://lezer.codemirror.net/docs/ref/#lr.Parser)
