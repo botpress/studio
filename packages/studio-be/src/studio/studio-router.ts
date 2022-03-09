@@ -18,6 +18,7 @@ import rewrite from 'express-urlrewrite'
 import _ from 'lodash'
 
 import { ActionsRouter } from './actions/actions-router'
+import { CloudRouter } from './cloud/cloud-router'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
@@ -66,6 +67,7 @@ export class StudioRouter extends CustomRouter {
   private qnaRouter: QNARouter
   private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
+  private cloudRouter: CloudRouter
 
   constructor(
     logger: Logger,
@@ -120,6 +122,7 @@ export class StudioRouter extends CustomRouter {
     this.qnaRouter = new QNARouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
     this.codeEditorRouter = new CodeEditorRouter(studioServices)
+    this.cloudRouter = new CloudRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -127,6 +130,7 @@ export class StudioRouter extends CustomRouter {
 
     this.actionsRouter.setupRoutes()
     this.flowsRouter.setupRoutes()
+    this.cloudRouter.setupRoutes()
     await this.mediaRouter.setupRoutes(this.botpressConfig)
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
@@ -167,6 +171,7 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
+    this.router.use('/cloud', this.checkTokenHeader, this.cloudRouter.router)
     this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
     this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 

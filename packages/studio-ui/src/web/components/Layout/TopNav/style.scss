@@ -70,6 +70,21 @@
       margin-left: 5px;
     }
 
+    &.disabled {
+      &:hover {
+        background: none;
+      }
+      color: var(--c-neutral);
+
+      span > svg {
+        fill: var(--c-neutral);
+      }
+    }
+
+    span > svg {
+      fill: var(--c-content-color-darker);
+    }
+
     &.clickable {
       user-select: none;
       cursor: pointer;
