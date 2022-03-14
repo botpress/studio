@@ -21,7 +21,9 @@ export default function SuperInput({
   placeholder,
   autoFocus = false,
   type = SiTypes.TEMPLATE,
-  noGlobsEvalMsg = ''
+  noGlobsEvalMsg = '',
+  leftIcon,
+  rightElement
 }: SiProps) {
   const editor = useRef() as MutableRefObject<HTMLInputElement>
   const [panel, setPanel] = useState('')
@@ -103,13 +105,11 @@ export default function SuperInput({
     }
   }, [value, view])
 
+  const panelValid = !isError(panel) && eventState ? true : null
+
   return (
-    <EditorFrame ref={editor}>
-      {isError(panel) ? (
-        <EvalPanel valid={false} text={panel} />
-      ) : panel ? (
-        <EvalPanel valid={eventState ? true : null} text={panel} />
-      ) : null}
+    <EditorFrame leftIcon={leftIcon} rightElement={rightElement} ref={editor}>
+      {panel ? <EvalPanel valid={panelValid} text={panel} /> : null}
     </EditorFrame>
   )
 }

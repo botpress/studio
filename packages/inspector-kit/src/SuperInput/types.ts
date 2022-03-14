@@ -1,3 +1,5 @@
+import { IInputGroupProps } from '@blueprintjs/core'
+
 export interface PanelProps {
   valid: boolean | null
   text: string
@@ -9,7 +11,9 @@ export enum SiTypes {
   BOOL = 'bool'
 }
 
-export interface SiProps {
+export type SafeInputGroupProps = Pick<IInputGroupProps, 'leftIcon' | 'rightElement'>
+
+export interface SiProps extends SafeInputGroupProps {
   value?: string
   onChange?: (newValue: string) => any
   placeholder?: string

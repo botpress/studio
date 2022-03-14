@@ -43,17 +43,9 @@
 
     .cm-editor {
       font-family: inherit;
-      border-radius: 3px;
-      border: none;
-      background: #ffffff;
-      box-shadow: 0 0 0 0 rgba(19, 124, 189, 0), 0 0 0 0 rgba(19, 124, 189, 0), inset 0 0 0 1px rgba(16, 22, 26, 0.15),
-        inset 0 1px 1px rgba(16, 22, 26, 0.2);
-      transition: box-shadow 0.1s cubic-bezier(0.4, 1, 0.75, 0.9),
-        -webkit-box-shadow 0.1s cubic-bezier(0.4, 1, 0.75, 0.9);
 
       &.cm-focused {
         outline: none;
-        box-shadow: 0 0 0 1px #137cbd, 0 0 0 3px rgba(19, 124, 189, 0.3), inset 0 1px 1px rgba(16, 22, 26, 0.2);
       }
     }
 
@@ -62,7 +54,8 @@
       font-size: 14px;
       font-weight: 400;
       outline: none;
-      padding: 5px 10px;
+      padding-top: 5px;
+      padding-bottom: 5px;
       transition: box-shadow 100ms cubic-bezier(0.4, 1, 0.75, 0.9);
       vertical-align: middle;
     }
@@ -150,5 +143,12 @@
         background: rgba($red5, 0.5);
       }
     }
+  }
+}
+.bp3Input {
+  height: auto;
+  min-height: 30px;
+  &:focus-within {
+    box-shadow: 0 0 0 1px #137cbd, 0 0 0 3px rgb(19 124 189 / 30%), inset 0 1px 1px rgb(16 22 26 / 20%);
   }
 }
