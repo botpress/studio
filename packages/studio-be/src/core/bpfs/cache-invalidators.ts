@@ -47,7 +47,7 @@ export namespace CacheInvalidators {
     install(objectCache: ObjectCache) {
       this.cache = objectCache
 
-      // Support for DDs
+      // Support for Dumb Deployments (DD)
       if (yn(process.env.CORE_DISABLE_FILE_LISTENERS)) {
         return
       }
