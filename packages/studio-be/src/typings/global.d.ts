@@ -210,7 +210,7 @@ declare interface BotpressEnvironmentVariables {
   readonly BP_DEBUG_SEGMENT?: boolean
 
   /**
-   * Supports dumb deployments by allowing disabling file listeners
+   * Supports read-only deployments by allowing disabling file listeners
    */
   readonly CORE_DISABLE_FILE_LISTENERS?: boolean
 }
