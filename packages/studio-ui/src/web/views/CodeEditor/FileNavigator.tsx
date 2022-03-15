@@ -142,17 +142,31 @@ class FileNavigator extends React.Component<Props, State> {
     const file = node.nodeData as EditableFile
 
     if (this.props.contextMenuType === 'moduleConfig') {
-      ContextMenu.show(
-        <Menu>
-          <MenuItem
-            id="btn-menu-delete-file"
-            icon="delete"
-            text={lang.tr('delete')}
-            onClick={() => this.props.deleteFile(file)}
-          />
-        </Menu>,
-        { left: e.clientX, top: e.clientY }
-      )
+      if (!file.botId) {
+        ContextMenu.show(
+          <Menu>
+            <MenuItem
+              id="btn-duplicateCurrent"
+              icon="duplicate"
+              text={lang.tr('code-editor.navigator.duplicateToCurrent')}
+              onClick={() => this.props.duplicateFile(file, { forCurrentBot: true, keepSameName: true })}
+            />
+          </Menu>,
+          { left: e.clientX, top: e.clientY }
+        )
+      } else {
+        ContextMenu.show(
+          <Menu>
+            <MenuItem
+              id="btn-menu-delete-file"
+              icon="delete"
+              text={lang.tr('delete')}
+              onClick={() => this.props.deleteFile(file)}
+            />
+          </Menu>,
+          { left: e.clientX, top: e.clientY }
+        )
+      }
 
       return
     }

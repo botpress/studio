@@ -120,6 +120,14 @@ export const sanitize = (input: string, type?: 'file' | 'folder') => {
     .replace(type === 'folder' ? regex.illegalFolder : regex.illegalFile, '')
 }
 
+export const isValid = (input: string, type: 'file' | 'path') => {
+  if (regex.control.test(input) || input.match(regex.reserved)) {
+    return false
+  }
+
+  return (type === 'file' && !regex.illegalFile.test(input)) || !regex.illegalFolder.test(input)
+}
+
 export const sanitizeFileName = (name: string): string => {
   return name
     .toLowerCase()

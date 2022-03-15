@@ -1,9 +1,9 @@
 import { Button, Callout, Checkbox, Classes, Dialog, FileInput, FormGroup, InputGroup, Intent } from '@blueprintjs/core'
 import { lang, toast } from 'botpress/shared'
+import { FilesDS } from 'common/code-editor'
 import _ from 'lodash'
 import React, { FC } from 'react'
 
-import { FilesDS } from '../../../backend/typings'
 import { sanitizeName } from '../utils'
 
 interface Props {

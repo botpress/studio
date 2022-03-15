@@ -14,11 +14,17 @@ import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
 
-import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
+import {
+  assertValidFilename,
+  buildRestrictedProcessVars,
+  getBuiltinExclusion,
+  getFileLocation,
+  RAW_TYPE
+} from './utils'
 
-export const FILENAME_REGEX = /^[0-9a-zA-Z_\-.]+$/
+const RAW_FILES_FILTERS = ['**/*.map', 'modules/.cache/**/*', 'modules/*.cache', 'modules/*.temp_cache']
 
-export class Editor {
+export default class Editor {
   private _botId!: string
   private _typings!: TypingDefinitions
 
@@ -29,46 +35,75 @@ export class Editor {
     return this
   }
 
-  async getAllFiles(permissions: FilePermissions, listBuiltin?: boolean): Promise<FilesDS> {
+  async getAllFiles(permissions: FilePermissions, rawFiles?: boolean, listBuiltin?: boolean): Promise<FilesDS> {
+    if (rawFiles && permissions['root.raw'].read) {
+      return {
+        raw: await this.loadRawFiles()
+      }
+    }
+
     const files: FilesDS = {}
 
     await Promise.mapSeries(Object.keys(permissions), async (type) => {
       const userPermissions = permissions[type]
       if (userPermissions.read) {
-        files[type] = await this.loadFiles(userPermissions.type, this._botId, listBuiltin)
+        files[type] = await this.loadFiles(
+          userPermissions.type,
+          !userPermissions.isGlobal ? this._botId : undefined,
+          listBuiltin
+        )
       }
     })
+
+    const examples = await this._getExamples()
+    files['action_example'] = examples.filter((x) => x.type === 'action_legacy')
+    files['hook_example'] = examples.filter((x) => x.type === 'hook')
 
     return files
   }
 
   async fileExists(file: EditableFile): Promise<boolean> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).fileExists(folder, filename)
+    return this._getGhost(file).fileExists(folder, filename)
   }
 
   async readFileContent(file: EditableFile): Promise<string> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).readFileAsString(folder, filename)
+    return this._getGhost(file).readFileAsString(folder, filename)
   }
 
   async readFileBuffer(file: EditableFile): Promise<Buffer> {
     const { folder, filename } = getFileLocation(file)
-    return this.bpfs.forBot(this._botId).readFileAsBuffer(folder, filename)
+    return this._getGhost(file).readFileAsBuffer(folder, filename)
   }
 
   async saveFile(file: EditableFile): Promise<void> {
     const shouldSyncToDisk = FileTypes[file.type].ghost.shouldSyncToDisk
     const { folder, filename } = getFileLocation(file)
 
-    return this.bpfs.forBot(this._botId).upsertFile(folder, filename, file.content!, {
+    return this._getGhost(file).upsertFile(folder, filename, file.content!, {
       syncDbToDisk: shouldSyncToDisk
     })
   }
 
-  async loadFiles(fileTypeId: string, botId: string, listBuiltin?: boolean): Promise<EditableFile[]> {
+  async loadRawFiles(): Promise<EditableFile[]> {
+    const files = await this.bpfs.root().directoryListing('/', '*.*', RAW_FILES_FILTERS, true)
+
+    return Promise.map(files, async (filepath: string) => ({
+      name: path.basename(filepath),
+      type: 'raw' as FileType,
+      location: filepath,
+      content: undefined
+    }))
+  }
+
+  async loadFiles(fileTypeId: string, botId?: string, listBuiltin?: boolean): Promise<EditableFile[]> {
     const def: FileDefinition = FileTypes[fileTypeId]
     const { baseDir, dirListingAddFields, dirListingExcluded } = def.ghost
+
+    if ((!def.allowGlobal && !botId) || (!def.allowScoped && botId)) {
+      return []
+    }
 
     let fileExt = '*.*'
     if (def.isJSON !== undefined) {
@@ -78,9 +113,8 @@ export class Editor {
     const baseExcluded = listBuiltin ? [] : getBuiltinExclusion()
     const excluded = [...baseExcluded, ...(dirListingExcluded ?? [])]
 
-    const files = def.filenames
-      ? def.filenames
-      : await this.bpfs.forBot(botId).directoryListing(baseDir, fileExt, excluded, true)
+    const ghost = botId ? this.bpfs.forBot(botId) : this.bpfs.global()
+    const files = def.filenames ? def.filenames : await ghost.directoryListing(baseDir, fileExt, excluded, true)
 
     return Promise.map(files, async (filepath: string) => ({
       name: path.basename(filepath),
@@ -92,6 +126,32 @@ export class Editor {
     }))
   }
 
+  private async _getExamples(): Promise<EditableFile[]> {
+    const files = await this.bpfs.global().directoryListing('/examples', '*.js')
+
+    return Promise.map(files, async (filepath: string) => {
+      const isHook = filepath.startsWith('examples/hooks')
+      const location = filepath.replace('examples/actions/', '').replace('examples/hooks/', '')
+
+      return {
+        name: path.basename(filepath),
+        type: (isHook ? 'hook' : 'action_legacy') as FileType,
+        location,
+        readOnly: true,
+        isExample: true,
+        content: await this.bpfs.global().readFileAsString('/examples', filepath),
+        ...(isHook && { hookType: location.substr(0, location.indexOf('/')) })
+      }
+    })
+  }
+
+  private _getGhost(file: EditableFile): sdk.ScopedGhostService {
+    if (file.type === RAW_TYPE) {
+      return this.bpfs.root()
+    }
+    return file.botId ? this.bpfs.forBot(this._botId) : this.bpfs.global()
+  }
+
   async deleteFile(file: EditableFile): Promise<void> {
     const fileDef = FileTypes[file.type]
     if (fileDef.canDelete && !fileDef.canDelete(file)) {
@@ -99,7 +159,7 @@ export class Editor {
     }
 
     const { folder, filename } = getFileLocation(file)
-    await this.bpfs.forBot(this._botId).deleteFile(folder, filename)
+    await this._getGhost(file).deleteFile(folder, filename)
   }
 
   async renameFile(file: EditableFile, newName: string): Promise<void> {
@@ -108,7 +168,7 @@ export class Editor {
     const { folder, filename } = getFileLocation(file)
     const newFilename = filename.replace(filename, newName)
 
-    const ghost = this.bpfs.forBot(this._botId)
+    const ghost = this._getGhost(file)
 
     if (await ghost.fileExists(folder, newFilename)) {
       throw new Error('File already exists')

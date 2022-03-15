@@ -53,7 +53,7 @@ declare namespace NodeJS {
     DISABLE_CONTENT_SANDBOX: boolean
     USE_JWT_COOKIES: boolean
     /** This property is set when the binary is built in a branch other than master */
-    DEV_BRANCH?: string,
+    DEV_BRANCH?: string
     NLU_ENDPOINT?: string
   }
 }
@@ -209,6 +209,18 @@ declare interface BotpressEnvironmentVariables {
    */
   readonly BP_ENABLED_MODULES?: string
   readonly BP_DEBUG_SEGMENT?: boolean
+
+  /**
+   * Disable the file upload feature on the Code Editor
+   * @default false
+   */
+  readonly BP_CODE_EDITOR_DISABLE_UPLOAD?: boolean
+
+  /**
+   * Disable the advanced editor feature on the Code Editor
+   * @default false
+   */
+  readonly BP_CODE_EDITOR_DISABLE_ADVANCED?: boolean
 }
 
 interface IDebug {

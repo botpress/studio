@@ -10,7 +10,7 @@ import { httpAction, legacyAction } from '../utils/templates'
 interface Props {
   isOpen: boolean
   toggle: () => void
-  openFile: (args: any) => void
+  openFile: (args: any) => Promise<void>
   files?: FilesDS
   selectedType: string
   selectedHookType: string
@@ -25,8 +25,10 @@ const sanitizeName = (text: string) =>
 
 const NewFileModal: FC<Props> = (props) => {
   const [name, setName] = useState('')
+  const [isScoped, setScoped] = useState(FileTypes[props.selectedType]?.allowScoped ?? true)
 
   useEffect(() => {
+    setScoped(FileTypes[props.selectedType]?.allowScoped)
     setName('')
   }, [props.isOpen])
 
@@ -52,11 +54,15 @@ const NewFileModal: FC<Props> = (props) => {
       content,
       type: props.selectedType,
       hookType: props.selectedHookType,
-      botId: window.BOT_ID
+      botId: canBeBotScoped() && isScoped ? window.BOT_ID : undefined
     })
 
     closeModal()
   }
+
+  const canBeBotScoped = () =>
+    props.selectedType !== 'hook' ||
+    (props.selectedType === 'hook' && BOT_SCOPED_HOOKS.includes(props.selectedHookType))
 
   const closeModal = () => {
     setName('')
@@ -94,6 +100,15 @@ const NewFileModal: FC<Props> = (props) => {
               autoFocus
             />
           </FormGroup>
+
+          {fileDefinition.allowScoped && canBeBotScoped() && (
+            <Checkbox
+              label={lang.tr('code-editor.newFileModal.createForCurrent')}
+              checked={isScoped}
+              disabled={!fileDefinition.allowGlobal || !canGlobalWrite}
+              onChange={(e) => setScoped(e.currentTarget.checked)}
+            />
+          )}
         </div>
 
         <div className={Classes.DIALOG_FOOTER}>

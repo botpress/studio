@@ -1,12 +1,14 @@
 import { Icon } from '@blueprintjs/core'
 import { MainLayout, lang } from 'botpress/shared'
 import { FileType, HOOK_SIGNATURES } from 'common/code-editor'
+import { ALL_BOTS } from 'common/utils'
 import _ from 'lodash'
 import { inject, observer } from 'mobx-react'
 import React from 'react'
 import { SearchBar, SidePanel, SidePanelSection } from '~/components/Shared/Interface'
 
 import FileStatus from './components/FileStatus'
+import NameModal from './components/NameModal'
 import NewFileModal from './components/NewFileModal'
 import { UploadModal } from './components/UploadModal'
 import FileNavigator from './FileNavigator'
@@ -24,13 +26,11 @@ class PanelContent extends React.Component<Props> {
     moduleConfigFiles: [],
     rawFiles: [],
     sharedLibs: [],
-    components: [],
     selectedNode: '',
     selectedFile: undefined,
     isMoveModalOpen: false,
     isCreateModalOpen: false,
     isUploadModalOpen: false,
-    isComponent: false,
     fileType: undefined,
     hookType: undefined
   }
@@ -59,31 +59,36 @@ class PanelContent extends React.Component<Props> {
       return
     }
 
+    const rawFiles = []
+    this.addFiles('raw', 'Data', rawFiles)
+
     const actionFiles = []
     this.addFiles('bot.actions', lang.tr('code-editor.sidePanel.currentBot'), actionFiles)
+    this.addFiles('global.actions', lang.tr('code-editor.sidePanel.global'), actionFiles)
 
     const hookFiles = []
     this.addFiles('bot.hooks', lang.tr('code-editor.sidePanel.currentBot'), hookFiles)
+    this.addFiles('global.hooks', lang.tr('code-editor.sidePanel.global'), hookFiles)
 
     const botConfigFiles = []
     this.addFiles('bot.bot_config', lang.tr('code-editor.sidePanel.currentBot'), botConfigFiles)
+    this.addFiles('global.main_config', lang.tr('code-editor.sidePanel.global'), botConfigFiles)
 
     const moduleConfigFiles = []
-    this.addFiles('bot.module_config', lang.tr('code-editor.sidePanel.currentBot'), moduleConfigFiles)
+
+    if (!window.IS_CLOUD_BOT) {
+      this.addFiles('bot.module_config', lang.tr('code-editor.sidePanel.currentBot'), moduleConfigFiles)
+      this.addFiles('global.module_config', lang.tr('code-editor.sidePanel.global'), moduleConfigFiles)
+    }
 
     const sharedLibs = []
     this.addFiles('bot.shared_libs', lang.tr('code-editor.sidePanel.currentBot'), sharedLibs)
+    this.addFiles('global.shared_libs', lang.tr('code-editor.sidePanel.global'), sharedLibs)
 
     this.addFiles('hook_example', EXAMPLE_FOLDER_LABEL, hookFiles)
     this.addFiles('action_example', EXAMPLE_FOLDER_LABEL, actionFiles)
 
-    this.setState({
-      actionFiles,
-      hookFiles,
-      botConfigs: botConfigFiles,
-      moduleConfigFiles,
-      sharedLibs
-    })
+    this.setState({ actionFiles, hookFiles, botConfigs: botConfigFiles, moduleConfigFiles, rawFiles, sharedLibs })
   }
 
   updateNodeExpanded = (id: string, isExpanded: boolean) => {
@@ -108,7 +113,10 @@ class PanelContent extends React.Component<Props> {
   }
 
   renderSectionModuleConfig() {
-    if (!this.hasPermission('bot.module_config')) {
+    if (
+      (!this.hasPermission('global.module_config') && !this.hasPermission('bot.module_config')) ||
+      !this.state.moduleConfigFiles.length
+    ) {
       return null
     }
 
@@ -128,7 +136,7 @@ class PanelContent extends React.Component<Props> {
   }
 
   renderSectionConfig() {
-    if (!this.hasPermission('bot.bot_config')) {
+    if (!this.hasPermission('global.main_config') && !this.hasPermission('bot.bot_config')) {
       return null
     }
 
@@ -213,12 +221,15 @@ class PanelContent extends React.Component<Props> {
   }
 
   renderSectionHooks() {
-    if (!this.hasPermission('bot.hooks')) {
+    if (!this.hasPermission('global.hooks') && !this.hasPermission('bot.hooks')) {
       return null
     }
 
     return (
-      <SidePanelSection label={lang.tr('code-editor.sidePanel.hooks')} actions={this._buildHooksActions()}>
+      <SidePanelSection
+        label={lang.tr('code-editor.sidePanel.hooks')}
+        actions={this._buildHooksActions(this.hasPermission('global.hooks', true))}
+      >
         <FileNavigator
           id="hooks"
           files={this.state.hookFiles}
@@ -231,7 +242,51 @@ class PanelContent extends React.Component<Props> {
     )
   }
 
-  _buildHooksActions() {
+  renderSectionRaw() {
+    const createFile = async (name: string) => {
+      return this.props.editor.openFile({ name, location: name, content: ' ', type: 'raw' })
+    }
+
+    return (
+      <SidePanelSection
+        label={lang.tr('module.code-editor.sidePanel.rawFileEditor')}
+        actions={[
+          {
+            id: 'btn-upload-sidepanel',
+            icon: <Icon icon="upload" />,
+            key: 'upload',
+            onClick: () => this.setState({ selectedFile: undefined, isUploadModalOpen: true })
+          },
+          {
+            id: 'btn-add-action',
+            icon: <Icon icon="add" />,
+            key: 'add',
+            onClick: () => this.setState({ selectedFile: undefined, isMoveModalOpen: true })
+          }
+        ]}
+      >
+        <FileNavigator
+          id="raw"
+          files={this.state.rawFiles}
+          expandedNodes={this.expandedNodes}
+          selectedNode={this.state.selectedNode}
+          onNodeStateExpanded={this.updateNodeExpanded}
+          onNodeStateSelected={this.updateNodeSelected}
+          moveFile={(file) => this.setState({ selectedFile: file, isMoveModalOpen: true })}
+        />
+        <NameModal
+          isOpen={this.state.isMoveModalOpen}
+          toggle={() => this.setState({ isMoveModalOpen: !this.state.isMoveModalOpen })}
+          createFile={createFile}
+          renameFile={this.props.store.renameFile}
+          selectedFile={this.state.selectedFile}
+          files={this.props.files}
+        />
+      </SidePanelSection>
+    )
+  }
+
+  _buildHooksActions(showGlobalHooks: boolean) {
     const hooks = Object.keys(HOOK_SIGNATURES).map((hookType) => ({
       id: hookType,
       label: hookType
@@ -258,9 +313,24 @@ class PanelContent extends React.Component<Props> {
       },
       {
         label: lang.tr('code-editor.sidePanel.botHooks'),
-        items: hooks.filter((x) => ['after_bot_mount', 'after_bot_unmount', 'on_bot_error'].includes(x.id))
+        items: hooks.filter((x) =>
+          ['after_bot_mount', 'after_bot_unmount', 'before_bot_import', 'on_bot_error'].includes(x.id)
+        )
       }
     ]
+
+    if (showGlobalHooks) {
+      items.push(
+        {
+          label: lang.tr('code-editor.sidePanel.generalHooks'),
+          items: hooks.filter((x) => ['after_server_start', 'on_incident_status_changed'].includes(x.id))
+        },
+        {
+          label: lang.tr('code-editor.sidePanel.pipelineHooks'),
+          items: hooks.filter((x) => ['on_stage_request', 'after_stage_changed'].includes(x.id))
+        }
+      )
+    }
 
     return [
       {
@@ -273,6 +343,7 @@ class PanelContent extends React.Component<Props> {
   }
 
   render() {
+    const { isAdvanced } = this.props.editor
     return (
       <SidePanel>
         <React.Fragment>
@@ -281,12 +352,17 @@ class PanelContent extends React.Component<Props> {
             placeholder={lang.tr('code-editor.sidePanel.filterFiles')}
             onChange={this.props.setFilenameFilter}
           />
-
-          {this.renderSectionActions()}
-          {this.renderSectionHooks()}
-          {this.renderSharedLibs()}
-          {this.renderSectionConfig()}
-          {this.renderSectionModuleConfig()}
+          {isAdvanced ? (
+            this.renderSectionRaw()
+          ) : (
+            <React.Fragment>
+              {this.renderSectionActions()}
+              {this.renderSectionHooks()}
+              {this.renderSharedLibs()}
+              {this.renderSectionConfig()}
+              {this.renderSectionModuleConfig()}
+            </React.Fragment>
+          )}
         </React.Fragment>
 
         <MainLayout.BottomPanel.Register tabName="Code Editor">
@@ -307,7 +383,6 @@ class PanelContent extends React.Component<Props> {
           uploadFile={this.props.store.uploadFile}
           toggle={() => this.setState({ isUploadModalOpen: !this.state.isUploadModalOpen })}
           files={this.props.files}
-          isComponent={this.state.isComponent}
         />
       </SidePanel>
     )

@@ -1,9 +1,11 @@
 import { FileDefinition, FileTypes, EditableFile, FilePermissions, FileType } from 'common/code-editor'
 import { BUILTIN_MODULES } from 'common/defaults'
+import { isValid } from 'core/misc/utils'
+
 import jsonlintMod from 'jsonlint-mod'
 import _ from 'lodash'
 
-import { FILENAME_REGEX } from './editor'
+export const RAW_TYPE: FileType = 'raw'
 
 export const getBuiltinExclusion = () => {
   return _.flatMap(BUILTIN_MODULES, (mod) => [`${mod}/*`, `*/${mod}/*`])
@@ -34,7 +36,7 @@ export const assertValidJson = (content: string): boolean => {
 }
 
 export const assertValidFilename = (filename: string) => {
-  if (!FILENAME_REGEX.test(filename)) {
+  if (!isValid(filename, 'path')) {
     throw new Error('Filename has invalid characters')
   }
 }
@@ -45,7 +47,15 @@ export const arePermissionsValid = (
   permissions: FilePermissions,
   actionType: 'read' | 'write'
 ): boolean => {
-  return permissions[`bot.${def.permission}`][actionType] && !!editableFile.botId
+  const hasGlobalPerm = def.allowGlobal && permissions[`global.${def.permission}`][actionType]
+  const hasScopedPerm = def.allowScoped && permissions[`bot.${def.permission}`][actionType]
+
+  const isGlobalValid = def.allowGlobal && !editableFile.botId
+  const isScopedValid = def.allowScoped && !!editableFile.botId
+
+  const hasRootPerm = def.allowRoot && permissions[`root.${def.permission}`][actionType]
+
+  return (hasGlobalPerm && isGlobalValid) || (hasScopedPerm && isScopedValid) || hasRootPerm || false
 }
 
 export const validateFilePayload = async (

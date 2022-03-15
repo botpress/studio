@@ -15,9 +15,11 @@ export default class CodeEditorApi {
     }
   }
 
-  async fetchFiles(): Promise<FilesDS> {
+  async fetchFiles(useRawEditor?: boolean): Promise<FilesDS> {
     try {
-      const { data } = await axios.get(`${window.STUDIO_API_PATH}/code-editor/files`)
+      const { data } = await axios.get(
+        `${window.STUDIO_API_PATH}/code-editor/files${useRawEditor ? '?rawFiles=true' : ''}`
+      )
       return data
     } catch (err) {
       this.handleApiError(err, 'Could not fetch files from server')
@@ -65,7 +67,7 @@ export default class CodeEditorApi {
       const { data } = await axios.post(`${window.STUDIO_API_PATH}/code-editor/readFile`, file)
       return data.fileContent
     } catch (err) {
-      this.handleApiError(err, 'Could not check if file already exists')
+      this.handleApiError(err, 'Error while reading file')
     }
   }
 

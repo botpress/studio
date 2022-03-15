@@ -27,6 +27,8 @@ const wrapper = {
       return `${signature} {\n  ${START_COMMENT}\n\n${content}\n\n  ${END_COMMENT}\n}`
     } else if (type === 'bot_config') {
       return content.replace('../../bot.config.schema.json', 'bp://types/bot.config.schema.json')
+    } else if (type === 'main_config') {
+      return content.replace('../botpress.config.schema.json', 'bp://types/botpress.config.schema.json')
     } else if (type === 'module_config') {
       return content.replace(/"..\/..\/assets\/(.*?config\.schema\.json")/, '"bp://types/$1')
     } else {

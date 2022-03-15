@@ -66,7 +66,7 @@ class RootStore {
 
   @action.bound
   async fetchFiles() {
-    const files = await this.api.fetchFiles()
+    const files = await this.api.fetchFiles(this.editor.isAdvanced)
     runInAction('-> setFiles', () => {
       this.files = files
     })

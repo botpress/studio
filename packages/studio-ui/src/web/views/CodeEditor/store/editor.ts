@@ -13,8 +13,8 @@ const NO_EDIT_EXTENSIONS = ['.tgz', '.sqlite', '.png', '.gif', '.jpg']
 const getFileUri = (file: EditableFile): monaco.Uri => {
   const { location } = file
   const fileType = location.endsWith('.json') ? 'json' : 'typescript'
-  const filepath = fileType === 'json' ? location : location.replace(/\.js$/i, '.ts')
-
+  const fileName = fileType === 'json' ? location : location.replace(/\.js$/i, '.ts')
+  const filepath = `${file.botId ? 'local' : 'global'}/${file.type}/${fileName}`
   return monaco.Uri.parse(`bp://files/${filepath}`)
 }
 
@@ -25,7 +25,15 @@ export const arePermissionsValid = (
   permissions: FilePermissions,
   actionType: 'read' | 'write'
 ): boolean => {
-  return permissions[`bot.${def.permission}`][actionType] && !!editableFile.botId
+  const hasGlobalPerm = def.allowGlobal && permissions[`global.${def.permission}`][actionType]
+  const hasScopedPerm = def.allowScoped && permissions[`bot.${def.permission}`][actionType]
+
+  const isGlobalValid = def.allowGlobal && !editableFile.botId
+  const isScopedValid = def.allowScoped && !!editableFile.botId
+
+  const hasRootPerm = def.allowRoot && permissions[`root.${def.permission}`][actionType]
+
+  return (hasGlobalPerm && isGlobalValid) || (hasScopedPerm && isScopedValid) || hasRootPerm
 }
 
 class EditorStore {
@@ -125,6 +133,10 @@ class EditorStore {
         ...file,
         content: await this.rootStore.api.readFile(file)
       }
+    }
+
+    if (file.content === undefined) {
+      return
     }
 
     runInAction('-> openFile', () => {

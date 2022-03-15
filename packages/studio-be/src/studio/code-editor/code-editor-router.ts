@@ -1,12 +1,13 @@
 import { RequestWithPerms } from 'common/code-editor'
-import { ALL_BOTS } from 'common/utils'
 import { hasPermissions } from 'core/security'
 import _ from 'lodash'
+import multer from 'multer'
+import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
-import { Editor } from './editor'
-import { getPermissionsMw, validateFilePayloadMw } from './utils_router'
+import Editor from './editor'
+import { getPermissionsMw, validateFilePayloadMw, validateFileUploadMw } from './utils_router'
 
 const debugRead = DEBUG('audit:code-editor:read')
 const debugWrite = DEBUG('audit:code-editor:write')
@@ -20,7 +21,7 @@ export class CodeEditorRouter extends CustomStudioRouter {
   setupRoutes() {
     const router = this.router
     const hasPermission = hasPermissions(this.workspaceService)
-    const loadPermsMw = getPermissionsMw(hasPermission)
+    const loadPermsMw = getPermissionsMw(hasPermission, this.botService)
 
     const editor = new Editor(this.bpfs, this.logger)
 
@@ -45,13 +46,10 @@ export class CodeEditorRouter extends CustomStudioRouter {
       '/files',
       loadPermsMw,
       this.asyncMiddleware(async (req: any, res) => {
-        if (!req.params.botId || req.params.botId === ALL_BOTS) {
-          return res.send([])
-        }
-
+        const rawFiles = req.query.rawFiles === 'true'
         const includeBuiltin = req.query.includeBuiltin === 'true'
 
-        res.send(await editor.forBot(req.params.botId).getAllFiles(req.permissions, includeBuiltin))
+        res.send(await editor.forBot(req.params.botId).getAllFiles(req.permissions, rawFiles, includeBuiltin))
       })
     )
 
@@ -126,6 +124,20 @@ export class CodeEditorRouter extends CustomStudioRouter {
       })
     )
 
+    router.post(
+      '/upload',
+      loadPermsMw,
+      validateFileUploadMw,
+      multer().single('file'),
+      this.asyncMiddleware(async (req: any, res) => {
+        const folder = path.dirname(req.body.location)
+        const filename = path.basename(req.body.location)
+
+        await this.bpfs.root().upsertFile(folder, filename, req.file.buffer)
+        res.sendStatus(200)
+      })
+    )
+
     router.get(
       '/permissions',
       loadPermsMw,
@@ -136,8 +148,8 @@ export class CodeEditorRouter extends CustomStudioRouter {
 
     router.get(
       '/typings',
-      this.asyncMiddleware(async (req, res) => {
-        res.send(await editor.forBot(req.params.botId).loadTypings())
+      this.asyncMiddleware(async (_req, res) => {
+        res.send(await editor.loadTypings())
       })
     )
   }
