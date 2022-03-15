@@ -208,6 +208,11 @@ declare interface BotpressEnvironmentVariables {
    */
   readonly BP_ENABLED_MODULES?: string
   readonly BP_DEBUG_SEGMENT?: boolean
+
+  /**
+   * Supports read-only deployments by allowing disabling file listeners
+   */
+  readonly CORE_DISABLE_FILE_LISTENERS?: boolean
 }
 
 interface IDebug {
