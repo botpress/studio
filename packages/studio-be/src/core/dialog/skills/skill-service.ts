@@ -2,7 +2,7 @@ import { ActionBuilderProps, Flow, FlowGenerationResult, FlowNode, NodeActionTyp
 import { injectable } from 'inversify'
 import _ from 'lodash'
 import { customAlphabet } from 'nanoid'
-import authGate from './authGate'
+
 import callApi from './callApi'
 import choice from './choice'
 import email from './email'
@@ -22,8 +22,6 @@ export class SkillService {
         return slot.generateFlow
       case 'SendEmail':
         return email.generateFlow
-      case 'AuthGate':
-        return authGate.generateFlow
     }
   }
 
