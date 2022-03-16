@@ -33,9 +33,9 @@ const NewFileModal: FC<Props> = (props) => {
   const submit = async (e) => {
     e.preventDefault()
 
-    const isJs = name.endsWith('.js')
-    const isJson = name.endsWith('.json')
-    const finalName = isJs || isJson ? name : `${name}.js`
+    const finalName = name.endsWith('.js') || name.endsWith('.json') ? name : `${name}.js`
+    const isJs = finalName.endsWith('.js')
+    const isJson = finalName.endsWith('.json')
 
     let content = ' '
     if (props.selectedType === 'action_legacy' && isJs) {
