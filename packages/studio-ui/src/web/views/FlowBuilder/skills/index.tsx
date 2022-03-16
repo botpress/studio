@@ -10,7 +10,7 @@ import { cancelNewSkill, insertNewSkill, updateSkill } from '~/actions'
 import InjectedModuleView from '~/components/PluginInjectionSite/module'
 import { RootReducer } from '~/reducers'
 import withLanguage from '../../../components/Util/withLanguage'
-import { Choice, CallAPI, Slot, SendEmail, AuthGate } from './views'
+import { Choice, CallAPI, Slot, SendEmail } from './views'
 
 const style = require('./style.scss')
 
@@ -126,8 +126,6 @@ const SkillsBuilder = (props: Props) => {
         return <Slot {...moduleProps}></Slot>
       case 'SendEmail':
         return <SendEmail {...moduleProps}></SendEmail>
-      case 'AuthGate':
-        return <AuthGate {...moduleProps}></AuthGate>
     }
   }
 

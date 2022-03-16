@@ -710,6 +710,24 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Deploy Bot",
+        "lastDeploy": "Last Deployed",
+        "needsTraining": "Bot Needs Training",
+        "deploying": "Deploying Bot..."
+      },
+      "btn": "Deploy to Cloud",
+      "toaster": {
+        "success": "Bot has successfully been deployed",
+        "info": "Bot is deploying...",
+        "error": {
+          "token": "Failed to authenticate with cloud",
+          "introspect": "Could not fetch bot info from cloud",
+          "default": "Bot failed to deploy"
+        }
+      }
+    },
     "help": "Help",
     "emulator": "Emulator",
     "readDoc": "Read Documentation",

@@ -55,6 +55,7 @@ declare namespace NodeJS {
     /** This property is set when the binary is built in a branch other than master */
     DEV_BRANCH?: string
     NLU_ENDPOINT?: string
+    CONTROLLERAPI_ENDPOINT?: string
   }
 }
 
@@ -221,6 +222,10 @@ declare interface BotpressEnvironmentVariables {
    * @default false
    */
   readonly BP_CODE_EDITOR_DISABLE_ADVANCED?: boolean
+  /*
+   * endpoint of cloud controller API
+   */
+  readonly CONTROLLERAPI_ENDPOINT?: string
 }
 
 interface IDebug {

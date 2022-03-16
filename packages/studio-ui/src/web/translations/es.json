@@ -662,6 +662,24 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Implementar bot",
+        "lastDeploy": "Último implementado",
+        "needsTraining": "El bot necesita capacitación",
+        "deploying": "Bot de implementación..."
+      },
+      "btn": "Implementar en la nube",
+      "toaster": {
+        "success": "El bot se implementó con éxito",
+        "info": "El bot se está desplegando...",
+        "error": {
+          "token": "No se pudo autenticar con la nube",
+          "introspect": "No se pudo obtener la información del bot de la nube",
+          "default": "El bot no se pudo implementar"
+        }
+      }
+    },
     "help": "Ayuda",
     "emulator": "Emulador",
     "readDoc": "Documentación",

@@ -39,15 +39,6 @@ const defaultSkills = [
   }
 ]
 
-if (!window.IS_CLOUD_BOT) {
-  defaultSkills.push({
-    id: 'AuthGate',
-    name: 'skills.authGate.title',
-    icon: 'shield',
-    moduleName: 'basic-skills'
-  })
-}
-
 const defaultState = {
   installed: [],
   builder: {

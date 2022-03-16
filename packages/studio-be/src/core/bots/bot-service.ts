@@ -225,7 +225,9 @@ export class BotService {
       to: [BOT_ID_PLACEHOLDER]
     }
 
-    return this.ghostService.forBot(botId).exportToArchiveBuffer('models/**/*', replaceContent)
+    return this.ghostService
+      .forBot(botId)
+      .exportToArchiveBuffer(['models/**/*', 'libraries/node_modules/**/*'], replaceContent)
   }
 
   async duplicateBot(sourceBotId: string, destBotId: string, overwriteDest: boolean = false) {
