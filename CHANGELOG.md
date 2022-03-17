@@ -1,3 +1,21 @@
+## [0.0.49](https://github.com/botpress/studio/compare/v0.0.48...v0.0.49) (2022-03-17)
+
+
+### Bug Fixes
+
+* **build:** fix package on windows & cmd ([#298](https://github.com/botpress/studio/issues/298)) ([43f2b71](https://github.com/botpress/studio/commit/43f2b712be8762f79eeca1aef5015445441f4c90))
+* **nlu:** intent slot formatting ([#295](https://github.com/botpress/studio/issues/295)) ([2d1b01b](https://github.com/botpress/studio/commit/2d1b01b6019d91f0dbb26d23a560c6371e091fb0))
+* **qna:** improve slot intent sidebar ui ([#301](https://github.com/botpress/studio/issues/301)) ([b79ebef](https://github.com/botpress/studio/commit/b79ebef2c92832d8e86dd504bb6a70d10425a258))
+* **studio:** fix libraries ([#311](https://github.com/botpress/studio/issues/311)) ([c13b5c4](https://github.com/botpress/studio/commit/c13b5c42f31696a3e12de03e2a0ee9989df69286))
+* **studio:** proxy redirect ([#302](https://github.com/botpress/studio/issues/302)) ([568ed32](https://github.com/botpress/studio/commit/568ed3255bc747d96aa8d208cdc440a627379ac5))
+
+
+### Features
+
+* **studio:** allow disabling file listeners for read-only deployments ([#242](https://github.com/botpress/studio/issues/242)) ([efad392](https://github.com/botpress/studio/commit/efad3922c411340690afece925416030046b2945))
+
+
+
 ## [0.0.48](https://github.com/botpress/studio/compare/v0.0.47...v0.0.48) (2022-02-09)
 
 
