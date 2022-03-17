@@ -215,6 +215,11 @@ declare interface BotpressEnvironmentVariables {
    * endpoint of cloud controller API
    */
   readonly CONTROLLERAPI_ENDPOINT?: string
+
+  /**
+   * Supports read-only deployments by allowing disabling file listeners
+   */
+  readonly CORE_DISABLE_FILE_LISTENERS?: boolean
 }
 
 interface IDebug {
