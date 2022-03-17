@@ -83,5 +83,19 @@ export class InternalRouter extends CustomStudioRouter {
         res.sendStatus(200)
       })
     )
+
+    router.post(
+      '/invalidateCmsForBot',
+      this.asyncMiddleware(async (req, res) => {
+        const { botId } = req.body
+
+        // Invalidations are sent via redis when cluster is on
+        if (!process.CLUSTER_ENABLED) {
+          await this.cmsService.broadcastInvalidateForBot(botId)
+        }
+
+        res.sendStatus(200)
+      })
+    )
   }
 }
