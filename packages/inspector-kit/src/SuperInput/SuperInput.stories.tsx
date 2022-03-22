@@ -1,3 +1,4 @@
+import { Button } from '@blueprintjs/core'
 import { ComponentMeta } from '@storybook/react'
 import React from 'react'
 import { data } from '../../demo/data'
@@ -47,4 +48,11 @@ export const Invalid = () => <SuperInput value={code1} eventState={eventState} {
 export const SomethingElse = () => <SuperInput value={code3} />
 SomethingElse.story = {
   name: 'Something Else (no eventState)'
+}
+
+export const AcceptsInputProps = () => (
+  <SuperInput leftIcon="user" placeholder="Email Address" rightElement={<Button>Sign Up</Button>} />
+)
+AcceptsInputProps.story = {
+  name: 'Accepts Input Props'
 }
