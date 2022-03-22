@@ -174,6 +174,6 @@ const docs = {
   fallback
 }
 
-fs.writeFileSync(join(__dirname, '../src/docsTree.json'), JSON.stringify(docs))
+fs.writeFileSync(join(__dirname, '../src/SuperInput/docsTree.json'), JSON.stringify(docs))
 // eslint-disable-next-line
-console.log(`Generated doctree at ${__dirname + '../src/docsTree.json'}`)
+console.log(`Generated doctree at ${__dirname + '../src/SuperInput/docsTree.json'}`)

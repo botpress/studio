@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { SuperInput } from '../src'
-import { SiTypes } from '../src/types'
+import { SuperInput } from '../src/SuperInput'
+import { SiTypes } from '../src/SuperInput/types'
 import { data } from './data'
 
 const code0 = 'event.state.user ? "yes" : "sorry unknown user" || true'
