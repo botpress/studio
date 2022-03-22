@@ -67,7 +67,7 @@ yarn workspace @botpress/inspector-kit doctree
 ---
 
 ```typescript
-enum SI_TYPES { // types of inspector-kit
+enum SI_TYPES { // types of SuperInput
   TEMPLATE = 0, // for template strings using the {{}} delimiter
   EXPRESSION = 1, // for full javascript expressions that evaluate its full output
   BOOL = 2 // for full javascript expressions that evaluate its output to a bool
@@ -76,8 +76,8 @@ enum SI_TYPES { // types of inspector-kit
 export interface ISiProps {
   eventState?: any // variables to pull eval info from, must be IO.IncomingEvent
   value?: string
-  type?: SI_TYPES // Type of inspector-kit, see above
-  autoFocus?: boolean // If true inspector-kit will autofocus on initial load
+  type?: SI_TYPES // Type of SuperInput, see above
+  autoFocus?: boolean // If true SuperInput will autofocus on initial load
   placeholder?: string // Placeholder value
   noGlobsEvalMsg?: string // Message to show if there is no live info (defaults to not showing a message)
   onChange?: (newValue: string) => any // runs everytime the input changes
