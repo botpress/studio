@@ -36,6 +36,14 @@ This package includes a storybook which details the capabilities of each compone
 yarn workspace @botpress/inspector-kit storybook
 ```
 
+## Testing
+
+Components are tested using [react-testing-library](https://github.com/testing-library/react-testing-library) and [ts-jest](https://github.com/kulshekhar/ts-jest).
+
+```shell
+yarn workspace @botpress/inspector-kit test
+```
+
 ## Build package
 
 ```shell
