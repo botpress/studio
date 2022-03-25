@@ -3,7 +3,8 @@ import { Migration, MigrationOpts } from 'core/migration'
 
 const migration: Migration = {
   info: {
-    description: 'Migrates the messaging clientId and clientToken from bot.config.json to srv_channels',
+    description:
+      'Migrates the messaging clientId and clientToken from bot.config.json to srv_channels when the bot is imported',
     target: 'bot',
     type: 'content'
   },
