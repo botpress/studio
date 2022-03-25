@@ -8,9 +8,6 @@
   "files": [
     "lib"
   ],
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
   "dependencies": {
     "@codemirror/autocomplete": "^0.19.9",
     "@codemirror/closebrackets": "^0.19.0",
@@ -31,6 +28,9 @@
     "react-json-view": "^1.21.3",
     "tree-model": "^1.0.7",
     "web-vitals": "^1.0.1"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   },
   "scripts": {
     "build": "yarn doctree && rollup -c",

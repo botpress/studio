@@ -19,6 +19,9 @@
       "extensions": "js,jsx,scss,json,html"
     }
   },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "dependencies": {
     "@analytics/segment": "^1.1.3",
     "@blueprintjs/core": "^3.23.1",
