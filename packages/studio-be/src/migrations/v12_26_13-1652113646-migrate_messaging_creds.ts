@@ -65,8 +65,34 @@ const migration: Migration = {
     return { success: true, message: 'Configurations updated successfully' }
   },
 
-  down: async ({ metadata }: MigrationOpts): Promise<sdk.MigrationResult> => {
-    throw 'impl'
+  down: async ({ database, metadata, configProvider, botService }: MigrationOpts): Promise<sdk.MigrationResult> => {
+    const migration = async (botId: string, botConfig: any) => {
+      const [entry] = await database.knex('srv_channels').where({ botId })
+      if (!entry) {
+        return
+      }
+
+      if (!botConfig.messaging) {
+        botConfig.messaging = {}
+      }
+      botConfig.messaging.id = entry.clientId
+      botConfig.messaging.token = entry.clientToken
+
+      await configProvider.setBotConfig(botConfig, botConfig)
+      await database.knex('srv_channels').where({ botId }).del()
+    }
+
+    if (metadata.botId) {
+      const botConfig = await botService.findBotById(metadata.botId)
+      await migration(metadata.botId, botConfig!)
+    } else {
+      const bots = await botService.getBots()
+      for (const [botId, botConfig] of bots) {
+        await migration(botId, botConfig)
+      }
+    }
+
+    return { success: true, message: 'Configurations updated successfully' }
   }
 }
 
