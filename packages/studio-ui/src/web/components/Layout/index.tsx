@@ -16,6 +16,7 @@ import FlowBuilder from '~/views/FlowBuilder'
 import Libraries from '~/views/Libraries'
 import Module from '~/views/Module'
 import NLU from '~/views/Nlu'
+import NodeEditor from '~/views/NodeEditor'
 import QNA from '~/views/Qna'
 
 import BottomPanel from './BottomPanel'
@@ -220,6 +221,7 @@ const Layout: FC<Props> = (props: Props) => {
                 />
                 <Route exact path="/libraries" component={Libraries} />
                 <Route exact path="/content" component={Content} />
+                <Route exact path="/flows/:flow*/editnode/:node" component={NodeEditor} />
                 <Route exact path="/flows/:flow*" component={FlowBuilder} />
                 <Route exact path="/config" component={Config} />
                 <Route exact path="/nlu" component={NLU} />
