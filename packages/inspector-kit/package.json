@@ -8,6 +8,9 @@
   "files": [
     "lib"
   ],
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
   "dependencies": {
     "@codemirror/autocomplete": "^0.19.9",
     "@codemirror/closebrackets": "^0.19.0",
