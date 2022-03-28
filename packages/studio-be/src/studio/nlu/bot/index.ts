@@ -23,7 +23,7 @@ export class Bot {
   constructor(
     botDef: BotDefinition,
     _configResolver: ConfigResolver,
-    _nluClient: NLUClient,
+    private _nluClient: NLUClient,
     private _defRepo: DefinitionsRepository,
     _models: ModelEntryService,
     _trainings: TrainingEntryService,
@@ -74,6 +74,10 @@ export class Bot {
       const needsTraining = this._needsTraining(language)
       this._webSocket({ ...needsTraining, error: { message: err.message, type: 'internal' } })
     }
+  }
+
+  public async downloadModelWeights(appId: string, modelId: string) {
+    return this._nluClient.downloadModelWeights(appId, modelId)
   }
 
   public syncAndGetState = async (language: string): Promise<BpTraining> => {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { CloudConfig } from 'botpress/sdk'
-import FormData from 'form-data'
+import FormData from 'form-data'q
 import qs from 'querystring'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -94,7 +94,9 @@ export class CloudRouter extends CustomStudioRouter {
           return res.status(404)
         }
 
-        const botBlob = await this.botService.exportBot(botId)
+        await this.nluService.downloadAndSaveModelWeights(botId)
+
+        const botBlob = await this.botService.exportBot(botId, { cloud: true })
 
         const botMultipart = new FormData()
         botMultipart.append('botId', introspect.botId)

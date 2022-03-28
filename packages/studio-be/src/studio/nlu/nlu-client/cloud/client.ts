@@ -40,6 +40,12 @@ export class CloudClient extends StanClient {
 
     this.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this) as any)
     this.axios.interceptors.response.use(undefined, this._errorInterceptor(this.axios as any, tokenCache).bind(this))
+
+    this.modelWeights.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this) as any)
+    this.modelWeights.axios.interceptors.response.use(
+      undefined,
+      this._errorInterceptor(this.axios as any, tokenCache).bind(this)
+    )
   }
 
   private _createOauthTokenClient =

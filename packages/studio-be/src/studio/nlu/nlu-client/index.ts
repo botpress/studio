@@ -77,6 +77,15 @@ export class NLUClient {
     }
   }
 
+  public async downloadModelWeights(appId: string, modelId: string): Promise<Buffer> {
+    const downloadRes = await this._client.modelWeights.download(appId, modelId, { responseType: 'arraybuffer' })
+    if (downloadRes.status !== 'OK') {
+      throw new Error(`Download weights received status ${downloadRes.status}`)
+    }
+
+    return downloadRes.weights
+  }
+
   private _throwError(err: string | NLUError): never {
     const prefix = 'An error occured in NLU server'
     if (_.isString(err)) {
