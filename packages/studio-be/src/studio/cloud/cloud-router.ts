@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { CloudConfig } from 'botpress/sdk'
-import FormData from 'form-data'q
+import FormData from 'form-data'
 import qs from 'querystring'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
