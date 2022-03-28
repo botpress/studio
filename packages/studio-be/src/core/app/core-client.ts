@@ -22,6 +22,12 @@ export const coreActions = {
   notifyFlowChanges: async (payload) => {
     await coreClient?.post('/notifyFlowChange', payload)
   },
+  unmountBot: async (botId: string) => {
+    await coreClient?.post('/unmountBot', { botId })
+  },
+  mountBot: async (botId: string) => {
+    await coreClient?.post('/mountBot', { botId })
+  },
   invalidateCmsForBot: async (botId: string) => {
     await coreClient?.post('/invalidateCmsForBot', { botId })
   },

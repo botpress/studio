@@ -145,12 +145,19 @@ export class BotService {
     await this.configProvider.setBotConfig(botId, newConfig)
 
     if (!updatedBot.disabled) {
-      if (this.isBotMounted(botId)) {
+      const isBotMounted = this.isBotMounted(botId)
+      if (isBotMounted) {
         // we need to remount the bot to update the config
         await this.unmountBot(botId)
       }
 
       await this.mountBot(botId)
+
+      // Only send a mount bot request to the core
+      // if the bot was unmounted
+      if (!isBotMounted) {
+        await coreActions.mountBot(botId)
+      }
     }
 
     if (actualBot.defaultLanguage !== updatedBot.defaultLanguage) {
@@ -164,6 +171,7 @@ export class BotService {
 
     if (!actualBot.disabled && updatedBot.disabled) {
       await this.unmountBot(botId)
+      await coreActions.unmountBot(botId)
     }
   }
 
