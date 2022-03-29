@@ -94,7 +94,9 @@ export class CloudRouter extends CustomStudioRouter {
           return res.status(404)
         }
 
-        const botBlob = await this.botService.exportBot(botId)
+        await this.nluService.downloadAndSaveModelWeights(botId)
+
+        const botBlob = await this.botService.exportBot(botId, { cloud: true })
 
         const botMultipart = new FormData()
         botMultipart.append('botId', introspect.botId)

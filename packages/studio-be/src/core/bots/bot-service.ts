@@ -227,15 +227,17 @@ export class BotService {
     }
   }
 
-  async exportBot(botId: string): Promise<Buffer> {
+  async exportBot(botId: string, { cloud }: { cloud: boolean } = { cloud: false }): Promise<Buffer> {
     const replaceContent: ReplaceContent = {
       from: [new RegExp(`/bots/${botId}/`, 'g')],
       to: [BOT_ID_PLACEHOLDER]
     }
+    const excludes = ['libraries/node_modules/**/*']
+    if (!cloud) {
+      excludes.push('models/**/*')
+    }
 
-    return this.ghostService
-      .forBot(botId)
-      .exportToArchiveBuffer(['models/**/*', 'libraries/node_modules/**/*'], replaceContent)
+    return this.ghostService.forBot(botId).exportToArchiveBuffer(excludes, replaceContent)
   }
 
   async duplicateBot(sourceBotId: string, destBotId: string, overwriteDest: boolean = false) {
