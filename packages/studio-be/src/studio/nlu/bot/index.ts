@@ -76,7 +76,7 @@ export class Bot {
     }
   }
 
-  public async downloadModelWeights(appId: string, modelId: string) {
+  public async downloadModelWeights(appId: string, modelId: string): Promise<Buffer> {
     return this._nluClient.downloadModelWeights(appId, modelId)
   }
 
