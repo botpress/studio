@@ -285,15 +285,18 @@ export const insertComponentElementFlow =
           nodeSkill.skillData
         )
         const skillNode = {
-          generatedFlow: data.flow,
-          location: nodeSkill.location,
-          flow: nodeSkill.flow,
+          ...data.flow,
           name: nodeSkill.location,
-          skillData: nodeSkill.skillData
+          location: nodeSkill.location,
+          skillData: nodeSkill.skillData,
+          flow: nodeSkill.flow,
+          generatedFlow: data.flow
         }
+
         try {
-          await FlowsAPI.apiInsertFlow(skillNode)
           dispatch(requestInsertNewSkillNoBuffer(skillNode))
+          await FlowsAPI.apiInsertFlow(skillNode)
+          console.log(skillNode)
         } catch (e) {
           // Display an error to the frontend
           continue
@@ -327,7 +330,7 @@ export const openFlowNodeProps: () => void = createAction('FLOWS/FLOW/OPEN_NODE_
 export const closeFlowNodeProps: () => void = createAction('FLOWS/FLOW/CLOSE_NODE_PROPS')
 
 export const handleRefreshFlowLinks = createAction('FLOWS/FLOW/UPDATE_LINKS')
-export const refreshFlowsLinks = debounceAction(handleRefreshFlowLinks, 500, { leading: true })
+export const refreshFlowsLinks = debounceAction(handleRefreshFlowLinks, 200, { leading: true })
 export const updateFlowProblems: (problems: NodeProblem[]) => void = createAction('FLOWS/FLOW/UPDATE_PROBLEMS')
 
 export const copyFlowNodes: (nodeIds: string[]) => void = createAction('FLOWS/NODE/COPY')
