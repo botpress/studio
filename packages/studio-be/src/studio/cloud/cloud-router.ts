@@ -28,7 +28,7 @@ export class CloudRouter extends CustomStudioRouter {
 
   getIntrospect(bearerToken: string) {
     return axios
-      .get(`${process.CONTROLLERAPI_ENDPOINT}/v1/introspect`, {
+      .get(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/introspect`, {
         headers: {
           Authorization: bearerToken
         }
@@ -58,7 +58,7 @@ export class CloudRouter extends CustomStudioRouter {
         }
 
         try {
-          const { status, data } = await axios.get(`${process.CONTROLLERAPI_ENDPOINT}/v1/bots/${introspect.botId}`, {
+          const { status, data } = await axios.get(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/${introspect.botId}`, {
             headers: {
               Authorization: bearerToken
             }
@@ -106,13 +106,17 @@ export class CloudRouter extends CustomStudioRouter {
         botMultipart.append('botFileName', `bot_${botId}_${Date.now()}.tgz`)
 
         try {
-          const { status, data } = await axios.post(`${process.CONTROLLERAPI_ENDPOINT}/v1/bots/upload`, botMultipart, {
-            headers: {
-              'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
-              Authorization: bearerToken
-            },
-            maxBodyLength: 100 * 1024 * 1024 // 100 MB
-          })
+          const { status, data } = await axios.post(
+            `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/upload`,
+            botMultipart,
+            {
+              headers: {
+                'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
+                Authorization: bearerToken
+              },
+              maxBodyLength: 100 * 1024 * 1024 // 100 MB
+            }
+          )
           res.status(status).send(data)
         } catch (err) {
           if (err.isAxiosError) {
