@@ -11,11 +11,11 @@ export class CloudRouter extends CustomStudioRouter {
   }
 
   getBearerToken(cloud: CloudConfig) {
-    const { oauthUrl, clientId, clientSecret } = cloud
+    const { clientId, clientSecret } = cloud
 
     return axios
       .post(
-        oauthUrl,
+        process.CLOUD_OAUTH_ENDPOINT!,
         qs.stringify({
           client_id: clientId,
           client_secret: clientSecret,
