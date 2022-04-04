@@ -15,7 +15,7 @@ export class CloudRouter extends CustomStudioRouter {
 
     return axios
       .post(
-        process.CLOUD_OAUTH_ENDPOINT!,
+        process.CLOUD_OAUTH_ENDPOINT,
         qs.stringify({
           client_id: clientId,
           client_secret: clientSecret,
