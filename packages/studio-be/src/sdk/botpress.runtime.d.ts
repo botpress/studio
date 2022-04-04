@@ -28,13 +28,6 @@ declare module 'botpress/runtime-sdk' {
   export const version: string
 
   /**
-   * This variable gives you access to the Botpress database via Knex.
-   * When developing modules, you can use this to create tables and manage data
-   * @example bp.database('srv_channel_users').insert()
-   */
-  export const database: KnexExtended
-
-  /**
    * The logger instance is automatically scoped to the calling module
    * @example bp.logger.info('Hello!') will output: Mod[myModule]: Hello!
    */
@@ -97,6 +90,32 @@ declare module 'botpress/runtime-sdk' {
   }
 
   export namespace NLU {
+    /**
+     * idle : occures when there are no training sessions for a bot
+     * done : when a training is complete
+     * needs-training : when current chatbot model differs from training data
+     * training-pending : when a training was launched, but the training process is not started yet
+     * training: when a chatbot is currently training
+     * canceled: when a user cancels a training and the training is being canceled
+     * errored: when a chatbot failed to train
+     */
+    export type TrainingStatus =
+      | 'idle'
+      | 'done'
+      | 'needs-training'
+      | 'training-pending'
+      | 'training'
+      | 'canceled'
+      | 'errored'
+      | null
+
+    export interface TrainingSession {
+      key: string
+      status: TrainingStatus
+      language: string
+      progress: number
+    }
+
     export type EntityType = 'system' | 'pattern' | 'list'
 
     export interface EntityDefOccurrence {
@@ -285,6 +304,7 @@ declare module 'botpress/runtime-sdk' {
 
     export interface EventUnderstanding {
       readonly errored: boolean
+      readonly modelId: string | undefined
 
       readonly predictions?: {
         [context: string]: {
@@ -562,12 +582,6 @@ declare module 'botpress/runtime-sdk' {
       includeDotFiles?: boolean,
       options?: DirectoryListingOptions
     ): Promise<string[]>
-    /**
-     * Starts listening on all file changes (deletion, inserts and updates)
-     * `callback` will be called for every change
-     * To stop listening, call the `remove()` method of the returned ListenHandle
-     */
-    onFileChanged(callback: (filePath: string) => void): ListenHandle
     fileExists(rootFolder: string, file: string): Promise<boolean>
   }
 
@@ -658,7 +672,6 @@ declare module 'botpress/runtime-sdk' {
   }
 
   export interface CloudConfig {
-    oauthUrl: string
     clientId: string
     clientSecret: string
   }
@@ -720,19 +733,9 @@ declare module 'botpress/runtime-sdk' {
   }
 
   export interface MessagingConfig {
-    /**
-     * Client id used to identify the bot on the messaging server
-     */
-    id: string
-    /**
-     * Client token used to authenticate requests made to the messaging server
-     */
-    token: string
-    /**
-     * Configurations of channels to be sent to the messaging server
-     * You can find more about channel configurations here : https://botpress.com/docs/channels/faq
-     */
-    channels: { [channelName: string]: any }
+    clientId: string
+    clientToken: string
+    webhookToken: string
   }
 
   /**
@@ -943,18 +946,6 @@ declare module 'botpress/runtime-sdk' {
     count: number
   }
 
-  export interface RenderPipeline {
-    text: typeof experimental.render.text
-    image: typeof experimental.render.image
-    card: typeof experimental.render.card
-    carousel: typeof experimental.render.carousel
-    choice: typeof experimental.render.choice
-    buttonSay: typeof experimental.render.buttonSay
-    buttonUrl: typeof experimental.render.buttonUrl
-    buttonPostback: typeof experimental.render.buttonPostback
-    option: typeof experimental.render.option
-  }
-
   export interface Content {
     type: string
   }
@@ -1105,6 +1096,145 @@ declare module 'botpress/runtime-sdk' {
     extend(duration: number): Promise<void>
   }
 
+  export type uuid = string
+
+  export interface Conversation {
+    id: uuid
+    clientId: uuid
+    userId: uuid
+    createdOn: Date
+  }
+
+  export interface MessagingUser {
+    id: uuid
+    clientId: uuid
+  }
+
+  export interface Message {
+    id: uuid
+    conversationId: uuid
+    authorId: uuid | undefined
+    sentOn: Date
+    payload: any
+  }
+
+  export interface Endpoint {
+    channel:
+      | {
+          name: string
+          version: string
+        }
+      | string
+    identity: string
+    sender: string
+    thread: string
+  }
+
+  export interface MessagingClient {
+    /** Client id configured for this instance */
+    readonly clientId: uuid
+
+    /** Client token of to authenticate requests made with the client id */
+    readonly clientToken: string | undefined
+
+    /** Webhook token to validate webhook events that are received */
+    readonly webhookToken: string | undefined
+
+    /**
+     * Creates a new messaging user
+     * @returns info of the newly created user
+     */
+    createUser(): Promise<MessagingUser>
+
+    /**
+     * Fetches a messaging user
+     * @param id id of the user to fetch
+     * @returns info of the user or `undefined` if not found
+     */
+    getUser(id: uuid): Promise<MessagingUser | undefined>
+
+    /**
+     * Creates a new messaging conversation
+     * @param userId id of the user that starts this conversation
+     * @returns info of the newly created conversation
+     */
+    createConversation(userId: uuid): Promise<Conversation>
+    /**
+     * Fetches a messaging conversation
+     * @param id id of the conversation to fetch
+     * @returns info of the conversation or `undefined` if not found
+     */
+    getConversation(id: uuid): Promise<Conversation | undefined>
+
+    /**
+     * Lists the conversations that a user participates in
+     * @param userId id of the user that participates in the conversations
+     * @param limit max amount of conversations to list (default 20)
+     * @returns an array of conversations
+     */
+    listConversations(userId: uuid, limit?: number): Promise<Conversation[]>
+
+    /**
+     * Sends a message to the messaging server
+     * @param conversationId id of the conversation to post the message to
+     * @param authorId id of the message autor. `undefined` if bot
+     * @param payload content of the message
+     * @param flags message flags
+     * @returns info of the created message
+     */
+    createMessage(
+      conversationId: uuid,
+      authorId: uuid | undefined,
+      payload: any,
+      flags?: {
+        incomingId: uuid
+      }
+    ): Promise<Message>
+    /**
+     * Fetches a message
+     * @param id id of the message to fetch
+     * @returns info of the message or `undefined` if not found
+     */
+    getMessage(id: uuid): Promise<Message | undefined>
+
+    /**
+     * Lists the messages of a conversation
+     * @param conversationId id of the conversation that owns the messages
+     * @param limit max amount of messages to list (default 20)
+     * @returns an array of conversations
+     */
+    listMessages(conversationId: uuid, limit?: number): Promise<Message[]>
+
+    /**
+     * Deletes a message
+     * @param id id of the message to delete
+     * @returns `true` if a message was deleted
+     */
+    deleteMessage(id: uuid): Promise<boolean>
+
+    /**
+     * Deletes all messages of a conversation
+     * @param conversationId id of the conversation that owns the messages
+     * @returns amount of messages deleted
+     */
+    deleteMessagesByConversation(conversationId: uuid): Promise<number>
+
+    /**
+     * Maps an endpoint to a conversation id. Calling this function with the
+     * same endpoint always returns the same conversation id
+     * @param endpoint endpoint to be mapped
+     * @returns a conversation id associated to the endpoint
+     */
+    mapEndpoint(endpoint: Endpoint): Promise<uuid>
+
+    /**
+     * Lists the endpoints associated to a conversation
+     * @param conversationId id of the conversation that is associated with the endpoints
+     * @returns an array of endpoints that are linked to the provided conversation
+     */
+    listEndpoints(conversationId: uuid): Promise<Endpoint[]>
+  }
+
   /**
    * Events is the base communication channel of the bot. Messages and payloads are a part of it,
    * and it is the only way to receive or send information. Each event goes through the whole middleware chain (incoming or outgoing)
@@ -1250,46 +1380,6 @@ declare module 'botpress/runtime-sdk' {
     ): Promise<void>
   }
 
-  export namespace config {
-    /**
-     * Returns the configuration options of Botpress
-     */
-    export function getBotpressConfig(): Promise<any>
-  }
-
-  /**
-   * The distributed namespace uses Redis to distribute commands to every node
-   */
-  export namespace distributed {
-    /**
-     * When a single node must process data from a shared source, call this method to obtain an exclusive lock.
-     * You can then call lock.extend() to keep it longer, or lock.unlock() to release it
-     * @param resource Name of the resource to lock
-     * @param duration the initial duration
-     * @return undefined if another node already has obtained the lock
-     */
-    export function acquireLock(resource: string, duration: number): Promise<RedisLock | undefined>
-
-    /**
-     * Forcefully clears any trace of the lock from the redis store. It doesn't clear the lock from the node which had it.
-     * Ensure that a broadcasted job took care of cancelling it before.
-     * @param resource
-     * @return true if an existing lock was deleted
-     */
-    export function clearLock(resource: string): Promise<boolean>
-
-    /**
-     * This method returns a function that can then be called to broadcast the message to every node
-     * @param fn The job that will be executed on all nodes
-     * @param T The return type of the returned function
-     *
-     * @example const distributeToAll: Function = await bp.distributed.broadcast<void>(_localMethod)
-     * @example const _localMethod = (param1, param2): Promise<void> { }
-     * @example distributeToAll('send to all nodes', 'other info') // Every node will execute this method
-     */
-    export function broadcast<T>(fn: Function): Promise<Function>
-  }
-
   /**
    * The Key Value Store is perfect to store any type of data as JSON.
    */
@@ -1298,58 +1388,9 @@ declare module 'botpress/runtime-sdk' {
      * Access the KVS Service for a specific bot. Check the {@link ScopedGhostService} for the operations available on the scoped element.
      */
     export function forBot(botId: string): KvsService
-    /**
-     * Access the KVS Service globally. Check the {@link ScopedGhostService} for the operations available on the scoped element.
-     */
-    export function global(): KvsService
-
-    /**
-     * Returns the specified key as JSON object
-     * @example bp.kvs.get('bot123', 'hello/whatsup')
-     * @deprecated will be removed, use global or forBot
-     */
-    export function get(botId: string, key: string, path?: string): Promise<any>
-
-    /**
-     * Saves the specified key as JSON object
-     * @example bp.kvs.set('bot123', 'hello/whatsup', { msg: 'i love you' })
-     * @deprecated will be removed, use global or forBot
-     */
-    export function set(botId: string, key: string, value: any, path?: string, expiry?: string): Promise<void>
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function setStorageWithExpiry(botId: string, key: string, value, expiry?: string)
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function getStorageWithExpiry(botId: string, key: string)
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function getConversationStorageKey(sessionId: string, variable: string): string
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function getUserStorageKey(userId: string, variable: string): string
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function getGlobalStorageKey(variable: string): string
-
-    /**
-     * @deprecated will be removed, use global or forBot
-     */
-    export function removeStorageKeysStartingWith(key): Promise<void>
   }
 
   export namespace bots {
-    export function getAllBots(): Promise<Map<string, BotConfig>>
     export function getBotById(botId: string): Promise<BotConfig | undefined>
   }
 
@@ -1358,18 +1399,6 @@ declare module 'botpress/runtime-sdk' {
      * Access the Ghost Service for a specific bot. Check the {@link ScopedGhostService} for the operations available on the scoped element.
      */
     export function forBot(botId: string): ScopedGhostService
-    /**
-     * Access the Ghost Service scoped at the root of all bots
-     */
-    export function forBots(): ScopedGhostService
-    /**
-     * Access the Ghost Service globally. Check the {@link ScopedGhostService} for the operations available on the scoped element.
-     */
-    export function forGlobal(): ScopedGhostService
-    /**
-     * Access the BPFS at the root of the data folder
-     */
-    export function forRoot(): ScopedGhostService
   }
 
   export namespace cms {
@@ -1436,6 +1465,10 @@ declare module 'botpress/runtime-sdk' {
     export function renderTemplate(item: TemplateItem, context): TemplateItem
   }
 
+  export namespace messaging {
+    export function forBot(botId: string): MessagingClient
+  }
+
   /**
    * Utility security-related features offered to developers
    * to create more secure extensions.
@@ -1446,167 +1479,5 @@ declare module 'botpress/runtime-sdk' {
      * You can call this method twice to verify the authenticity of a message
      */
     export function getMessageSignature(message: string): Promise<string>
-  }
-
-  /**
-   * These features are subject to change and should not be relied upon.
-   * They will eventually be either removed or moved in another namespace
-   */
-  export namespace experimental {
-    /**
-     * WARNING : these payloads do not produce typing indicators yet!
-     */
-    export namespace render {
-      /**
-       * Renders a text element
-       * @param text Text to show
-       * @param markdown Indicates whether to use markdown
-       */
-      export function text(text: string | MultiLangText, markdown?: boolean): TextContent
-
-      /**
-       * Renders an image element
-       * @param url Url of the image to send
-       * @param caption Caption to appear alongside your image
-       */
-      export function image(url: string, caption?: string | MultiLangText): ImageContent
-
-      /**
-       * Renders an audio element
-       * @param url Url of the audio file to send
-       * @param caption Caption to appear alongside your audio
-       */
-      export function audio(url: string, caption?: string | MultiLangText): AudioContent
-
-      /**
-       * Renders a video element
-       * @param url Url of the video file to send
-       * @param caption Caption to appear alongside your video
-       */
-      export function video(url: string, caption?: string | MultiLangText): VideoContent
-
-      /**
-       * Renders a location element
-       * @param latitude Latitude of location in decimal degrees
-       * @param longitude Longitude of location in decimal degrees
-       * @param address Street adress associated with location
-       * @param title Explanatory title for this location
-       */
-      export function location(
-        latitude: number,
-        longitude: number,
-        address?: string | MultiLangText,
-        title?: string | MultiLangText
-      ): LocationContent
-
-      /**
-       * Renders a carousel element
-       * @param cards The cards of the carousel
-       * @example
-       * bp.render.carousel(bp.render.card('my card'), bp.render.card('my card 2'))
-       */
-      export function carousel(...cards: CardContent[]): CarouselContent
-
-      /**
-       * Renders a card element
-       * @param title The title of your card
-       * @param image The url of a pictured shown in your card
-       * @param subtitle A subtitle below your image
-       * @param buttons Action buttons for your card
-       * @example
-       * bp.render.card('my card', 'https://mysite.com/mypicture.png', 'an interesting subtitle', bp.render.buttonSay('hello'))
-       */
-      export function card(
-        title: string | MultiLangText,
-        image?: string,
-        subtitle?: string | MultiLangText,
-        ...buttons: ActionButton[]
-      ): CardContent
-
-      /**
-       * Renders an action button used to send a message to the conversation
-       * @param title Title shown on the button
-       * @param text Message to send
-       */
-      export function buttonSay(title: string, text: string | MultiLangText): ActionSaySomething
-
-      /**
-       * Renders an action button for opening urls
-       * @param title Title shown on the button
-       * @param text Url to open
-       */
-      export function buttonUrl(title: string, url: string): ActionOpenURL
-
-      /**
-       * Renders an action button for posting content
-       * @param title Title shown on the button
-       * @param payload Payload to post
-       */
-      export function buttonPostback(title: string, payload: string): ActionPostback
-
-      /**
-       * Render a choice element
-       * @param text Message to ask to the user
-       * @param choices Choices that the user can select
-       * @example
-       * bp.render.choice("Yes or no?", bp.render.option('yes'), bp.render.option('no'))
-       */
-      export function choice(text: string | MultiLangText, ...choices: ChoiceOption[]): ChoiceContent
-
-      /**
-       * Renders an option for a choice element
-       * @param value Value associated with the option
-       * @param title Text to shown to the user (has no impact on the processing).
-       * If not provided the value will be shown by default
-       */
-      export function option(value: string, title?: string): ChoiceOption
-
-      /**
-       * Translates a content element to a specific language
-       * @param content Content element to be translated
-       * @param lang Language code in which to translate (en, fr, es, etc.)
-       * @example
-       * const content = bp.render.text({ en: 'hello!', fr: 'salut!' })
-       * // content.text : { en: 'hello!', fr: 'salut!' }
-       * const translated = bp.render.translate(content, 'fr')
-       * // content.text : 'salut!'
-       */
-      export function translate<T extends Content>(content: T, lang: string): T
-
-      /**
-       * Renders a content element's {{mustaches}} using the provided context
-       * @param content The content element to be rendered
-       * @param context The context used to filled the {{mustaches}}
-       * @example
-       * const content = bp.render.text('{{user.name}} is awesome!')
-       * // content.text : '{{user.name}} is awesome!'
-       * const payload = bp.render.template(content, { user: { name: 'bob' } })
-       * // payload.text : 'bob is awesome!'
-       */
-      export function template<T extends Content>(content: T, context: any): T
-
-      /**
-       * Creates a pipeline for rendering, translating and templating content
-       * @param lang Language to use for translation
-       * @param context Context to use for templating
-       * @example
-       * // Doing all this
-       * const content = bp.render.text({ en: 'hello {{user.name}}', fr: 'salut {{user.name}}' })
-       * const translated = bp.render.translate(content, 'fr')
-       * const templated = bp.render.template(translated, { user: { name: 'bob' } })
-       *
-       * // Can be replaced by this
-       * const content = bp.render
-       *   .pipeline('fr', { user: { name: 'bob' } })
-       *   .text({ en: 'hello {{user.name}}', fr: 'salut {{user.name}}' })
-       *
-       * // You can reuse the same pipeline for multiple contents
-       * const render = bp.render.pipeline('fr', { user: { name: 'bob', age: 43, pin: 3030 } })
-       * const text1 = render.text({ en: 'hello {{user.name}}', fr: 'salut {{user.name}}' })
-       * const text2 = render.text({ en: 'age : {{user.age}}', fr: 'âge : {{user.age}}' })
-       * const text3 = render.text('PIN : {{user.pin}}')
-       */
-      export function pipeline(lang: string, context: any): RenderPipeline
-    }
   }
 }

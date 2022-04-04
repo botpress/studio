@@ -55,7 +55,9 @@ declare namespace NodeJS {
     /** This property is set when the binary is built in a branch other than master */
     DEV_BRANCH?: string
     NLU_ENDPOINT?: string
-    CLOUD_CONTROLLER_ENDPOINT?: string
+    CLOUD_OAUTH_ENDPOINT: string
+    CLOUD_CONTROLLER_ENDPOINT: string
+    CLOUD_NLU_ENDPOINT: string
   }
 }
 

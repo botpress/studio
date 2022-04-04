@@ -8,8 +8,6 @@ import pickSeed from './pick-seed'
 
 import { BotDefinition, BotConfig, ConfigResolver, TrainListener } from './typings'
 
-const CLOUD_NLU_ENDPOINT = process.env.CLOUD_NLU_ENDPOINT || 'https://nlu.botpress.dev'
-
 export class BotFactory {
   constructor(
     private _configResolver: ConfigResolver,
@@ -23,7 +21,7 @@ export class BotFactory {
   public makeBot = async (botConfig: BotConfig): Promise<Bot> => {
     const { id: botId, cloud } = botConfig
 
-    const baseURL = cloud ? CLOUD_NLU_ENDPOINT : this._nluEndpoint
+    const baseURL = cloud ? process.CLOUD_NLU_ENDPOINT : this._nluEndpoint
     const nluClient = new NLUClient({ baseURL, cloud })
 
     const { defaultLanguage } = botConfig
