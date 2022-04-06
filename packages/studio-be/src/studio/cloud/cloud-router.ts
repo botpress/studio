@@ -19,7 +19,8 @@ export class CloudRouter extends CustomStudioRouter {
         qs.stringify({
           client_id: clientId,
           client_secret: clientSecret,
-          grant_type: 'client_credentials'
+          grant_type: 'client_credentials',
+          scope: 'nlu'
         })
       )
       .then((res) => `Bearer ${res.data?.access_token}`)
