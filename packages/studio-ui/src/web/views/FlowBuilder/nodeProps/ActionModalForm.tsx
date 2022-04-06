@@ -132,14 +132,6 @@ class ActionModalForm extends Component<Props, State> {
   renderSectionAction() {
     const { avActions } = this.state
 
-    const tooltip = <Tooltip id="notSeeingAction">{lang.tr('studio.flow.node.actionsRegisteredOnServer')}</Tooltip>
-
-    const help = (
-      <OverlayTrigger placement="bottom" overlay={tooltip}>
-        <span className={style.tip}>{lang.tr('studio.flow.node.cantSeeActions')}</span>
-      </OverlayTrigger>
-    )
-
     const paramsHelp = <LinkDocumentationProvider file="main/memory" />
 
     const onArgsChange = (args: any) => {
@@ -154,7 +146,7 @@ class ActionModalForm extends Component<Props, State> {
 
     return (
       <div>
-        <h5>{lang.tr('studio.flow.node.actionToRun', { help })}</h5>
+        <h5>{lang.tr('studio.flow.node.actionToRun')}</h5>
         <div className={style.section}>
           <SelectActionDropdown
             id="select-action"
