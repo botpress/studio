@@ -17,6 +17,7 @@ interface Props {
 const NeedTraining = () => {
   return <div className={style.tooltip}>{lang.tr('topNav.deploy.tooltip.needsTraining')}</div>
 }
+
 const DeployInfo = ({ lastImportDate }) => {
   const importDateStr = useCallback(() => {
     if (!lastImportDate) {
@@ -86,6 +87,9 @@ const DeployCloudBtn = (props: Props) => {
             break
           case 404:
             toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
+            break
+          case 503:
+            toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
             break
           default:
             toast.failure(lang.tr('topNav.deploy.toaster.error.default'))

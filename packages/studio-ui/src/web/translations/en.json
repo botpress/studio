@@ -722,6 +722,7 @@
         "error": {
           "token": "Failed to authenticate with cloud",
           "introspect": "Could not fetch bot info from cloud",
+          "runtimeNotReady": "We're preparing your bot resource. Please try again in a few minutes.",
           "default": "Bot failed to deploy"
         }
       }

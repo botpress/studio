@@ -5,6 +5,8 @@ import qs from 'querystring'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
+const ACTIVE_RUNTIME_STATUS = 'ACTIVE'
+
 export class CloudRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Cloud', services)
@@ -93,6 +95,11 @@ export class CloudRouter extends CustomStudioRouter {
         const introspect = await this.getIntrospect(bearerToken)
         if (!introspect) {
           return res.status(404)
+        }
+
+        if (introspect.runtimeStatus !== ACTIVE_RUNTIME_STATUS) {
+          res.status(503).send(introspect.runtimeStatus)
+          return
         }
 
         await this.nluService.downloadAndSaveModelWeights(botId)
