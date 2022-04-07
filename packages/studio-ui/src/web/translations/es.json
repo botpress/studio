@@ -674,6 +674,7 @@
         "error": {
           "token": "No se pudo autenticar con la nube",
           "introspect": "No se pudo obtener la información del bot de la nube",
+          "runtimeNotReady": "Estamos preparando su chatbot, por favor intente en unos minutos más.",
           "default": "El bot no se pudo implementar"
         }
       }

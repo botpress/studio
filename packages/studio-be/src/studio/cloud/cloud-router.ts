@@ -63,9 +63,7 @@ export class CloudRouter extends CustomStudioRouter {
         try {
           const { status, data } = await axios.get(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/${introspect.botId}`, {
             headers: {
-              Authorization: bearerToken,
-              'x-user-id': introspect.userId,
-              'x-bot-id': introspect.botId
+              Authorization: bearerToken
             }
           })
           res.status(status).send(data)
@@ -100,7 +98,7 @@ export class CloudRouter extends CustomStudioRouter {
         }
 
         if (introspect.runtimeStatus !== ACTIVE_RUNTIME_STATUS) {
-          res.status(503).send({ message: "We're preparing your bot resource. Please try again in a few minutes." })
+          res.status(503).send(introspect.runtimeStatus)
           return
         }
 
@@ -122,9 +120,7 @@ export class CloudRouter extends CustomStudioRouter {
             {
               headers: {
                 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
-                Authorization: bearerToken,
-                'x-user-id': introspect.userId,
-                'x-bot-id': introspect.botId
+                Authorization: bearerToken
               },
               maxBodyLength: 100 * 1024 * 1024 // 100 MB
             }
