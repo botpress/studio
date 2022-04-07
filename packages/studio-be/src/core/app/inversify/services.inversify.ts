@@ -12,6 +12,7 @@ import { ActionService, ActionServersService, HintsService } from 'core/user-cod
 import { ContainerModule, interfaces } from 'inversify'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
+import { TestingService } from 'studio/testing'
 
 import { TYPES } from '../types'
 
@@ -49,6 +50,8 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<NLUService>(TYPES.NLUService).to(NLUService).inSingletonScope()
 
   bind<QNAService>(TYPES.QnaService).to(QNAService).inSingletonScope()
+
+  bind<TestingService>(TYPES.TestingService).to(TestingService).inSingletonScope()
 })
 
 export const ServicesContainerModules = [ServicesContainerModule, DialogContainerModule, GhostContainerModule]

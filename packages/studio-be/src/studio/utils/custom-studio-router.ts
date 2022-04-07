@@ -13,6 +13,7 @@ import { RequestHandler, Router } from 'express'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioServices } from 'studio/studio-router'
+import { TestingService } from 'studio/testing'
 
 export abstract class CustomStudioRouter {
   protected logger: Logger
@@ -31,6 +32,7 @@ export abstract class CustomStudioRouter {
   protected objectCache: MemoryObjectCache
   protected nluService: NLUService
   protected qnaService: QNAService
+  protected testingService: TestingService
 
   protected readonly needPermissions: (operation: string, resource: string) => RequestHandler
   protected readonly asyncMiddleware: AsyncMiddleware
@@ -61,5 +63,6 @@ export abstract class CustomStudioRouter {
     this.objectCache = services.objectCache
     this.nluService = services.nluService
     this.qnaService = services.qnaService
+    this.testingService = services.testingService
   }
 }

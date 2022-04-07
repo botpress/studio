@@ -311,8 +311,9 @@ export class BotService {
 
   private async addHooks(ghost: ScopedGhostService, isCloudBot?: boolean): Promise<string[]> {
     const hooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/*.js' })
+    const disabledHooks = await listDir(getBuiltinPath('hooks'), { fileFilter: '**/.*.js' })
 
-    for (const type of hooks) {
+    for (const type of [...hooks, ...disabledHooks]) {
       // Disable hook not supported by cloud ready bots
       if (isCloudBot && hookConfig?.[type.relativePath]?.ignoreCloud) {
         continue

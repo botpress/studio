@@ -91,7 +91,8 @@ const TYPES = {
   ConversationService: Symbol.for('ConversationService'),
   RenderService: Symbol.for('RenderService'),
   MappingRepository: Symbol.for('MappingRepository'),
-  QnaService: Symbol.for('QnaService')
+  QnaService: Symbol.for('QnaService'),
+  TestingService: Symbol.for('TestingService')
 }
 
 export { TYPES }
