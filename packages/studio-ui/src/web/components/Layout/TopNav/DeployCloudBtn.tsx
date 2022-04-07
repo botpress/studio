@@ -89,7 +89,7 @@ const DeployCloudBtn = (props: Props) => {
             toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
             break
           case 503:
-            toast.failure("We're preparing your bot resource. Please try again in a few minutes.")
+            toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
             break
           default:
             toast.failure(lang.tr('topNav.deploy.toaster.error.default'))
