@@ -115,7 +115,7 @@ export const FileTypes: { [type: string]: FileDefinition } = {
       baseDir: '/hooks',
       dirListingAddFields: (filepath: string) => ({ hookType: filepath.substr(0, filepath.indexOf('/')) }),
       upsertLocation: (file: EditableFile) => `/hooks/${file.hookType}`,
-      upsertFilename: (file: EditableFile) => file.location.replace(file.hookType!, ''),
+      upsertFilename: (file: EditableFile) => file.location.replace(`${file.hookType!}/`, ''),
       shouldSyncToDisk: true
     },
     validate: async (file: EditableFile, isWriting?: boolean) => {
@@ -141,7 +141,7 @@ export const FileTypes: { [type: string]: FileDefinition } = {
       baseDir: '/libraries',
       shouldSyncToDisk: true
     },
-    canDelete: (file) => {
+    canDelete: file => {
       return !['package.json', 'package-lock.json'].includes(file.name)
     }
   },
