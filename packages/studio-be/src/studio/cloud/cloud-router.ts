@@ -5,6 +5,8 @@ import qs from 'querystring'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
+const ACTIVE_RUNTIME_STATUS = 'ACTIVE'
+
 export class CloudRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Cloud', services)
@@ -61,7 +63,9 @@ export class CloudRouter extends CustomStudioRouter {
         try {
           const { status, data } = await axios.get(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/${introspect.botId}`, {
             headers: {
-              Authorization: bearerToken
+              Authorization: bearerToken,
+              'x-user-id': introspect.userId,
+              'x-bot-id': introspect.botId
             }
           })
           res.status(status).send(data)
@@ -95,6 +99,11 @@ export class CloudRouter extends CustomStudioRouter {
           return res.status(404)
         }
 
+        if (introspect.runtimeStatus !== ACTIVE_RUNTIME_STATUS) {
+          res.status(503).send({ message: "We're preparing your bot resource. Please try again in a few minutes." })
+          return
+        }
+
         await this.nluService.downloadAndSaveModelWeights(botId)
 
         const botBlob = await this.botService.exportBot(botId, { cloud: true })
@@ -113,7 +122,9 @@ export class CloudRouter extends CustomStudioRouter {
             {
               headers: {
                 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}`,
-                Authorization: bearerToken
+                Authorization: bearerToken,
+                'x-user-id': introspect.userId,
+                'x-bot-id': introspect.botId
               },
               maxBodyLength: 100 * 1024 * 1024 // 100 MB
             }
