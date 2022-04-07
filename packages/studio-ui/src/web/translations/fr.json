@@ -199,6 +199,9 @@
       "uploadFile": "Téléverser un fichier"
     }
   },
+  "testing": {
+    "fullName": "Test"
+  },
   "skills": {
     "callApi": "Appel API",
     "choice": "Choix",

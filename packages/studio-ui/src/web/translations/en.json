@@ -202,6 +202,9 @@
       "uploadFile": "Upload File"
     }
   },
+  "testing": {
+    "fullName": "Testing"
+  },
   "skills": {
     "label": "Skills",
     "callApi": "Call API",
