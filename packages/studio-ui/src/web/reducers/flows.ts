@@ -563,7 +563,7 @@ reducer = reduceReducers(
           skill: payload.name,
           name: payload.name,
           flow: payload.flow,
-          next: [_.first(payload.nodes.next)],
+          next: payload.nodes.next || [],
           onEnter: null,
           onReceive: null
         }

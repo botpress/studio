@@ -11,7 +11,7 @@ export default class ConditionItem extends Component {
     return child
   }
 
-  renderOverlay = child => {
+  renderOverlay = (child) => {
     const popoverHoverFocus = (
       <Popover id="popover-action" title="⚡ Conditional transition">
         <Well>{this.props.condition.condition}</Well>
@@ -36,10 +36,10 @@ export default class ConditionItem extends Component {
     if (caption) {
       const vars = {}
 
-      const stripDots = str => str.replace(/\./g, '--dot--')
-      const restoreDots = str => str.replace(/--dot--/g, '.')
+      const stripDots = (str) => str.replace(/\./g, '--dot--')
+      const restoreDots = (str) => str.replace(/--dot--/g, '.')
 
-      const htmlTpl = caption.replace(/\[(.+)]/gi, x => {
+      const htmlTpl = caption.replace(/\[(.+)]/gi, (x) => {
         const name = stripDots(x.replace(/[\[\]]/g, ''))
         vars[name] = '<span class="val">' + _.escape(name) + '</span>'
         return '{{{' + name + '}}}'
