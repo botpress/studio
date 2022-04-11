@@ -31,7 +31,6 @@ import {
   requestUpdateFlow,
   requestUpdateFlowNode,
   requestUpdateSkill,
-  requestInsertNewSkillNoBuffer,
   setDebuggerEvent,
   setDiagramAction,
   switchFlow,
@@ -548,47 +547,6 @@ reducer = reduceReducers(
           }
         }
       },
-
-      [requestInsertNewSkillNoBuffer]: (state, { payload }) => {
-        const newFlow = Object.assign({}, payload.generatedFlow, {
-          skillData: payload.skillData,
-          name: payload.name,
-          location: payload.location,
-          next: [...payload.nodes]
-        })
-
-        const newNode = {
-          id: payload.name,
-          type: 'skill-call',
-          skill: payload.name,
-          name: payload.name,
-          flow: payload.flow,
-          next: payload.nodes.next || [],
-          onEnter: null,
-          onReceive: null
-        }
-        const newFlowHash = computeHashForFlow(newFlow)
-
-        return {
-          ...state,
-          flowsByName: {
-            ...state.flowsByName,
-            [payload.flow]: newFlow,
-            [state.currentFlow]: {
-              ...state.flowsByName[state.currentFlow],
-              nodes: [
-                ...state.flowsByName[state.currentFlow].nodes,
-                _.merge(newNode, _.pick(payload.location, ['x', 'y']))
-              ]
-            }
-          },
-          currentHashes: {
-            ...state.currentHashes,
-            [newFlow.name]: newFlowHash
-          }
-        }
-      },
-
       [requestUpdateSkill]: (state, { payload }) => {
         const modifiedFlow = Object.assign({}, state.flowsByName[payload.editFlowName], payload.generatedFlow, {
           skillData: payload.data,
@@ -925,7 +883,6 @@ reducer = reduceReducers(
       [requestRemoveFlowNode]: updateCurrentHash,
       [requestPasteFlowNode]: updateCurrentHash,
       [requestInsertNewSkill]: updateCurrentHash,
-      [requestInsertNewSkillNoBuffer]: updateCurrentHash,
       [requestInsertNewSkillNode]: updateCurrentHash,
       [requestUpdateSkill]: updateCurrentHash,
       [requestPasteFlowNodeElement]: updateCurrentHash
