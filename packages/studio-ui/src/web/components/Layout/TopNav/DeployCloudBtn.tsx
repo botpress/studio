@@ -11,7 +11,9 @@ import { RootReducer } from '~/reducers'
 import style from './style.scss'
 
 interface Props {
-  trainSession: Training
+  trainSession: {
+    [lang: string]: Training
+  }
 }
 
 const NeedTraining = () => {
@@ -52,16 +54,14 @@ const DeployCloudBtn = (props: Props) => {
         const { imported_on } = data
         setLastImportDate(imported_on)
       })
-      .catch((e) => {})
+      .catch((err) => {
+        const message = err.response?.data?.message ?? lang.tr('topNav.deploy.toaster.error.introspect')
+        toast.failure(message)
+      })
   }, [])
 
   const isTrained = useCallback(() => {
-    return Object.keys(trainSession).reduce((trained, lang) => {
-      if (trainSession[lang].status !== 'done') {
-        trained = false
-      }
-      return trained
-    }, true)
+    return Object.values(trainSession).reduce((trained, session) => trained && session.status === 'done', true)
   }, [trainSession])
 
   const deployToCloud = useCallback(() => {
@@ -81,20 +81,17 @@ const DeployCloudBtn = (props: Props) => {
         setDeployLoading(false)
       })
       .catch((err) => {
-        switch (err.status) {
-          case 401:
-            toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
-            break
-          case 404:
-            toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
-            break
-          case 503:
-            toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
-            break
-          default:
-            toast.failure(lang.tr('topNav.deploy.toaster.error.default'))
-        }
         setDeployLoading(false)
+        switch (err.response.status) {
+          case 401:
+            return toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
+          case 404:
+            return toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
+          case 503:
+            return toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
+          default:
+            return toast.failure(err.response.data?.message ?? lang.tr('topNav.deploy.toaster.error.default'))
+        }
       })
   }, [setLastImportDate, setDeployLoading, deployLoading, isTrained])
 

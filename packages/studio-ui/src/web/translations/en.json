@@ -718,14 +718,14 @@
         "needsTraining": "Bot Needs Training",
         "deploying": "Deploying Bot..."
       },
-      "btn": "Deploy to Cloud",
+      "btn": "Deploy to Botpress Cloud",
       "toaster": {
         "success": "Bot has successfully been deployed",
         "info": "Bot is deploying...",
         "error": {
-          "token": "Failed to authenticate with cloud",
-          "introspect": "Could not fetch bot info from cloud",
-          "runtimeNotReady": "We're preparing your bot resource. Please try again in a few minutes.",
+          "token": "Failed to authenticate with Botpress cloud",
+          "introspect": "Could not fetch bot info from Botpress cloud",
+          "runtimeNotReady": "We're preparing your chatbot resource. Please try again in a few minutes.",
           "default": "Bot failed to deploy"
         }
       }
