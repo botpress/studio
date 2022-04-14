@@ -176,7 +176,7 @@ export class CloudRouter extends CustomStudioRouter {
         const bearerToken = await this.getBearerToken(cloud)
         const cloudBotMeta = await this.getIntrospect(bearerToken)
         if (cloudBotMeta.runtimeStatus !== 'ACTIVE') {
-          const message = `Cloud runtime ${cloudBotMeta.runtimeName} for cloud bot: ${cloudBotMeta.botId}, ${cloudBotMeta.botName} isn't ready.`
+          const message = `Cloud runtime ${cloudBotMeta.runtimeName} for cloud bot: ${cloudBotMeta.botName} isn't ready.`
           this.logger.error(message, cloudBotMeta)
           throw new ServiceUnavailableError(message)
         }
