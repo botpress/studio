@@ -92,7 +92,7 @@ export class CloudRouter extends CustomStudioRouter {
 
       return data
     } catch (err) {
-      const defaultMessage = `Error fetching cloud bot info. Cloub bot id ${cloudBotId}`
+      const defaultMessage = `Error fetching cloud bot info. Cloud bot id ${cloudBotId}`
       this.logger.attachError(err).error(defaultMessage)
 
       if (err.isAxiosError && err.response) {
