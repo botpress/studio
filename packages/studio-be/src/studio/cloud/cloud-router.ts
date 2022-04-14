@@ -77,7 +77,7 @@ export class CloudRouter extends CustomStudioRouter {
 
       return introspectData as Introspect
     } catch (err) {
-      const message = 'Error fetching cloud intropsect endpoint'
+      const message = 'Error fetching data from the cloud introspect endpoint'
       this.logger.attachError(err).error(message)
       throw new UnexpectedError(message)
     }
