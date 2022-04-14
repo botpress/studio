@@ -9,6 +9,7 @@ import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
+const TOO_LARGE_MESSAGE = 'Chatbot is too large to be uploaded on Botpress cloud'
 
 type RuntimeStatus =
   | 'ACTIVE'
@@ -130,6 +131,8 @@ export class CloudRouter extends CustomStudioRouter {
 
   private async deployBotToCloud(bearerToken: string, botMultipart: FormData): Promise<void> {
     const axiosConfig = _.merge(this.getCloudAxiosConfig(bearerToken), {
+      maxContentLength: MAX_BODY_CLOUD_BOT_SIZE,
+      maxBodyLength: MAX_BODY_CLOUD_BOT_SIZE,
       headers: { 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}` }
     })
 
@@ -141,8 +144,13 @@ export class CloudRouter extends CustomStudioRouter {
 
       if (err.isAxiosError && err.response) {
         const { status, data } = err.response
-        const message = _.isPlainObject(data) ? data.message : data
-        throw new ResponseError(message, status)
+        if (status === 504) {
+          //This is a custom error handling that was asked to be added by product marketing
+          throw new BadRequestError(TOO_LARGE_MESSAGE)
+        } else {
+          const message = _.isPlainObject(data) ? data.message : data
+          throw new ResponseError(message, status)
+        }
       } else {
         throw new UnexpectedError(defaultMessage)
       }
@@ -183,7 +191,7 @@ export class CloudRouter extends CustomStudioRouter {
 
         const multipart = await this.makeBotUploadPayload(botId, cloudBotMeta)
         if (Buffer.byteLength(multipart.getBuffer()) > MAX_BODY_CLOUD_BOT_SIZE) {
-          throw new BadRequestError('Bot is too large to be uploaded on Botpress cloud')
+          throw new BadRequestError(TOO_LARGE_MESSAGE)
         }
 
         await this.deployBotToCloud(bearerToken, multipart)

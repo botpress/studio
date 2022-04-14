@@ -82,7 +82,7 @@ const DeployCloudBtn = (props: Props) => {
       })
       .catch((err) => {
         setDeployLoading(false)
-        switch (err.response.status) {
+        switch (err.response?.status) {
           case 401:
             return toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
           case 404:
@@ -90,7 +90,7 @@ const DeployCloudBtn = (props: Props) => {
           case 503:
             return toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
           default:
-            return toast.failure(err.response.data?.message ?? lang.tr('topNav.deploy.toaster.error.default'))
+            return toast.failure(err.response?.data?.message ?? lang.tr('topNav.deploy.toaster.error.default'))
         }
       })
   }, [setLastImportDate, setDeployLoading, deployLoading, isTrained])
