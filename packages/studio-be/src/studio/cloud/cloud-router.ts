@@ -78,7 +78,7 @@ export class CloudRouter extends CustomStudioRouter {
 
       return introspectData as Introspect
     } catch (err) {
-      const message = 'Error fetching cloud intropsect endpoint'
+      const message = 'Error fetching data from the cloud introspect endpoint'
       this.logger.attachError(err).error(message)
       throw new UnexpectedError(message)
     }
@@ -93,7 +93,7 @@ export class CloudRouter extends CustomStudioRouter {
 
       return data
     } catch (err) {
-      const defaultMessage = `Error fetching cloud bot info. Cloub bot id ${cloudBotId}`
+      const defaultMessage = `Error fetching cloud bot info. Cloud bot id ${cloudBotId}`
       this.logger.attachError(err).error(defaultMessage)
 
       if (err.isAxiosError && err.response) {
@@ -184,7 +184,7 @@ export class CloudRouter extends CustomStudioRouter {
         const bearerToken = await this.getBearerToken(cloud)
         const cloudBotMeta = await this.getIntrospect(bearerToken)
         if (cloudBotMeta.runtimeStatus !== 'ACTIVE') {
-          const message = `Cloud runtime ${cloudBotMeta.runtimeName} for cloud bot: ${cloudBotMeta.botId}, ${cloudBotMeta.botName} isn't ready.`
+          const message = `Cloud runtime ${cloudBotMeta.runtimeName} for cloud bot: ${cloudBotMeta.botName} isn't ready.`
           this.logger.error(message, cloudBotMeta)
           throw new ServiceUnavailableError(message)
         }
