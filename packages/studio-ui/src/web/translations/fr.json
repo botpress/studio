@@ -693,14 +693,14 @@
         "needsTraining": "Le bot a besoin d'entraînement",
         "deploying": "Déploiement du bot..."
       },
-      "btn": "Déployer dans le cloud",
+      "btn": "Déployer sur Botpress cloud",
       "toaster": {
         "success": "Le bot a été déployé avec succès",
         "info": "Déploiement en cours...",
         "error": {
-          "token": "Échec de l'authentification avec le cloud",
-          "introspect": "Impossible de récupérer les informations du bot à partir du cloud",
-          "runtimeNotReady": "Les ressources dont votre bot à besoin sont en préparation. Veuillez réessayer dans quelques minutes.",
+          "token": "Échec de l'authentification avec Botpress Cloud",
+          "introspect": "Impossible de récupérer les informations du bot à partir de Botpress Cloud",
+          "runtimeNotReady": "Les ressources dont votre bot a besoin sont en préparation. Veuillez réessayer dans quelques minutes.",
           "default": "Le bot n'a pas pu être déployé"
         }
       }

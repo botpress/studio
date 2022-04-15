@@ -670,13 +670,13 @@
         "needsTraining": "El bot necesita capacitación",
         "deploying": "Bot de implementación..."
       },
-      "btn": "Implementar en la nube",
+      "btn": "Implementar en Botpress Cloud",
       "toaster": {
         "success": "El bot se implementó con éxito",
         "info": "El bot se está desplegando...",
         "error": {
-          "token": "No se pudo autenticar con la nube",
-          "introspect": "No se pudo obtener la información del bot de la nube",
+          "token": "No se pudo autenticar con Botpress cloud",
+          "introspect": "No se pudo obtener la información del bot de Botpress cloud",
           "runtimeNotReady": "Estamos preparando su chatbot, por favor intente en unos minutos más.",
           "default": "El bot no se pudo implementar"
         }
