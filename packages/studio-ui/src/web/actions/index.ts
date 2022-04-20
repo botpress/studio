@@ -294,6 +294,7 @@ export const insertComponentElementFlow =
 
         try {
           await FlowsAPI.apiInsertFlow(skillNode)
+          dispatch(requestInsertNewSkillFlow(skillNode))
         } catch (e) {
           // Display an error to the frontend
           continue
@@ -474,6 +475,7 @@ export const fetchSkills = () => (dispatch) => {
 // Skills
 export const requestInsertNewSkill = createAction('SKILLS/INSERT')
 export const requestInsertNewSkillNode = createAction('SKILLS/INSERT/NODE')
+export const requestInsertNewSkillFlow = createAction('SKILLS/INSERT/FLOW')
 export const requestUpdateSkill = createAction('SKILLS/UPDATE')
 
 export const buildNewSkill: ({ location: any, id: string }) => void = createAction('SKILLS/BUILD')

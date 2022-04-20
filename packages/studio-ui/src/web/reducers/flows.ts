@@ -24,6 +24,7 @@ import {
   requestFlows,
   requestInsertNewSkill,
   requestInsertNewSkillNode,
+  requestInsertNewSkillFlow,
   requestPasteFlowNode,
   requestPasteFlowNodeElement,
   requestRemoveFlowNode,
@@ -599,6 +600,22 @@ reducer = reduceReducers(
         }
       }),
 
+      [requestInsertNewSkillFlow]: (state, { payload }) => {
+        console.log(payload)
+        console.log('Insert Flow')
+        return {
+          ...state,
+          flowsByName: {
+            ...state.flowsByName,
+            [payload.name]: payload,
+            [state.currentFlow]: {
+              ...state.flowsByName[state.currentFlow],
+              nodes: [...state.flowsByName[state.currentFlow].nodes]
+            }
+          }
+        }
+      },
+
       [requestDuplicateFlow]: (state, { payload: { flowNameToDuplicate, name } }) => {
         return {
           ...state,
@@ -884,6 +901,7 @@ reducer = reduceReducers(
       [requestPasteFlowNode]: updateCurrentHash,
       [requestInsertNewSkill]: updateCurrentHash,
       [requestInsertNewSkillNode]: updateCurrentHash,
+      [requestInsertNewSkillFlow]: updateCurrentHash,
       [requestUpdateSkill]: updateCurrentHash,
       [requestPasteFlowNodeElement]: updateCurrentHash
     },
@@ -909,6 +927,7 @@ reducer = reduceReducers(
       [requestPasteFlowNode]: recordHistory,
       [requestInsertNewSkill]: recordHistory,
       [requestInsertNewSkillNode]: recordHistory,
+      [requestInsertNewSkillFlow]: recordHistory,
       [requestUpdateSkill]: recordHistory,
       [requestPasteFlowNodeElement]: recordHistory,
       [handleFlowEditorUndo]: popHistory('undoStack'),
