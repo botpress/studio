@@ -1,3 +1,14 @@
+## [0.0.51](https://github.com/botpress/studio/compare/v0.0.50...v0.0.51) (2022-04-06)
+
+
+### Bug Fixes
+
+* **actions:** removed tooltip with doc of deprecated api ([#326](https://github.com/botpress/studio/issues/326)) ([72a40c2](https://github.com/botpress/studio/commit/72a40c22128c0adebbcafc9d31c204595641e3ed))
+* **debugger:** do not escape user input in debugger logs ([#327](https://github.com/botpress/studio/issues/327)) ([60afbfa](https://github.com/botpress/studio/commit/60afbfa4319051120bf163d002efea5172efd80c))
+* **hooks:** send events to core on bot mount and unmount ([#322](https://github.com/botpress/studio/issues/322)) ([fbb4f61](https://github.com/botpress/studio/commit/fbb4f6152c789d06d558174abfa5b59107fb6a7c))
+
+
+
 ## [0.0.50](https://github.com/botpress/studio/compare/v0.0.49...v0.0.50) (2022-03-25)
 
 
