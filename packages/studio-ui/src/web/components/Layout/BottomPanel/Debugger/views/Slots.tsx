@@ -2,7 +2,7 @@ import { HTMLTable, Tooltip } from '@blueprintjs/core'
 import * as sdk from 'botpress/sdk'
 import _ from 'lodash'
 import React, { FC } from 'react'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import style from '../style.scss'
 

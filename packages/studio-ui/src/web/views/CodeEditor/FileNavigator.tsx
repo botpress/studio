@@ -15,7 +15,7 @@ import { observe } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import { RootStore, StoreDef } from './store'
 import { EditorStore } from './store/editor'

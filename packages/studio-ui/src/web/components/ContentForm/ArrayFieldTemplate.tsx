@@ -1,7 +1,7 @@
 import { AnchorButton, Button, ButtonGroup, Intent, Position, Tooltip } from '@blueprintjs/core'
 import cx from 'classnames'
 import React, { Fragment, useEffect, useRef } from 'react'
-import { lang } from '../shared/translations'
+import { lang } from '../Shared/translations'
 
 import SmartInput from '../SmartInput'
 

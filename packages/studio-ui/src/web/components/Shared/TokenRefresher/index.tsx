@@ -3,7 +3,7 @@ import { StoredToken } from 'common/typings'
 import ms from 'ms'
 import { FC, useEffect, useState } from 'react'
 
-import { tokenNeedsRefresh, getToken, setToken } from '~/components/shared/auth'
+import { tokenNeedsRefresh, getToken, setToken } from '~/components/Shared/auth'
 import { TokenRefresherProps } from './typings'
 
 const REFRESH_INTERVAL = ms('5m')

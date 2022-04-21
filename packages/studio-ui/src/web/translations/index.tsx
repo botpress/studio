@@ -1,4 +1,4 @@
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import en from './en.json'
 import es from './es.json'

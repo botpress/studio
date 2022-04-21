@@ -4,7 +4,7 @@ import _ from 'lodash'
 import random from 'lodash/random'
 import { nanoid } from 'nanoid'
 import React from 'react'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import { NluClient } from '../../client'
 

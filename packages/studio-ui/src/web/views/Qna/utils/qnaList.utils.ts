@@ -2,7 +2,7 @@ import axios from 'axios'
 import { QnaItem } from 'common/typings'
 import _ from 'lodash'
 import _uniqueId from 'lodash/uniqueId'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 export const ITEMS_PER_PAGE = 50
 export const NEW_QNA_PREFIX = 'qna-'

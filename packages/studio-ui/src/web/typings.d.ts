@@ -1,4 +1,4 @@
-import { BPStorage } from './components/shared/lite-utils/typings'
+import { BPStorage } from './components/Shared/lite-utils/typings'
 
 // TODO: remove when at least one typing is exported from this file
 export interface test {}

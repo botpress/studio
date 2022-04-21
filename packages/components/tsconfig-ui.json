@@ -12,13 +12,8 @@
     "typeRoots": ["../../../../../../node_modules/@types"],
     "types": ["jest", "bluebird-global"],
     "paths": {
-      "botpress/shared": ["../../../../ui-shared/src/typings.d.ts"],
       "botpress/sdk": ["../../../../studio-be/src/sdk/botpress.d.ts"],
       "common/*": ["../../../../studio-be/src/common/*"],
-      "@blueprintjs/core": ["../../../../ui-shared/node_modules/@blueprintjs/core"],
-      "@blueprintjs/select": ["../../../../ui-shared/node_modules/@blueprintjs/select"],
-      "react": ["../../../../ui-shared/node_modules/@types/react"],
-      "react-dom": ["../../../../ui-shared/node_modules/@types/react-dom"],
       "channel-web": ["../../../channel-web.d.ts"]
     }
   },

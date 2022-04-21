@@ -1,8 +1,8 @@
 import { Button, Callout, Checkbox, Classes, Dialog, FileInput, FormGroup, InputGroup, Intent } from '@blueprintjs/core'
 import _ from 'lodash'
 import React, { FC } from 'react'
-import { toast } from '~/components/shared/Toaster'
-import { lang } from '~/components/shared/translations'
+import { toast } from '~/components/Shared/Toaster'
+import { lang } from '~/components/Shared/translations'
 
 import { FilesDS } from '../../../backend/typings'
 import { sanitizeName } from '../utils'

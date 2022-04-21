@@ -3,7 +3,7 @@ import cx from 'classnames'
 import _ from 'lodash'
 import React, { FC, Fragment } from 'react'
 import { history } from '~/components/Routes'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import { NodeDebugInfo } from '../../debugger'
 

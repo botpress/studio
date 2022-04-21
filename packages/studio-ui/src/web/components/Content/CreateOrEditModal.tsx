@@ -3,8 +3,8 @@ import _ from 'lodash'
 import React from 'react'
 import ContentForm from '~/components/ContentForm'
 
-import { Dialog } from '../shared/Dialog'
-import { lang } from '../shared/translations'
+import { Dialog } from '../Shared/Dialog'
+import { lang } from '../Shared/translations'
 import withLanguage from '../Util/withLanguage'
 
 interface Props {

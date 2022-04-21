@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 import _ from 'lodash'
 
 import InjectedModuleView from '~/components/PluginInjectionSite/module'

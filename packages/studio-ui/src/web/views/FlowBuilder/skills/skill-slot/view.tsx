@@ -5,7 +5,7 @@ import { Alert } from 'react-bootstrap'
 import Select from 'react-select'
 import { Row, Col, Label, Input } from 'reactstrap'
 import BotpressContentPicker from '~/components/Content/Select/Widget'
-import { BotpressTooltip } from '~/components/shared/Tooltip'
+import { BotpressTooltip } from '~/components/Shared/BotpressTooltip'
 import SelectActionDropdown from '~/views/FlowBuilder/nodeProps/SelectActionDropdown'
 import style from '../style.scss'
 

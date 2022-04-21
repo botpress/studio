@@ -12,7 +12,7 @@ import {
   updateFlow,
   updateFlowNode
 } from '~/actions'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
 
 import { nodeTypes } from '../diagram/manager'

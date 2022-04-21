@@ -3,7 +3,7 @@ import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 
 import { Button, Label } from 'react-bootstrap'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import ConditionItem from '../common/condition'
 

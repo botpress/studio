@@ -1,4 +1,4 @@
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 import classnames from 'classnames'
 import { ActionParameterDefinition } from 'common/typings'
 import _ from 'lodash'

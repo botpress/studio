@@ -5,8 +5,8 @@ import Form, { FieldProps, IChangeEvent, UiSchema, WidgetProps } from 'react-jso
 import CheckboxWidget from 'react-jsonschema-form/lib/components/widgets/CheckboxWidget'
 import SmartInput from '~/components/SmartInput'
 import { getFormData } from '~/util/NodeFormData'
-import { SupportedFileType } from '../shared/Form/FormFields/typings'
-import { lang } from '../shared/translations'
+import { SupportedFileType } from '../Shared/Form/FormFields/typings'
+import { lang } from '../Shared/translations'
 import { isMissingCurlyBraceClosure } from '../Util/form.util'
 
 import withLanguage from '../Util/withLanguage'

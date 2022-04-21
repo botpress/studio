@@ -9,8 +9,8 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { setDebuggerEvent } from '~/actions'
 
-import ToolTip from '~/components/shared/ToolTip'
-import { lang } from '~/components/shared/translations'
+import ToolTip from '~/components/Shared/ToolTip'
+import { lang } from '~/components/Shared/translations'
 import btStyle from '../style.scss'
 
 import Settings from './components/Settings'

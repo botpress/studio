@@ -14,7 +14,7 @@ import { authEvents, setToken } from '~/util/Auth'
 import EventBus from '~/util/EventBus'
 
 import Routes, { history } from '../Routes'
-import TokenRefresher from '../shared/TokenRefresher'
+import TokenRefresher from '../Shared/TokenRefresher'
 
 interface Props {
   fetchModules: () => void

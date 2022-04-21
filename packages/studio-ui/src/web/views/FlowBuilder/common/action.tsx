@@ -1,10 +1,10 @@
-import { lang } from '~/components/shared/translations'
 import classnames from 'classnames'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import { fetchContentItem, refreshFlowsLinks } from '~/actions'
+import { lang } from '~/components/Shared/translations'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import { isRTLLocale } from '~/translations'

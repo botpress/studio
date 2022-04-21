@@ -9,7 +9,6 @@ module.exports = {
   parserOptions: {
     project: [
       './packages/studio-*/tsconfig.json',
-      './packages/ui-shared/tsconfig.json',
       './scripts/tsconfig.json',
       './packages/builder/tsconfig.json',
       './packages/components/tsconfig-*.json',
@@ -24,7 +23,6 @@ module.exports = {
     '*.js',
     '**/out/**',
     '**/*.test.ts',
-    'packages/ui-shared-lite/**',
     'packages/native-extensions/**'
   ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
