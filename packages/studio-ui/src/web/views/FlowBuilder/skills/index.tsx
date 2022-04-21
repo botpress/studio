@@ -6,8 +6,8 @@ import Loader from 'react-loaders'
 import { connect } from 'react-redux'
 import { cancelNewSkill, insertNewSkill, updateSkill } from '~/actions'
 import InjectedModuleView from '~/components/PluginInjectionSite/module'
-import { Dialog } from '~/components/shared/Dialog'
-import { lang } from '~/components/shared/translations'
+import { Dialog } from '~/components/Shared/Dialog'
+import { lang } from '~/components/Shared/translations'
 import { RootReducer } from '~/reducers'
 import withLanguage from '../../../components/Util/withLanguage'
 
@@ -16,7 +16,7 @@ import { AuthGate } from './skill-auth-gate'
 import { CallAPI } from './skill-call-api'
 import { Choice } from './skill-choice'
 import { SendEmail } from './skill-send-email'
-import { Slot } from './skill-Slot'
+import { Slot } from './skill-slot'
 
 const style = require('./style.scss')
 

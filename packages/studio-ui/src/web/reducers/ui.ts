@@ -13,7 +13,7 @@ import {
   viewModeChanged,
   zoomToLevel
 } from '~/actions'
-import storage from '~/components/shared/lite-utils/storage'
+import storage from '~/components/Shared/lite-utils/storage'
 
 export interface UiReducer {
   viewMode: any

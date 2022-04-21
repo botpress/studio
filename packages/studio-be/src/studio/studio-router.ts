@@ -1,9 +1,11 @@
 import { Logger } from 'botpress/sdk'
+import { AsyncMiddleware, asyncMiddleware } from 'common/http'
 import { gaId } from 'common/stats'
 import express, { RequestHandler, Router } from 'express'
-import { AsyncMiddleware, asyncMiddleware } from 'common/http'
 import rewrite from 'express-urlrewrite'
+import fs from 'fs'
 import _ from 'lodash'
+import path from 'path'
 import { ActionsRouter } from './actions/actions-router'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
@@ -15,8 +17,6 @@ import MediaRouter from './media/media-router'
 import { NLURouter } from './nlu'
 import { QNARouter } from './qna'
 import { HTTPServer } from './server'
-import fs from 'fs'
-import path from 'path'
 
 export interface StudioServices {
   logger: Logger

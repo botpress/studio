@@ -1,12 +1,11 @@
 import * as sdk from 'botpress/sdk'
 
+import { sanitizeFileName } from 'common/utils'
+import _ from 'lodash'
 import path from 'path'
 
-import _ from 'lodash'
-
-import { NLUService } from './nlu-service'
 import { Instance } from 'studio/utils/bpfs'
-import { sanitizeFileName } from 'common/utils'
+import { NLUService } from './nlu-service'
 
 const INTENTS_DIR = './intents'
 

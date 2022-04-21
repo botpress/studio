@@ -5,8 +5,6 @@ import style from './style.scss'
 
 import { MoreOptionsMenuProps } from './typings'
 
-import style from './style.scss'
-
 const MoreOptionsMenu: FC<MoreOptionsMenuProps> = (props) => {
   const { className, items } = props
 

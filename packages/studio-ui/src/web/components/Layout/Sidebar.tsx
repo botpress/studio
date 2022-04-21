@@ -7,8 +7,8 @@ import { connect } from 'react-redux'
 import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom'
 import { RootReducer } from '~/reducers'
 
-import { lang } from '../shared/translations'
-import { AccessControl } from '../shared/Utils'
+import { lang } from '../Shared/translations'
+import { AccessControl } from '../Shared/Utils'
 
 import style from './Sidebar.scss'
 

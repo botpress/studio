@@ -1,9 +1,8 @@
 global['NativePromise'] = global.Promise
 
-import fs from 'fs'
+import chalk from 'chalk'
 import path from 'path'
 import yn from 'yn'
-import chalk from 'chalk'
 import { Debug } from './debug'
 import getos from './getos'
 import metadata from './metadata.json'

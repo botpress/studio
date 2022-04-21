@@ -3,7 +3,7 @@ import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 
 import { Button, Label } from 'react-bootstrap'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import ConditionItem from '../common/condition'
 
@@ -50,6 +50,7 @@ export default class TransitionSection extends Component {
   }
 
   render() {
+    // eslint-disable-next-line prefer-const
     let { items, readOnly } = this.props
 
     if (!items) {

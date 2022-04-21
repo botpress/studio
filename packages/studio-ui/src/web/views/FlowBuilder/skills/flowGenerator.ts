@@ -2,11 +2,11 @@ import { ActionBuilderProps, Flow, FlowGenerationResult, SkillFlow } from 'botpr
 import _ from 'lodash'
 import { customAlphabet } from 'nanoid'
 
-import { generateFlow as choice } from './skill-choice'
-import { generateFlow as callApi } from './skill-call-api'
-import { generateFlow as slot } from './skill-slot'
-import { generateFlow as email } from './skill-send-email'
 import { generateFlow as authGate } from './skill-auth-gate'
+import { generateFlow as callApi } from './skill-call-api'
+import { generateFlow as choice } from './skill-choice'
+import { generateFlow as email } from './skill-send-email'
+import { generateFlow as slot } from './skill-slot'
 import { NodeActionType } from './typings'
 
 export const doGenerateFlow = async (data: any, skillId: string) => {

@@ -12,6 +12,7 @@ interface Props {
   className?: string
 }
 export const RecordSpeechToText: FC<Props> = (props) => {
+  // eslint-disable-next-line prefer-const
   let recognition
   const [isListening, setIsListening] = useState(false)
   const [text, setText] = useState<string>('')

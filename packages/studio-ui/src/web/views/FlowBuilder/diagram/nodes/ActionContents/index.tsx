@@ -1,6 +1,6 @@
-import { parseActionInstruction } from 'runtime/action'
 import { ActionServer } from 'common/typings'
 import React, { FC, Fragment } from 'react'
+import { parseActionInstruction } from 'runtime/action'
 
 import { BlockProps } from '../Block'
 import style from '../Components/style.scss'

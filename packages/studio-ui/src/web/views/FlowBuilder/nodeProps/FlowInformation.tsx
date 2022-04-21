@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
 import classnames from 'classnames'
+import React, { Fragment } from 'react'
 
 import { Tabs, Tab, Badge } from 'react-bootstrap'
 
+import { lang } from '~/components/Shared/translations'
 import ActionSection from './ActionSection'
 import TransitionSection from './TransitionSection'
-import { lang } from '~/components/shared/translations'
 
 const style = require('./style.scss')
 export default (props) => {

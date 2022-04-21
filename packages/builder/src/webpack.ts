@@ -30,7 +30,7 @@ export function config(projectPath) {
       alias: {
         common: path.resolve(__dirname, '../../studio-be/dist/common')
       },
-      modules: ['node_modules', path.resolve(__dirname, '../../ui-shared/node_modules')],
+      modules: ['node_modules'],
       extensions: ['.js', '.jsx', '.tsx', '.ts']
     },
     module: {

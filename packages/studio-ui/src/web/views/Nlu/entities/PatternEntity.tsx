@@ -14,7 +14,7 @@ import { NLU } from 'botpress/sdk'
 import { getEntityId } from 'common/entity-id'
 import _ from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 import style from './style.scss'
 

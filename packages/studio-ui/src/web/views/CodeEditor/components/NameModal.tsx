@@ -2,7 +2,7 @@ import { Button, Callout, Classes, Dialog, FormGroup, InputGroup, Intent } from 
 import { EditableFile, FilesDS } from 'common/code-editor'
 import _ from 'lodash'
 import React, { FC, useEffect, useState } from 'react'
-import { lang } from '~/components/shared/translations'
+import { lang } from '~/components/Shared/translations'
 
 interface Props {
   isOpen: boolean
