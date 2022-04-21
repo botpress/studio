@@ -12,7 +12,7 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "prebuild": "ts-node --dir ./scripts make_schemas && ts-node --dir ./scripts write_metadata",
+    "prebuild": "ts-node --dir ./scripts make_schemas && ts-node --dir ./scripts make_metadata",
     "build": "yarn tsc --build",
     "watch": "yarn tsc --build --watch",
     "package": "ts-node --dir ./scripts package",
