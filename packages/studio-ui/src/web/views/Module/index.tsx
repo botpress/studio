@@ -1,10 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { lang } from '~/components/Shared/translations'
 import _ from 'lodash'
-
+import PropTypes from 'prop-types'
+import React from 'react'
+import { connect } from 'react-redux'
 import InjectedModuleView from '~/components/PluginInjectionSite/module'
+import { lang } from '~/components/Shared/translations'
 
 type Props = ReturnType<typeof mapStateToProps> & { match: any }
 

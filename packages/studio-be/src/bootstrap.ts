@@ -3,18 +3,17 @@ import 'bluebird-global'
 import './sdk/rewire'
 // import * as runtime from '@botpress/runtime'
 
-import { makeLogger, ConsoleTransport } from '@botpress/logger'
+import { makeLogger, ConsoleTransport, FormattedLogEntry, LoggerConfig, LogTransporter } from '@botpress/logger'
 
 import sdk, { Logger, LogLevel } from 'botpress/sdk'
 import chalk from 'chalk'
 import fs from 'fs'
 import _ from 'lodash'
-import { Botpress } from './botpress'
 
 import { showBanner } from 'misc/banner'
 
-import { FormattedLogEntry, LoggerConfig, LogTransporter } from '@botpress/logger'
 import { GlobalEvents, StudioEvents } from 'studio/events'
+import { Botpress } from './botpress'
 
 export class StudioUITransport implements LogTransporter {
   private callback: any

@@ -1,9 +1,9 @@
-import path from 'path'
+import { DirectoryListingOptions } from 'botpress/sdk'
 import fse from 'fs-extra'
 import glob from 'glob'
-import { DirectoryListingOptions } from 'botpress/sdk'
-import VError from 'verror'
 import _ from 'lodash'
+import path from 'path'
+import VError from 'verror'
 
 export interface bpfs {
   upsertFile(filePath: string, content: Buffer | string): Promise<void>

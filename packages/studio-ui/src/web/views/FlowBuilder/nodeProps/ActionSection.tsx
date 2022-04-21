@@ -112,6 +112,7 @@ export default class ActionSection extends Component<Props, State> {
   }
 
   render() {
+    // eslint-disable-next-line prefer-const
     let { items, readOnly } = this.props
 
     if (!items) {

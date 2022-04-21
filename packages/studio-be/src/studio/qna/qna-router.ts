@@ -286,8 +286,8 @@ export class QNARouter extends CustomStudioRouter {
 
         const contentElements = {}
 
-        for (let qna of qnas) {
-          for (let answer of _.flatten(Object.values(qna.data.answers))) {
+        for (const qna of qnas) {
+          for (const answer of _.flatten(Object.values(qna.data.answers))) {
             if (answer.startsWith('#!')) {
               contentElements[answer] = _.uniq([...(contentElements[answer] || []), qna.id])
             }

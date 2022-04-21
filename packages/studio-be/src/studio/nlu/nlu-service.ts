@@ -1,10 +1,10 @@
 import { Specifications as StanSpecifications } from '@botpress/nlu-client'
 import { Logger } from 'botpress/sdk'
 import { NLUProgressEvent, Training as BpTraining } from 'common/nlu-training'
-import { GlobalEvents, StudioEvents } from 'studio/events'
 
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
+import { GlobalEvents, StudioEvents } from 'studio/events'
 import { Instance } from 'studio/utils/bpfs'
 import yn from 'yn'
 import { CLOUD_NLU_ENDPOINT } from '.'

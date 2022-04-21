@@ -12,16 +12,21 @@ module.exports = {
       './scripts/tsconfig.json',
       './packages/builder/tsconfig.json',
       './packages/components/tsconfig-*.json',
-      './packages/superinput/tsconfig.json'
+      './packages/superinput/tsconfig.json',
+      './packages/logger/tsconfig.json',
+      './packages/runtime/tsconfig.json',
+      './packages/runtime/scripts/tsconfig.json'
     ],
     tsconfigRootDir: __dirname,
     sourceType: 'module'
   },
   ignorePatterns: [
-    '**/global.d.ts',
+    '**/node_modules/**',
+    '**/*.d.ts',
     '**/*.scss.d.ts',
     '*.js',
     '**/out/**',
+    '**/dist/**',
     '**/*.test.ts',
     'packages/native-extensions/**'
   ],

@@ -1,11 +1,11 @@
 import { ContentElement, ContentType, SearchParams } from 'botpress/sdk'
 
-import _, { find } from 'lodash'
+import _ from 'lodash'
+import { nanoid } from 'nanoid'
+import path from 'path'
 import { StudioServices } from 'studio/studio-router'
 import { Instance } from 'studio/utils/bpfs'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import path from 'path'
-import { nanoid } from 'nanoid'
 
 export enum ButtonAction {
   SaySomething = 'Say something',
@@ -20,7 +20,9 @@ export const DefaultSearchParams: SearchParams = {
 }
 
 type ContentElementsByType = { type: string; elements: ContentElement[] }[]
-type ContentTypesMap = { [key: string]: ContentType }
+interface ContentTypesMap {
+  [key: string]: ContentType
+}
 
 // TODO: botConfig.contentTypes should be removed ... if you want to disable a contentType, delete the content type from the content-types folder
 // TODO: in the UI, we'll do most of these operations front-end
@@ -60,7 +62,7 @@ export class CMSRouter extends CustomStudioRouter {
       const content = await Instance.readFile(path.join('content-elements', file))
       const type = file.replace(/\.json$/i, '')
       return {
-        type: type,
+        type,
         elements: (JSON.parse(content.toString()) as ContentElement[]).map((x) => ({ ...x, contentType: type }))
       }
     })
@@ -87,7 +89,7 @@ export class CMSRouter extends CustomStudioRouter {
       elements = JSON.parse(buffer.toString()) as ContentElement[]
     }
 
-    const existingElement = elements.find((x) => x.id == content.id) || { createdBy: 'admin', createdOn: new Date() } // TODO: fixme for studio user
+    const existingElement = elements.find((x) => x.id === content.id) || { createdBy: 'admin', createdOn: new Date() } // TODO: fixme for studio user
     const newElements = [
       ...elements.filter((x) => x.id !== content.id),
       { ...existingElement, ...content, modifiedOn: new Date() }
@@ -103,7 +105,7 @@ export class CMSRouter extends CustomStudioRouter {
   async deleteContentElementsById(elementIds: string[]) {
     const types = await this.loadContentTypes()
 
-    for (let type in types) {
+    for (const type in types) {
       const typeFile = path.join('content-elements', type + '.json')
       if (!(await Instance.fileExists(typeFile))) {
         continue
@@ -128,9 +130,11 @@ export class CMSRouter extends CustomStudioRouter {
     const typesById = await this.loadContentTypes()
     const allElements = await this.getContentElementsWithPreviews()
 
-    for (let current of allElements) {
+    for (const current of allElements) {
       const element = current.elements.find((x) => x.id === elementId)
-      if (!element) continue
+      if (!element) {
+        continue
+      }
 
       return {
         ...element,
@@ -213,10 +217,10 @@ export class CMSRouter extends CustomStudioRouter {
     const context = { BOT_ID: '' }
 
     const computed: ContentElementsByType = []
-    for (let type of elements) {
+    for (const type of elements) {
       const temp = { type: type.type, elements: [] as ContentElement[] }
       const contentType = types[type.type]
-      for (let element of type.elements) {
+      for (const element of type.elements) {
         recursiveProtection = 0 // reset recursive counter that prevents circular dependencies between elements
         const expandedFormData = resolveRef(element.formData)
 
@@ -409,7 +413,7 @@ export class CMSRouter extends CustomStudioRouter {
         const id = elementId || req.body.id || `${contentType.replace('#', '')}-${nanoid(6)}`
 
         await this.upsertContentElement(contentType, {
-          id: id,
+          id,
           modifiedOn: new Date(),
           formData
         })

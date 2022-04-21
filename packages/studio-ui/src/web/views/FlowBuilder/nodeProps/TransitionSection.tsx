@@ -50,6 +50,7 @@ export default class TransitionSection extends Component {
   }
 
   render() {
+    // eslint-disable-next-line prefer-const
     let { items, readOnly } = this.props
 
     if (!items) {

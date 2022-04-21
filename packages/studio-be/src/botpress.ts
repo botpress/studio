@@ -1,15 +1,15 @@
 import * as sdk from 'botpress/sdk'
 
 import fse from 'fs-extra'
-import { setDebugScopes } from './debug'
 import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
 import _ from 'lodash'
+import { copyDir } from 'misc/fse-pkg'
 import moment from 'moment'
 import path from 'path'
 import { GlobalEvents, StudioEvents } from 'studio/events'
+import { setDebugScopes } from './debug'
 import { HTTPServer } from './studio/server'
 import { RealtimeService } from './websocket'
-import { copyDir } from 'misc/fse-pkg'
 
 export class Botpress {
   botpressPath: string

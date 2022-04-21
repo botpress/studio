@@ -7,9 +7,8 @@ import { lang } from '~/components/Shared/translations'
 import EditableInput from '../common/EditableInput'
 
 import ActionSection from './ActionSection'
-import TransitionSection from './TransitionSection'
-
 import style from './style.scss'
+import TransitionSection from './TransitionSection'
 
 function transformText(text: string) {
   return text.replace(/[^a-z0-9-_\.]/gi, '_')
