@@ -60,7 +60,7 @@ export class CloudClient extends StanClient {
 
   private _requestInterceptor =
     (authenticate: () => Promise<string>) =>
-    async (config: AxiosRequestConfig<any>): Promise<AxiosRequestConfig<any>> => {
+    async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
       const token = await authenticate()
 
       if (!config.headers) {

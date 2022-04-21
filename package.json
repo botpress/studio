@@ -6,7 +6,7 @@
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "yarn workspaces foreach --exclude @botpress/typings -ptiv run build",
+    "build": "yarn workspaces foreach --exclude @botpress/typings -tiv run build",
     "watch": "yarn workspaces foreach --exclude @botpress/typings -piv run watch",
     "clean": "yarn workspaces foreach --exclude @botpress/typings -pi run clean",
     "start": "ts-node -T --dir scripts start_studio",
