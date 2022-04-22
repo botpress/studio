@@ -17,5 +17,3 @@ public/
 !.yarn/versions
 
 .parcel-cache
-
-packages/*/tsconfig.tsbuildinfo

@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["jest", "node", "botpress", "global", "knex", "string"]
-  }
-}
