@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_PATH=./out node ./out/index.js",
-    "build": "ts-node --transpile-only --dir ../../scripts write_metadata && yarn run -T tsc --build && node ./scripts/copy_builtin.js",
+    "build": "yarn run -T tsc --build && node ./scripts/copy_builtin.js",
     "clean": "rimraf ./out",
     "watch": "yarn run -T tsc --build --watch"
   },

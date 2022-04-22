@@ -5,7 +5,6 @@ import path from 'path'
 import yn from 'yn'
 import { Debug } from './debug'
 import getos from './getos'
-import metadata from './metadata.json'
 
 export function getAppDataPath() {
   const homeDir = process.env.HOME || process.env.APPDATA
@@ -110,8 +109,7 @@ try {
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
-  process.STUDIO_VERSION = metadata.version
-  process.DEV_BRANCH = metadata['devBranch']
+  process.STUDIO_VERSION = '13.0.0'
   process.BOTPRESS_VERSION = process.env.BOTPRESS_VERSION!
 
   require('yargs')

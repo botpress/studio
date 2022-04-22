@@ -9,7 +9,6 @@ module.exports = {
   parserOptions: {
     project: [
       './packages/studio-*/tsconfig.json',
-      './scripts/tsconfig.json',
       './packages/logger/tsconfig.json',
       './packages/inspector-kit/tsconfig.json'
     ],

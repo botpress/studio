@@ -15,7 +15,8 @@
     "baseUrl": "./src",
     "outDir": "./out",
     "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
-    "types": ["reflect-metadata"]
+    "types": ["reflect-metadata", "jest"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/*.test.ts"]
 }
