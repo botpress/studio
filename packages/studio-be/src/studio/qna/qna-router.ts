@@ -111,7 +111,7 @@ export class QNARouter extends CustomStudioRouter {
 
           const pagedItems = filteredItems.slice(+offset, +offset + +limit)
           res.send({ items: pagedItems, count: filteredItems.length })
-        } catch (e) {
+        } catch (e: any) {
           this.logger.attachError(e).error('Error listing questions')
           res.status(500).send(e.message || 'Error')
         }

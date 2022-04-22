@@ -93,7 +93,7 @@ This is a fatal error, process will exit.`
     await studio.start()
     // await runtime.start()
     logger.info(chalk.gray(`Studio is listening at: ${process.LOCAL_URL}`))
-  } catch (err) {
+  } catch (err: any) {
     logger.error(`Could not start Botpress: ${err.message}`, err)
     process.exit(1)
   }

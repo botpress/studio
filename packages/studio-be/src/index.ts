@@ -149,6 +149,6 @@ try {
       }
     )
     .help().argv
-} catch (err) {
+} catch (err: any) {
   global.printErrorDefault(err)
 }

@@ -45,7 +45,7 @@ export const Instance: bpfs = {
   ): Promise<string[]> {
     try {
       await fse.access(resolvePath(folder), fse.constants.R_OK)
-    } catch (e) {
+    } catch (e: any) {
       // if directory doesn't exist we don't care
       if (e.code === 'ENOENT') {
         return []

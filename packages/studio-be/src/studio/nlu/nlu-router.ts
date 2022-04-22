@@ -62,7 +62,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.intents.deleteIntent(botId, intent)
           await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(204)
-        } catch (err) {
+        } catch (err: any) {
           this.logger.attachError(err).error('Could not delete intent')
           res.status(400).send(err.message)
         }
@@ -83,7 +83,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.getBot(botId).refreshNeedsTraining()
 
           res.sendStatus(200)
-        } catch (err) {
+        } catch (err: any) {
           this.logger.attachError(err).warn('Cannot create intent')
           res.status(400).send(err.message)
         }
@@ -163,7 +163,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.entities.saveEntity(botId, entityDef)
           await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(200)
-        } catch (err) {
+        } catch (err: any) {
           this.logger.attachError(err).warn('Cannot create entity')
           res.status(400).send(err.message)
         }
@@ -183,7 +183,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.entities.updateEntity(botId, id, entityDef)
           await this.service.getBot(botId).refreshNeedsTraining()
           res.sendStatus(200)
-        } catch (err) {
+        } catch (err: any) {
           this.logger.attachError(err).error('Could not update entity')
           res.status(400).send(err.message)
         }
@@ -222,7 +222,7 @@ export class NLURouter extends CustomStudioRouter {
           await this.service.getBot(botId).refreshNeedsTraining()
 
           res.sendStatus(204)
-        } catch (err) {
+        } catch (err: any) {
           this.logger.attachError(err).error('Could not delete entity')
           res.status(404).send(err.message)
         }
@@ -264,7 +264,7 @@ export class NLURouter extends CustomStudioRouter {
           }
           const state = await this.service.getBot(botId).syncAndGetState(lang)
           res.send(state)
-        } catch (error) {
+        } catch (error: any) {
           return this._mapError({ botId, error }, res)
         }
       })
@@ -281,7 +281,7 @@ export class NLURouter extends CustomStudioRouter {
             await this.service.queueTraining(botId, lang)
           }
           res.sendStatus(200)
-        } catch (error) {
+        } catch (error: any) {
           return this._mapError({ botId, error }, res)
         }
       })
@@ -298,7 +298,7 @@ export class NLURouter extends CustomStudioRouter {
           }
           await this.service.getBot(botId).cancelTraining(lang)
           res.sendStatus(200)
-        } catch (error) {
+        } catch (error: any) {
           return this._mapError({ botId, error }, res)
         }
       })
