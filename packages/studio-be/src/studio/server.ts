@@ -17,6 +17,7 @@ import onHeaders from 'on-headers'
 import path from 'path'
 import portFinder from 'portfinder'
 import { StudioRouter } from 'studio/studio-router'
+import { TestingService } from 'studio/testing'
 import { URL } from 'url'
 import yn from 'yn'
 
