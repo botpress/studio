@@ -14,7 +14,6 @@
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@botpress/logger": "*",
-    "@botpress/native-extensions": "*",
     "@botpress/nlu-client": "1.0.2-rc.6",
     "axios": "^0.25.0",
     "bluebird": "^3.7.2",

@@ -18,10 +18,7 @@ const writeMetadata = async () => {
     logger.error("Couldn't get active branch", err as Error)
   }
 
-  const metadataPaths = [
-    path.join(__dirname, '../packages/studio-be/src/metadata.json'),
-    path.join(__dirname, '../packages/runtime/src/metadata.json')
-  ]
+  const metadataPaths = [path.join(__dirname, '../packages/studio-be/src/metadata.json')]
 
   metadataPaths.forEach((metadataPath) => {
     fs.writeFileSync(metadataPath, JSON.stringify(metadata, undefined, 2), { encoding: 'utf-8' })

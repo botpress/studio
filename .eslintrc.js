@@ -10,11 +10,7 @@ module.exports = {
     project: [
       './packages/studio-*/tsconfig.json',
       './scripts/tsconfig.json',
-      './packages/builder/tsconfig.json',
-      './packages/components/tsconfig-*.json',
       './packages/logger/tsconfig.json',
-      './packages/runtime/tsconfig.json',
-      './packages/runtime/scripts/tsconfig.json',
       './packages/inspector-kit/tsconfig.json'
     ],
     tsconfigRootDir: __dirname,
@@ -27,8 +23,7 @@ module.exports = {
     '*.js',
     '**/out/**',
     '**/dist/**',
-    '**/*.test.ts',
-    'packages/native-extensions/**'
+    '**/*.test.ts'
   ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
   rules: {
