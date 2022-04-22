@@ -1,10 +1,11 @@
 import { Icon, Intent } from '@blueprintjs/core'
 import { IconNames } from '@blueprintjs/icons'
 import axios, { AxiosInstance } from 'axios'
-import { confirmDialog, toast } from 'botpress/shared'
 import _ from 'lodash'
 import React from 'react'
 import { Grid, Row, Col, Button } from 'react-bootstrap'
+import confirmDialog from '~/components/Shared/ConfirmDialog'
+import { toast } from '~/components/Shared/Toaster'
 
 import { Preview, Scenario, Status } from '../../../../../studio-be/src/studio/testing/typings'
 import NoScenarios from './Components/NoScenarios'

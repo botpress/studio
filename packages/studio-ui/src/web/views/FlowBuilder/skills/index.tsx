@@ -12,7 +12,6 @@ import { RootReducer } from '~/reducers'
 import withLanguage from '../../../components/Util/withLanguage'
 
 import { doGenerateFlow } from './flowGenerator'
-import { AuthGate } from './skill-auth-gate'
 import { CallAPI } from './skill-call-api'
 import { Choice } from './skill-choice'
 import { SendEmail } from './skill-send-email'

@@ -148,6 +148,8 @@ export class NLUService {
   }
 
   public async downloadAndSaveModelWeights(botId: string) {
+    // TODO: reimpl this
+    /*
     const bot = this._bots[botId]
     if (!bot) {
       throw new BotNotMountedError(botId)
@@ -168,6 +170,7 @@ export class NLUService {
 
       await this.ghost.forBot(botId).upsertFile(modelsFolder, `${modelId}.model`, modelWeights)
     }
+    */
   }
 
   private _getWebsocket = () => {

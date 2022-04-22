@@ -2,7 +2,6 @@ import { ActionBuilderProps, Flow, FlowGenerationResult, SkillFlow } from 'botpr
 import _ from 'lodash'
 import { customAlphabet } from 'nanoid'
 
-import { generateFlow as authGate } from './skill-auth-gate'
 import { generateFlow as callApi } from './skill-call-api'
 import { generateFlow as choice } from './skill-choice'
 import { generateFlow as email } from './skill-send-email'
@@ -25,8 +24,6 @@ function getFlowGenerator(skillId: string) {
       return slot
     case 'SendEmail':
       return email
-    case 'AuthGate':
-      return authGate
   }
 }
 

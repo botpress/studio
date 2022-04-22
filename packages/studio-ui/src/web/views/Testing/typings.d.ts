@@ -1,4 +1,4 @@
-import { BPStorage } from '../../../../../packages/ui-shared-lite/utils/storage'
+import { BPStorage } from '../../components/Shared/lite-utils/typings'
 
 declare global {
   interface Window {
