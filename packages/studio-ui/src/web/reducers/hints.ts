@@ -8,7 +8,7 @@ const defaultState = {
 
 const reducer = handleActions(
   {
-    [hintsReceived]: (state, { payload }) => ({ ...state, ...payload })
+    [hintsReceived as any]: (state, { payload }) => ({ ...state, ...payload })
   },
   defaultState
 )
