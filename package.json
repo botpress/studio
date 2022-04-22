@@ -65,7 +65,6 @@
     "packages/studio-ui",
     "packages/studio-be",
     "packages/logger",
-    "packages/runtime",
     "packages/typings",
     "packages/ui-shared",
     "packages/ui-shared-lite",

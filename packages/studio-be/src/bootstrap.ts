@@ -1,7 +1,6 @@
 import 'bluebird-global'
 // eslint-disable-next-line import/order
 import './sdk/rewire'
-// import * as runtime from '@botpress/runtime'
 
 import { makeLogger, ConsoleTransport, FormattedLogEntry, LoggerConfig, LogTransporter } from '@botpress/logger'
 

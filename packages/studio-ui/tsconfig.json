@@ -1,5 +1,5 @@
 {
-  "references": [{ "path": "../runtime" }],
+  "references": [],
   "compilerOptions": {
     "experimentalDecorators": true,
     "esModuleInterop": true,
@@ -17,7 +17,6 @@
     "paths": {
       "~/*": ["src/web/*"],
       "common/*": ["../studio-be/src/common/*"],
-      "runtime/*": ["../runtime/src/common/*"],
       "botpress/sdk": ["../studio-be/src/sdk/botpress.d.ts"]
     }
   },
