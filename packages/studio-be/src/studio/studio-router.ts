@@ -7,7 +7,6 @@ import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
 import { ActionsRouter } from './actions/actions-router'
-import { CloudRouter } from './cloud/cloud-router'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
@@ -52,7 +51,7 @@ export class StudioRouter extends CustomRouter {
   // private testingRouter: TestingRouter
   private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
-  private cloudRouter: CloudRouter
+  // private cloudRouter: CloudRouter
 
   constructor(logger: Logger, private httpServer: HTTPServer) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -73,7 +72,7 @@ export class StudioRouter extends CustomRouter {
     // this.testingRouter = new TestingRouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
     this.codeEditorRouter = new CodeEditorRouter(studioServices)
-    this.cloudRouter = new CloudRouter(studioServices)
+    // this.cloudRouter = new CloudRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
