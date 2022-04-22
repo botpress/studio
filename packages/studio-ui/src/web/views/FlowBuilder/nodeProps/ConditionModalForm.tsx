@@ -1,4 +1,4 @@
-import { SuperInput, SiTypes } from '@botpress/superinput'
+import { SuperInput, SiTypes } from '@botpress/inspector-kit'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'

@@ -15,7 +15,8 @@ module.exports = {
       './packages/superinput/tsconfig.json',
       './packages/logger/tsconfig.json',
       './packages/runtime/tsconfig.json',
-      './packages/runtime/scripts/tsconfig.json'
+      './packages/runtime/scripts/tsconfig.json',
+      './packages/inspector-kit/tsconfig.json'
     ],
     tsconfigRootDir: __dirname,
     sourceType: 'module'

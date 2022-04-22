@@ -7,6 +7,7 @@ import fs from 'fs'
 import _ from 'lodash'
 import path from 'path'
 import { ActionsRouter } from './actions/actions-router'
+import { CloudRouter } from './cloud/cloud-router'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
@@ -48,8 +49,10 @@ export class StudioRouter extends CustomRouter {
   private configRouter: ConfigRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
+  // private testingRouter: TestingRouter
   private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
+  private cloudRouter: CloudRouter
 
   constructor(logger: Logger, private httpServer: HTTPServer) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -67,18 +70,22 @@ export class StudioRouter extends CustomRouter {
     this.configRouter = new ConfigRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
+    // this.testingRouter = new TestingRouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
     this.codeEditorRouter = new CodeEditorRouter(studioServices)
+    this.cloudRouter = new CloudRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
     this.actionsRouter.setupRoutes()
     this.flowsRouter.setupRoutes()
+    this.cloudRouter.setupRoutes()
     await this.mediaRouter.setupRoutes()
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
+    // this.testingRouter.setupRoutes()
     this.manageRouter.setupRoutes()
     this.codeEditorRouter.setupRoutes()
 
@@ -103,9 +110,11 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
     this.router.use('/nlu', this.checkTokenHeader, this.nluRouter.router)
     this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
+    // this.router.use('/testing', this.checkTokenHeader, this.testingRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
+    this.router.use('/cloud', this.checkTokenHeader, this.cloudRouter.router)
     this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
     this.setupUnauthenticatedRoutes(app)

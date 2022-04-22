@@ -199,35 +199,15 @@
       "uploadFile": "Téléverser un fichier"
     }
   },
+  "testing": {
+    "fullName": "Test"
+  },
   "skills": {
     "callApi": "Appel API",
     "choice": "Choix",
     "fullName": "Compétences de base",
     "sendEmail": "Envoi courriel",
     "slotFilling": "Remplir slot"
-  },
-  "libraries": {
-    "fullName": "Librairies",
-    "addLibrary": "Ajouter cette librairie",
-    "searchNpm": "Chercher une librairie sur NPM (recommandé)",
-    "searchGithub": "Ajouter un répertoire GitHub (peut être lent)",
-    "uploadArchive": "Téléverser une archive",
-    "libraries": "Librairies",
-    "splash": {
-      "text1": "Ces librairies peuvent être utilisées par les actions et les hooks de ce bot.",
-      "text2": "Lorsque vous modifiez le fichier 'package.json' via l'éditeur de code, appuyez sur le bouton ci-dessous pour le synchroniser."
-    },
-    "viewGithub": "Voir sur Github",
-    "customCommand": "Taper une commande personnalisée",
-    "openConsole": "Ouvrez la console pour voir le résultat de la commande",
-    "bundleDeps": "Empaqueter avec ses dépendances",
-    "addSuccess": "Librairie ajoutée avec succès!",
-    "libraryName": "Nom de la librairie",
-    "confirmRemove": "Êtes-vous sûr de vouloir retirer cette librairie?",
-    "deleteSuccess": "Librairie retirée avec succès",
-    "removeFailure": "Il y a eu une erreur lors du retrait de la librairie. Veuillez regarder les journaux du serveur pour plus de détails",
-    "bundleError": "Il y a eu une erreur lors de l'empaquetage de la librairie.",
-    "betaWarning": "C'est un module expérmental. L'implémentation peut changer drastiquement à court terme"
   },
   "nlu": {
     "autoTrain": "Entraînement automatique",
@@ -541,13 +521,11 @@
         "actionServer": "Serveur d'action",
         "actionServerTooltip": "Il s'agit du serveur d'action sur lequel l'action sera exécutée",
         "actionToExecute": "Action à exécuter",
-        "actionToRun": "Action à exécuter {help}",
-        "actionsRegisteredOnServer": "Les actions sont enregistrées côté serveur. Découvrez comment enregistrer de nouvelles actions en recherchant `bp.registerActions ()`.",
+        "actionToRun": "Action à exécuter",
         "actionInstructionParsingError": "Erreur lors du formattage des instructions: {msg}",
         "actionArguments": "Appelé avec ces arguments:",
         "add": "ajouter",
         "addAction": "Ajouter une nouvelle action",
-        "cantSeeActions": "Vous ne voyez pas votre action?",
         "nameAlreadyExists": "Impossible de renommer le node (Ce nom existe déjà)",
         "emptyName": "Le nom du node ne peut être vide",
         "chatbotExecutes": "L'assistant virtuel exécute",
@@ -685,6 +663,25 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Déployer le bot",
+        "lastDeploy": "Dernier déploiement",
+        "needsTraining": "Le bot a besoin d'entraînement",
+        "deploying": "Déploiement du bot..."
+      },
+      "btn": "Déployer sur Botpress cloud",
+      "toaster": {
+        "success": "Le bot a été déployé avec succès",
+        "info": "Déploiement en cours...",
+        "error": {
+          "token": "Échec de l'authentification avec Botpress Cloud",
+          "introspect": "Impossible de récupérer les informations du bot à partir de Botpress Cloud",
+          "runtimeNotReady": "Les ressources dont votre bot a besoin sont en préparation. Veuillez réessayer dans quelques minutes.",
+          "default": "Le bot n'a pas pu être déployé"
+        }
+      }
+    },
     "help": "Aide",
     "emulator": "Émulateur",
     "readDoc": "Lire la documentation",

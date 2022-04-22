@@ -53,6 +53,9 @@ declare namespace NodeJS {
     /** This property is set when the binary is built in a branch other than master */
     DEV_BRANCH?: string
     NLU_ENDPOINT?: string
+    CLOUD_OAUTH_ENDPOINT: string
+    CLOUD_CONTROLLER_ENDPOINT: string
+    CLOUD_NLU_ENDPOINT: string
   }
 }
 
@@ -206,6 +209,16 @@ declare interface BotpressEnvironmentVariables {
    */
   readonly BP_ENABLED_MODULES?: string
   readonly BP_DEBUG_SEGMENT?: boolean
+
+  /*
+   * endpoint of cloud controller API
+   */
+  readonly CLOUD_CONTROLLER_ENDPOINT?: string
+
+  /**
+   * Supports read-only deployments by allowing disabling file listeners
+   */
+  readonly CORE_DISABLE_FILE_LISTENERS?: boolean
 }
 
 interface IDebug {

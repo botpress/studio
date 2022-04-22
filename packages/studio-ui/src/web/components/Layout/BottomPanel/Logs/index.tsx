@@ -22,6 +22,9 @@ import logStyle from './style.scss'
 const INITIAL_LOGS_LIMIT = 200
 const MAX_LOGS_LIMIT = 500
 
+const isGlobalLog = (scope: string) => 'logs::*' === scope
+const isCurrentBotLog = (scope: string) => `logs::${window.BOT_ID}` === scope
+
 interface Props {
   toggleBottomPanel: () => void
   emulatorOpen: boolean
@@ -43,13 +46,20 @@ interface LogEntry {
   ts: Date
 }
 
+interface APILog {
+  message: string
+  level: string
+  timestamp: string
+  metadata: any
+}
+
 class BottomPanel extends React.Component<Props, State> {
   private messageListRef = React.createRef<HTMLUListElement>()
-  private debounceRefreshLogs
+  private debounceRefreshLogs: typeof this.forceUpdate
   private logs: LogEntry[]
   private debugRef = React.createRef<any>()
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     this.logs = []
     this.debounceRefreshLogs = _.debounce(this.forceUpdate, 50, { maxWait: 300 })
@@ -62,10 +72,8 @@ class BottomPanel extends React.Component<Props, State> {
   }
 
   setupListener = () => {
-    const isGlobalOrCurrentBotLog = (scope: string) => [`logs::${window.BOT_ID}`, 'logs::*'].includes(scope)
-
     EventBus.default.onAny((name, { level, message, args }) => {
-      if (!name || typeof name !== 'string' || !isGlobalOrCurrentBotLog(name)) {
+      if (!name || typeof name !== 'string' || !(isGlobalLog(name) || isCurrentBotLog(name))) {
         return
       }
 
@@ -91,7 +99,7 @@ class BottomPanel extends React.Component<Props, State> {
   }
 
   queryLogs = async () => {
-    const { data } = await axios.get(`${window.API_PATH}/admin/logs/bots/${window.BOT_ID}`, {
+    const { data } = await axios.get<APILog[]>(`${window.API_PATH}/admin/logs/bots/${window.BOT_ID}`, {
       params: {
         limit: INITIAL_LOGS_LIMIT
       }
@@ -112,14 +120,27 @@ class BottomPanel extends React.Component<Props, State> {
     })
   }
 
+  renderLogContent(content: string) {
+    const isHTML = (str: string) => {
+      const doc = new DOMParser().parseFromString(str, 'text/html')
+      return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1)
+    }
+
+    if (isHTML(content)) {
+      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: content }} />
+    } else {
+      return <span className={logStyle.message}>{content}</span>
+    }
+  }
+
   renderEntry(log: LogEntry): JSX.Element {
     const time = moment(new Date(log.ts)).format('YYYY-MM-DD HH:mm:ss')
     return (
       <li className={cn(logStyle.entry, logStyle[`level-${log.level}`])} key={`log-entry-${log.id}`}>
         <span className={logStyle.time}>{time}</span>
         <span className={logStyle.level}>{log.level}</span>
-        <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: log.message }} />
-        <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: log.args || '' }} />
+        {this.renderLogContent(log.message)}
+        {this.renderLogContent(log.args)}
       </li>
     )
   }

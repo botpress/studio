@@ -98,6 +98,16 @@ try {
   process.IS_PRO_AVAILABLE = true // TODO: fix this, pull from user profile
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
 
+  const localCloud = yn(process.env.CLOUD_LOCAL)
+  process.CLOUD_CONTROLLER_ENDPOINT =
+    process.env.CLOUD_CONTROLLER_ENDPOINT ||
+    (localCloud ? 'http://localhost:3600' : 'https://controllerapi.botpress.dev')
+  process.CLOUD_OAUTH_ENDPOINT =
+    process.env.CLOUD_OAUTH_ENDPOINT ||
+    (localCloud ? 'http://localhost:4444/oauth2/token' : 'https://oauth.botpress.dev/oauth2/token')
+  process.CLOUD_NLU_ENDPOINT =
+    process.env.CLOUD_NLU_ENDPOINT || (localCloud ? 'http://localhost:3200' : 'https://nlu.botpress.dev')
+
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
   process.STUDIO_VERSION = metadata.version

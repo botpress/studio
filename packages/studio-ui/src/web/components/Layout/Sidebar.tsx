@@ -50,6 +50,13 @@ const BASIC_MENU_ITEMS = [
     path: '/code-editor',
     rule: { res: 'bot.code-editor', op: 'read' },
     icon: 'code'
+  },
+  {
+    id: 'testing',
+    name: lang.tr('testing.fullName'),
+    path: '/testing',
+    rule: { res: 'module.testing', op: 'write' },
+    icon: 'record'
   }
 ]
 

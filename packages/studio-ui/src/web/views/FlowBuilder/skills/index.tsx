@@ -124,8 +124,6 @@ const SkillsBuilder = (props: Props) => {
         return <Slot {...moduleProps}></Slot>
       case 'SendEmail':
         return <SendEmail {...moduleProps}></SendEmail>
-      case 'AuthGate':
-        return <AuthGate {...moduleProps}></AuthGate>
     }
   }
 

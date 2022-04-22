@@ -4,7 +4,6 @@ import qs from 'querystring'
 import { cache } from './cache'
 
 interface OauthTokenClientProps {
-  oauthUrl: string
   clientId: string
   clientSecret: string
 }
@@ -26,9 +25,8 @@ export class CloudClient extends StanClient {
   constructor(options: OauthClientProps) {
     super({ baseURL: options.baseURL, validateStatus: () => true })
 
-    const { oauthUrl, clientId, clientSecret } = options
+    const { clientId, clientSecret } = options
     const oauthTokenClient = this._createOauthTokenClient(axios.create(), {
-      oauthUrl,
       clientId,
       clientSecret
     })
@@ -40,13 +38,19 @@ export class CloudClient extends StanClient {
 
     this.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this) as any)
     this.axios.interceptors.response.use(undefined, this._errorInterceptor(this.axios as any, tokenCache).bind(this))
+
+    this.modelWeights.axios.interceptors.request.use(this._requestInterceptor(tokenCache).bind(this) as any)
+    this.modelWeights.axios.interceptors.response.use(
+      undefined,
+      this._errorInterceptor(this.axios as any, tokenCache).bind(this)
+    )
   }
 
   private _createOauthTokenClient =
     (axios: AxiosInstance, oauthTokenClientProps: OauthTokenClientProps) => async () => {
-      const { oauthUrl, clientId, clientSecret } = oauthTokenClientProps
+      const { clientId, clientSecret } = oauthTokenClientProps
       const res = await axios.post(
-        oauthUrl,
+        process.CLOUD_OAUTH_ENDPOINT,
         qs.stringify({
           client_id: clientId,
           client_secret: clientSecret,

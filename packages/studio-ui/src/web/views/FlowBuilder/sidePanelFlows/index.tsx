@@ -1,7 +1,7 @@
 import { Icon } from '@blueprintjs/core'
 import _ from 'lodash'
 import reject from 'lodash/reject'
-import React, { FC, useState } from 'react'
+import React, { FC, useState, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { deleteFlow, duplicateFlow, renameFlow } from '~/actions'
 import { history } from '~/components/Routes'
@@ -30,6 +30,7 @@ interface Props {
   mutexInfo: string
   readOnly: boolean
   showFlowNodeProps: boolean
+  explorerOpen: boolean
 }
 
 const SidePanelContent: FC<Props> = (props) => {
@@ -104,6 +105,10 @@ const SidePanelContent: FC<Props> = (props) => {
 }
 
 const SidePanelInspectorContent: FC<Props> = (props) => {
+  if (!props.explorerOpen) {
+    return <Fragment />
+  }
+
   return (
     <div className={props.showFlowNodeProps ? style.rightPanelActive : style.rightPanel}>
       <SidePanel>
@@ -120,7 +125,8 @@ const mapStateToProps = (state) => ({
   dirtyFlows: getDirtyFlows(state),
   flowProblems: state.flows.flowProblems,
   flowsName: getFlowNamesList(state),
-  showFlowNodeProps: state.flows.showFlowNodeProps
+  showFlowNodeProps: state.flows.showFlowNodeProps,
+  explorerOpen: state.ui.explorerOpen
 })
 
 const mapDispatchToProps = {
