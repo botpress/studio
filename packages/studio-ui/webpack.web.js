@@ -36,7 +36,7 @@ const webConfig = {
     extensions: ['.js', '.jsx', '.tsx', '.ts', '.css'],
     alias: {
       '~': path.resolve(__dirname, './src/web'),
-      common: path.resolve(__dirname, '../studio-be/out/common'),
+      common: path.resolve(__dirname, '../studio-be/dist/common'),
       'botpress/sdk': path.resolve(__dirname, '../studio-be/src/sdk/botpress.d.ts')
     }
   },
@@ -105,13 +105,13 @@ const webConfig = {
         ],
         onEnd: [
           {
-            delete: [{ source: path.resolve(__dirname, '../studio-be/out/ui/public'), options: { force: true } }]
+            delete: [{ source: path.resolve(__dirname, '../studio-be/dist/ui/public'), options: { force: true } }]
           },
           {
             copy: [
               {
                 source: 'public',
-                destination: path.resolve(__dirname, '../studio-be/out/ui/public')
+                destination: path.resolve(__dirname, '../studio-be/dist/ui/public')
               }
             ]
           }
