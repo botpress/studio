@@ -17,26 +17,6 @@
     "eslint": "eslint packages/ --ext .ts,.tsx",
     "test:unit": "jest -c jest.unit.config.ts"
   },
-  "bin": "./packages/studio-be/out/index.js",
-  "pkg": {
-    "scripts": [
-      "./packages/studio-be/out/**/*.js"
-    ],
-    "assets": [
-      "./node_modules/vm2/lib/*.js",
-      "./node_modules/xml-encryption/lib/templates/*.tpl.xml",
-      "./node_modules/npm/**/*",
-      "./packages/studio-be/out/ui/**",
-      "./packages/studio-be/out/builtin/**",
-      "./packages/studio-be/out/sdk/*.txt",
-      "./packages/studio-be/out/typings/*.txt"
-    ],
-    "targets": [
-      "node12-win32-x64",
-      "node12-linux-x64",
-      "node12-macos-x64"
-    ]
-  },
   "devDependencies": {
     "@jest/types": "^27.5.0",
     "@types/jest": "^27.4.0",
@@ -60,16 +40,10 @@
     "typescript": "^4.5.5"
   },
   "workspaces": [
-    "packages/studio-ui",
-    "packages/studio-be",
-    "packages/logger",
-    "packages/typings",
-    "packages/ui-shared",
-    "packages/ui-shared-lite",
-    "packages/inspector-kit"
+    "packages/*"
   ],
   "engines": {
     "node": "12.18.1"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.1.1"
 }

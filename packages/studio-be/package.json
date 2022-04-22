@@ -7,9 +7,9 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_PATH=./out node ./out/index.js",
-    "build": "ts-node --transpile-only --dir ../../scripts write_metadata && tsc --build && node ./scripts/copy_builtin.js",
+    "build": "ts-node --transpile-only --dir ../../scripts write_metadata && yarn run -T tsc --build && node ./scripts/copy_builtin.js",
     "clean": "rimraf ./out",
-    "watch": "tsc --build --watch"
+    "watch": "yarn run -T tsc --build --watch"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
@@ -83,7 +83,6 @@
     "@types/proper-lockfile": "^4.1.2",
     "@types/verror": "^1.10.5",
     "cross-env": "^7.0.3",
-    "ts-node": "^10.5.0",
-    "typescript": "^4.5.5"
+    "ts-node": "^10.5.0"
   }
 }

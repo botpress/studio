@@ -13,11 +13,10 @@
     "@types/lodash": "^4.14.116",
     "@types/node": "^12.13.0",
     "jest": "^24.9.0",
-    "ts-jest": "^26.5.5",
-    "typescript": "^3.9.10"
+    "ts-jest": "^26.5.5"
   },
   "scripts": {
-    "build": "tsc --build",
+    "build": "yarn run -T tsc --build",
     "test": "cross-env jest -i --detectOpenHandles -c jest.config.js"
   }
 }
