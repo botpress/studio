@@ -15,9 +15,6 @@
     "baseUrl": "./src",
     "outDir": "./out",
     "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
-    "paths": {
-      "botpress/sdk": ["./sdk/botpress.d.ts"]
-    },
     "types": ["reflect-metadata", "jest"]
   },
   "include": ["src"],
