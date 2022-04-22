@@ -7,7 +7,7 @@ const findWithRegex = (regex, contentBlock, callback) => {
 
   // exclude entities, when matching
   contentBlock.findEntityRanges(
-    character => !character.getEntity(),
+    (character) => !character.getEntity(),
     (nonEntityStart, nonEntityEnd) => {
       const text = contentBlockText.slice(nonEntityStart, nonEntityEnd)
       let matchArr
