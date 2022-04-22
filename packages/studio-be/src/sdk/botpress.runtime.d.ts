@@ -613,15 +613,15 @@ declare module 'botpress/runtime-sdk' {
     /**
      * @deprecated Use bp.kvs.forBot().set() and set an expiry as the last parameter
      */
-    setStorageWithExpiry(key: string, value, expiry?: string)
+    setStorageWithExpiry(key: string, value: any, expiry?: string): any
     /**
      * @deprecated Use bp.kvs.forBot().get() which handles expiry automatically
      */
-    getStorageWithExpiry(key: string)
+    getStorageWithExpiry(key: string): any
     getConversationStorageKey(sessionId: string, variable: string): string
     getUserStorageKey(userId: string, variable: string): string
     getGlobalStorageKey(variable: string): string
-    removeStorageKeysStartingWith(key): Promise<void>
+    removeStorageKeysStartingWith(key: string): Promise<void>
   }
 
   export interface ListenHandle {
@@ -1248,7 +1248,7 @@ declare module 'botpress/runtime-sdk' {
     export function registerMiddleware(middleware: IO.MiddlewareDefinition): void
 
     /** Removes the specified middleware from the chain. This is mostly used in case of a module being reloaded */
-    export function removeMiddleware(middlewareName): void
+    export function removeMiddleware(middlewareName: string): void
 
     /**
      * Send an event through the incoming or outgoing middleware chain
@@ -1462,7 +1462,7 @@ declare module 'botpress/runtime-sdk' {
      * @param item TemplateItem to render
      * @param context Variables to use for the template rendering
      */
-    export function renderTemplate(item: TemplateItem, context): TemplateItem
+    export function renderTemplate(item: TemplateItem, context: any): TemplateItem
   }
 
   export namespace messaging {

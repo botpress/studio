@@ -1,4 +1,4 @@
-global['NativePromise'] = global.Promise
+;(global as any)['NativePromise'] = global.Promise
 
 import chalk from 'chalk'
 import path from 'path'
@@ -23,7 +23,7 @@ Please set the environment variable "APP_DATA_PATH", then start Botpress`)
   process.exit()
 }
 
-const printPlainError = (err) => {
+const printPlainError = (err: any) => {
   /* eslint-disable no-console */
   console.log('Error starting botpress')
   console.log(err)
@@ -37,7 +37,7 @@ global.printErrorDefault = printPlainError
 
 const originalWrite = process.stdout.write
 
-const shouldDiscardError = (message) =>
+const shouldDiscardError = (message: any) =>
   !![
     '[DEP0005]' // Buffer() deprecation warning
   ].find((e) => message.indexOf(e) >= 0)
@@ -123,7 +123,7 @@ try {
           type: 'string'
         }
       },
-      async (argv) => {
+      async (argv: any) => {
         if (process.env.BP_DATA_FOLDER) {
           process.DATA_LOCATION = process.env.BP_DATA_FOLDER
           process.IS_STANDALONE = true

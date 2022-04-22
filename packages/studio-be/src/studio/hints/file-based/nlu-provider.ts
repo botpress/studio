@@ -10,7 +10,7 @@ export default class NLUProvider implements FileBasedHintProvider {
     try {
       const intent = JSON.parse(content)
       return _.flatten(
-        intent.slots.map((x) =>
+        intent.slots.map((x: any) =>
           [
             {
               description: 'An extracted slot',

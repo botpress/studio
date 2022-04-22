@@ -43,7 +43,7 @@ export type RequestWithPerms = RequestWithUser & {
   body: any
 }
 
-export const HOOK_SIGNATURES = {
+export const HOOK_SIGNATURES: { [key: string]: string } = {
   before_incoming_middleware: 'function hook(bp: typeof sdk, event: sdk.IO.IncomingEvent)',
   after_incoming_middleware: 'function hook(bp: typeof sdk, event: sdk.IO.IncomingEvent)',
   before_outgoing_middleware: 'function hook(bp: typeof sdk, event: sdk.IO.IncomingEvent)',

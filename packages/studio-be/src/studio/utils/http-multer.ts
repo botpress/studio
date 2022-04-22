@@ -19,7 +19,7 @@ export const fileUploadMulter = (allowedMimeTypes: string[] = [], maxFileSize?: 
   })
 
   return multer({
-    fileFilter: (_req, file, cb) => {
+    fileFilter: (_req: any, file: any, cb: any) => {
       const extMimeType = mime.lookup(file.originalname)
       if (
         allowedMimeTypesRegex.some((regex) => regex.test(file.mimetype)) &&

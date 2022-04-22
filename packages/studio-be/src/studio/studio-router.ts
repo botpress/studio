@@ -118,7 +118,7 @@ export class StudioRouter extends CustomRouter {
     this.setupStaticRoutes(app)
   }
 
-  setupUnauthenticatedRoutes(app) {
+  setupUnauthenticatedRoutes(app: any) {
     /**
      * UNAUTHENTICATED ROUTES
      * Do not return sensitive information there. These must be accessible by unauthenticated users
@@ -164,7 +164,7 @@ export class StudioRouter extends CustomRouter {
     )
   }
 
-  setupStaticRoutes(app) {
+  setupStaticRoutes(app: any) {
     app.use('/:app(studio)/:botId', express.static(resolveStudioAsset('public'), { index: false }))
     app.use('/:app(studio)/:botId', resolveIndexPaths('public/index.html'))
     app.get(['/:app(studio)/:botId/*'], resolveIndexPaths('public/index.html'))
@@ -172,7 +172,7 @@ export class StudioRouter extends CustomRouter {
 }
 
 // Dynamically updates the static paths of index files
-const resolveIndexPaths = (page: string) => (req, res) => {
+const resolveIndexPaths = (page: string) => (req: any, res: any) => {
   res.contentType('text/html')
 
   // Not caching pages in dev (issue with webpack )

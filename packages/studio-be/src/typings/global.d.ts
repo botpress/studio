@@ -2,7 +2,7 @@ declare namespace NodeJS {
   export interface ExtraRequire {
     addToNodePath(path: string): void
     getPaths(): string[]
-    overwritePaths(paths: string[])
+    overwritePaths(paths: string[]): any
   }
 
   export interface Global {

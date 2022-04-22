@@ -6,7 +6,7 @@ import path from 'path'
 const debug = DEBUG('api')
 const debugRequest = debug.sub('request')
 
-export const debugRequestMw = (req: Request, _res, next) => {
+export const debugRequestMw = (req: Request, _res: any, next: any) => {
   debugRequest(`${req.path} %o`, {
     method: req.method,
     ip: req.ip,
@@ -19,7 +19,7 @@ export const debugRequestMw = (req: Request, _res, next) => {
 const indexCache: { [pageUrl: string]: string } = {}
 
 // Dynamically updates the static paths of index files
-export const resolveIndexPaths = (page: string) => (req, res) => {
+export const resolveIndexPaths = (page: string) => (req: any, res: any) => {
   res.contentType('text/html')
 
   // Not caching pages in dev (issue with webpack )

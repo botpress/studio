@@ -1,9 +1,9 @@
 import { FileDefinition, FileTypes, EditableFile, FilePermissions } from 'common/code-editor'
 import { BUILTIN_MODULES } from 'common/defaults'
-import jsonlintMod from 'jsonlint-mod'
 import _ from 'lodash'
 
 import { FILENAME_REGEX } from './editor'
+const jsonlintMod = require('jsonlint-mod')
 
 export const getBuiltinExclusion = () => {
   return _.flatMap(BUILTIN_MODULES, (mod) => [`${mod}/*`, `*/${mod}/*`])
@@ -114,7 +114,7 @@ ${x.name}: ${x.type}
   }`
 }
 
-const extractInfo = (keys) => {
+const extractInfo = (keys: any) => {
   return Object.keys(keys).map((name) => {
     return { name, value: keys[name], type: typeof keys[name] }
   })

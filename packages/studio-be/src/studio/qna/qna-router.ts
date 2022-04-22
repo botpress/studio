@@ -53,7 +53,7 @@ export class QNARouter extends CustomStudioRouter {
   }
 
   private _makeIntentFromQna(qnaItem: QnaItem): NLU.IntentDefinition {
-    const utterances = {}
+    const utterances: { [key: string]: any } = {}
     for (const lang in qnaItem.data.questions) {
       utterances[lang] = qnaItem.data.questions[lang].map(this._normalizeQuestion).filter(Boolean)
     }
@@ -284,7 +284,7 @@ export class QNARouter extends CustomStudioRouter {
           )
         })
 
-        const contentElements = {}
+        const contentElements: { [key: string]: any } = {}
 
         for (const qna of qnas) {
           for (const answer of _.flatten(Object.values(qna.data.answers))) {

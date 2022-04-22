@@ -30,8 +30,8 @@ export class AppLifecycle {
 
       this._cache[event] = {
         promise: p,
-        reject: _rej,
-        resolve: _res
+        reject: _rej as any,
+        resolve: _res as any
       }
     }
 

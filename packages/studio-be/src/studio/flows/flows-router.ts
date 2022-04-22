@@ -9,7 +9,7 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 const FLOW_DIR = 'flows'
 
-const parseFlowNameMiddleware = (req, _, next) => {
+const parseFlowNameMiddleware = (req: any, _: any, next: any) => {
   const { flowName } = req.params
   if (flowName) {
     req.params.flowName = decodeFolderPath(flowName)
@@ -35,7 +35,7 @@ export class FlowsRouter extends CustomStudioRouter {
     )
 
     const nodeViews: NodeView[] = flow.nodes.map((n) => {
-      const uiNode = uiEq.nodes.find((uiNode) => uiNode.id === n.id)
+      const uiNode = uiEq.nodes.find((uiNode: any) => uiNode.id === n.id)
       return {
         next: [],
         ...n,

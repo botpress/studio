@@ -24,7 +24,7 @@ import { debugRequestMw, resolveStudioAsset } from './utils/server-utils'
 
 const getSocketTransports = (): string[] => ['websocket', 'polling']
 
-export const monitoringMiddleware = (req, res, next) => {
+export const monitoringMiddleware = (req: any, res: any, next: any) => {
   const startAt = Date.now()
 
   onHeaders(res, () => {
@@ -203,14 +203,14 @@ export class HTTPServer {
 
     await this.studioRouter.setupRoutes(this.app)
 
-    this.app.use((err, _req, _res, next) => {
+    this.app.use((err: any, _req: any, _res: any, next: any) => {
       if (err.statusCode === 413) {
         this.logger.error('You may need to increase httpServer.bodyLimit in file data/global/botpress.config.json')
       }
       next(err)
     })
 
-    this.app.use(function handleUnexpectedError(err, req, res, next) {
+    this.app.use(function handleUnexpectedError(err: any, req: any, res: any, next: any) {
       const statusCode = err.statusCode || 400
       const errorCode = err.errorCode
       const message = err.message || err || 'Unexpected error'
@@ -250,7 +250,7 @@ export class HTTPServer {
   }
 
   private guardWhiteLabel() {
-    return (req, res, next) => {
+    return (req: any, res: any, next: any) => {
       // TODO: remove this
       if (path.normalize(req.path) === '/custom-theme.css' && (!process.IS_PRO_ENABLED || !process.IS_LICENSED)) {
         return res.sendStatus(404)

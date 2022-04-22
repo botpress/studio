@@ -16,8 +16,8 @@ export interface bpfs {
   moveFile(fromPath: string, toPath: string): Promise<void>
 }
 
-const forceForwardSlashes = (path) => path.replace(/\\/g, '/')
-const resolvePath = (p) => path.resolve(process.DATA_LOCATION, p)
+const forceForwardSlashes = (path: string) => path.replace(/\\/g, '/')
+const resolvePath = (p: string) => path.resolve(process.DATA_LOCATION, p)
 
 export const Instance: bpfs = {
   async upsertFile(filePath: string, content: string | Buffer): Promise<void> {

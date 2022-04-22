@@ -10,8 +10,6 @@
     "tsBuildInfoFile": "dist/.tsbuildinfo",
 
     // TODO: remove this
-    "noImplicitAny": false,
-    // TODO: remove this
     "useUnknownInCatchVariables": false,
     // TODO: remove this
     "baseUrl": "./src",

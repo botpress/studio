@@ -14,7 +14,7 @@ const removeSlotsFromUtterances = (utterances: { [key: string]: any }, slotNames
   _.fromPairs(
     Object.entries(utterances).map(([key, val]) => {
       const regex = new RegExp(`\\[([^\\[\\]\\(\\)]+?)\\]\\((${slotNames.join('|')})\\)`, 'gi')
-      return [key, val.map((u) => u.replace(regex, '$1'))]
+      return [key, val.map((u: any) => u.replace(regex, '$1'))]
     })
   )
 

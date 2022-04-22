@@ -19,13 +19,13 @@ class MediaRouter extends CustomStudioRouter {
     return `/api/v1/studio/${this.botId}/media/${encodeURIComponent(fileName)}`
   }
 
-  getMediaFiles(formData): string[] {
+  getMediaFiles(formData: any): string[] {
     const media = '/media/'
-    const iterator = (result: string[], value, key: string) => {
+    const iterator = (result: string[], value: any, key: string) => {
       if (key.startsWith('image') && value && value.includes(media)) {
         result.push(value.substr(value.indexOf(media) + media.length))
       } else if (key.startsWith('items$') && value.length) {
-        value.forEach((e) => _.reduce(e, iterator, result))
+        value.forEach((e: any) => _.reduce(e, iterator, result))
       }
       return result
     }
@@ -66,12 +66,12 @@ class MediaRouter extends CustomStudioRouter {
       this.checkTokenHeader,
       this.needPermissions('write', 'bot.media'),
       this.asyncMiddleware(async (req, res) => {
-        mediaUploadMulter(req, res, async (err) => {
+        mediaUploadMulter(req, res, async (err: any) => {
           if (err) {
             return res.status(400).send(err.message)
           }
 
-          const file = req['file']
+          const file = (req as any)['file']
           const fileName = sanitize(`${safeId(20)}-${path.basename(file.originalname)}`)
 
           await Instance.upsertFile(path.join('media', fileName), file.buffer)

@@ -50,7 +50,7 @@ export class HintsService {
   }
 
   async refreshAll(): Promise<void> {
-    const hints = {}
+    const hints: { [key: string]: any } = {}
     hints['global/base'] = BaseHints
     const files = [...(await Instance.directoryListing('./', { includeDotFiles: true }))]
     await Promise.mapSeries(files, async (file) => (hints[file] = await this.indexFile(file)))

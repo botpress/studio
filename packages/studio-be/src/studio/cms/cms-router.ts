@@ -159,12 +159,12 @@ export class CMSRouter extends CustomStudioRouter {
     // TODO: Refactor this whole thing
 
     let recursiveProtection = 0
-    const elementsById = elements.reduce((acc, curr) => {
+    const elementsById = elements.reduce((acc: any, curr) => {
       curr.elements.forEach((el) => (acc[el.id] = el))
       return acc
     }, {})
 
-    const resolveRef = (data: any) => {
+    const resolveRef = (data: any): any => {
       if (recursiveProtection++ >= 10) {
         return '[error: circular dependency]'
       }
@@ -205,7 +205,7 @@ export class CMSRouter extends CustomStudioRouter {
 
       if (originalProps) {
         return originalProps.reduce(
-          (result, prop) => ((result[prop] = separatorExtraction(prop) || nestedDictExtraction(prop)), result),
+          (result: any, prop) => ((result[prop] = separatorExtraction(prop) || nestedDictExtraction(prop)), result),
           {}
         )
       } else {
@@ -224,7 +224,7 @@ export class CMSRouter extends CustomStudioRouter {
         recursiveProtection = 0 // reset recursive counter that prevents circular dependencies between elements
         const expandedFormData = resolveRef(element.formData)
 
-        const previews = languages.reduce((result, lang) => {
+        const previews = languages.reduce((result: any, lang) => {
           if (!contentType || !contentType.computePreviewText) {
             result[lang] = 'No preview'
             return result
