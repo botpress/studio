@@ -64,7 +64,6 @@
     "packages/native-extensions",
     "packages/studio-ui",
     "packages/studio-be",
-    "packages/superinput",
     "packages/logger",
     "packages/runtime",
     "packages/typings",
