@@ -232,7 +232,7 @@ export class BotService {
       from: [new RegExp(`/bots/${botId}/`, 'g')],
       to: [BOT_ID_PLACEHOLDER]
     }
-    const excludes = ['libraries/node_modules/**/*']
+    const excludes: string[] = []
     if (!cloud) {
       excludes.push('models/**/*')
     }

@@ -23,7 +23,6 @@ class PanelContent extends React.Component<Props> {
     botConfigs: [],
     moduleConfigFiles: [],
     rawFiles: [],
-    sharedLibs: [],
     components: [],
     selectedNode: '',
     selectedFile: undefined,
@@ -71,9 +70,6 @@ class PanelContent extends React.Component<Props> {
     const moduleConfigFiles = []
     this.addFiles('bot.module_config', lang.tr('code-editor.sidePanel.currentBot'), moduleConfigFiles)
 
-    const sharedLibs = []
-    this.addFiles('bot.shared_libs', lang.tr('code-editor.sidePanel.currentBot'), sharedLibs)
-
     this.addFiles('hook_example', EXAMPLE_FOLDER_LABEL, hookFiles)
     this.addFiles('action_example', EXAMPLE_FOLDER_LABEL, actionFiles)
 
@@ -81,8 +77,7 @@ class PanelContent extends React.Component<Props> {
       actionFiles,
       hookFiles,
       botConfigs: botConfigFiles,
-      moduleConfigFiles,
-      sharedLibs
+      moduleConfigFiles
     })
   }
 
@@ -197,19 +192,6 @@ class PanelContent extends React.Component<Props> {
         onClick: () => this.createFilePrompt('shared_libs')
       }
     ]
-
-    return (
-      <SidePanelSection label={lang.tr('code-editor.sidePanel.sharedLibs')} actions={actions}>
-        <FileNavigator
-          id="shared_libs"
-          files={this.state.sharedLibs}
-          expandedNodes={this.expandedNodes}
-          selectedNode={this.state.selectedNode}
-          onNodeStateExpanded={this.updateNodeExpanded}
-          onNodeStateSelected={this.updateNodeSelected}
-        />
-      </SidePanelSection>
-    )
   }
 
   renderSectionHooks() {
