@@ -6,9 +6,9 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_PATH=./out node ./out/index.js",
+    "start": "cross-env NODE_PATH=./dist node ./dist/index.js",
     "build": "yarn run -T tsc --build && node ./scripts/copy_builtin.js",
-    "clean": "rimraf ./out",
+    "clean": "rimraf ./dist",
     "watch": "yarn run -T tsc --build --watch"
   },
   "dependencies": {

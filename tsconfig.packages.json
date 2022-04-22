@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2021",
+    // TODO: should be 2021 (doesn't work with bluebird)
+    "target": "es2019",
     "esModuleInterop": true,
     "sourceMap": true,
     "composite": true,

@@ -1,22 +1,25 @@
 {
+  // Manage references here
   "references": [{ "path": "../logger" }],
+
+  // Defaults (don't change this)
+  "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "declaration": true,
-    "sourceMap": true,
-    "strict": true,
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "resolveJsonModule": true,
-    "target": "es2019",
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+
+    // TODO: remove this
     "noImplicitAny": false,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
+    // TODO: remove this
     "useUnknownInCatchVariables": false,
+    // TODO: remove this
     "baseUrl": "./src",
-    "outDir": "./out",
-    "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],
+    // TODO: remove this
+    "typeRoots": ["./src/typings", "../../node_modules/@types"],
+    // TODO: remove this
     "types": ["reflect-metadata", "jest"]
   },
   "include": ["src"],
-  "exclude": ["**/*.test.ts"]
+  "exclude": ["dist", "node_modules", "**/*.test.ts"]
 }
