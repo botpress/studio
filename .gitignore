@@ -4,8 +4,6 @@ bin/
 yarn-error.log
 dist/
 public/
-metadata.json
-*.node.bak
 .idea/
 .idea
 .env.debug
