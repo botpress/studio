@@ -1,11 +1,11 @@
+import { omit } from 'lodash'
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-
 import { Glyphicon } from 'react-bootstrap'
+import { connect } from 'react-redux'
 
 import { addDocumentationHint, removeDocumentationHint, updateDocumentationModal } from '~/actions'
 
-class StatusBarDocumentationProvider extends Component {
+class StatusBarDocumentationProvider extends Component<any> {
   componentDidMount() {
     this.props.addDocumentationHint(this.props.file)
   }
@@ -20,9 +20,9 @@ class StatusBarDocumentationProvider extends Component {
   }
 }
 
-const _LinkDocumentationProvider = props => {
-  const passthroughProps = _.omit(props, 'children', 'onClick', 'href', 'updateDocumentationModal')
-  const onClick = e => {
+const _LinkDocumentationProvider = (props) => {
+  const passthroughProps = omit(props, 'children', 'onClick', 'href', 'updateDocumentationModal')
+  const onClick = (e) => {
     e.preventDefault()
 
     window.open(`https://botpress.com/docs/${props.file}`, '_blank')
@@ -34,12 +34,6 @@ const _LinkDocumentationProvider = props => {
   )
 }
 
-export default connect(
-  null,
-  { addDocumentationHint, removeDocumentationHint }
-)(StatusBarDocumentationProvider)
+export default connect(null, { addDocumentationHint, removeDocumentationHint })(StatusBarDocumentationProvider)
 
-export const LinkDocumentationProvider = connect(
-  null,
-  { updateDocumentationModal }
-)(_LinkDocumentationProvider)
+export const LinkDocumentationProvider = connect(null, { updateDocumentationModal })(_LinkDocumentationProvider)

@@ -1,6 +1,6 @@
+import _ from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
-import _ from 'lodash'
 import { changeContentLanguage } from '~/actions'
 
 const mapStateToProps = (state) => ({
