@@ -25,8 +25,7 @@ module.exports = {
     '*.js',
     '**/out/**',
     '**/dist/**',
-    '**/*.test.ts',
-    'packages/native-extensions/**'
+    '**/*.test.ts'
   ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
   rules: {

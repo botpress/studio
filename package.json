@@ -23,7 +23,6 @@
       "./packages/studio-be/out/**/*.js"
     ],
     "assets": [
-      "./node_modules/@botpress/native-extensions/bin/**/*",
       "./node_modules/vm2/lib/*.js",
       "./node_modules/xml-encryption/lib/templates/*.tpl.xml",
       "./node_modules/npm/**/*",
@@ -61,7 +60,6 @@
     "typescript": "^4.5.5"
   },
   "workspaces": [
-    "packages/native-extensions",
     "packages/studio-ui",
     "packages/studio-be",
     "packages/logger",

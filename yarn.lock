@@ -2747,12 +2747,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@botpress/native-extensions@*, @botpress/native-extensions@workspace:packages/native-extensions":
-  version: 0.0.0-use.local
-  resolution: "@botpress/native-extensions@workspace:packages/native-extensions"
-  languageName: unknown
-  linkType: soft
-
 "@botpress/nlu-client@npm:1.0.0-rc.2":
   version: 1.0.0-rc.2
   resolution: "@botpress/nlu-client@npm:1.0.0-rc.2"
@@ -2781,7 +2775,6 @@ __metadata:
   dependencies:
     "@apidevtools/json-schema-ref-parser": ^9.0.9
     "@botpress/logger": "*"
-    "@botpress/native-extensions": "*"
     "@botpress/nlu-client": 1.0.2-rc.6
     "@types/bluebird-global": ^3.5.13
     "@types/bluebird-retry": ^0.11.5
