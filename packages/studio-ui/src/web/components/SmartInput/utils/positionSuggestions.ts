@@ -1,4 +1,4 @@
-const getRelativeParent = element => {
+const getRelativeParent = (element) => {
   if (!element) {
     return null
   }
@@ -12,7 +12,6 @@ const getRelativeParent = element => {
 }
 
 const positionSuggestions = ({ state, props }) => {
-
   let transform
   let transition
   if (state.isActive) {

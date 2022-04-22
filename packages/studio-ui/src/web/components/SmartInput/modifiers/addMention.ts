@@ -24,10 +24,7 @@ const addMention = (editorState, mention, mentionPrefix, mentionTrigger, entityM
   // If the mention is inserted at the end, a space is appended right after for
   // a smooth writing experience.
   const blockKey = mentionTextSelection.getAnchorKey()
-  const blockSize = editorState
-    .getCurrentContent()
-    .getBlockForKey(blockKey)
-    .getLength()
+  const blockSize = editorState.getCurrentContent().getBlockForKey(blockKey).getLength()
   if (blockSize === end && addSpaceAfter) {
     mentionReplacedContent = Modifier.insertText(
       mentionReplacedContent,
