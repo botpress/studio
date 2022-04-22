@@ -10,8 +10,6 @@ module.exports = {
     project: [
       './packages/studio-*/tsconfig.json',
       './scripts/tsconfig.json',
-      './packages/builder/tsconfig.json',
-      './packages/components/tsconfig-*.json',
       './packages/logger/tsconfig.json',
       './packages/inspector-kit/tsconfig.json'
     ],
