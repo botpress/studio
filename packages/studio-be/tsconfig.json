@@ -10,8 +10,6 @@
     "tsBuildInfoFile": "dist/.tsbuildinfo",
 
     // TODO: remove this
-    "baseUrl": "./src",
-    // TODO: remove this
     "typeRoots": ["./src/typings", "../../node_modules/@types"],
     // TODO: remove this
     "types": ["reflect-metadata", "jest"]

@@ -1,5 +1,5 @@
-import { StudioServices } from 'studio/studio-router'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { StudioServices } from '../studio-router'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 import { HintsService } from './hints-service'
 
 export class HintsRouter extends CustomStudioRouter {

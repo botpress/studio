@@ -3,9 +3,9 @@ import { ContentElement, ContentType, SearchParams } from 'botpress/sdk'
 import _ from 'lodash'
 import { nanoid } from 'nanoid'
 import path from 'path'
-import { StudioServices } from 'studio/studio-router'
-import { Instance } from 'studio/utils/bpfs'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { StudioServices } from '../studio-router'
+import { Instance } from '../utils/bpfs'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 
 export enum ButtonAction {
   SaySomething = 'Say something',

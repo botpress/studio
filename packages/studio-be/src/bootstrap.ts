@@ -9,10 +9,9 @@ import chalk from 'chalk'
 import fs from 'fs'
 import _ from 'lodash'
 
-import { showBanner } from 'misc/banner'
-
-import { GlobalEvents, StudioEvents } from 'studio/events'
 import { Botpress } from './botpress'
+import { showBanner } from './misc/banner'
+import { GlobalEvents, StudioEvents } from './studio/events'
 
 export class StudioUITransport implements LogTransporter {
   private callback: any

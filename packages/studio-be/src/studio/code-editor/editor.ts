@@ -1,5 +1,9 @@
 import 'bluebird-global'
 import * as sdk from 'botpress/sdk'
+
+import fs from 'fs'
+import _ from 'lodash'
+import path from 'path'
 import {
   FileDefinition,
   FileTypes,
@@ -8,12 +12,8 @@ import {
   FilesDS,
   FileType,
   TypingDefinitions
-} from 'common/code-editor'
-
-import fs from 'fs'
-import _ from 'lodash'
-import path from 'path'
-import { Instance } from 'studio/utils/bpfs'
+} from '../../common/code-editor'
+import { Instance } from '../../studio/utils/bpfs'
 
 import { assertValidFilename, buildRestrictedProcessVars, getBuiltinExclusion, getFileLocation } from './utils'
 

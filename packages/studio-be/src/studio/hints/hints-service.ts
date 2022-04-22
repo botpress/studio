@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import minimatch from 'minimatch'
-import { Instance } from 'studio/utils/bpfs'
+import { Instance } from '../../studio/utils/bpfs'
 
 import BaseHints from './base-hints'
 import FileBasedProviders from './file-based'

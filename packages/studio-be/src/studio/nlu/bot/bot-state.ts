@@ -1,7 +1,7 @@
 import { TrainInput as StanTrainInput, TrainingState as StanTrainingState } from '@botpress/nlu-client'
 import crypto from 'crypto'
 import _ from 'lodash'
-import { Instance } from 'studio/utils/bpfs'
+import { Instance } from '../../../studio/utils/bpfs'
 import { DefinitionsRepository } from '../definitions-repository'
 
 import { ModelEntryService, TrainingEntryService, ModelEntry } from '../model-entry'

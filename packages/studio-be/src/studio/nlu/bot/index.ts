@@ -1,6 +1,6 @@
 import { ListenHandle, Logger } from 'botpress/sdk'
-import { Training as BpTraining } from 'common/nlu-training'
 import _ from 'lodash'
+import { Training as BpTraining } from '../../../common/nlu-training'
 import { DefinitionsRepository } from '../definitions-repository'
 import { ModelEntryService, TrainingEntryService } from '../model-entry'
 import { NLUClient } from '../nlu-client'

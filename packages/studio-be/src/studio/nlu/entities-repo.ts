@@ -1,9 +1,8 @@
 import * as sdk from 'botpress/sdk'
-import { getEntityId } from 'common/entity-id'
-import { sanitizeFileName } from 'common/utils'
 import path from 'path'
-
-import { Instance } from 'studio/utils/bpfs'
+import { getEntityId } from '../../common/entity-id'
+import { sanitizeFileName } from '../../common/utils'
+import { Instance } from '../../studio/utils/bpfs'
 
 import { NLUService } from './nlu-service'
 

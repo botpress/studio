@@ -1,8 +1,8 @@
 import { BotConfig } from 'botpress/sdk'
 import _ from 'lodash'
-import { StudioServices } from 'studio/studio-router'
-import { Instance } from 'studio/utils/bpfs'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { StudioServices } from '../studio-router'
+import { Instance } from '../utils/bpfs'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 
 export class ConfigRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {

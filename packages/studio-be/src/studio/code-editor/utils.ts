@@ -1,6 +1,6 @@
-import { FileDefinition, FileTypes, EditableFile, FilePermissions } from 'common/code-editor'
-import { BUILTIN_MODULES } from 'common/defaults'
 import _ from 'lodash'
+import { EditableFile, FileDefinition, FilePermissions, FileTypes } from '../../common/code-editor'
+import { BUILTIN_MODULES } from '../../common/defaults'
 
 import { FILENAME_REGEX } from './editor'
 const jsonlintMod = require('jsonlint-mod')

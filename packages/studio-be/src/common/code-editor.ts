@@ -1,4 +1,4 @@
-import { RequestWithUser } from 'common/typings'
+import { RequestWithUser } from './typings'
 
 export interface TypingDefinitions {
   [file: string]: string

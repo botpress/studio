@@ -1,13 +1,13 @@
 import { Serialize } from 'cerialize' // TODO: we don't use this lib
-import { LocalActionDefinition } from 'common/typings'
 import doctrine from 'doctrine'
 import _ from 'lodash'
 import path from 'path'
-import { StudioServices } from 'studio/studio-router'
-import { Instance } from 'studio/utils/bpfs'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 
 import yn from 'yn'
+import { LocalActionDefinition } from '../../common/typings'
+import { StudioServices } from '../studio-router'
+import { Instance } from '../utils/bpfs'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 
 export class ActionsRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {

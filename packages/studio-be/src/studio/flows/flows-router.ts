@@ -1,11 +1,11 @@
 import { DirectoryListingOptions, Flow } from 'botpress/sdk'
-import { decodeFolderPath } from 'common/http'
-import { FlowView, NodeView } from 'common/typings'
 import _ from 'lodash'
 import path from 'path'
-import { StudioServices } from 'studio/studio-router'
-import { Instance } from 'studio/utils/bpfs'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { decodeFolderPath } from '../../common/http'
+import { FlowView, NodeView } from '../../common/typings'
+import { StudioServices } from '../studio-router'
+import { Instance } from '../utils/bpfs'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 
 const FLOW_DIR = 'flows'
 

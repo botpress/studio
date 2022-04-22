@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { StudioServices } from 'studio/studio-router'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
+import { StudioServices } from '../studio-router'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
 
 import { Editor } from './editor'
 

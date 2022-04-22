@@ -1,12 +1,11 @@
-import { sanitizeFileName } from 'common/utils'
 import _ from 'lodash'
 
 import path from 'path'
-import { StudioServices } from 'studio/studio-router'
-import { Instance } from 'studio/utils/bpfs'
-import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import { safeId, sanitize } from 'studio/utils/file-names'
-import { fileUploadMulter } from 'studio/utils/http-multer'
+import { StudioServices } from '../studio-router'
+import { Instance } from '../utils/bpfs'
+import { CustomStudioRouter } from '../utils/custom-studio-router'
+import { safeId, sanitize } from '../utils/file-names'
+import { fileUploadMulter } from '../utils/http-multer'
 
 const DEFAULT_ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'audio/mpeg', 'video/mp4']
 const DEFAULT_MAX_FILE_SIZE = '25mb'

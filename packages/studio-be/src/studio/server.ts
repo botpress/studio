@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser'
 import { Logger } from 'botpress/sdk'
 
-import { machineUUID } from 'common/stats'
 import compression from 'compression'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -10,15 +9,15 @@ import express from 'express'
 import { createServer, Server } from 'http'
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware'
 
-import { AppLifecycle, AppLifecycleEvents } from 'lifecycle'
-
 import _ from 'lodash'
 import onHeaders from 'on-headers'
 import path from 'path'
 import portFinder from 'portfinder'
-import { StudioRouter } from 'studio/studio-router'
 import { URL } from 'url'
 import yn from 'yn'
+import { machineUUID } from '../common/stats'
+import { AppLifecycle, AppLifecycleEvents } from '../lifecycle'
+import { StudioRouter } from './studio-router'
 
 import { debugRequestMw, resolveStudioAsset } from './utils/server-utils'
 
