@@ -165,8 +165,7 @@
       "hooks": "Hooks",
       "moduleConf": "Module Configurations",
       "pipelineHooks": "Pipeline Hooks",
-      "rawFileEditor": "Raw File Editor",
-      "sharedLibs": "Libraries"
+      "rawFileEditor": "Raw File Editor"
     },
     "splash": {
       "advancedEditor": "Advanced Editor",
@@ -202,6 +201,9 @@
       "uploadFile": "Upload File"
     }
   },
+  "testing": {
+    "fullName": "Testing"
+  },
   "skills": {
     "label": "Skills",
     "callApi": "Call API",
@@ -224,30 +226,6 @@
       "retryLimit": "Retry limit for invite code",
       "loginLink": "[Login Link]({{temp.login_url}})"
     }
-  },
-  "libraries": {
-    "fullName": "Libraries",
-    "addLibrary": "Add this library",
-    "searchNpm": "Search library on NPM (recommended)",
-    "searchGithub": "Add from a GitHub repository (can be slow)",
-    "uploadArchive": "Upload an archive",
-    "splash": {
-      "text1": "These libraries can be used for this bot's actions and hooks. You can also create custom pieces of code which can be imported by hooks and actions on the code editor. They will be exported in the generated bot archive.",
-      "text2": "When editing the file 'package.json' manually using the code editor, please click the 'Sync' button below to update dependencies"
-    },
-    "sync": "Synchronize",
-    "syncSuccess": "Sync completed successfully",
-    "viewGithub": "View on Github",
-    "customCommand": "Type a custom command",
-    "openConsole": "Open the console to view command output",
-    "bundleDeps": "Package with dependencies",
-    "addSuccess": "Library added successfully!",
-    "libraryName": "Library name",
-    "confirmRemove": "Are you sure you want to remove this library?",
-    "deleteSuccess": "Library removed successfully",
-    "removeFailure": "There was an error while removing the library. Please check server logs for details",
-    "bundleError": "There was an error while packaging the library",
-    "betaWarning": "This is an experimental feature. Please do not rely on it too much because the implementation may change in the near future"
   },
   "nlu": {
     "autoTrain": "Auto Training",
@@ -565,13 +543,11 @@
         "actionServer": "Action Server",
         "actionServerTooltip": "This is the action server on which the action will be executed",
         "actionToExecute": "Action to execute",
-        "actionToRun": "Action to run {help}",
-        "actionsRegisteredOnServer": "Actions are registered on the server-side. Read about how to register new actions by searching for `bp.registerActions()`.",
+        "actionToRun": "Action to run",
         "actionInstructionParsingError": "Error while parsing instructions: {msg}",
         "actionArguments": "Called with these arguments:",
         "add": "add",
         "addAction": "Add new action",
-        "cantSeeActions": "Can't see your action?",
         "nameAlreadyExists": "Can't rename node (this name already exists)",
         "emptyName": "Node name cannot be empty",
         "confirmOverwriteParameters": "Do you want to overwrite existing parameters?",
@@ -710,6 +686,25 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Deploy Bot",
+        "lastDeploy": "Last Deployed",
+        "needsTraining": "Bot Needs Training",
+        "deploying": "Deploying Bot..."
+      },
+      "btn": "Deploy to Botpress Cloud",
+      "toaster": {
+        "success": "Bot has successfully been deployed",
+        "info": "Bot is deploying...",
+        "error": {
+          "token": "Failed to authenticate with Botpress cloud",
+          "introspect": "Could not fetch bot info from Botpress cloud",
+          "runtimeNotReady": "We're preparing your chatbot resource. Please try again in a few minutes.",
+          "default": "Bot failed to deploy"
+        }
+      }
+    },
     "help": "Help",
     "emulator": "Emulator",
     "readDoc": "Read Documentation",

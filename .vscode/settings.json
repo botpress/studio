@@ -13,7 +13,6 @@
     "**/.yarn": true
   },
   "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "files.associations": {
     "*.styl": "scss"
   }

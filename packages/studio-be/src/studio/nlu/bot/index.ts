@@ -24,7 +24,7 @@ export class Bot {
 
   constructor(
     botDef: BotDefinition,
-    _nluClient: NLUClient,
+    private _nluClient: NLUClient,
     private _defRepo: DefinitionsRepository,
     _models: ModelEntryService,
     _trainings: TrainingEntryService,
@@ -80,6 +80,10 @@ export class Bot {
       const state = await this.syncAndGetState(l)
       this._webSocket(state)
     })
+  }
+
+  public async downloadModelWeights(appId: string, modelId: string): Promise<Buffer> {
+    return this._nluClient.downloadModelWeights(appId, modelId)
   }
 
   public syncAndGetState = async (language: string): Promise<BpTraining> => {

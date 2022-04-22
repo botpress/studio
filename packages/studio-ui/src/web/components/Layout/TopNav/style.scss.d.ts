@@ -5,6 +5,7 @@ interface CssExports {
   'clickable': string;
   'cta_btn': string;
   'cta_tooltip': string;
+  'disabled': string;
   'divider': string;
   'item': string;
   'itemSpacing': string;

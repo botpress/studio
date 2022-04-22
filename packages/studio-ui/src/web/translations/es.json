@@ -199,6 +199,9 @@
       "uploadFile": "Subir archivo"
     }
   },
+  "testing": {
+    "fullName": "Pruebas"
+  },
   "skills": {
     "callApi": "Llamar API",
     "choice": "Elección",
@@ -517,13 +520,11 @@
         "actionServer": "Servidor de acciones",
         "actionServerTooltip": "Este es el servidor de acciones en el que se ejecutará la acción",
         "actionToExecute": "Acción para ejecutar",
-        "actionToRun": "Acción para ejecutar {help}",
-        "actionsRegisteredOnServer": "Las acciones se registran en el lado del servidor. Lea acerca de cómo registrar nuevas acciones buscando`bp.registerActions()`.",
+        "actionToRun": "Acción para ejecutar",
         "actionInstructionParsingError": "Error al analizar las instrucciones: {msg}",
         "actionArguments": "Llamado con estos argumentos:",
         "add": "Añadir",
         "addAction": "Añadir nueva acción",
-        "cantSeeActions": "No puedes ver tu acción?",
         "nameAlreadyExists": "No puedo cambiar el nodo (Nombre ya existe)",
         "emptyName": "Nodo nombre no puede estar vacío",
         "confirmOverwriteParameters": "¿Desea sobrescribir los parámetros existentes?",
@@ -662,6 +663,25 @@
     }
   },
   "topNav": {
+    "deploy": {
+      "tooltip": {
+        "deployBot": "Implementar bot",
+        "lastDeploy": "Último implementado",
+        "needsTraining": "El bot necesita capacitación",
+        "deploying": "Bot de implementación..."
+      },
+      "btn": "Implementar en Botpress Cloud",
+      "toaster": {
+        "success": "El bot se implementó con éxito",
+        "info": "El bot se está desplegando...",
+        "error": {
+          "token": "No se pudo autenticar con Botpress cloud",
+          "introspect": "No se pudo obtener la información del bot de Botpress cloud",
+          "runtimeNotReady": "Estamos preparando su chatbot, por favor intente en unos minutos más.",
+          "default": "El bot no se pudo implementar"
+        }
+      }
+    },
     "help": "Ayuda",
     "emulator": "Emulador",
     "readDoc": "Documentación",

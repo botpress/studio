@@ -147,6 +147,32 @@ export class NLUService {
     void bot.train(language)
   }
 
+  public async downloadAndSaveModelWeights(botId: string) {
+    // TODO: reimpl this
+    /*
+    const bot = this._bots[botId]
+    if (!bot) {
+      throw new BotNotMountedError(botId)
+    }
+
+    const botConfig = await this.configProvider.getBotConfig(botId)
+
+    if (!botConfig.nluModels) {
+      throw new Error('Missing NLU models. Bot is not trained.')
+    }
+
+    const modelsFolder = 'models'
+    await this.ghost.forBot(botId).deleteFolder(modelsFolder)
+
+    for (const lang of Object.keys(botConfig.nluModels)) {
+      const modelId = botConfig.nluModels[lang]
+      const modelWeights = await bot.downloadModelWeights(botId, modelId)
+
+      await this.ghost.forBot(botId).upsertFile(modelsFolder, `${modelId}.model`, modelWeights)
+    }
+    */
+  }
+
   private _getWebsocket = () => {
     return async (ts: BpTraining) => {
       const ev: NLUProgressEvent = { type: 'nlu', ...ts }

@@ -48,6 +48,7 @@ export class StudioRouter extends CustomRouter {
   private configRouter: ConfigRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
+  // private testingRouter: TestingRouter
   private manageRouter: ManageRouter
   private codeEditorRouter: CodeEditorRouter
 
@@ -67,6 +68,7 @@ export class StudioRouter extends CustomRouter {
     this.configRouter = new ConfigRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
+    // this.testingRouter = new TestingRouter(studioServices)
     this.manageRouter = new ManageRouter(studioServices)
     this.codeEditorRouter = new CodeEditorRouter(studioServices)
   }
@@ -79,6 +81,7 @@ export class StudioRouter extends CustomRouter {
     this.configRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
+    // this.testingRouter.setupRoutes()
     this.manageRouter.setupRoutes()
     this.codeEditorRouter.setupRoutes()
 
@@ -103,6 +106,7 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
     this.router.use('/nlu', this.checkTokenHeader, this.nluRouter.router)
     this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
+    // this.router.use('/testing', this.checkTokenHeader, this.testingRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)

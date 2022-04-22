@@ -21,7 +21,7 @@ export class BotFactory {
   public makeBot = async (botConfig: BotConfig): Promise<Bot> => {
     const { id: botId, cloud } = botConfig
 
-    const baseURL = cloud ? CLOUD_NLU_ENDPOINT : this._nluEndpoint
+    const baseURL = cloud ? process.CLOUD_NLU_ENDPOINT : this._nluEndpoint
     const nluClient = new NLUClient({ baseURL, cloud })
 
     const { defaultLanguage } = botConfig

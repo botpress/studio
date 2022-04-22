@@ -49,3 +49,11 @@ export class InternalServerError extends ResponseError {
     super(message || '', 500, 'BP_0050')
   }
 }
+
+export class ServiceUnavailableError extends ResponseError {
+  type = 'ServiceUnavailableError'
+
+  constructor(message: string) {
+    super(`Service Unavailable: ${message}`, 503, 'BP_0053')
+  }
+}
