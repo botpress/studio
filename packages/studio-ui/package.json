@@ -148,5 +148,11 @@
     "webpack": "4.46",
     "webpack-bundle-analyzer": "^3.5.2",
     "webpack-node-externals": "^1.7.2"
+  },
+  "workspaces": {
+    "nohoist": [
+      "slate-react",
+      "slate-react/**"
+    ]
   }
 }

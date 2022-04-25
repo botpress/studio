@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import _uniqueId from 'lodash/uniqueId'
-import React, { Children, cloneElement, FC, useEffect, useRef, useState } from 'react'
+import React, { Children, cloneElement, FC, useRef } from 'react'
 import ReactDOM from 'react-dom'
 
 import style from './style.scss'
@@ -65,7 +65,7 @@ const tipPosition = (positionClasses, el) => {
 
 const ToolTip: FC<ToolTipProps> = ({ childId, children, content, position = 'top', hoverOpenDelay }) => {
   if (!content) {
-    return children
+    return children as any
   }
 
   const id = useRef(`botpress-tooltip-${_uniqueId()}`)
@@ -233,7 +233,7 @@ const ToolTip: FC<ToolTipProps> = ({ childId, children, content, position = 'top
     }, 300)
   }
 
-  return cloneElement(Children.only(children), {
+  return cloneElement(Children.only(children) as any, {
     id: childId || `${id.current}-trigger`,
     onMouseEnter: show,
     onMouseLeave: hide

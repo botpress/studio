@@ -49,7 +49,7 @@ export const LanguageSwitcher = (props: Props) => {
         filterable={false}
         defaultItem={items.find((i) => i.value === props.contentLang)}
         onChange={(item) => {
-          switchlang.tr(item.value)
+          switchLang(item.value)
         }}
       >
         <Button minimal icon={<Flag languageCode={props.contentLang} />} text={props.contentLang.toUpperCase()} />

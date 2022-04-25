@@ -36,6 +36,9 @@ export interface OwnProps {
   placeholder: string
   inputId?: string
   layoutv2?: boolean
+  style?: React.CSSProperties
+  id?: string
+  name?: string
   onChange: (item: ContentElement) => void
   onUpdate?: () => void
   refresh?: () => void

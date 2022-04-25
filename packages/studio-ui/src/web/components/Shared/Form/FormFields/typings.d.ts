@@ -1,4 +1,5 @@
-import { InvalidField } from './Form/typings'
+import { FormField } from 'botpress/sdk'
+import { InvalidField } from '../typings'
 
 export interface FieldProps {
   placeholder?: string
@@ -20,7 +21,7 @@ export interface SelectProps extends FieldProps {
 export interface AddButtonProps {
   className?: string
   text: string
-  onClick: (e: MouseEvent<HTMLElement, MouseEvent>) => void
+  onClick: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
 export interface GroupItemWrapperProps {

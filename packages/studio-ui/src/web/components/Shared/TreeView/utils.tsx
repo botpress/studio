@@ -29,7 +29,7 @@ function splitPath<T>(
       fullPath: currentPath.join('/'),
       type: 'folder',
       childNodes: undefined
-    })
+    } as any)
   }
 
   currentPath.push(nodeLabel)

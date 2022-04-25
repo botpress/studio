@@ -11,8 +11,8 @@ import ConditionModalForm from './ConditionModalForm'
 
 const style = require('./style.scss')
 
-export default class TransitionSection extends Component {
-  state = {
+export default class TransitionSection extends Component<any, any> {
+  state: any = {
     showConditionalModalForm: false
   }
 

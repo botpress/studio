@@ -1,3 +1,5 @@
+import { ITreeNode } from '@blueprintjs/core'
+
 export interface TreeViewProps<T> {
   /** List of elements to display in the tree view */
   elements?: T[]

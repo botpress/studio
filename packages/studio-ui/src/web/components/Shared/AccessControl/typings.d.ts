@@ -1,5 +1,3 @@
-import { UserProfile } from 'common/typings'
-
 export interface RequiredPermission {
   /** The resource to check permissions. Ex: module.qna */
   resource?: string
@@ -10,7 +8,7 @@ export interface RequiredPermission {
 }
 
 export type PermissionAllowedProps = {
-  user?: Pick<UserProfile, 'isSuperAdmin' | 'permissions'>
+  user?: any
 } & RequiredPermission
 
 export type AccessControlProps = {

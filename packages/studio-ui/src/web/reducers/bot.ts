@@ -10,6 +10,7 @@ const defaultState = {
 
 export interface BotReducer {
   bot: BotConfig
+  isCloudBot: boolean
   // TODO cleanup
   //  type and name for "license" this might change
   license: any

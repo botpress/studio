@@ -22,7 +22,13 @@ export const ModuleUI: {
 declare global {
   interface Window {
     __BP_VISITOR_ID: string
-    botpressWebChat: any
+    botpressWebChat: {
+      init: (config: any, containerSelector?: string) => void
+      sendEvent: (payload: any, webchatId?: string) => void
+      mergeConfig: (config: any) => void
+      configure: (config: any) => void
+      sendPayload: (payload: any) => void
+    }
     BOT_API_PATH: string
     API_PATH: string
     BOT_ID: string

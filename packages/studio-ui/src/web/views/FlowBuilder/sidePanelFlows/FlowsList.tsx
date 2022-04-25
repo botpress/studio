@@ -60,7 +60,7 @@ export default class FlowsList extends Component<Props, State> {
   }
 
   updateFlows() {
-    const nodes = buildFlowsTree(this.props.flows, this.props.filter) as FlowNode[]
+    const nodes: any = buildFlowsTree(this.props.flows, this.props.filter) as FlowNode[]
 
     if (this.props.filter) {
       traverseTree(nodes, (n) => (n.isExpanded = true))

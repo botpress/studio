@@ -14,7 +14,7 @@ import style from '../style.scss'
 interface Props {
   updateItems: (items: string[]) => void
   items: string[]
-  placeholder: (index: number) => void
+  placeholder: (index: number) => string
   itemListValidator: (items: string[], errorMsg: string) => string[]
   addItemLabel: string
   label: string
@@ -51,7 +51,7 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
     updateItems(localItems)
   }
 
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>, index: number): void => {
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number): void => {
     if (e.nativeEvent.isComposing && e.key === 'Enter') {
       e.preventDefault()
       e.stopPropagation()
@@ -92,8 +92,8 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
           canAddContent && item.startsWith('#!') ? (
             <div key={keys[index]} className={style.contentAnswer}>
               <BotpressContentPicker
+                placeholder=""
                 itemId={item.replace('#!', '')}
-                onClickChange={() => (this as any).toggleEditMode(index)}
                 onChange={(this as any).onContentChange}
               />
               <Button icon="trash" onClick={() => deleteItem(index)} />
@@ -106,7 +106,7 @@ const TextAreaList: FC<Props> = ({ contentDirection = 'ltr', ...props }) => {
                 placeholder={refItems?.[index] ? refItems[index] : placeholder(index)}
                 onChange={(value) => updateLocalItem(index, value)}
                 onBlur={() => updateItems(localItems)}
-                onKeyDown={(e) => onKeyDown(e, index)}
+                onKeyDown={(e) => onKeyDown(e as any, index)}
                 value={item}
                 direction={contentDirection}
               />

@@ -22,7 +22,7 @@ export const RecordSpeechToText: FC<Props> = (props) => {
     return null
   }
 
-  const onResult = (ev: SpeechRecognitionEvent) => {
+  const onResult = (ev: any) => {
     const res = ev.results[0] // cumulated result
     const transcript = get(res, '0.transcript') // most confident
     if (transcript.length > text.length) {
@@ -49,7 +49,7 @@ export const RecordSpeechToText: FC<Props> = (props) => {
     recognition.start()
   }
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+  const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
   if (!SpeechRecognition) {
     setIsAvailable(false)
     props.onNotAvailable?.()

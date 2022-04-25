@@ -8,7 +8,7 @@ export const createEmptyDataFromSchema = (fields: FormField[], lang?: string): F
 
 export const getFieldDefaultValue = (field: Partial<FormField>, lang?: string) => {
   if (field.defaultValue !== undefined) {
-    return typeof field.defaultValue === 'string' ? langTr(field.defaultValue) : field.defaultValue
+    return typeof field.defaultValue === 'string' ? langTr.tr(field.defaultValue) : field.defaultValue
   }
 
   switch (field.type) {

@@ -32,7 +32,7 @@ export const IntentEditor: FC<Props> = (props) => {
       inspect(intent)
     })
 
-    return () => debouncedApiSaveIntent.current.flush()
+    return () => void debouncedApiSaveIntent.current.flush()
   }, [props.intent])
 
   if (!intent) {

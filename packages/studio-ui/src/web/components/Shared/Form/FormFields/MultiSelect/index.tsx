@@ -2,8 +2,9 @@ import { Classes, MenuItem } from '@blueprintjs/core'
 import { MultiSelect } from '@blueprintjs/select'
 import React, { FC } from 'react'
 
+import sharedStyle from '../../../../Shared/style.scss'
 import { lang } from '../../../translations'
-import sharedStyle from '../style.scss'
+import '../style.scss'
 
 const itemRenderer = (option, { modifiers, handleClick }) => {
   if (!modifiers.matchesPredicate) {

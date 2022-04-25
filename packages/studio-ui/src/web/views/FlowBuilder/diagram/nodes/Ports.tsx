@@ -127,6 +127,6 @@ export class StandardPortWidgetDisconnected extends React.PureComponent<Props> {
   }
 }
 
-const mapStateToProps = (state) => ({ flowsName: getFlowNames(state) })
+const mapStateToProps = (state) => ({ flowsName: getFlowNames(state as never) })
 
 export const StandardPortWidget = connect(mapStateToProps)(withRouter(StandardPortWidgetDisconnected))

@@ -119,8 +119,6 @@ export class CallAPI extends React.Component<any, any> {
           <Col md={2}>
             <Select
               id="method"
-              default
-              style={{ zIndex: 1000 }}
               options={methodOptions}
               value={this.state.selectedMethod}
               onChange={this.handleMethodChange}

@@ -8,7 +8,13 @@ declare global {
     __BP_VISITOR_ID: string
     __BP_VISITOR_SOCKET_ID: string
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any
-    botpressWebChat: any
+    botpressWebChat: {
+      init: (config: any, containerSelector?: string) => void
+      sendEvent: (payload: any, webchatId?: string) => void
+      mergeConfig: (config: any) => void
+      configure: (config: any) => void
+      sendPayload: (payload: any) => void
+    }
     APP_NAME: string
     APP_FAVICON: string
     APP_CUSTOM_CSS: string
