@@ -59,12 +59,12 @@
     "progressbar.js": "^1.0.1",
     "prop-types": "^15.6.0",
     "query-string": "^5.1.1",
-    "react": "18.0.0",
+    "react": "^17.0.2",
     "react-bootstrap": "^0.33.1",
     "react-checkbox-tree": "1.7.2",
     "react-command-palette": "^0.17.1",
     "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "18.0.0",
+    "react-dom": "^17.0.2",
     "react-ga": "^2.7.0",
     "react-highlight-words": "^0.16.0",
     "react-hotkeys": "^1.1.4",
@@ -101,8 +101,8 @@
     "@types/classnames": "^2.3.1",
     "@types/lodash": "^4.14.178",
     "@types/node": "^12.18.1",
-    "@types/react": "^18.0.0",
-    "@types/react-dom": "^18.0.0",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
     "@types/react-jsonschema-form": "^1.7.8",
     "@types/react-router-dom": "^4.3.3",
     "@types/reactour": "^1.18.1",
@@ -150,7 +150,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "resolutions": {
-    "@types/react": "18.0.0",
-    "@types/react-dom": "18.0.0"
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11"
   }
 }
