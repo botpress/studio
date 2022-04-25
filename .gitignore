@@ -1,13 +1,11 @@
-out/
-node_modules/
-bin/
+out
+node_modules
+bin
 yarn-error.log
-dist/
-public/
-.idea/
+dist
+public
 .idea
-.env.debug
-
+.parcel-cache
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -15,5 +13,3 @@ public/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-
-.parcel-cache
