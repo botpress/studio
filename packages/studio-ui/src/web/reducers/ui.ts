@@ -51,31 +51,31 @@ const defaultState = {
 
 const reducer = handleActions(
   {
-    [viewModeChanged]: (state, { payload }) => ({
+    [viewModeChanged as any]: (state, { payload }) => ({
       ...state,
       viewMode: payload.toString()
     }),
-    [updateGlobalStyle]: (state, { payload }) => ({
+    [updateGlobalStyle as any]: (state, { payload }) => ({
       ...state,
       customStyle: Object.assign({}, state.customStyle, payload)
     }),
-    [addDocumentationHint]: (state, { payload }) => ({
+    [addDocumentationHint as any]: (state, { payload }) => ({
       ...state,
       docHints: _.uniq([payload, ...state.docHints])
     }),
-    [removeDocumentationHint]: (state, { payload }) => ({
+    [removeDocumentationHint as any]: (state, { payload }) => ({
       ...state,
       docHints: _.without(state.docHints, payload)
     }),
-    [updateDocumentationModal]: (state, { payload }) => ({
+    [updateDocumentationModal as any]: (state, { payload }) => ({
       ...state,
       docModal: payload
     }),
-    [toggleBottomPanelExpand]: (state) => ({
+    [toggleBottomPanelExpand as any]: (state) => ({
       ...state,
       bottomPanelExpanded: !state.bottomPanelExpanded
     }),
-    [toggleBottomPanel]: (state, {}) => {
+    [toggleBottomPanel as any]: (state, {}) => {
       const value = !state.bottomPanel
       storage.set(bottomPanelStorageKey, value)
       return {
@@ -83,7 +83,7 @@ const reducer = handleActions(
         bottomPanel: value
       }
     },
-    [toggleInspector]: (state, {}) => {
+    [toggleInspector as any]: (state, {}) => {
       const value = !state.inspectorEnabled
       storage.set(inspectorEnabledStorageKey, value)
       return {
@@ -91,7 +91,7 @@ const reducer = handleActions(
         inspectorEnabled: value
       }
     },
-    [toggleExplorer]: (state, {}) => {
+    [toggleExplorer as any]: (state, {}) => {
       const value = !state.explorerOpen
       storage.set(explorerStorageKey, value)
       return {
@@ -99,18 +99,18 @@ const reducer = handleActions(
         explorerOpen: value
       }
     },
-    [zoomToLevel]: (state, { payload }) => {
+    [zoomToLevel as any]: (state, { payload }) => {
       return {
         ...state,
         zoomLevel: payload
       }
     },
-    [setEmulatorOpen]: (state, { payload }) => ({
+    [setEmulatorOpen as any]: (state, { payload }) => ({
       ...state,
       emulatorOpen: payload
     })
   },
-  defaultState
+  defaultState as any
 )
 
 export default reducer

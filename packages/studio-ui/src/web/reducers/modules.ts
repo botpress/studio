@@ -5,7 +5,7 @@ const defaultState = []
 
 const reducer = handleActions(
   {
-    [modulesReceived]: (state, { payload }) => [...payload]
+    [modulesReceived as any]: (state, { payload }) => [...payload]
   },
   defaultState
 )

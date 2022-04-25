@@ -19,17 +19,17 @@ const defaultState = {
 
 export default handleActions(
   {
-    [receiveContentCategories]: (state, { payload }) => ({
+    [receiveContentCategories as any]: (state, { payload }) => ({
       ...state,
       categories: payload
     }),
 
-    [receiveContentItems]: (state, { payload }) => ({
+    [receiveContentItems as any]: (state, { payload }) => ({
       ...state,
       currentItems: payload
     }),
 
-    [receiveContentItem]: (state, { payload }) => ({
+    [receiveContentItem as any]: (state, { payload }) => ({
       ...state,
       itemsById: {
         ...state.itemsById,
@@ -37,7 +37,7 @@ export default handleActions(
       }
     }),
 
-    [receiveContentItemsBatched]: (state, { payload }) => ({
+    [receiveContentItemsBatched as any]: (state, { payload }) => ({
       ...state,
       itemsById: {
         ...state.itemsById,
@@ -45,22 +45,22 @@ export default handleActions(
       }
     }),
 
-    [receiveContentItemsCount]: (state, { payload }) => ({
+    [receiveContentItemsCount as any]: (state, { payload }) => ({
       ...state,
       itemsCount: payload.data.count
     }),
 
-    [receiveQNAContentElement]: (state, { payload }) => ({
+    [receiveQNAContentElement as any]: (state, { payload }) => ({
       ...state,
       qnaUsage: payload
     }),
 
-    [receiveLibrary]: (state, { payload }) => ({
+    [receiveLibrary as any]: (state, { payload }) => ({
       ...state,
       library: payload
     })
   },
-  defaultState
+  defaultState as any
 )
 
 export interface ContentReducer {

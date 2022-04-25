@@ -261,7 +261,7 @@ function isActualRename(state, modification): boolean {
 
 let reducer = handleActions(
   {
-    [receiveFlowsModification]: (state, { payload: modification }) => {
+    [receiveFlowsModification as any]: (state, { payload: modification }) => {
       const modificationType = modification.modification || ''
 
       const isUpsertFlow =
@@ -311,7 +311,7 @@ let reducer = handleActions(
       }
     },
 
-    [clearFlowMutex]: (state, { payload: name }) => ({
+    [clearFlowMutex as any]: (state, { payload: name }) => ({
       ...state,
       flowsByName: {
         ...state.flowsByName,
@@ -324,12 +324,12 @@ let reducer = handleActions(
       flowProblems: payload
     }),
 
-    [requestFlows]: (state) => ({
+    [requestFlows as any]: (state) => ({
       ...state,
       fetchingFlows: true
     }),
 
-    [receiveFlows]: (state, { payload }) => {
+    [receiveFlows as any]: (state, { payload }) => {
       const flows = _.keys(payload).filter((key) => !payload[key].skillData)
       const newFlow = _.keys(payload).includes('Built-In/welcome.flow.json') && 'Built-In/welcome.flow.json'
       const defaultFlow = newFlow || (_.keys(payload).includes('main.flow.json') ? 'main.flow.json' : _.first(flows))
@@ -346,12 +346,12 @@ let reducer = handleActions(
       }
     },
 
-    [receiveSaveFlows]: (state) => ({
+    [receiveSaveFlows as any]: (state) => ({
       ...state,
       errorSavingFlows: undefined
     }),
 
-    [errorSaveFlows]: (state, { payload }) => ({
+    [errorSaveFlows as any]: (state, { payload }) => ({
       ...state,
       errorSavingFlows: payload
     }),
@@ -393,7 +393,7 @@ let reducer = handleActions(
       currentDiagramAction: payload
     }),
 
-    [handleRefreshFlowLinks]: (state) => ({
+    [handleRefreshFlowLinks as any]: (state) => ({
       ...state,
       flowsByName: {
         ...state.flowsByName,
@@ -404,14 +404,14 @@ let reducer = handleActions(
       }
     })
   },
-  defaultState
+  defaultState as any
 )
 
 reducer = reduceReducers(
   reducer,
   handleActions(
     {
-      [requestRenameFlow]: (state, { payload: { targetFlow, name } }) => ({
+      [requestRenameFlow as any]: (state, { payload: { targetFlow, name } }) => ({
         ...state,
         flowsByName: doRenameFlow({
           currentName: targetFlow,
@@ -421,7 +421,7 @@ reducer = reduceReducers(
         currentFlow: name
       }),
 
-      [requestUpdateFlow]: (state, { payload }) => {
+      [requestUpdateFlow as any]: (state, { payload }) => {
         const currentFlow = state.flowsByName[state.currentFlow]
         const nodes = !payload.links
           ? currentFlow.nodes
@@ -456,7 +456,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestCreateFlow]: (state, { payload: name }) => ({
+      [requestCreateFlow as any]: (state, { payload: name }) => ({
         ...state,
         flowsByName: {
           ...state.flowsByName,
@@ -466,7 +466,7 @@ reducer = reduceReducers(
         currentFlowNode: null
       }),
 
-      [requestDeleteFlow]: (state, { payload: name }) => ({
+      [requestDeleteFlow as any]: (state, { payload: name }) => ({
         ...state,
         currentFlow: state.currentFlow === name ? 'main.flow.json' : state.currentFlow,
         currentFlowNode: state.currentFlow === name ? null : state.currentFlowNode,
@@ -477,7 +477,7 @@ reducer = reduceReducers(
       // 1. creates a new flow
       // 2. creates a new "skill" node
       // 3. puts that new node in the "insert buffer", waiting for user to place it on the canvas
-      [requestInsertNewSkill]: (state, { payload }) => {
+      [requestInsertNewSkill as any]: (state, { payload }) => {
         const skillId = payload.skillId
         const flowRandomId = prettyId(6)
         const flowName = `skills/${skillId}-${flowRandomId}.flow.json`
@@ -521,7 +521,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestUpdateSkill]: (state, { payload }) => {
+      [requestUpdateSkill as any]: (state, { payload }) => {
         const modifiedFlow = Object.assign({}, state.flowsByName[payload.editFlowName], payload.generatedFlow, {
           skillData: payload.data,
           name: payload.editFlowName,
@@ -559,7 +559,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestInsertNewSkillNode]: (state, { payload }) => ({
+      [requestInsertNewSkillNode as any]: (state, { payload }) => ({
         ...state,
         flowsByName: {
           ...state.flowsByName,
@@ -573,7 +573,7 @@ reducer = reduceReducers(
         }
       }),
 
-      [requestDuplicateFlow]: (state, { payload: { flowNameToDuplicate, name } }) => {
+      [requestDuplicateFlow as any]: (state, { payload: { flowNameToDuplicate, name } }) => {
         return {
           ...state,
           flowsByName: {
@@ -593,7 +593,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestUpdateFlowNode]: (state, { payload }) => {
+      [requestUpdateFlowNode as any]: (state, { payload }) => {
         payload = Array.isArray(payload) ? payload : [{ ...payload, id: payload.id ?? state.currentFlowNode }]
         const currentFlow = state.flowsByName[state.currentFlow]
         const nodesToUpdate = payload
@@ -663,7 +663,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestRemoveFlowNode]: (state, { payload }) => {
+      [requestRemoveFlowNode as any]: (state, { payload }) => {
         const flowsToRemove = []
         const nodeToRemove = _.find(state.flowsByName[state.currentFlow].nodes, { id: payload?.id })
 
@@ -699,7 +699,7 @@ reducer = reduceReducers(
         }
       },
 
-      [requestPasteFlowNode]: (state, { payload: { x, y, nodes } }) => {
+      [requestPasteFlowNode as any]: (state, { payload: { x, y, nodes } }) => {
         const nodesToPaste = nodes || state.buffer.nodes
         if (!nodesToPaste?.length) {
           return state
@@ -750,12 +750,12 @@ reducer = reduceReducers(
         }
       },
 
-      [setDebuggerEvent]: (state, { payload }) => ({
+      [setDebuggerEvent as any]: (state, { payload }) => ({
         ...state,
         debuggerEvent: payload
       }),
 
-      [copyFlowNodeElement]: (state, { payload }) => ({
+      [copyFlowNodeElement as any]: (state, { payload }) => ({
         ...state,
         buffer: {
           ...state.buffer,
@@ -763,7 +763,7 @@ reducer = reduceReducers(
         }
       }),
 
-      [requestPasteFlowNodeElement]: (state, { payload }) => {
+      [requestPasteFlowNodeElement as any]: (state, { payload }) => {
         const SECTION_TYPES = { onEnter: 'action', onReceive: 'action', next: 'transition' }
         const element = state.buffer[SECTION_TYPES[payload]]
         if (!element) {
@@ -796,7 +796,7 @@ reducer = reduceReducers(
         })
       },
 
-      [requestCreateFlowNode]: (state, { payload }) => ({
+      [requestCreateFlowNode as any]: (state, { payload }) => ({
         ...state,
         flowsByName: {
           ...state.flowsByName,
@@ -821,7 +821,7 @@ reducer = reduceReducers(
         }
       })
     },
-    defaultState
+    defaultState as any
   )
 )
 
@@ -834,30 +834,30 @@ reducer = reduceReducers(
   reducer,
   handleActions(
     {
-      [receiveFlows]: (state) => {
+      [receiveFlows as any]: (state) => {
         const hashes = computeFlowsHash(state)
         return { ...state, currentHashes: hashes, initialHashes: hashes }
       },
 
-      [receiveSaveFlows]: (state) => {
+      [receiveSaveFlows as any]: (state) => {
         const hashes = computeFlowsHash(state)
         return { ...state, currentHashes: hashes, initialHashes: hashes }
       },
 
-      [requestUpdateFlow]: updateCurrentHash,
-      [requestRenameFlow]: updateCurrentHash,
-      [requestUpdateFlowNode]: updateCurrentHash,
+      [requestUpdateFlow as any]: updateCurrentHash,
+      [requestRenameFlow as any]: updateCurrentHash,
+      [requestUpdateFlowNode as any]: updateCurrentHash,
 
-      [requestCreateFlowNode]: updateCurrentHash,
-      [requestCreateFlow]: updateCurrentHash,
-      [requestDeleteFlow]: updateCurrentHash,
-      [requestDuplicateFlow]: updateCurrentHash,
-      [requestRemoveFlowNode]: updateCurrentHash,
-      [requestPasteFlowNode]: updateCurrentHash,
-      [requestInsertNewSkill]: updateCurrentHash,
-      [requestInsertNewSkillNode]: updateCurrentHash,
-      [requestUpdateSkill]: updateCurrentHash,
-      [requestPasteFlowNodeElement]: updateCurrentHash
+      [requestCreateFlowNode as any]: updateCurrentHash,
+      [requestCreateFlow as any]: updateCurrentHash,
+      [requestDeleteFlow as any]: updateCurrentHash,
+      [requestDuplicateFlow as any]: updateCurrentHash,
+      [requestRemoveFlowNode as any]: updateCurrentHash,
+      [requestPasteFlowNode as any]: updateCurrentHash,
+      [requestInsertNewSkill as any]: updateCurrentHash,
+      [requestInsertNewSkillNode as any]: updateCurrentHash,
+      [requestUpdateSkill as any]: updateCurrentHash,
+      [requestPasteFlowNodeElement as any]: updateCurrentHash
     },
     defaultState
   )
@@ -871,20 +871,20 @@ reducer = reduceReducers(
   reducer,
   handleActions(
     {
-      [requestRenameFlow]: recordHistory,
-      [requestUpdateFlowNode]: recordHistory,
-      [requestCreateFlowNode]: recordHistory,
-      [requestCreateFlow]: recordHistory,
-      [requestDeleteFlow]: recordHistory,
-      [requestDuplicateFlow]: recordHistory,
-      [requestRemoveFlowNode]: recordHistory,
-      [requestPasteFlowNode]: recordHistory,
-      [requestInsertNewSkill]: recordHistory,
-      [requestInsertNewSkillNode]: recordHistory,
-      [requestUpdateSkill]: recordHistory,
-      [requestPasteFlowNodeElement]: recordHistory,
-      [handleFlowEditorUndo]: popHistory('undoStack'),
-      [handleFlowEditorRedo]: popHistory('redoStack')
+      [requestRenameFlow as any]: recordHistory,
+      [requestUpdateFlowNode as any]: recordHistory,
+      [requestCreateFlowNode as any]: recordHistory,
+      [requestCreateFlow as any]: recordHistory,
+      [requestDeleteFlow as any]: recordHistory,
+      [requestDuplicateFlow as any]: recordHistory,
+      [requestRemoveFlowNode as any]: recordHistory,
+      [requestPasteFlowNode as any]: recordHistory,
+      [requestInsertNewSkill as any]: recordHistory,
+      [requestInsertNewSkillNode as any]: recordHistory,
+      [requestUpdateSkill as any]: recordHistory,
+      [requestPasteFlowNodeElement as any]: recordHistory,
+      [handleFlowEditorUndo as any]: popHistory('undoStack'),
+      [handleFlowEditorRedo as any]: popHistory('redoStack')
     },
     defaultState
   )

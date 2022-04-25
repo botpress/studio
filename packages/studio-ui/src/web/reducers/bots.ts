@@ -11,7 +11,7 @@ const defaultState = {
 
 const reducer = handleActions(
   {
-    [botsReceived]: (state, { payload }) => ({ ...state, bots: payload || [] })
+    [botsReceived as any]: (state, { payload }) => ({ ...state, bots: payload || [] })
   },
   defaultState
 )

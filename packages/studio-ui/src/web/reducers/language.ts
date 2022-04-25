@@ -16,17 +16,17 @@ const defaultState: LanguageReducer = {
 
 const reducer = handleActions(
   {
-    [changeContentLanguage]: (state, { payload }) => ({
+    [changeContentLanguage as any]: (state, { payload }) => ({
       ...state,
       ...payload,
       isRTLContentLang: isRTLLocale(payload.contentLang)
     }),
-    [botInfoReceived]: (state, { payload }) => ({
+    [botInfoReceived as any]: (state, { payload }) => ({
       ...state,
-      contentLang: payload.defaultLanguage,
-      isRTLContentLang: isRTLLocale(payload.defaultLanguage)
+      contentLang: (payload as any).defaultLanguage,
+      isRTLContentLang: isRTLLocale((payload as any).defaultLanguage)
     }),
-    [receiveModuleTranslations]: (state, { payload }) => ({ ...state, translations: payload })
+    [receiveModuleTranslations as any]: (state, { payload }) => ({ ...state, translations: payload })
   },
   defaultState
 )

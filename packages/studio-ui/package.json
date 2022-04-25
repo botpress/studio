@@ -6,6 +6,7 @@
   "scripts": {
     "build": " yarn run compile-server && node ./webpack.web.js --compile",
     "build:prod": "cross-env NODE_ENV=production node ./webpack.web.js --compile",
+    "build:tsc": "yarn run -T tsc --build",
     "watch": "concurrently -k \"npm run watch-server\" \"node ./webpack.web.js --watch\"",
     "watch-server": "babel src --source-maps --out-dir public --watch",
     "compile-server": "babel src --source-maps --out-dir public",
