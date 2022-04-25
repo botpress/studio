@@ -3,7 +3,7 @@ import { Promise as BbPromise } from 'bluebird'
 import { encodeFolderPath } from 'common/http'
 import _ from 'lodash'
 
-type DebounceUpdateFunc = ((flow: any, callback: any) => Promise<void>) & _.Cancelable
+type DebounceUpdateFunc = ((flow: any, callback: any) => Promise<void>) & { cancel: Function }
 
 const DELAY = 1000
 

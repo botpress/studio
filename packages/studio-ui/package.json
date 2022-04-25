@@ -148,5 +148,11 @@
     "webpack": "4.46",
     "webpack-bundle-analyzer": "^3.5.2",
     "webpack-node-externals": "^1.7.2"
+  },
+  "resolutions": {
+    "@types/react": "16.8.6",
+    "@types/react-dom": "16.8.6",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
   }
 }
