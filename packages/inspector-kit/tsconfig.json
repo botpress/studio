@@ -19,7 +19,12 @@
 
     // We use react
     "jsx": "react",
-    "lib": ["dom", "es2021", "es2021.intl"],
+    "lib": [
+      "dom",
+      // Should be es2021 but bluebird-global doesn't work with that version...
+      "es2019",
+      "es2021.intl"
+    ],
     "resolveJsonModule": true
   },
   "include": ["src", "src/**/*.json"],
