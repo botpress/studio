@@ -10,12 +10,12 @@ export interface UserReducer {
   permissions: any
 }
 
-const reducer = handleActions<UserReducer, string>(
+const reducer = handleActions(
   {
-    [userReceived]: (state, { payload }) => ({ ...state, ...payload }),
-    [userBotPermissionsReceived]: (state, { payload }) => ({ ...state, ...payload })
+    [userReceived as any]: (state, { payload }) => ({ ...state, ...payload }),
+    [userBotPermissionsReceived as any]: (state, { payload }) => ({ ...state, ...payload })
   },
-  defaultState
+  defaultState as any
 )
 
 export default reducer

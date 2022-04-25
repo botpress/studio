@@ -15,12 +15,12 @@ export interface BotReducer {
   license: any
 }
 
-const reducer = handleActions<BotReducer, string>(
+const reducer = handleActions(
   {
-    [botInfoReceived]: (state, { payload }) => ({ ...state, bot: payload }),
-    [botLicenseReceived]: (state, { payload }) => ({ ...state, license: payload })
+    [botInfoReceived as any]: (state, { payload }) => ({ ...state, bot: payload }),
+    [botLicenseReceived as any]: (state, { payload }) => ({ ...state, license: payload })
   },
-  defaultState
+  defaultState as any
 )
 
 export default reducer

@@ -1,22 +1,32 @@
 {
+  // Manage references here
+  "references": [],
+
+  // Defaults (don't change this)
+  "extends": "../../tsconfig.packages.json",
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "module": "esnext",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "react",
+    "rootDir": "src",
+    "outDir": "dist",
+    // For some reason this cannot be set to true otherwise rollup fails to import json...
+    "composite": false,
+    // This setting requires composite so we'll disable that for now
+    // "tsBuildInfoFile": "dist/.tsbuildinfo",
+
+    // Specific settings for npm package
+    "target": "es6",
     "declaration": true,
-    "declarationDir": "types",
-    "emitDeclarationOnly": true
+    "sourceMap": false,
+
+    // We use react
+    "jsx": "react",
+    "lib": [
+      "dom",
+      // Should be es2021 but bluebird-global doesn't work with that version...
+      "es2019",
+      "es2021.intl"
+    ],
+    "resolveJsonModule": true
   },
-  "include": ["src", "demo", "scripts", "jest-setup.ts"]
+  "include": ["src", "src/**/*.json"],
+  "exclude": ["dist", "node_modules", "src/**/*.test.tsx", "src/**/*.stories.tsx"]
 }

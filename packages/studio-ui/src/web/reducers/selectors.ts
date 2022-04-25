@@ -29,7 +29,7 @@ export const getFlowNamesList = createSelector([getAllFlows], (flows) => {
   }, {})
 
   return normalFlows.map((x) => {
-    const withTriggers = (x.nodes && x.nodes.filter((x) => x.type === 'trigger')) || []
+    const withTriggers = x.nodes || []
     const referencedIn = Object.keys(references).filter((flowName) => references[flowName].includes(x.name))
 
     return { name: x.name, label: x.label, triggerCount: withTriggers.length, referencedIn }

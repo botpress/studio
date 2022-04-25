@@ -71,9 +71,9 @@ export interface SkillsReducer {
 
 const reducer = handleActions(
   {
-    [skillsReceived]: (state, { payload }) => ({
+    [skillsReceived as any]: (state, { payload }) => ({
       ...state,
-      installed: [...defaultSkills, ...payload]
+      installed: [...defaultSkills, ...(payload as any)]
     }),
 
     [buildNewSkill as any]: (state, { payload }) => ({
@@ -83,12 +83,12 @@ const reducer = handleActions(
         opened: true,
         action: 'new',
         data: {},
-        skillId: payload.id,
-        location: payload.location
+        skillId: (payload as any).id,
+        location: (payload as any).location
       }
     }),
 
-    [cancelNewSkill]: (state) => ({
+    [cancelNewSkill as any]: (state) => ({
       ...state,
       builder: {
         ...state.builder,
@@ -96,30 +96,30 @@ const reducer = handleActions(
       }
     }),
 
-    [requestInsertNewSkill]: (state, { payload }) => ({
+    [requestInsertNewSkill as any]: (state, { payload }) => ({
       ...state,
       builder: {
         ...state.builder,
         opened: false,
-        data: payload.data,
-        skillId: payload.skillId
+        data: (payload as any).data,
+        skillId: (payload as any).skillId
       }
     }),
 
-    [editSkill]: (state, { payload }) => ({
+    [editSkill as any]: (state, { payload }) => ({
       ...state,
       builder: {
         ...state.builder,
         opened: true,
         action: 'edit',
-        skillId: payload.skillId,
-        data: payload.data,
-        editFlowName: payload.flowName,
-        editNodeId: payload.nodeId
+        skillId: (payload as any).skillId,
+        data: (payload as any).data,
+        editFlowName: (payload as any).flowName,
+        editNodeId: (payload as any).nodeId
       }
     }),
 
-    [requestUpdateSkill]: (state) => ({
+    [requestUpdateSkill as any]: (state) => ({
       ...state,
       builder: {
         ...state.builder,
@@ -127,12 +127,12 @@ const reducer = handleActions(
       }
     }),
 
-    [intentsReceived]: (state, { payload }) => ({
+    [intentsReceived as any]: (state, { payload }) => ({
       ...state,
       intents: payload
     }),
 
-    [actionsReceived]: (state, { payload }) => ({
+    [actionsReceived as any]: (state, { payload }) => ({
       ...state,
       actions: payload
     })

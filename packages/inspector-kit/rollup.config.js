@@ -47,7 +47,7 @@ const config = [
     ]
   },
   {
-    input: 'lib/esm/types/src/index.d.ts',
+    input: 'lib/esm/dist/index.d.ts',
     output: [{ file: 'lib/index.d.ts', format: 'esm' }],
     external: [/\.s?css$/],
     plugins: [dts()]
