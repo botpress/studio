@@ -1,4 +1,4 @@
-import { BotEvent, FlowVariable, FormData, FormField } from 'botpress/sdk'
+import { FormData, FormField } from 'botpress/sdk'
 
 export interface InvalidField {
   field: string
@@ -18,5 +18,5 @@ export interface FormProps {
   onUpdate: (data: { [key: string]: any }) => void
   getCustomPlaceholder?: (field: string, index) => string
   invalidFields?: InvalidField[]
-  events?: BotEvent[]
+  events?: any[]
 }

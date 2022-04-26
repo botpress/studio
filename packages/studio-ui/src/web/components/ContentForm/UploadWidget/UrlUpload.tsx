@@ -47,7 +47,7 @@ const UrlUpload: FC<IUrlUploadProps> = (props) => {
   const urlHasDoubleBraces = new RegExp('(^|[^{]){{[^{]', 'g').test(url)
 
   return (
-    <div className={style.fieldWrapper}>
+    <div className={parentStyle.fieldWrapper}>
       {value && isUrlOrRelativePath(value) && <FileDisplay url={value} type={type} onDelete={onDelete} deletable />}
 
       {value && !isUrlOrRelativePath(value) && (
@@ -64,7 +64,7 @@ const UrlUpload: FC<IUrlUploadProps> = (props) => {
       {!value && (
         <Fragment>
           <div className={style.flexContainer}>
-            <SmartInput singleLine className={style.textarea} value={url} onChange={handleUrlChange} />
+            <SmartInput singleLine className={parentStyle.textarea} value={url} onChange={handleUrlChange} />
 
             <Button intent={Intent.NONE} onClick={saveUrl}>
               {lang.tr('ok')}

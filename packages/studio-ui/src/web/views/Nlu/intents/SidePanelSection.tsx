@@ -130,7 +130,7 @@ export const IntentSidePanelSection: FC<Props> = (props) => {
         />
       )}
       <ItemList
-        items={intentItems}
+        items={intentItems as any}
         onElementClicked={({ value: name }) => props.setCurrentItem({ type: 'intent', name })}
       />
 

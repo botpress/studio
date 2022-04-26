@@ -1,4 +1,4 @@
 export interface OverlayProps {
-  onClick: (e: MouseEvent<HTMLDivElement, MouseEvent>) => void
-  onContextMenu?: (e: MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  onContextMenu?: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }

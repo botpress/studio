@@ -1,4 +1,4 @@
-import { UserProfile } from 'common/typings'
+import { RequiredPermission } from '../AccessControl/typings'
 
 interface GenericShortcut {
   label: string
@@ -24,7 +24,7 @@ export interface CommanderProps {
   location?: 'studio' | 'admin'
   shortcuts: QuickShortcut[]
   history: any
-  user?: Pick<UserProfile, 'isSuperAdmin' | 'permissions'>
+  user?: any
 }
 
 export interface Command {

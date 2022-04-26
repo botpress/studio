@@ -133,7 +133,7 @@ const SaySomethingForm: FC<Props> = (props) => {
 
     const {
       schema: {
-        json: { description, title, ...json },
+        json: { ...json },
         ...schema
       },
       ...restContentType
@@ -206,7 +206,7 @@ const SaySomethingForm: FC<Props> = (props) => {
 
 const mapStateToProps = (state: RootReducer) => ({
   currentFlow: getCurrentFlow(state),
-  currentFlowNode: getCurrentFlowNode(state) as any,
+  currentFlowNode: getCurrentFlowNode(state as never) as any,
   user: state.user,
   contentTypes: state.content.categories.registered
 })

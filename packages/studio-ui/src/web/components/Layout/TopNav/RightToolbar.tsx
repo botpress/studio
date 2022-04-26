@@ -36,7 +36,7 @@ const RightToolBar = (props: Props) => {
         <>
           <ToolTip
             content={
-              <div className={style.ToolTip}>
+              <div className={style.tooltip}>
                 {lang.tr('topNav.help')}
                 <div className={style.shortcutLabel}>
                   <ShortcutLabel light shortcut="docs-toggle" />

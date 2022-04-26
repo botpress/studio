@@ -88,7 +88,7 @@ export const EntitySidePanelSection: FC<Props> = (props) => {
         />
       )}
       <ItemList
-        items={entityItems}
+        items={entityItems as any}
         onElementClicked={({ value: name }) => props.setCurrentItem({ type: 'entity', name })}
       />
       <EntityNameModal

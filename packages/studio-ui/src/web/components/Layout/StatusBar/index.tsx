@@ -21,7 +21,7 @@ const StatusBar: FC<Props> = (props) => {
   return (
     <footer className={style.statusBar}>
       <div className={style.item}>
-        <span>{window.STUDIO_VERSION}</span>
+        <span>{(window as any).STUDIO_VERSION}</span>
         <span className={style.botName}>{window.BOT_ID}</span>
         {isCloudBot && <span>{lang.tr('statusBar.cloudEnabled')}</span>}
         <LangSwitcher toggleLangSwitcher={props.toggleLangSwitcher} langSwitcherOpen={props.langSwitcherOpen} />

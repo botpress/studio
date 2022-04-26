@@ -82,7 +82,7 @@
     "reduce-reducers": "^0.1.2",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "redux-thunk": "^2.2.0",
+    "redux-thunk": "2.2.0",
     "reselect": "^4.0.0",
     "slate": "0.47.4",
     "slate-react": "0.22.4",
@@ -134,5 +134,8 @@
     "webpack": "4.46",
     "webpack-bundle-analyzer": "^3.5.2",
     "webpack-node-externals": "^1.7.2"
+  },
+  "installConfig": {
+    "hoistingLimits": "workspaces"
   }
 }

@@ -55,7 +55,7 @@ const WorkflowToolbar = ({
     <MainLayout.Toolbar
       className={style.header}
       tabs={tabs}
-      buttons={flowButtons}
+      buttons={flowButtons as any}
       currentTab={currentTab}
       tabChange={tabChange}
       rightContent={searchBar}

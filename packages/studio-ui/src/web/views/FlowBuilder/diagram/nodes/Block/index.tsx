@@ -11,6 +11,7 @@ import { inspect } from '~/components/Shared/utilities/inspect'
 import { BaseNodeModel } from '~/views/FlowBuilder/diagram/nodes/BaseNodeModel'
 import { StandardPortWidget } from '~/views/FlowBuilder/diagram/nodes/Ports'
 
+import sharedStyle from '../../../../../components/Shared/style.scss'
 import { NodeDebugInfo } from '../../debugger'
 import { defaultTransition } from '../../manager'
 import ActionContents from '../ActionContents'

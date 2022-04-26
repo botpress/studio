@@ -8,7 +8,7 @@ import { CheckboxProps } from './typings'
 const SharedCheckbox: FC<CheckboxProps> = ({ fieldKey, label, className, checked, onChange, children }) => {
   return (
     <div key={fieldKey} className={cx(style.checkboxWrapper, className, 'checkbox-wrapper')}>
-      <Checkbox checked={checked} key={fieldKey} label={label} onChange={onChange} />
+      <Checkbox checked={checked} key={fieldKey} label={label as string} onChange={onChange} />
       {children}
     </div>
   )

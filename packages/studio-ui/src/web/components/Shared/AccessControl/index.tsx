@@ -1,7 +1,6 @@
-import { checkRule } from 'common/auth'
-
 import { PermissionAllowedProps } from './typings'
 
+// TODO: Remove any call to this function as we don't provide any authorization mechanism anymore with v13+
 export const isOperationAllowed = (params: PermissionAllowedProps) => {
   const profile = params.user
   if (!profile) {
@@ -18,10 +17,6 @@ export const isOperationAllowed = (params: PermissionAllowedProps) => {
 
   if (!params.operation || !params.resource) {
     return true
-  }
-
-  if (profile.permissions && !checkRule(profile.permissions, params.operation, params.resource)) {
-    return false
   }
 
   return true

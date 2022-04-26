@@ -27,7 +27,9 @@ class WrappedInjectedModule extends React.Component<any> {
   }
 
   render() {
-    return <InjectedModuleView {...this.props} />
+    return (
+      <InjectedModuleView moduleName={this.props.moduleName} componentName={this.props.componentName} {...this.props} />
+    )
   }
 }
 

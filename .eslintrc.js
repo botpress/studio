@@ -22,7 +22,12 @@ module.exports = {
     '*.js',
     '**/out/**',
     '**/dist/**',
-    '**/*.test.ts'
+    '**/demo/**',
+    '**/scripts/**',
+    '**/*.test.ts',
+    '**/*.test.tsx',
+    '**/*.stories.tsx',
+    '**/jest-setup.ts'
   ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
   rules: {
