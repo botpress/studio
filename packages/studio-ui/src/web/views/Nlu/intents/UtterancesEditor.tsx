@@ -145,7 +145,6 @@ export class UtterancesEditor extends React.Component<Props, State> {
 
   render() {
     return (
-      // @ts-ignore
       <Editor
         value={this.state.value}
         plugins={plugins}
@@ -241,7 +240,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
       .filter((x) => ['insert_text', 'remove_text', 'add_mark', 'remove_mark', 'split_node'].includes(x)).size
   }
 
-  onChange = ({ value, operations }: { value: Value; operations: Immutable.List<Operation> }) => {
+  onChange = ({ value, operations }: { value: Value; operations: any }) => {
     let selection: Selected | undefined
     if (operations.filter((x) => x.get('type') === 'set_selection').size) {
       selection = this.onSelectionChanged(value)
@@ -289,8 +288,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
       const modifiedChildNodes = childNodes.map(this._exploreNodes)
       const modifiedNode: NodeJSON = {
         ...node,
-        // @ts-ignore
-        nodes: modifiedChildNodes.map(({ node }) => node)
+        nodes: modifiedChildNodes.map(({ node }) => node) as any
       }
 
       return {
@@ -344,7 +342,6 @@ export class UtterancesEditor extends React.Component<Props, State> {
         const slotMark = props.mark.data.toJS()
         const color = this.props.slots.find((s) => s.name === slotMark.slotName).color
         const cn = classnames(style.slotMark, style[`label-colors-${color}`])
-        // @ts-ignore
         const remove = () => editor.moveToRangeOfNode(props.node).removeMark(props.mark)
 
         return (

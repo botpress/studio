@@ -1,7 +1,7 @@
 import React from 'react'
 import { lang } from '~/components/Shared/translations'
 
-export default () => (
+export default ({ err }: { err?: Error }) => (
   <div className="panel panel-warning">
     <div className="panel-heading">{lang.tr('studio.flow.module.notFound')}</div>
     <div className="panel-body">

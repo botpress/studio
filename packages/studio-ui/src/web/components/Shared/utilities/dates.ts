@@ -1,4 +1,3 @@
-import { IDateRangeShortcut } from '@blueprintjs/datetime'
 import { dates, IDates } from 'common/dates'
 
 import { lang } from '../translations'
@@ -16,7 +15,7 @@ const {
   thisYear
 } = dates
 
-export const createDateRangeShortcuts = (): IDateRangeShortcut[] => [
+export const createDateRangeShortcuts = (): any[] => [
   {
     dateRange: [thisWeek, now],
     label: lang.tr('timespan.thisWeek')

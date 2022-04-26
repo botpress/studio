@@ -122,9 +122,9 @@ const SidePanelInspectorContent: FC<Props> = (props) => {
 const mapStateToProps = (state) => ({
   currentFlow: getCurrentFlow(state),
   flows: getAllFlows(state),
-  dirtyFlows: getDirtyFlows(state),
+  dirtyFlows: getDirtyFlows(state as never),
   flowProblems: state.flows.flowProblems,
-  flowsName: getFlowNamesList(state),
+  flowsName: getFlowNamesList(state as never),
   showFlowNodeProps: state.flows.showFlowNodeProps,
   explorerOpen: state.ui.explorerOpen
 })

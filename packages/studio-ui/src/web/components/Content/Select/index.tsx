@@ -1,7 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
-import { ContentElement, FormData, SearchParams } from 'botpress/sdk'
+import { ContentElement, FormData, ParsedContentType, SearchParams } from 'botpress/sdk'
 import classnames from 'classnames'
-import { ParsedContentType } from 'common/typings'
 import React, { Component } from 'react'
 import { Alert, Button } from 'react-bootstrap'
 import Markdown from 'react-markdown'

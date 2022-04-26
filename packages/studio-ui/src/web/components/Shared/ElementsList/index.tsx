@@ -63,11 +63,7 @@ export default class ElementsList extends React.Component<Props> {
       return (
         <ListGroupItem key={`elements_create_element_${index}`} className={style.listElement}>
           {element.startsWith('#!') ? (
-            <ContentPickerWidget
-              itemId={element.replace('#!', '')}
-              onClickChange={() => this.toggleEditMode(index)}
-              onChange={this.onContentChange}
-            />
+            <ContentPickerWidget placeholder="" itemId={element.replace('#!', '')} onChange={this.onContentChange} />
           ) : (
             <div style={{ padding: 6 }}>
               <a className={style.listElementValue} onClick={() => this.toggleEditMode(index)}>

@@ -1,11 +1,11 @@
 import { Button } from '@blueprintjs/core'
 import cx from 'classnames'
 import React, { FC, useState } from 'react'
+
+import sharedStyle from '../../../Shared/style.scss'
 import MoreOptions from '../../MoreOptions'
 import { MoreOptionsItems } from '../../MoreOptions/typings'
-
 import { lang } from '../../translations'
-import sharedStyle from '../style.scss'
 
 import style from './style.scss'
 import { GroupItemWrapperProps } from './typings'

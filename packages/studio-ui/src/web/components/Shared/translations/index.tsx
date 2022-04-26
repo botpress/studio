@@ -15,39 +15,39 @@ document.addEventListener('keydown', function (event) {
   if (event.ctrlKey && event.key === 'q') {
     isDev = !isDev
     localStorage.setItem('langdebug', isDev ? 'true' : 'false')
-    window.location.reload()
+    ;(window as any).location.reload()
   }
 })
 
 const langExtend = (langs) => {
-  if (isEmpty(window.translations)) {
-    window.translations = { en, fr, es }
+  if (isEmpty((window as any).translations)) {
+    ;(window as any).translations = { en, fr, es }
   }
 
   for (const [key, value] of Object.entries(langs)) {
-    if (window.translations[key]) {
-      merge(window.translations[key], value)
+    if ((window as any).translations[key]) {
+      merge((window as any).translations[key], value)
     } else {
-      window.translations[key] = value
+      ;(window as any).translations[key] = value
     }
   }
 }
 
 const langInit = () => {
-  window.locale = getUserLocale()
+  ;(window as any).locale = getUserLocale()
   isDev = localStorage.getItem('langdebug') === 'true'
 
-  const messages = squash(window.translations[window.locale])
-  const defaultLang = squash(window.translations[defaultLocale])
+  const messages = squash((window as any).translations[(window as any).locale])
+  const defaultLang = squash((window as any).translations[defaultLocale])
   for (const key in defaultLang) {
     if (!messages[key]) {
       messages[key] = defaultLang[key]
     }
   }
 
-  window.intl = createIntl(
+  ;(window as any).intl = createIntl(
     {
-      locale: window.locale,
+      locale: (window as any).locale,
       messages,
       defaultLocale,
       onError: (err) => {
@@ -61,11 +61,11 @@ const langInit = () => {
 }
 
 const langLocale = (): string => {
-  return window.locale
+  return (window as any).locale
 }
 
-const langAvaibale = (): string[] => {
-  return Object.keys(window.translations)
+const langAvailable = (): string[] => {
+  return Object.keys((window as any).translations)
 }
 
 const squash = (space, root = {}, path = '') => {
@@ -84,9 +84,9 @@ const getUserLocale = () => {
   const browserLocale = code(navigator.language || navigator['userLanguage'] || '')
   const storageLocale = code(localStorage.getItem('uiLanguage') || '')
 
-  return window.translations[storageLocale]
+  return (window as any).translations[storageLocale]
     ? storageLocale
-    : window.translations[browserLocale]
+    : (window as any).translations[browserLocale]
     ? browserLocale
     : defaultLocale
 }
@@ -100,13 +100,13 @@ const translate = (id: string | MultiLangText, values?: { [variable: string]: an
   }
 
   if (typeof id === 'object') {
-    return id[window.locale] || id[defaultLocale] || ''
+    return id[(window as any).locale] || id[defaultLocale] || ''
   }
 
   if (isDev) {
     return id
   } else {
-    return window.intl.formatMessage({ id }, values)
+    return (window as any).intl.formatMessage({ id }, values)
   }
 }
 
@@ -115,6 +115,6 @@ export const lang = {
   init: langInit,
   extend: langExtend,
   getLocale: langLocale,
-  getAvailable: langAvaibale,
+  getAvailable: langAvailable,
   defaultLocale
 }

@@ -1,8 +1,8 @@
 import cx from 'classnames'
 import React, { FC, Fragment, useEffect, useState } from 'react'
 
+import sharedStyle from '../../../Shared/style.scss'
 import { lang } from '../../translations'
-import sharedStyle from '../style.scss'
 import { getFieldDefaultValue } from '../utils/fields'
 
 import { TextProps } from './typings'

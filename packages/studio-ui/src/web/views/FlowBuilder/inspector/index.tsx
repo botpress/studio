@@ -150,7 +150,7 @@ class Inspector extends Component<Props> {
 const mapStateToProps = (state) => ({
   flows: _.values(state.flows.flowsByName),
   currentFlow: getCurrentFlow(state),
-  currentFlowNode: getCurrentFlowNode(state) as any,
+  currentFlowNode: getCurrentFlowNode(state as never) as any,
   buffer: state.flows.buffer,
   user: state.user
 })

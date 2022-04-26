@@ -185,7 +185,7 @@ const ContentForm: FC<Props> = (props) => {
 
   return (
     <Form<FormData>
-      {...props}
+      {...(props as any)}
       formData={currentFormData}
       formContext={context}
       safeRenderCompletion
@@ -202,7 +202,7 @@ const ContentForm: FC<Props> = (props) => {
           intent={Intent.PRIMARY}
           type="submit"
           text={lang.tr('submit')}
-          disabled={isMissingCurlyBraceClosure(currentFormData?.text)}
+          disabled={isMissingCurlyBraceClosure((currentFormData as any)?.text)}
         />
       </div>
     </Form>

@@ -21,5 +21,5 @@ export interface MoreOptionsItems {
   selected?: boolean
   content?: JSX.Element
   action?: () => void
-  type?: 'delete'
+  type?: 'delete' | 'convert'
 }

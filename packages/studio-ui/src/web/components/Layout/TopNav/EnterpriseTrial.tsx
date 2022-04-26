@@ -4,7 +4,7 @@ import { lang } from '~/components/Shared/translations'
 import style from './style.scss'
 
 export default () => {
-  return window.IS_PRO_ENABLED ? (
+  return (window as any).IS_PRO_ENABLED ? (
     <div />
   ) : (
     <ToolTip position="right-bottom" content="topNav.salesCallToActionDescription">

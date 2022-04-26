@@ -4,10 +4,10 @@ import _isEqual from 'lodash/isEqual'
 import _uniqueId from 'lodash/uniqueId'
 import React, { FC, useEffect, useRef, useState } from 'react'
 
+import sharedStyle from '../../../../Shared/style.scss'
 import Textarea from '../../../Textarea'
 import { lang } from '../../../translations'
 import AddButton from '../AddButton'
-import sharedStyle from '../style.scss'
 import { TextFieldsArrayProps } from '../typings'
 
 import style from './style.scss'

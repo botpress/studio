@@ -22,7 +22,7 @@ export default function debounceAction(action: any, delay: number, options?: _.D
 }
 
 export const handleReceiveFlowsModification = (modification) => (dispatch, getState) => {
-  const dirtyFlows = getDirtyFlows(getState())
+  const dirtyFlows = getDirtyFlows(getState() as never)
   const amIModifyingTheSameFlow = dirtyFlows.includes(modification.name)
   if (amIModifyingTheSameFlow) {
     FlowsAPI.cancelUpdate(modification.name)

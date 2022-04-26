@@ -40,8 +40,9 @@ import MainLayout from '~/components/Shared/MainLayout'
 import ShortcutLabel from '~/components/Shared/ShortcutLabel'
 import { lang } from '~/components/Shared/translations'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
-import { DIAGRAM_PADDING } from './constants'
 
+import sharedStyle from '../../../components/Shared/style.scss'
+import { DIAGRAM_PADDING } from './constants'
 import { prepareEventForDiagram } from './debugger'
 import DiagramToolbar from './DiagramToolbar'
 import { defaultTransition, DiagramManager, nodeTypes, Point } from './manager'
@@ -732,7 +733,7 @@ class Diagram extends Component<Props> {
 const mapStateToProps = (state: RootReducer) => ({
   flows: getAllFlows(state.flows),
   currentFlow: getCurrentFlow(state),
-  currentFlowNode: getCurrentFlowNode(state),
+  currentFlowNode: getCurrentFlowNode(state as never),
   currentDiagramAction: state.flows.currentDiagramAction,
   canPasteNode: Boolean(state.flows.buffer?.nodes),
   emulatorOpen: state.ui.emulatorOpen,
