@@ -1,12 +1,11 @@
-import { get } from 'lodash'
-import React from 'react'
 import classnames from 'classnames'
+import React from 'react'
 import style from './style.scss'
 
 const DEFAULT_ROW_HEIGHT = 32
 
-export class InputElement extends React.Component {
-  elementInputRef = React.createRef()
+export class InputElement extends React.Component<any, any> {
+  elementInputRef = React.createRef<HTMLInputElement>()
 
   state = {
     rowHeight: DEFAULT_ROW_HEIGHT,
@@ -22,7 +21,7 @@ export class InputElement extends React.Component {
     return this.state.text && this.state.text.trim().length > 0
   }
 
-  handleKeyDown = event => {
+  handleKeyDown = (event) => {
     if (event.key === 'Enter') {
       if (event.altKey && this.props.allowMultiline) {
         this.setState({ text: this.state.text + '\n' }, this.updateTextareaHeight)
@@ -34,7 +33,7 @@ export class InputElement extends React.Component {
     }
   }
 
-  handleOnChange = event => {
+  handleOnChange = (event) => {
     this.setState({ text: event.target.value }, this.updateTextareaHeight)
   }
 
@@ -42,7 +41,7 @@ export class InputElement extends React.Component {
     this.setState({ rowHeight: this.elementInputRef.current.scrollHeight })
   }
 
-  handleOnBlur = _event => {
+  handleOnBlur = (_event) => {
     this.inputNotEmpty && this.tryAddElement()
   }
 
@@ -67,7 +66,7 @@ export class InputElement extends React.Component {
           className={classnames('form-control', style.inputArea, {
             [style.inputError]: this.state.error || this.props.invalid
           })}
-          ref={this.elementInputRef}
+          ref={this.elementInputRef as any}
           style={{ height: this.state.rowHeight }}
           tabIndex={this.props.tabIndex}
           value={this.state.text}

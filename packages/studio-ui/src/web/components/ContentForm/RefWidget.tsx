@@ -15,7 +15,7 @@ const undecorateRef = (decoratedId) => {
   return m[1]
 }
 
-export default class RefWidget extends Component {
+export default class RefWidget extends Component<any, any> {
   handleChange = (item) => this.props.onChange(decorateRef(item.id))
 
   render() {

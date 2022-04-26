@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { genKey } from 'draft-js'
 import { escapeRegExp } from 'lodash'
 import PropTypes from 'prop-types'
@@ -8,26 +7,22 @@ import style from '../styles.scss'
 import decodeOffsetKey from '../utils/decodeOffsetKey'
 import getSearchText from '../utils/getSearchText'
 
-const defaultEntryComponent = props => {
-  const {
-    mention,
-    theme,
-    isFocused, // eslint-disable-line no-unused-vars
-    searchValue, // eslint-disable-line no-unused-vars
-    ...parentProps
-  } = props
+const defaultEntryComponent = (props) => {
+  const { mention, theme, isFocused, searchValue, ...parentProps } = props
   return (
     <div {...parentProps}>
-      <span className={cx(style.variable, { [style.focused]: isFocused })}>{mention.name}</span>
+      <span className={style.variable}>{mention.name}</span>
 
-      <div className={style.info}>
+      <div>
         <div className={style.description}>{mention.description}</div>
       </div>
     </div>
   )
 }
 
-export class Entry extends Component {
+export class Entry extends Component<any, any> {
+  private mouseDown: boolean
+
   constructor(props) {
     super(props)
     this.mouseDown = false
@@ -44,7 +39,7 @@ export class Entry extends Component {
     }
   }
 
-  onMouseDown = event => {
+  onMouseDown = (event) => {
     // Note: important to avoid a content edit change
     event.preventDefault()
 
@@ -77,7 +72,13 @@ export class Entry extends Component {
   }
 }
 
-export class MentionSuggestions extends Component {
+export class MentionSuggestions extends Component<any> {
+  private key
+  private popover
+  private activeOffsetKey
+  private lastSelectionIsInsideWord
+  private lastSearchValue
+
   static propTypes = {
     entityMutability: PropTypes.oneOf(['SEGMENTED', 'IMMUTABLE', 'MUTABLE']),
     entryComponent: PropTypes.func,
@@ -136,7 +137,7 @@ export class MentionSuggestions extends Component {
         state: this.state,
         popover: this.popover
       })
-      Object.keys(newStyles).forEach(key => {
+      Object.keys(newStyles).forEach((key) => {
         this.popover.style[key] = newStyles[key]
       })
     }
@@ -146,7 +147,7 @@ export class MentionSuggestions extends Component {
     this.props.callbacks.onChange = undefined
   }
 
-  onEditorStateChange = editorState => {
+  onEditorStateChange = (editorState) => {
     const searches = this.props.store.getAllSearches()
 
     // TODO max.cloutier this doesn't work when there was already a string in the field in the sidebar form
@@ -174,7 +175,7 @@ export class MentionSuggestions extends Component {
     }
 
     // identify the start & end positon of each search-text
-    const offsetDetails = searches.map(offsetKey => decodeOffsetKey(offsetKey))
+    const offsetDetails = searches.map((offsetKey) => decodeOffsetKey(offsetKey))
 
     // a leave can be empty when it is removed due e.g. using backspace
     // do not check leaves, use full decorated portal text
@@ -183,7 +184,7 @@ export class MentionSuggestions extends Component {
       .map(({ blockKey, decoratorKey }) => editorState.getBlockTree(blockKey).getIn([decoratorKey]))
 
     // if all leaves are undefined the popover should be removed
-    if (leaves.every(leave => leave === undefined)) {
+    if (leaves.every((leave) => leave === undefined)) {
       return removeList()
     }
 
@@ -192,7 +193,7 @@ export class MentionSuggestions extends Component {
     // the @ causes troubles due selection confusion.
     const plainText = editorState.getCurrentContent().getPlainText()
     const selectionIsInsideWord = leaves
-      .filter(leave => leave !== undefined)
+      .filter((leave) => leave !== undefined)
       .map(
         ({ start, end }) =>
           (start === 0 &&
@@ -203,13 +204,13 @@ export class MentionSuggestions extends Component {
           (anchorOffset > start + this.props.mentionTrigger.length && anchorOffset <= end) // @ is in the text or at the end
       )
 
-    if (selectionIsInsideWord.every(isInside => isInside === false)) {
+    if (selectionIsInsideWord.every((isInside) => isInside === false)) {
       return removeList()
     }
 
     const lastActiveOffsetKey = this.activeOffsetKey
     this.activeOffsetKey = selectionIsInsideWord
-      .filter(value => value === true)
+      .filter((value) => value === true)
       .keySeq()
       .first()
 
@@ -254,18 +255,18 @@ export class MentionSuggestions extends Component {
     }
   }
 
-  onDownArrow = keyboardEvent => {
+  onDownArrow = (keyboardEvent) => {
     keyboardEvent.preventDefault()
     const newIndex = this.state.focusedOptionIndex + 1
     this.onMentionFocus(newIndex >= this.props.suggestions.length ? 0 : newIndex)
   }
 
-  onTab = keyboardEvent => {
+  onTab = (keyboardEvent) => {
     keyboardEvent.preventDefault()
     this.commitSelection()
   }
 
-  onUpArrow = keyboardEvent => {
+  onUpArrow = (keyboardEvent) => {
     keyboardEvent.preventDefault()
     if (this.props.suggestions.length > 0) {
       const newIndex = this.state.focusedOptionIndex - 1
@@ -273,11 +274,11 @@ export class MentionSuggestions extends Component {
     }
   }
 
-  onEscape = keyboardEvent => {
+  onEscape = (keyboardEvent) => {
     keyboardEvent.preventDefault()
 
     const activeOffsetKey = this.lastSelectionIsInsideWord
-      .filter(value => value === true)
+      .filter((value) => value === true)
       .keySeq()
       .first()
     this.props.store.escapeSearch(activeOffsetKey)
@@ -287,7 +288,7 @@ export class MentionSuggestions extends Component {
     this.props.store.setEditorState(this.props.store.getEditorState())
   }
 
-  onMentionSelect = mention => {
+  onMentionSelect = (mention) => {
     // Note: This can happen in case a user typed @xxx (invalid mention) and
     // then hit Enter. Then the mention will be undefined.
     if (!mention) {
@@ -314,7 +315,7 @@ export class MentionSuggestions extends Component {
     this.props.store.setEditorState(newEditorState)
   }
 
-  onMentionFocus = index => {
+  onMentionFocus = (index) => {
     const descendant = `mention-option-${this.key}-${index}`
     this.props.ariaProps.ariaActiveDescendantID = descendant
     this.setState({
@@ -410,7 +411,7 @@ export class MentionSuggestions extends Component {
         className: style.mentionSuggestions,
         role: 'listbox',
         id: `mentions-list-${this.key}`,
-        ref: element => {
+        ref: (element) => {
           this.popover = element
         }
       },

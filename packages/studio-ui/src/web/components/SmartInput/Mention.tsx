@@ -1,13 +1,13 @@
-import React from 'react'
 import cx from 'classnames'
+import React from 'react'
 
-const MentionText = ({ children, className }) => (
+const MentionText = ({ children, className, entityKey, mention, theme, decoratedText }) => (
   <span className={className} spellCheck={false}>
     {children}
   </span>
 )
 
-const Mention = props => {
+const Mention = (props) => {
   const { entityKey, theme = {}, children, decoratedText, className, contentState } = props
 
   const combinedClassName = cx(theme.mention, className)

@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
-export default class InjectedComponent extends Component {
+export default class InjectedComponent extends Component<any> {
   static propTypes = {
     component: PropTypes.func.isRequired
   }

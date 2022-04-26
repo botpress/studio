@@ -1,31 +1,34 @@
 import React from 'react'
+import { Modal, Button } from 'react-bootstrap'
 import ArrayField from 'react-jsonschema-form/lib/components/fields/ArrayField'
 import I18nManager from './I18nManager'
-import { Modal, Button } from 'react-bootstrap'
 
 export default class ArrayMl extends I18nManager {
   state = {
     isOpen: false,
-    text: []
+    text: [],
+    placeholder: '',
+    propertyNames: [],
+    requiredFormat: ''
   }
 
   componentDidMount() {
-    const schemaProps = this.props.schema.items.properties
+    const schemaProps = (this.props as any).schema.items.properties
     const propertyNames = Object.keys(schemaProps)
 
-    const requiredFormat = propertyNames.map(p => schemaProps[p].title).join('|')
+    const requiredFormat = propertyNames.map((p) => schemaProps[p].title).join('|')
 
     const text =
-      this.props.formData && this.props.formData.map(el => propertyNames.map(p => el[p]).join('|')).join('\n')
+      this.props.formData && this.props.formData.map((el) => propertyNames.map((p) => el[p]).join('|')).join('\n')
 
-    this.setState({ text, requiredFormat, propertyNames })
+    this.setState({ text, requiredFormat, propertyNames } as any)
   }
 
-  handleTextareaChanged = event => this.setState({ text: event.target.value })
-  toggle = () => this.setState({ isOpen: !this.state.isOpen })
+  handleTextareaChanged = (event) => this.setState({ text: event.target.value } as any)
+  toggle = () => this.setState({ isOpen: !this.state.isOpen } as any)
 
   extractChoices = () => {
-    const choices = this.state.text.split('\n').map(line => {
+    const choices = (this.state.text as any).split('\n').map((line) => {
       const split = line.split('|')
 
       return this.state.propertyNames.reduce((result, prop, idx) => {

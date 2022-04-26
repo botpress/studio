@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
-import Select from 'react-select'
 import Highlighter from 'react-highlight-words'
+import Select from 'react-select'
 
-const style = require('./actionDropdown.scss')
+import style from './actionDropdown.scss'
 
-export default class SelectActionDropdown extends Component {
-  renderOption = option => {
-    const highlight = txt => <Highlighter searchWords={[this._inputValue]} textToHighlight={txt} />
+export default class SelectActionDropdown extends Component<any> {
+  private _inputValue: string
+
+  renderOption = (option) => {
+    const highlight = (txt) => <Highlighter searchWords={[this._inputValue]} textToHighlight={txt} />
 
     if (option.metadata) {
       const category = option.metadata.category ? (
@@ -33,7 +35,7 @@ export default class SelectActionDropdown extends Component {
   render() {
     return (
       <Select
-        onInputChange={inputValue => (this._inputValue = inputValue)}
+        onInputChange={(inputValue) => (this._inputValue = inputValue)}
         onChange={this.props.onChange}
         options={this.props.options}
         value={this.props.value}
