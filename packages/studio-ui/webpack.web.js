@@ -3,7 +3,6 @@ process.traceDeprecation = true
 const chalk = require('chalk')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const FileManagerPlugin = require('filemanager-webpack-plugin')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const moment = require('moment')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
@@ -20,7 +19,7 @@ const webConfig = {
   bail: true,
   devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
   entry: {
-    web: './src/web/index.jsx'
+    web: './src/web/index.tsx'
   },
   node: {
     net: 'empty',
@@ -33,7 +32,7 @@ const webConfig = {
     filename: '[name].[chunkhash].js'
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx', '.ts', '.css'],
+    extensions: ['.js', '.tsx', '.ts', '.css'],
     alias: {
       '~': path.resolve(__dirname, './src/web'),
       common: path.resolve(__dirname, '../studio-be/dist/common'),
@@ -171,39 +170,6 @@ const webConfig = {
         ]
       },
       {
-        test: /\.jsx?$/i,
-        include: [path.resolve(__dirname, 'src/web')],
-        use: [
-          {
-            loader: 'thread-loader'
-          },
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: [
-                require.resolve('babel-preset-stage-3'),
-                [
-                  require.resolve('babel-preset-env'),
-                  {
-                    targets: {
-                      browsers: ['last 2 versions']
-                    }
-                  }
-                ],
-                require.resolve('babel-preset-react')
-              ],
-              plugins: [
-                require.resolve('babel-plugin-transform-class-properties'),
-                require.resolve('babel-plugin-transform-es2015-arrow-functions')
-              ],
-              compact: true,
-              babelrc: false,
-              cacheDirectory: true
-            }
-          }
-        ]
-      },
-      {
         test: /\.scss$/,
         use: [
           {
@@ -247,17 +213,6 @@ const webConfig = {
     ]
   }
 }
-
-// if (!isProduction) {
-//   webConfig.plugins.push(
-//     new HardSourceWebpackPlugin({
-//       info: {
-//         mode: 'test',
-//         level: 'debug'
-//       }
-//     })
-//   )
-// }
 
 if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())

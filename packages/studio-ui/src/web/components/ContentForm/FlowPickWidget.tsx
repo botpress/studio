@@ -1,11 +1,11 @@
+import axios from 'axios'
+import find from 'lodash/find'
+import get from 'lodash/get'
 import React, { Component } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Select from 'react-select'
-import get from 'lodash/get'
-import find from 'lodash/find'
-import axios from 'axios'
 
-export default class FlowPickWidget extends Component {
+export default class FlowPickWidget extends Component<any, any> {
   constructor(props) {
     super(props)
 
@@ -18,17 +18,17 @@ export default class FlowPickWidget extends Component {
   }
 
   componentDidMount() {
-    this.fetchFlows()
+    void this.fetchFlows()
     this.extractFlowNode()
   }
 
-  fetchFlows() {
-    axios.get('/api/flows/all').then(({ data }) => {
+  async fetchFlows() {
+    return axios.get('/api/flows/all').then(({ data }) => {
       this.setState({ flows: data })
     })
   }
 
-  onSelectChange = prop => option => {
+  onSelectChange = (prop) => (option) => {
     this.setState({ [prop]: option }, () => {
       const flow = this.state.redirectFlow && this.state.redirectFlow.value
       const node = this.state.redirectNode && this.state.redirectNode.value

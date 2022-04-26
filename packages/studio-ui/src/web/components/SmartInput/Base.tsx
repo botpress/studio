@@ -1,18 +1,18 @@
 import decorateComponentWithProps from 'decorate-component-with-props'
 import { Map } from 'immutable'
+import React from 'react'
 
-import Mention from './Mention.jsx'
-import MentionSuggestions from './MentionSuggestions' // eslint-disable-line import/no-named-as-default
-import MentionSuggestionsPortal from './MentionSuggestionsPortal'
 import defaultRegExp from './defaultRegExp'
+import Mention from './Mention'
 import mentionStrategy from './mentionStrategy'
+import MentionSuggestions from './MentionSuggestions'
+import MentionSuggestionsPortal from './MentionSuggestionsPortal'
 import mentionSuggestionsStrategy from './mentionSuggestionsStrategy'
+import style from './styles.scss'
 import suggestionsFilter from './utils/defaultSuggestionsFilter'
 import defaultPositionSuggestions from './utils/positionSuggestions'
 
 export { default as MentionSuggestions } from './MentionSuggestions'
-
-import style from './styles.scss'
 
 export const defaultTheme = {
   // CSS class for mention text
@@ -22,11 +22,10 @@ export const defaultTheme = {
   // CSS classes for an entry in the suggestions component
   mentionSuggestionsEntry: style.mentionSuggestionsEntry,
   mentionSuggestionsEntryFocused: style.mentionSuggestionsEntryFocused,
-  mentionSuggestionsEntryText: style.mentionSuggestionsEntryText,
-  mentionSuggestionsEntryAvatar: style.mentionSuggestionsEntryAvatar
+  mentionSuggestionsEntryText: style.mentionSuggestionsEntryText
 }
 
-const HandleSpan = props => {
+const HandleSpan = (props) => {
   return (
     <span className={style.mention} data-offset-key={props.offsetKey}>
       {props.children}
@@ -76,10 +75,10 @@ export default (config = {}) => {
   const store = {
     getEditorState: undefined,
     setEditorState: undefined,
-    getPortalClientRect: offsetKey => clientRectFunctions.get(offsetKey)(),
+    getPortalClientRect: (offsetKey) => (clientRectFunctions.get(offsetKey) as any)(),
     getAllSearches: () => searches,
-    isEscaped: offsetKey => escapedSearch === offsetKey,
-    escapeSearch: offsetKey => {
+    isEscaped: (offsetKey) => escapedSearch === offsetKey,
+    escapeSearch: (offsetKey) => {
       escapedSearch = offsetKey
     },
 
@@ -87,7 +86,7 @@ export default (config = {}) => {
       escapedSearch = undefined
     },
 
-    register: offsetKey => {
+    register: (offsetKey) => {
       searches = searches.set(offsetKey, offsetKey)
     },
 
@@ -95,13 +94,13 @@ export default (config = {}) => {
       clientRectFunctions = clientRectFunctions.set(offsetKey, func)
     },
 
-    unregister: offsetKey => {
+    unregister: (offsetKey) => {
       searches = searches.delete(offsetKey)
       clientRectFunctions = clientRectFunctions.delete(offsetKey)
     },
 
     getIsOpened: () => isOpened,
-    setIsOpened: nextIsOpened => {
+    setIsOpened: (nextIsOpened) => {
       isOpened = nextIsOpened
     }
   }
@@ -122,7 +121,7 @@ export default (config = {}) => {
     mentionTrigger = '@',
     mentionRegExp = defaultRegExp,
     supportWhitespace = false
-  } = config
+  } = config as any
   const mentionSearchProps = {
     ariaProps,
     callbacks,
@@ -163,13 +162,15 @@ export default (config = {}) => {
       store.setEditorState = setEditorState
     },
 
-    onDownArrow: keyboardEvent => callbacks.onDownArrow && callbacks.onDownArrow(keyboardEvent),
-    onTab: keyboardEvent => callbacks.onTab && callbacks.onTab(keyboardEvent),
-    onUpArrow: keyboardEvent => callbacks.onUpArrow && callbacks.onUpArrow(keyboardEvent),
-    onEscape: keyboardEvent => callbacks.onEscape && callbacks.onEscape(keyboardEvent),
-    handleReturn: keyboardEvent => callbacks.handleReturn && callbacks.handleReturn(keyboardEvent),
-    onChange: editorState => {
-      if (callbacks.onChange) return callbacks.onChange(editorState)
+    onDownArrow: (keyboardEvent) => callbacks.onDownArrow && callbacks.onDownArrow(keyboardEvent),
+    onTab: (keyboardEvent) => callbacks.onTab && callbacks.onTab(keyboardEvent),
+    onUpArrow: (keyboardEvent) => callbacks.onUpArrow && callbacks.onUpArrow(keyboardEvent),
+    onEscape: (keyboardEvent) => callbacks.onEscape && callbacks.onEscape(keyboardEvent),
+    handleReturn: (keyboardEvent) => callbacks.handleReturn && callbacks.handleReturn(keyboardEvent),
+    onChange: (editorState) => {
+      if (callbacks.onChange) {
+        return callbacks.onChange(editorState)
+      }
       return editorState
     }
   }
