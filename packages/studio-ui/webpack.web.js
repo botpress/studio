@@ -3,7 +3,6 @@ process.traceDeprecation = true
 const chalk = require('chalk')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const FileManagerPlugin = require('filemanager-webpack-plugin')
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const moment = require('moment')
 const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin')
@@ -33,7 +32,7 @@ const webConfig = {
     filename: '[name].[chunkhash].js'
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.tsx', '.ts', '.css'],
+    extensions: ['.js', '.tsx', '.ts', '.css'],
     alias: {
       '~': path.resolve(__dirname, './src/web'),
       common: path.resolve(__dirname, '../studio-be/dist/common'),
@@ -214,17 +213,6 @@ const webConfig = {
     ]
   }
 }
-
-// if (!isProduction) {
-//   webConfig.plugins.push(
-//     new HardSourceWebpackPlugin({
-//       info: {
-//         mode: 'test',
-//         level: 'debug'
-//       }
-//     })
-//   )
-// }
 
 if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())
