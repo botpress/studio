@@ -2120,7 +2120,7 @@ __metadata:
     reduce-reducers: ^0.1.2
     redux: ^3.7.2
     redux-actions: ^2.2.1
-    redux-thunk: ^2.2.0
+    redux-thunk: 2.2.0
     reselect: ^4.0.0
     rimraf: ^3.0.2
     sass-loader: ^6.0.6
@@ -6562,16 +6562,6 @@ __metadata:
     "@types/slate": "*"
     immutable: ^3.8.2
   checksum: afc83c7f47d19cc6776a8b4c14eb3894b18db2410e8274058133ed53d78ee82976f1318a707597ddc7277b1b857a4baf97b152687679f4e9757bb8c662508164
-  languageName: node
-  linkType: hard
-
-"@types/slate@npm:*":
-  version: 0.47.11
-  resolution: "@types/slate@npm:0.47.11"
-  dependencies:
-    "@types/react": "*"
-    immutable: ^3.8.2
-  checksum: 57efee2f8cc5c90583b256f332e764f7977ade9aff596513d68f44958b3914763ff0a2e4f4fdf1726bebd4815cc2e16a81f052432450cae52373af5582889cb8
   languageName: node
   linkType: hard
 
@@ -25120,12 +25110,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^2.2.0":
-  version: 2.4.1
-  resolution: "redux-thunk@npm:2.4.1"
-  peerDependencies:
-    redux: ^4
-  checksum: af5abb425fb9dccda02e5f387d6f3003997f62d906542a3d35fc9420088f550dc1a018bdc246c7d23ee852b4d4ab8b5c64c5be426e45a328d791c4586a3c6b6e
+"redux-thunk@npm:2.2.0":
+  version: 2.2.0
+  resolution: "redux-thunk@npm:2.2.0"
+  checksum: 25e6d655cf13cacb443d6a7630e2a04a51e915b61a3e2d1bfbcd769b0c65fce9b55ac8e122eded7f03d8cb1aca90f588741f6f7698239e23d1b187d1f6a68212
   languageName: node
   linkType: hard
 
