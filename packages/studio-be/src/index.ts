@@ -87,12 +87,12 @@ try {
   const localCloud = yn(process.env.CLOUD_LOCAL)
   process.CLOUD_CONTROLLER_ENDPOINT =
     process.env.CLOUD_CONTROLLER_ENDPOINT ||
-    (localCloud ? 'http://localhost:3600' : 'https://controllerapi.botpress.dev')
+    (localCloud ? 'http://localhost:3600' : 'https://controllerapi.botpress.cloud')
   process.CLOUD_OAUTH_ENDPOINT =
     process.env.CLOUD_OAUTH_ENDPOINT ||
-    (localCloud ? 'http://localhost:4444/oauth2/token' : 'https://oauth.botpress.dev/oauth2/token')
+    (localCloud ? 'http://localhost:4444/oauth2/token' : 'https://oauth.botpress.cloud/oauth2/token')
   process.CLOUD_NLU_ENDPOINT =
-    process.env.CLOUD_NLU_ENDPOINT || (localCloud ? 'http://localhost:3200' : 'https://nlu.botpress.dev')
+    process.env.CLOUD_NLU_ENDPOINT || (localCloud ? 'http://localhost:3200' : 'https://nlu-builder.botpress.cloud')
 
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
