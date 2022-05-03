@@ -601,8 +601,6 @@ reducer = reduceReducers(
       }),
 
       [requestInsertNewSkillFlow]: (state, { payload }) => {
-        console.log(payload)
-        console.log('Insert Flow')
         return {
           ...state,
           flowsByName: {

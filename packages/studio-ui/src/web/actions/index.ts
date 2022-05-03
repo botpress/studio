@@ -114,6 +114,9 @@ export const requestRemoveFlowNode = createAction('FLOWS/FLOW/REMOVE')
 export const requestPasteFlowNode = createAction('FLOWS/NODE/PASTE')
 export const requestPasteFlowNodeElement = createAction('FLOWS/NODE_ELEMENT/PASTE')
 
+export const loadingComponent = createAction('SPINNER/LOADING')
+export const loadedComponent = createAction('SPINNER/LOADED')
+
 const wrapAction =
   (
     requestAction,
@@ -245,6 +248,7 @@ export const insertComponentElementFlow =
     // Create skills nodes is exist
     // Insert skill node exist
     const state = getState()
+    dispatch(loadingComponent())
     const { data } = await axios.get(`${window.BOT_API_PATH}/mod/basic-components/components/${payload.componentName}`)
     // Transform Post Data content-type into consumable node flow.
     for (const i in data.flow.nodes) {
@@ -311,6 +315,7 @@ export const insertComponentElementFlow =
         await onTriggerEvent('create', node.conditions, state)
       }
     }
+    dispatch(loadedComponent())
   }
 const createContentType = async (contentElement: any) => {
   return axios

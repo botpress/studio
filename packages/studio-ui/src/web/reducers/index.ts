@@ -12,6 +12,7 @@ import modules from './modules'
 import ndu, { NduReducer } from './ndu'
 import nlu, { NLUReducer } from './nlu'
 import skills, { SkillsReducer } from './skills'
+import spinner, { LoaderReducer } from './spinner'
 import ui, { UiReducer } from './ui'
 import user, { UserReducer } from './user'
 export * from './selectors'
@@ -29,7 +30,8 @@ const bpApp = combineReducers({
   hints,
   ndu,
   nlu,
-  components
+  components,
+  spinner
 })
 export default bpApp
 
@@ -46,4 +48,5 @@ export interface RootReducer {
   bots: BotsReducer
   nlu: NLUReducer
   language: LanguageReducer
+  spinner: LoaderReducer
 }

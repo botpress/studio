@@ -36,6 +36,7 @@ import {
   zoomToLevel,
   insertComponentElementFlow
 } from '~/actions'
+import Spinner from '~/hook/useLoader'
 import { getAllFlows, getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
 
 import { DIAGRAM_PADDING } from './constants'
@@ -745,6 +746,7 @@ class Diagram extends Component<Props> {
           onDrop={this.handleToolDropped}
           onDragOver={(event) => event.preventDefault()}
         >
+          {this.props.loading ? <Spinner /> : <div></div>}
           <div className={style.floatingInfo}>
             <DiagramToolbar
               currentFlow={this.props.currentFlow}
@@ -794,7 +796,8 @@ const mapStateToProps = (state: RootReducer) => ({
   zoomLevel: state.ui.zoomLevel,
   conditions: state.ndu.conditions,
   skills: state.skills.installed,
-  components: state.components.installed
+  components: state.components.installed,
+  loading: state.spinner.loading
 })
 
 const mapDispatchToProps = {
