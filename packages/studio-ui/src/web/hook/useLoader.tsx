@@ -4,7 +4,7 @@ import style from './style.scss'
 
 const useLoader = () => {
   return (
-    <div style={style.centerSpinner}>
+    <div className={style.centerSpinner}>
       <Spinner intent="primary" size={100}>
         Loading...
       </Spinner>
