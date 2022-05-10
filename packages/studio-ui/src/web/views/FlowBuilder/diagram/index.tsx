@@ -413,7 +413,7 @@ class Diagram extends Component<Props> {
         </MenuItem>
         <MenuItem
           tagName="button"
-          text={lang.tr('templates')}
+          text={lang.tr('studio.flow.components')}
           icon="search-template"
           onClick={(e) => {
             e.stopPropagation()

@@ -1,9 +1,10 @@
 import { Spinner } from '@blueprintjs/core'
 import React from 'react'
+import style from './style.scss'
 
 const useLoader = () => {
   return (
-    <div style={{ position: 'absolute', zIndex: 10, marginLeft: 'auto', marginRight: 'auto', left: 0, right: 0 }}>
+    <div style={style.centerSpinner}>
       <Spinner intent="primary" size={100}>
         Loading...
       </Spinner>

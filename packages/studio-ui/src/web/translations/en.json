@@ -318,6 +318,7 @@
       "zoomToFit": "Fit to screen",
       "flowProperties": "Flow properties",
       "addNode": "Add Node",
+      "components": "Components",
       "addToLibrary": "Add to library",
       "cantDeleteFailure": "You can't delete the failure node.",
       "cantDeleteStart": "You can't delete the start node.",
@@ -484,9 +485,6 @@
         "error": "ERROR – Skill \"{size}\" is an invalid size for Skill window. Valid sizes are {sizes}.",
         "generatingSkillFlow": "Generating your skill flow...",
         "insert": "Insert a new skill"
-      },
-      "templateAdder": {
-        "template": "template"
       },
       "toolbar": {
         "clickDetails": "Click for more details",

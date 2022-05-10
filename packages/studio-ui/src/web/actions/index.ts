@@ -242,11 +242,15 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     }
   }
 }
-
+/**
+ *
+ * @param payload X and Y: Position of the right click event
+ * Name of the component to load into the studio
+ * It will create all the content-type, skills and links to match the selected component
+ * @returns void
+ */
 export const insertComponentElementFlow =
   (payload: { x: number; y: number; componentName: string }) => async (dispatch, getState) => {
-    // Create skills nodes is exist
-    // Insert skill node exist
     const state = getState()
     dispatch(loadingComponent())
     const { data } = await axios.get(`${window.BOT_API_PATH}/mod/basic-components/components/${payload.componentName}`)
@@ -317,6 +321,7 @@ export const insertComponentElementFlow =
     }
     dispatch(loadedComponent())
   }
+
 const createContentType = async (contentElement: any) => {
   return axios
     .post(`${window.STUDIO_API_PATH}/cms/${contentElement.contentType}/element/`, { formData: contentElement.formData })
@@ -324,6 +329,7 @@ const createContentType = async (contentElement: any) => {
       return resp.data
     })
 }
+
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
 // actions that do not modify flow
@@ -333,7 +339,7 @@ export const openFlowNodeProps: () => void = createAction('FLOWS/FLOW/OPEN_NODE_
 export const closeFlowNodeProps: () => void = createAction('FLOWS/FLOW/CLOSE_NODE_PROPS')
 
 export const handleRefreshFlowLinks = createAction('FLOWS/FLOW/UPDATE_LINKS')
-export const refreshFlowsLinks = debounceAction(handleRefreshFlowLinks, 200, { leading: true })
+export const refreshFlowsLinks = debounceAction(handleRefreshFlowLinks, 500, { leading: true })
 export const updateFlowProblems: (problems: NodeProblem[]) => void = createAction('FLOWS/FLOW/UPDATE_PROBLEMS')
 
 export const copyFlowNodes: (nodeIds: string[]) => void = createAction('FLOWS/NODE/COPY')
@@ -530,7 +536,6 @@ export const requestEditSkill = (nodeId) => (dispatch, getState) => {
 
 export const componentsReceived = createAction('COMPONENTS/RECEIVED')
 export const fetchComponents = () => (dispatch) => {
-  // api/v1/bots/fallback/mod/basic-components/components
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.BOT_API_PATH}/mod/basic-components/components`).then((res) => {
     dispatch(componentsReceived(res.data))
