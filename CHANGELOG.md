@@ -1,3 +1,13 @@
+## [0.0.52](https://github.com/botpress/studio/compare/v0.0.51...v0.0.52) (2022-06-16)
+
+
+### Bug Fixes
+
+* **qna:** infinite scroll ([#352](https://github.com/botpress/studio/issues/352)) ([d6565b4](https://github.com/botpress/studio/commit/d6565b40d053e88f61c3c3fcd2c7f95f00ab8583))
+* **studio:** fix bot export ([#351](https://github.com/botpress/studio/issues/351)) ([8dacd2d](https://github.com/botpress/studio/commit/8dacd2dc3cac0f35acfe1ecd81f71d480e6ce229))
+
+
+
 ## [0.0.51](https://github.com/botpress/studio/compare/v0.0.50...v0.0.51) (2022-04-06)
 
 
