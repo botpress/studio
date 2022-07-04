@@ -36,35 +36,41 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'storm-react-diagrams/dist/style.min.css'
 import './theme.scss'
 
-const token = auth.getToken()
-if (token) {
-  if (window.USE_JWT_COOKIES) {
-    axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
-  } else {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+axios.get(`${window.location.pathname || ''}/env.js`).then(({ data }) => {
+  for (const [key, value] of Object.entries(data)) {
+    window[key] = value
   }
 
-  axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
-}
+  const token = auth.getToken()
+  if (token) {
+    if (window.USE_JWT_COOKIES) {
+      axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
+    } else {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    }
 
-if (!window.BOT_ID) {
-  console.error(`This bot doesn't exist. Redirecting to admin `)
-  window.location.href = `${window.ROOT_PATH}/admin`
-} else {
-  initializeTranslations()
+    axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
+  }
 
-  // Do not use "import App from ..." as hoisting will screw up styling
-  const App = require('./components/App').default
+  if (!window.BOT_ID) {
+    console.error(`This bot doesn't exist. Redirecting to admin `)
+    window.location.href = `${window.ROOT_PATH}/admin`
+  } else {
+    initializeTranslations()
 
-  ReactDOM.render(
-    <Provider store={store}>
-      <HotKeys keyMap={utils.keyMap}>
-        <App />
-      </HotKeys>
-    </Provider>,
-    document.getElementById('app')
-  )
-}
+    // Do not use "import App from ..." as hoisting will screw up styling
+    const App = require('./components/App').default
 
-// TODO: what ?
-// telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
+    ReactDOM.render(
+      <Provider store={store}>
+        <HotKeys keyMap={utils.keyMap}>
+          <App />
+        </HotKeys>
+      </Provider>,
+      document.getElementById('app')
+    )
+  }
+
+  // TODO: what ?
+  // telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
+})
