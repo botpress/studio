@@ -121,8 +121,12 @@ class BottomPanel extends React.Component<Props, State> {
       return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1)
     }
 
+    const escapeHtmlChars = (str: string) => {
+      return str.replace(/>/g, '&gt;').replace(/</g, '&lt;')
+    }
+
     if (isHTML(content)) {
-      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: content }} />
+      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: escapeHtmlChars(content) }} />
     } else {
       return <span className={logStyle.message}>{content}</span>
     }
