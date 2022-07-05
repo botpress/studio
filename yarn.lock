@@ -1581,6 +1581,7 @@ __metadata:
     "@blueprintjs/datetime": 3.15.2
     "@blueprintjs/select": ^3.12.0
     "@botpress/studio-be": "*"
+    "@cospired/i18n-iso-languages": ^4.0.0
     "@types/react": ^16.8.19
     "@types/react-dom": ^16.8.4
     axios: ^0.25.0
@@ -1618,6 +1619,13 @@ __metadata:
     webpack-node-externals: ^1.7.2
   languageName: unknown
   linkType: soft
+
+"@cospired/i18n-iso-languages@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@cospired/i18n-iso-languages@npm:4.0.0"
+  checksum: 7799a4c21fb5f49633e6c83758abad3594dfbd390bb87f0b9b141c768ea5e1129c9eaa8a31fcc489a5fe81f45dd5e664e45a182406101d9b9a36d11123ad5ae2
+  languageName: node
+  linkType: hard
 
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
