@@ -63,6 +63,8 @@ class ActionItem extends Component<Props> {
       [style.missingTranslation]: preview?.startsWith('(missing translation) ')
     })
 
+    console.log('preview', preview)
+    console.log('item.schema', item?.schema)
     if (preview && item?.schema?.title === 'Image') {
       const markdownRender = (
         <Markdown
@@ -96,8 +98,13 @@ class ActionItem extends Component<Props> {
       )
     }
 
-    const textContent =
+    const escapeHtmlChars = (str: string) => {
+      return str.replace(/>/g, '&gt;').replace(/</g, '&lt;')
+    }
+
+    const textContent = escapeHtmlChars(
       item && this.props.layoutv2 ? preview : item ? `${lang.tr(item.schema?.title)} | ${preview}` : ''
+    )
     const vars = {}
 
     const stripDots = (str) => str.replace(/\./g, '--dot--')
@@ -114,6 +121,7 @@ class ActionItem extends Component<Props> {
     if (!isMissingCurlyBraceClosure(htmlTpl)) {
       mustached = restoreDots(Mustache.render(htmlTpl, vars))
     }
+    console.log('mustached', mustached)
 
     const html = { __html: mustached }
 
