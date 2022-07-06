@@ -3,8 +3,6 @@ import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { FC } from 'react'
-import { connect } from 'react-redux'
-import { RootReducer } from '~/reducers'
 
 import SingleLang from './SingleLang'
 import style from './style.scss'
@@ -16,6 +14,8 @@ interface Props {
 
 const TrainingStatusCenter: FC<Props> = (props: Props) => {
   const { languages, trainSessions } = props
+  debugger
+
   return (
     <div className={style.trainCenter}>
       {languages.map((l) => (
@@ -59,8 +59,4 @@ const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
   )
 }
 
-const mapStateToProps = (state: RootReducer) => ({
-  languages: state.bot.languages,
-  trainSessions: state.nlu.trainSessions
-})
-export default connect(mapStateToProps)(MultiLangTrainingStatusComponent)
+export default MultiLangTrainingStatusComponent
