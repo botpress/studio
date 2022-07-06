@@ -12,6 +12,7 @@ import { bindActionCreators } from 'redux'
 import { toggleBottomPanel } from '~/actions'
 import { downloadBlob } from '~/util'
 import EventBus from '~/util/EventBus'
+import { escapeHtmlChars } from '~/util/html'
 
 import style from '../style.scss'
 
@@ -119,10 +120,6 @@ class BottomPanel extends React.Component<Props, State> {
     const isHTML = (str: string) => {
       const doc = new DOMParser().parseFromString(str, 'text/html')
       return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1)
-    }
-
-    const escapeHtmlChars = (str: string) => {
-      return str.replace(/>/g, '&gt;').replace(/</g, '&lt;')
     }
 
     if (isHTML(content)) {

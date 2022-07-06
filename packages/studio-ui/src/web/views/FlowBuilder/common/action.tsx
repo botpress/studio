@@ -8,6 +8,7 @@ import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import { isRTLLocale } from '~/translations'
+import { escapeHtmlChars } from '~/util/html'
 import withLanguage from '../../../components/Util/withLanguage'
 import { ActionPopover } from './actionPopover'
 
@@ -94,10 +95,6 @@ class ActionItem extends Component<Props> {
           {this.props.children}
         </div>
       )
-    }
-
-    const escapeHtmlChars = (str: string) => {
-      return str.replace(/>/g, '&gt;').replace(/</g, '&lt;')
     }
 
     const textContent = escapeHtmlChars(
