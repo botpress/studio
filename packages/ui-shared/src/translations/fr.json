@@ -92,60 +92,6 @@
   "importJson": "Importer JSON",
   "insert": "Insérer",
   "intent": "intention",
-  "isoLangs": {
-    "ar": {
-      "name": "Arabe",
-      "nativeName": "العربية"
-    },
-    "nl": {
-      "name": "Néerlandaise",
-      "nativeName": "Nederlands, Vlaams"
-    },
-    "en": {
-      "name": "Anglaise",
-      "nativeName": "English"
-    },
-    "fr": {
-      "name": "Français",
-      "nativeName": "Français"
-    },
-    "de": {
-      "name": "Allemande",
-      "nativeName": "Deutsch"
-    },
-    "he": {
-      "name": "Hébreue",
-      "nativeName": "עברית"
-    },
-    "it": {
-      "name": "Italienne",
-      "nativeName": "Italiano"
-    },
-    "ja": {
-      "name": "Japonaise",
-      "nativeName": "日本語 (にほんご／にっぽんご)"
-    },
-    "pl": {
-      "name": "Polonais",
-      "nativeName": "polski"
-    },
-    "pt": {
-      "name": "Portugais",
-      "nativeName": "Português"
-    },
-    "ru": {
-      "name": "Russe",
-      "nativeName": "русский язык"
-    },
-    "es": {
-      "name": "Espagnole",
-      "nativeName": "español"
-    },
-    "zh": {
-      "name": "Chinois",
-      "nativeName": "中文"
-    }
-  },
   "label": "Étiquette",
   "language": "Langue",
   "learnMore": "Plus d'informations",
