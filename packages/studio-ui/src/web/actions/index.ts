@@ -475,8 +475,6 @@ export const refreshIntents = () => (dispatch) => {
   })
 }
 
-export const trainSessionReceived = createAction('TRAIN_SESSION/RECEIVED')
-
 export const conditionsReceived = createAction('CONDITIONS/RECEIVED')
 export const refreshConditions = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises

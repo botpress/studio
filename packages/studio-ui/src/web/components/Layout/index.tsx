@@ -6,7 +6,7 @@ import { HotKeys } from 'react-hotkeys'
 import { connect } from 'react-redux'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
-import { setEmulatorOpen, toggleBottomPanel, toggleInspector, trainSessionReceived, viewModeChanged } from '~/actions'
+import { setEmulatorOpen, toggleBottomPanel, toggleInspector, viewModeChanged } from '~/actions'
 import SelectContentManager from '~/components/Content/Select/Manager'
 import PluginInjectionSite from '~/components/PluginInjectionSite'
 import Config from '~/views/Config'
@@ -26,7 +26,6 @@ import layout from './Layout.scss'
 import Sidebar from './Sidebar'
 import StatusBar from './StatusBar'
 import Toolbar from './Toolbar'
-import { TrainingStatusService } from './training-status-service'
 
 const { isInputFocused } = utils
 const WEBCHAT_PANEL_STATUS = 'bp::webchatOpened'
@@ -35,7 +34,6 @@ interface OwnProps {
   location: any
   history: any
   setEmulatorOpen: (state: boolean) => void
-  trainSessionReceived: (ts: sdk.NLU.TrainingSession) => void
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -87,14 +85,6 @@ const Layout: FC<Props> = (props: Props) => {
       window.removeEventListener('message', handleWebChatPanel)
     }
   }, [])
-
-  useEffect(() => {
-    const trainStatusService = new TrainingStatusService(props.contentLang, props.trainSessionReceived)
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    trainStatusService.fetchTrainingStatus()
-    trainStatusService.listen()
-    return () => trainStatusService.stopListening()
-  }, [props.contentLang])
 
   useEffect(() => {
     if (props.translations) {
@@ -268,7 +258,6 @@ const mapDispatchToProps = {
   viewModeChanged,
   toggleBottomPanel,
   setEmulatorOpen,
-  trainSessionReceived,
   toggleInspector
 }
 
