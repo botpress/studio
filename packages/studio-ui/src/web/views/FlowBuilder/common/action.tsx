@@ -1,5 +1,6 @@
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
+import { escapeHtmlChars } from 'common/html'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'

@@ -36,7 +36,7 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'storm-react-diagrams/dist/style.min.css'
 import './theme.scss'
 
-axios.get(`${window.location.pathname || ''}/env.js`).then(({ data }) => {
+axios.get(`${window.location.pathname || ''}/env`).then(({ data }) => {
   for (const [key, value] of Object.entries(data)) {
     window[key] = value
   }
