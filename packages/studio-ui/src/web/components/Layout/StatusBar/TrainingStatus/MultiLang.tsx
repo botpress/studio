@@ -40,7 +40,7 @@ const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (ready && popoverOpen) {
-      // without timeout, it feels like the training is abrublty aborted
+      // without timeout, it feels like the training is abruptly aborted
       // timeout gives time to the user to notice training complete.
       setTimeout(() => setPopoverOpen(false), 350)
     }
