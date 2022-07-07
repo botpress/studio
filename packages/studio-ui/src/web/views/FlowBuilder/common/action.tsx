@@ -9,7 +9,6 @@ import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import { isRTLLocale } from '~/translations'
-import { escapeHtmlChars } from '~/util/html'
 import withLanguage from '../../../components/Util/withLanguage'
 import { ActionPopover } from './actionPopover'
 
