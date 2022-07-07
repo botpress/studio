@@ -29,6 +29,13 @@ const trainStatusReducer = (state, action) => {
   }
 }
 
+const makeErrorTrainSession = (language: string): NLU.TrainingSession => ({
+  language,
+  progress: 0,
+  status: 'errored',
+  key: 'no-key'
+})
+
 const isTrainStatusEvent = (event: any | TrainStatusEvent): event is TrainStatusEvent =>
   event.type === 'nlu' && event.trainSession
 
@@ -42,16 +49,11 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     }
   }
 
-  const fetchTrainingSessionForLang = async (language: string) => {
+  const fetchTrainingSessionForLang = async (language: string): Promise<NLU.TrainingSession> => {
     try {
-      const { data: session } = await axios.get(`${window.BOT_API_PATH}/mod/nlu/training/${language}`)
-      return session as NLU.TrainingSession
+      return (await axios.get<NLU.TrainingSession>(`${window.BOT_API_PATH}/mod/nlu/training/${language}`)).data
     } catch (err) {
-      return {
-        language,
-        progress: 0,
-        status: 'errored'
-      } as NLU.TrainingSession
+      return makeErrorTrainSession(language)
     }
   }
 
@@ -75,7 +77,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
         })
         dispatch({ type: 'setAllTrainSessions', data: trainSessionBatchUpdate })
       })
-      .catch((err) => {})
+      .catch((err) => {}) // pretty much unreachable, error is handled in fetchTrainingSessionForLang
   }, [languages])
 
   //render

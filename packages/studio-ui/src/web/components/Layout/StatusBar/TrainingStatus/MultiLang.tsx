@@ -40,7 +40,9 @@ const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
 
   useEffect(() => {
     if (ready && popoverOpen) {
-      setTimeout(() => setPopoverOpen(false), 250)
+      // without timeout, it feels like the training is abrublty aborted
+      // timeout gives time to the user to notice training complete.
+      setTimeout(() => setPopoverOpen(false), 350)
     }
   }, [trainSessions])
 
@@ -70,9 +72,9 @@ const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
           {currentlyTraining && (
             <span className={style.trainStatus_message_light}>{lang.tr('statusBar.training')}</span>
           )}
-          {ready && <span className={style.trainStatus_message_light}>{lang.tr('statusBar.ready')}</span>}
         </div>
       </Popover>
+      {ready && <span className={style.trainStatus_message_light}>{lang.tr('statusBar.ready')}</span>}
     </React.Fragment>
   )
 }
