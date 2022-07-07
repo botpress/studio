@@ -11,6 +11,7 @@ import style from './style.scss'
 interface Props {
   dark?: boolean
   trainSession: NLU.TrainingSession
+  trainLabel: string
 }
 
 // TODO change this url for core ?
@@ -94,9 +95,13 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
         )}
         <AccessControl resource="bot.training" operation="write">
           {status === 'needs-training' && (
-            <Button minimal className={style.button} onClick={onTrainClicked} disabled={loading}>
-              {lang.tr('statusBar.trainChatbot')}
-            </Button>
+            <Button
+              minimal
+              className={style.button}
+              onClick={onTrainClicked}
+              disabled={loading}
+              text={props.trainLabel}
+            />
           )}
           {status === 'training' && (
             <Button minimal className={cx(style.button, style.danger)} onClick={onCancelClicked} disabled={loading}>
