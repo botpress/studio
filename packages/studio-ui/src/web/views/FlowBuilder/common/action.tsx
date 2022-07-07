@@ -1,5 +1,6 @@
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
+import { escapeHtmlChars } from 'common/html'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
@@ -94,10 +95,6 @@ class ActionItem extends Component<Props> {
           {this.props.children}
         </div>
       )
-    }
-
-    const escapeHtmlChars = (str: string) => {
-      return str.replace(/>/g, '&gt;').replace(/</g, '&lt;')
     }
 
     const textContent = escapeHtmlChars(
