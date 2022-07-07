@@ -1,4 +1,5 @@
 import { Logger } from 'botpress/sdk'
+import { removeHtmlChars } from 'common/html'
 import { gaId } from 'common/stats'
 import { HTTPServer } from 'core/app/server'
 import { resolveStudioAsset, resolveIndexPaths } from 'core/app/server-utils'
@@ -132,7 +133,8 @@ export class StudioRouter extends CustomRouter {
 
     app.use('/api/internal', this.internalRouter.router)
 
-    app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))
+    app.use(rewrite('/studio/:botId/*labeling.js', '/api/v1/studio/:botId/labeling.js'))
+    app.use(rewrite('/studio/:botId/*env', '/api/v1/studio/:botId/env'))
 
     // TODO: Temporary in case we forgot to change it somewhere
     app.use('/api/v1/bots/:botId', fixStudioMappingMw, this.router)
@@ -172,7 +174,7 @@ export class StudioRouter extends CustomRouter {
      * Do not return sensitive information there. These must be accessible by unauthenticated users
      */
     this.router.get(
-      '/env.js',
+      '/env',
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
@@ -181,7 +183,6 @@ export class StudioRouter extends CustomRouter {
           return res.sendStatus(404)
         }
 
-        const branding = await this.configProvider.getBrandingConfig('studio')
         const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
         const commonEnv = await this.httpServer.getCommonEnv()
 
@@ -200,9 +201,6 @@ export class StudioRouter extends CustomRouter {
           BOT_NAME: bot.name,
           BP_BASE_PATH: `${process.ROOT_PATH}/studio/${botId}`,
           APP_VERSION: process.BOTPRESS_VERSION,
-          APP_NAME: branding.title,
-          APP_FAVICON: branding.favicon,
-          APP_CUSTOM_CSS: branding.customCss,
           BOT_LOCKED: !!bot.locked,
           USE_ONEFLOW: !!bot['oneflow'],
           WORKSPACE_ID: workspaceId,
@@ -211,6 +209,31 @@ export class StudioRouter extends CustomRouter {
           IS_PRO_ENABLED: process.IS_PRO_ENABLED
         }
 
+        res.send(totalEnv)
+      })
+    )
+
+    this.router.get(
+      '/labeling.js',
+      this.asyncMiddleware(async (req, res) => {
+        const { botId } = req.params
+
+        const bot = await this.botService.findBotById(botId)
+        if (!bot) {
+          return res.sendStatus(404)
+        }
+
+        const branding = await this.configProvider.getBrandingConfig('studio')
+
+        const totalEnv = `
+          (function(window) {
+              window.APP_NAME = "${removeHtmlChars(branding.title)}";
+              window.APP_FAVICON = "${removeHtmlChars(branding.favicon)}";
+              window.APP_CUSTOM_CSS = "${removeHtmlChars(branding.customCss)}";
+            })(typeof window != 'undefined' ? window : {})
+          `
+
+        res.contentType('text/javascript')
         res.send(totalEnv)
       })
     )
