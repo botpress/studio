@@ -38,7 +38,7 @@ const getFlowInfo = (flowId: string, flowName: string) => {
       icon: ERROR_FLOW_ICON,
       label: (
         <Tooltip
-          content={<span>{lang.tr('studio.flow.whenErrorEncountered')}</span>}
+          content={<span>{lang.tr('studio.flow.toolbar.whenErrorEncountered')}</span>}
           hoverOpenDelay={500}
           position={Position.BOTTOM}
         >
@@ -51,7 +51,7 @@ const getFlowInfo = (flowId: string, flowName: string) => {
       icon: TIMEOUT_ICON,
       label: (
         <Tooltip
-          content={<span>{lang.tr('studio.flow.whenDiscussionTimeouts')}</span>}
+          content={<span>{lang.tr('studio.flow.toolbar.whenDiscussionTimeouts')}</span>}
           hoverOpenDelay={500}
           position={Position.BOTTOM}
         >
