@@ -1,4 +1,5 @@
 import { Logger } from 'botpress/sdk'
+import { removeHtmlChars } from 'common/html'
 import { gaId } from 'common/stats'
 import { HTTPServer } from 'core/app/server'
 import { resolveStudioAsset, resolveIndexPaths } from 'core/app/server-utils'
@@ -132,7 +133,8 @@ export class StudioRouter extends CustomRouter {
 
     app.use('/api/internal', this.internalRouter.router)
 
-    app.use(rewrite('/studio/:botId/*env.js', '/api/v1/studio/:botId/env.js'))
+    app.use(rewrite('/studio/:botId/*branding.js', '/api/v1/studio/:botId/branding.js'))
+    app.use(rewrite('/studio/:botId/*env', '/api/v1/studio/:botId/env'))
 
     // TODO: Temporary in case we forgot to change it somewhere
     app.use('/api/v1/bots/:botId', fixStudioMappingMw, this.router)
@@ -172,7 +174,47 @@ export class StudioRouter extends CustomRouter {
      * Do not return sensitive information there. These must be accessible by unauthenticated users
      */
     this.router.get(
-      '/env.js',
+      '/env',
+      this.asyncMiddleware(async (req, res) => {
+        const { botId } = req.params
+
+        const bot = await this.botService.findBotById(botId)
+        if (!bot) {
+          return res.sendStatus(404)
+        }
+
+        const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
+        const commonEnv = await this.httpServer.getCommonEnv()
+
+        const segmentWriteKey = process.core_env.BP_DEBUG_SEGMENT
+          ? 'OzjoqVagiw3p3o1uocuw6kd2YYjm6CHi' // Dev key from Segment
+          : '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // Prod key from Segment
+
+        const totalEnv = {
+          ...commonEnv,
+          STUDIO_VERSION: process.STUDIO_VERSION,
+          ANALYTICS_ID: gaId,
+          API_PATH: `${process.ROOT_PATH}/api/v1`,
+          BOT_API_PATH: `${process.ROOT_PATH}/api/v1/bots/${botId}`,
+          STUDIO_API_PATH: `${process.ROOT_PATH}/api/v1/studio/${botId}`,
+          BOT_ID: botId,
+          BOT_NAME: bot.name,
+          BP_BASE_PATH: `${process.ROOT_PATH}/studio/${botId}`,
+          APP_VERSION: process.BOTPRESS_VERSION,
+          BOT_LOCKED: !!bot.locked,
+          USE_ONEFLOW: !!bot['oneflow'],
+          WORKSPACE_ID: workspaceId,
+          IS_BOT_MOUNTED: this.botService.isBotMounted(botId),
+          SEGMENT_WRITE_KEY: segmentWriteKey,
+          IS_PRO_ENABLED: process.IS_PRO_ENABLED
+        }
+
+        res.send(totalEnv)
+      })
+    )
+
+    this.router.get(
+      '/branding.js',
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
@@ -182,34 +224,12 @@ export class StudioRouter extends CustomRouter {
         }
 
         const branding = await this.configProvider.getBrandingConfig('studio')
-        const workspaceId = await this.workspaceService.getBotWorkspaceId(botId)
-        const commonEnv = await this.httpServer.getCommonEnv()
-
-        const segmentWriteKey = process.core_env.BP_DEBUG_SEGMENT
-          ? 'OzjoqVagiw3p3o1uocuw6kd2YYjm6CHi' // Dev key from Segment
-          : '7lxeXxbGysS04TvDNDOROQsFlrls9NoY' // Prod key from Segment
 
         const totalEnv = `
           (function(window) {
-              ${commonEnv}
-              window.STUDIO_VERSION = "${process.STUDIO_VERSION}";
-              window.ANALYTICS_ID = "${gaId}";
-              window.API_PATH = "${process.ROOT_PATH}/api/v1";
-              window.BOT_API_PATH = "${process.ROOT_PATH}/api/v1/bots/${botId}";
-              window.STUDIO_API_PATH = "${process.ROOT_PATH}/api/v1/studio/${botId}";
-              window.BOT_ID = "${botId}";
-              window.BOT_NAME = "${bot.name}";
-              window.BP_BASE_PATH = "${process.ROOT_PATH}/studio/${botId}";
-              window.APP_VERSION = "${process.BOTPRESS_VERSION}";
-              window.APP_NAME = "${branding.title}";
-              window.APP_FAVICON = "${branding.favicon}";
-              window.APP_CUSTOM_CSS = "${branding.customCss}";
-              window.BOT_LOCKED = ${!!bot.locked};
-              window.USE_ONEFLOW = ${!!bot['oneflow']};
-              window.WORKSPACE_ID = "${workspaceId}";
-              window.IS_BOT_MOUNTED = ${this.botService.isBotMounted(botId)};
-              window.SEGMENT_WRITE_KEY = "${segmentWriteKey}";
-              window.IS_PRO_ENABLED = ${process.IS_PRO_ENABLED};
+              window.APP_NAME = "${removeHtmlChars(branding.title)}";
+              window.APP_FAVICON = "${removeHtmlChars(branding.favicon)}";
+              window.APP_CUSTOM_CSS = "${removeHtmlChars(branding.customCss)}";
             })(typeof window != 'undefined' ? window : {})
           `
 
