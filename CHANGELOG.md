@@ -1,3 +1,15 @@
+## [0.0.53](https://github.com/botpress/studio/compare/v0.0.52...v0.0.53) (2022-07-11)
+
+
+### Bug Fixes
+
+* **debugger:** escape html chars from logs ([#358](https://github.com/botpress/studio/issues/358)) ([15c6510](https://github.com/botpress/studio/commit/15c65105181d1b6618ba0aa5371e55764828436f))
+* **flow-editor:** escape html chars from node items previews ([#357](https://github.com/botpress/studio/issues/357)) ([562ebef](https://github.com/botpress/studio/commit/562ebef0b81d75a514e21a901748c613db7daf32))
+* **settings:** improve bot name validation ([#355](https://github.com/botpress/studio/issues/355)) ([4c64c49](https://github.com/botpress/studio/commit/4c64c49996642b79f31541db1344fedddea0bfe2))
+* **statusBar:** multi-lang training status logic ([#359](https://github.com/botpress/studio/issues/359)) ([e5029f1](https://github.com/botpress/studio/commit/e5029f1d2ff3e597097b8b627b92047d5edb07a0))
+
+
+
 ## [0.0.52](https://github.com/botpress/studio/compare/v0.0.51...v0.0.52) (2022-06-16)
 
 
