@@ -133,7 +133,7 @@ export class StudioRouter extends CustomRouter {
 
     app.use('/api/internal', this.internalRouter.router)
 
-    app.use(rewrite('/studio/:botId/*labeling.js', '/api/v1/studio/:botId/labeling.js'))
+    app.use(rewrite('/studio/:botId/*branding.js', '/api/v1/studio/:botId/branding.js'))
     app.use(rewrite('/studio/:botId/*env', '/api/v1/studio/:botId/env'))
 
     // TODO: Temporary in case we forgot to change it somewhere
@@ -214,7 +214,7 @@ export class StudioRouter extends CustomRouter {
     )
 
     this.router.get(
-      '/labeling.js',
+      '/branding.js',
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 

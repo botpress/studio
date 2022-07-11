@@ -1,10 +1,8 @@
-import { Icon, Popover, Position } from '@blueprintjs/core'
+import { Button, Popover, Position } from '@blueprintjs/core'
 import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
-import React, { FC } from 'react'
-import { connect } from 'react-redux'
-import { RootReducer } from '~/reducers'
+import React, { FC, useEffect, useState } from 'react'
 
 import SingleLang from './SingleLang'
 import style from './style.scss'
@@ -16,12 +14,15 @@ interface Props {
 
 const TrainingStatusCenter: FC<Props> = (props: Props) => {
   const { languages, trainSessions } = props
+
   return (
     <div className={style.trainCenter}>
       {languages.map((l) => (
         <div className={classNames(style.trainCenter_lang, style.trainStatus_message_dark)}>
-          <div className={style.trainCenter_lang_code}>{l}:</div>
-          <SingleLang dark={true} trainSession={trainSessions[l]} />
+          <div className={style.trainCenter_lang_code}>
+            <strong>{l.toUpperCase()}</strong>
+          </div>
+          <SingleLang dark={true} trainSession={trainSessions[l]} trainLabel={lang.tr('statusBar.train')} />
         </div>
       ))}
     </div>
@@ -29,38 +30,53 @@ const TrainingStatusCenter: FC<Props> = (props: Props) => {
 }
 
 const MultiLangTrainingStatusComponent: FC<Props> = (props: Props) => {
-  const needsTraining = Object.values(props.trainSessions).some((ts) => ts.status !== 'done')
-  const currentlyTraining = Object.values(props.trainSessions).some(
+  const { trainSessions } = props
+  const [popoverOpen, setPopoverOpen] = useState(false)
+  const needsTraining = Object.values(trainSessions).some((ts) => ts.status !== 'done')
+  const currentlyTraining = Object.values(trainSessions).some(
     ({ status }) => status === 'training' || status === 'training-pending'
   )
+  const ready = !needsTraining && !currentlyTraining
+
+  useEffect(() => {
+    if (ready && popoverOpen) {
+      // without timeout, it feels like the training is abruptly aborted
+      // timeout gives time to the user to notice training complete.
+      setTimeout(() => setPopoverOpen(false), 350)
+    }
+  }, [trainSessions])
 
   return (
     <React.Fragment>
-      {needsTraining && (
-        <div className={style.trainCenter_icon_wrap}>
+      <Popover
+        content={<TrainingStatusCenter {...props} />}
+        minimal
+        isOpen={popoverOpen}
+        position={Position.TOP_RIGHT}
+        canEscapeKeyClose
+        onClose={() => setPopoverOpen(false)}
+        fill
+        modifiers={{
+          preventOverflow: { enabled: true, boundariesElement: 'window' }
+        }}
+      >
+        <div className={style.trainStatus}>
+          {needsTraining && !currentlyTraining && (
+            <Button
+              minimal
+              className={style.button}
+              onClick={() => setPopoverOpen(!popoverOpen)}
+              text={lang.tr('statusBar.trainChatbot')}
+            />
+          )}
           {currentlyTraining && (
             <span className={style.trainStatus_message_light}>{lang.tr('statusBar.training')}</span>
           )}
-          <Popover
-            content={<TrainingStatusCenter {...props} />}
-            minimal={false}
-            position={Position.TOP_RIGHT}
-            modifiers={{
-              arrow: { enabled: true },
-              preventOverflow: { enabled: true, boundariesElement: 'window' }
-            }}
-          >
-            <Icon className={style.trainCenter_icon} icon="predictive-analysis" />
-          </Popover>
         </div>
-      )}
-      {!needsTraining && <span className={style.trainStatus_message_light}>{lang.tr('statusBar.ready')}</span>}
+      </Popover>
+      {ready && <span className={style.trainStatus_message_light}>{lang.tr('statusBar.ready')}</span>}
     </React.Fragment>
   )
 }
 
-const mapStateToProps = (state: RootReducer) => ({
-  languages: state.bot.languages,
-  trainSessions: state.nlu.trainSessions
-})
-export default connect(mapStateToProps)(MultiLangTrainingStatusComponent)
+export default MultiLangTrainingStatusComponent
