@@ -3,6 +3,7 @@ import anser from 'anser'
 import axios from 'axios'
 import { lang, ToolTip } from 'botpress/shared'
 import cn from 'classnames'
+import { escapeHtmlChars } from 'common/html'
 import _ from 'lodash'
 import moment from 'moment'
 import { nanoid } from 'nanoid'
@@ -122,7 +123,7 @@ class BottomPanel extends React.Component<Props, State> {
     }
 
     if (isHTML(content)) {
-      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: content }} />
+      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: escapeHtmlChars(content) }} />
     } else {
       return <span className={logStyle.message}>{content}</span>
     }
