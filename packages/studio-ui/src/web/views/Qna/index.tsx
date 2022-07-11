@@ -231,7 +231,7 @@ const QnAList: FC<Props> = (props) => {
   )
 
   return (
-    <MainLayout.Wrapper childRef={(ref) => (wrapperRef.current = ref)}>
+    <MainLayout.Wrapper>
       <MainLayout.Toolbar
         className={style.header}
         tabChange={setCurrentTab}
@@ -239,7 +239,7 @@ const QnAList: FC<Props> = (props) => {
         buttons={buttons}
         rightContent={toolBarRightContent}
       />
-      <div className={cx(style.content, { [style.empty]: !items.length && !highlighted })}>
+      <div ref={wrapperRef} className={cx(style.content, { [style.empty]: !items.length && !highlighted })}>
         {highlighted && (
           <div className={style.highlightedQna}>
             <QnA

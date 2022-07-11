@@ -1,57 +1,49 @@
 import { Button, Spinner } from '@blueprintjs/core'
 import axios from 'axios'
+import { NLU } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
-import { Training, TrainError } from 'common/nlu-training'
-import React, { FC, useEffect, useRef, useState } from 'react'
-import { AccessControl, Timeout, toastFailure } from '~/components/Shared/Utils'
+import React, { FC, useEffect, useState } from 'react'
+import { AccessControl } from '~/components/Shared/Utils'
 
 import style from './style.scss'
 
-const usePrevious = <T extends any>(value: T): T | undefined => {
-  const ref = useRef<T>()
-  useEffect(() => {
-    ref.current = value
-  })
-  return ref.current
-}
-
 interface Props {
   dark?: boolean
-  trainSession: Training
+  trainSession: NLU.TrainingSession
+  trainLabel: string
 }
 
-const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
+// TODO change this url for core ?
+const BASE_NLU_URL = `${window.BOT_API_PATH}/mod/nlu`
 
 const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const { trainSession, dark } = props
 
-  const { status, progress, error } = trainSession ?? {}
-
+  const { status, progress } = trainSession ?? {}
   const [loading, setLoading] = useState(false)
+
   const [message, setMessage] = useState('')
 
   const onTrainingNeeded = () => setMessage('')
   const onTraingDone = () => setMessage(lang.tr('statusBar.ready'))
   const onCanceling = () => setMessage(lang.tr('statusBar.canceling'))
-  const onTrainingError = (error: TrainError) => {
-    setMessage('')
-    toastFailure(error.message, Timeout.LONG, null, { delayed: 0 })
-  }
+  const onError = () => setMessage(lang.tr('statusBar.trainingError'))
   const onTrainingProgress = (progress: number) => {
     const p = Math.floor(progress * 100)
     setMessage(`${lang.tr('statusBar.training')} ${p}%`)
   }
 
-  const prevStatus = usePrevious(status)
   useEffect(() => {
     if (status === 'training') {
       onTrainingProgress(progress ?? 0)
-    } else if (error && (prevStatus === 'training' || prevStatus === 'training-pending')) {
-      onTrainingError(error)
+    } else if (status === 'errored') {
+      onError()
+    } else if (status === 'canceled') {
+      onCanceling()
     } else if (status === 'needs-training') {
       onTrainingNeeded()
-    } else if (status === 'done') {
+    } else if (status === 'idle' || status === 'done') {
       onTraingDone()
     }
   }, [props.trainSession])
@@ -62,8 +54,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
     try {
       await axios.post(`${BASE_NLU_URL}/train/${trainSession.language}`)
     } catch (err) {
-      const errMsg = err instanceof Error ? err.message : `Error occured: ${err}`
-      toastFailure(errMsg, Timeout.LONG, null, { delayed: 0 })
+      onError()
     } finally {
       setLoading(false)
     }
@@ -104,9 +95,13 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
         )}
         <AccessControl resource="bot.training" operation="write">
           {status === 'needs-training' && (
-            <Button minimal className={style.button} onClick={onTrainClicked} disabled={loading}>
-              {lang.tr('statusBar.trainChatbot')}
-            </Button>
+            <Button
+              minimal
+              className={style.button}
+              onClick={onTrainClicked}
+              disabled={loading}
+              text={props.trainLabel}
+            />
           )}
           {status === 'training' && (
             <Button minimal className={cx(style.button, style.danger)} onClick={onCancelClicked} disabled={loading}>

@@ -92,60 +92,6 @@
   "importJson": "Import JSON",
   "insert": "Insert",
   "intent": "intent",
-  "isoLangs": {
-    "ar": {
-      "name": "Arabic",
-      "nativeName": "العربية"
-    },
-    "nl": {
-      "name": "Dutch",
-      "nativeName": "Nederlands, Vlaams"
-    },
-    "en": {
-      "name": "English",
-      "nativeName": "English"
-    },
-    "fr": {
-      "name": "French",
-      "nativeName": "Français"
-    },
-    "de": {
-      "name": "German",
-      "nativeName": "Deutsch"
-    },
-    "he": {
-      "name": "Hebrew",
-      "nativeName": "עברית"
-    },
-    "it": {
-      "name": "Italian",
-      "nativeName": "Italiano"
-    },
-    "ja": {
-      "name": "Japanese",
-      "nativeName": "日本語 (にほんご／にっぽんご)"
-    },
-    "pl": {
-      "name": "Polish",
-      "nativeName": "polski"
-    },
-    "pt": {
-      "name": "Portuguese",
-      "nativeName": "Português"
-    },
-    "ru": {
-      "name": "Russian",
-      "nativeName": "русский язык"
-    },
-    "es": {
-      "name": "Spanish",
-      "nativeName": "español"
-    },
-    "zh": {
-      "name": "Chinese",
-      "nativeName": "中文"
-    }
-  },
   "label": "Label",
   "language": "Language",
   "learnMore": "Learn more",

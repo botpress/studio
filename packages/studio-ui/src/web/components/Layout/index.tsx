@@ -1,12 +1,11 @@
 import { lang, utils } from 'botpress/shared'
 import cx from 'classnames'
-import { Training } from 'common/nlu-training'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
 import { HotKeys } from 'react-hotkeys'
 import { connect } from 'react-redux'
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import SplitPane from 'react-split-pane'
-import { setEmulatorOpen, toggleBottomPanel, toggleInspector, trainSessionReceived, viewModeChanged } from '~/actions'
+import { setEmulatorOpen, toggleBottomPanel, toggleInspector, viewModeChanged } from '~/actions'
 import SelectContentManager from '~/components/Content/Select/Manager'
 import PluginInjectionSite from '~/components/PluginInjectionSite'
 import CodeEditor from '~/views/CodeEditor'
@@ -26,8 +25,6 @@ import layout from './Layout.scss'
 import LanguageServerHealth from './NLUServerHealthWarning'
 import Sidebar from './Sidebar'
 import StatusBar from './StatusBar'
-import TopNav from './TopNav'
-import { TrainingStatusService } from './training-status-service'
 
 const { isInputFocused } = utils
 const WEBCHAT_PANEL_STATUS = 'bp::webchatOpened'
@@ -36,7 +33,6 @@ interface OwnProps {
   location: any
   history: any
   setEmulatorOpen: (state: boolean) => void
-  trainSessionReceived: (ts: Training) => void
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -88,14 +84,6 @@ const Layout: FC<Props> = (props: Props) => {
       window.removeEventListener('message', handleWebChatPanel)
     }
   }, [])
-
-  useEffect(() => {
-    const trainStatusService = new TrainingStatusService(props.contentLang, props.trainSessionReceived)
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    trainStatusService.fetchTrainingStatus()
-    trainStatusService.listen()
-    return () => trainStatusService.stopListening()
-  }, [props.contentLang])
 
   useEffect(() => {
     if (props.translations) {
@@ -264,7 +252,6 @@ const mapDispatchToProps = {
   viewModeChanged,
   toggleBottomPanel,
   setEmulatorOpen,
-  trainSessionReceived,
   toggleInspector
 }
 

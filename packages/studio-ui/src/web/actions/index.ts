@@ -456,7 +456,21 @@ export const refreshIntents = () => (dispatch) => {
   })
 }
 
-export const trainSessionReceived = createAction('TRAIN_SESSION/RECEIVED')
+export const conditionsReceived = createAction('CONDITIONS/RECEIVED')
+export const refreshConditions = () => (dispatch) => {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  axios.get(`${window.API_PATH}/studio/modules/dialogConditions`).then(({ data }) => {
+    dispatch(conditionsReceived(data))
+  })
+}
+
+export const topicsReceived = createAction('TOPICS/RECEIVED')
+export const fetchTopics = () => (dispatch) => {
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  axios.get(`${window.STUDIO_API_PATH}/topics`).then(({ data }) => {
+    dispatch(topicsReceived(data))
+  })
+}
 
 export const receiveLibrary = createAction('LIBRARY/RECEIVED')
 export const refreshLibrary = () => (dispatch, getState) => {

@@ -1,5 +1,6 @@
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
+import { escapeHtmlChars } from 'common/html'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
@@ -96,8 +97,9 @@ class ActionItem extends Component<Props> {
       )
     }
 
-    const textContent =
+    const textContent = escapeHtmlChars(
       item && this.props.layoutv2 ? preview : item ? `${lang.tr(item.schema?.title)} | ${preview}` : ''
+    )
     const vars = {}
 
     const stripDots = (str) => str.replace(/\./g, '--dot--')

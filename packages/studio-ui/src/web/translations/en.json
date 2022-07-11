@@ -433,6 +433,7 @@
     "contentLanguage": "Content Language",
     "switchLang": "Change the bot content language. Currently editing: {currentLang}",
     "trainChatbot": "Train Chatbot",
+    "train": "Train",
     "training": "Training",
     "ready": "Ready",
     "cancelTraining": "Cancel Training",
