@@ -1,6 +1,9 @@
+import ISOLanguages from '@cospired/i18n-iso-languages'
 import { MultiLangText } from 'botpress/sdk'
 import { isEmpty, merge } from 'lodash'
 import { createIntl, createIntlCache, IntlShape } from 'react-intl'
+
+const ISO_LANG_PREFIX = 'isoLangs.'
 
 import en from './en.json'
 import es from './es.json'
@@ -42,6 +45,11 @@ const langInit = () => {
 
   const messages = squash(translations[locale])
   const defaultLang = squash(translations[defaultLocale])
+
+  ISOLanguages.registerLocale(require('@cospired/i18n-iso-languages/langs/en.json'))
+  ISOLanguages.registerLocale(require('@cospired/i18n-iso-languages/langs/es.json'))
+  ISOLanguages.registerLocale(require('@cospired/i18n-iso-languages/langs/fr.json'))
+
   for (const key in defaultLang) {
     if (!messages[key]) {
       messages[key] = defaultLang[key]
@@ -87,7 +95,9 @@ const getUserLocale = () => {
   const browserLocale = code(navigator.language || navigator['userLanguage'] || '')
   const storageLocale = code(localStorage.getItem('uiLanguage') || '')
 
-  return translations[storageLocale] ? storageLocale : translations[browserLocale] ? browserLocale : defaultLocale
+  return (
+    translations[storageLocale] ? storageLocale : translations[browserLocale] ? browserLocale : defaultLocale
+  ) as string
 }
 
 /**
@@ -100,6 +110,12 @@ const lang = (id: string | MultiLangText, values?: { [variable: string]: any }):
 
   if (typeof id === 'object') {
     return id[locale] || id[defaultLocale] || ''
+  }
+
+  // pattern is isolangs.{code}
+  if (id.startsWith(ISO_LANG_PREFIX)) {
+    const code = id.substring(ISO_LANG_PREFIX.length, ISO_LANG_PREFIX.length + 2)
+    return ISOLanguages.getName(code, getUserLocale()) || ''
   }
 
   if (isDev) {
