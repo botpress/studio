@@ -122,11 +122,10 @@ export class Botpress {
   async discoverBots(): Promise<void> {
     await AppLifecycle.waitFor(AppLifecycleEvents.MODULES_READY)
 
-    const botsRef = await this.workspaceService.getBotRefs()
-    const botsIds = await this.botService.getBotsIds()
-    const deleted = _.difference(botsRef, botsIds)
-
     const bots = await this.botService.getBots()
+    const botsRef = await this.workspaceService.getBotRefs()
+    const botsIds = Array.from(bots.values()).map((bot) => bot.id)
+    const deleted = _.difference(botsRef, botsIds)
 
     const disabledBots = [...bots.values()].filter((b) => b.disabled).map((b) => b.id)
     const botsToMount = _.without(botsRef, ...disabledBots, ...deleted)

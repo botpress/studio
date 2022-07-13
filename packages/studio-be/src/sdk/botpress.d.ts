@@ -151,17 +151,6 @@ declare module 'botpress/sdk' {
      * onBotUnmount is called for each bots before this one is called
      */
     onModuleUnmount?: (bp: typeof import('botpress/sdk')) => Promise<void>
-    /**
-     * Called when a topic is being changed.
-     * If oldName is not set, then the topic `newName` is being created
-     * If newName is not set, then the topic `oldName` is being deleted
-     */
-    onTopicChanged?: (
-      bp: typeof import('botpress/sdk'),
-      botId: string,
-      oldName?: string,
-      newName?: string
-    ) => Promise<void>
     onFlowChanged?: (bp: typeof import('botpress/sdk'), botId: string, flow: Flow) => Promise<void>
     onFlowRenamed?: (
       bp: typeof import('botpress/sdk'),
@@ -390,58 +379,6 @@ declare module 'botpress/sdk' {
       }[]
     }
   }
-
-  export namespace NDU {
-    interface GenericTrigger {
-      conditions: DecisionTriggerCondition[]
-    }
-
-    export interface WorkflowTrigger extends GenericTrigger {
-      type: 'workflow'
-      workflowId: string
-      nodeId: string
-      /** When true, the user must be inside the specified workflow for the trigger to be active */
-      activeWorkflow?: boolean
-    }
-
-    export interface FaqTrigger extends GenericTrigger {
-      type: 'faq'
-      faqId: string
-      topicName: string
-    }
-
-    export interface NodeTrigger extends GenericTrigger {
-      type: 'node'
-      workflowId: string
-      nodeId: string
-    }
-
-    export type Trigger = NodeTrigger | FaqTrigger | WorkflowTrigger
-
-    export interface DialogUnderstanding {
-      triggers: {
-        [triggerId: string]: {
-          result: Dic<number>
-          trigger: Trigger
-        }
-      }
-      actions: Actions[]
-      predictions: { [key: string]: { triggerId: string; confidence: number } }
-    }
-
-    export interface Actions {
-      action: 'send' | 'startWorkflow' | 'redirect' | 'continue' | 'goToNode'
-      data?: SendContent | FlowRedirect
-    }
-
-    export interface FlowRedirect {
-      flow: string
-      node: string
-    }
-
-    export type SendContent = Pick<IO.Suggestion, 'confidence' | 'payloads' | 'source' | 'sourceDetails'>
-  }
-
   export namespace IO {
     export type EventDirection = 'incoming' | 'outgoing'
     export namespace WellKnownFlags {
@@ -580,7 +517,6 @@ declare module 'botpress/sdk' {
       readonly decision?: Suggestion
       /* HITL module has possibility to pause conversation */
       readonly isPause?: boolean
-      readonly ndu?: NDU.DialogUnderstanding
     }
 
     export interface OutgoingEvent extends Event {
@@ -678,7 +614,6 @@ declare module 'botpress/sdk' {
     export interface CurrentSession {
       lastMessages: DialogTurnHistory[]
       nluContexts?: NluContext[]
-      nduContext?: NduContext
       workflows: {
         [name: string]: WorkflowHistory
       }
@@ -722,14 +657,6 @@ declare module 'botpress/sdk' {
       context: string
       /** Represent the number of turns before the context is removed from the session */
       ttl: number
-    }
-
-    export interface NduContext {
-      last_turn_action_name: string
-      last_turn_highest_ranking_trigger_id: string
-      last_turn_node_id: string
-      last_turn_ts: number
-      last_topic: string
     }
 
     export interface DialogTurnHistory {
@@ -1158,11 +1085,6 @@ declare module 'botpress/sdk' {
   export interface Option {
     value: string
     label: string
-  }
-
-  export interface Topic {
-    name: string
-    description: string
   }
 
   export interface Library {
