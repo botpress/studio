@@ -152,7 +152,6 @@ export class ScopedFlowService {
     }
   }
 
-  // used
   async loadAll(): Promise<FlowView[]> {
     if (this.cache.values().length) {
       return this.cache.values()
@@ -219,7 +218,6 @@ export class ScopedFlowService {
     return Math.ceil(Math.max(0, freeTime.diff(now, 'seconds')))
   }
 
-  //used
   async insertFlow(flow: FlowView, userEmail: string) {
     const isFlowNameValid = await this.isFlowNameValid(flow.name)
     if (!isFlowNameValid) {
@@ -240,7 +238,6 @@ export class ScopedFlowService {
     })
   }
 
-  // used
   async updateFlow(flow: FlowView, userEmail: string) {
     const currentMutex = await this._testAndLockMutex(userEmail, flow.location || flow.name)
 
@@ -272,7 +269,6 @@ export class ScopedFlowService {
     ])
   }
 
-  // used
   async deleteFlow(flowName: string, userEmail: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
     const fileToDelete = flowFiles.find((f) => f === flowName)
@@ -294,7 +290,6 @@ export class ScopedFlowService {
     })
   }
 
-  // used
   async renameFlow(previousName: string, newName: string, userEmail: string) {
     const flowFiles = await this.ghost.directoryListing(FLOW_DIR, '*.json')
     const fileToRename = flowFiles.find((f) => f === previousName)
