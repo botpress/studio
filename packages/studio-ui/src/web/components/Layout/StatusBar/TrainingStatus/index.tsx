@@ -14,10 +14,9 @@ interface Props {
   languages: string[]
 }
 
-interface TrainStatusEvent {
+interface TrainStatusEvent extends NLU.TrainingSession {
   botId: string
   type: 'nlu'
-  trainSession: NLU.TrainingSession
 }
 
 const trainStatusReducer = (state, action) => {
@@ -37,7 +36,7 @@ const makeErrorTrainSession = (language: string): NLU.TrainingSession => ({
 })
 
 const isTrainStatusEvent = (event: any | TrainStatusEvent): event is TrainStatusEvent =>
-  event.type === 'nlu' && event.trainSession
+  event.type === 'nlu' && event.status
 
 const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const { languages } = props
@@ -45,13 +44,13 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
 
   const onStatusBarEvent = (event: any) => {
     if (isTrainStatusEvent(event) && event.botId === window.BOT_ID) {
-      dispatch({ type: 'setTrainSession', data: { trainSession: event.trainSession } })
+      dispatch({ type: 'setTrainSession', data: { trainSession: event } })
     }
   }
 
   const fetchTrainingSessionForLang = async (language: string): Promise<NLU.TrainingSession> => {
     try {
-      return (await axios.get<NLU.TrainingSession>(`${window.BOT_API_PATH}/mod/nlu/training/${language}`)).data
+      return (await axios.get<NLU.TrainingSession>(`${window.STUDIO_API_PATH}/nlu/training/${language}`)).data
     } catch (err) {
       return makeErrorTrainSession(language)
     }

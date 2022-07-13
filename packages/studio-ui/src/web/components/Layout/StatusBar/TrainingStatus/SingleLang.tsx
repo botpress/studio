@@ -14,8 +14,7 @@ interface Props {
   trainLabel: string
 }
 
-// TODO change this url for core ?
-const BASE_NLU_URL = `${window.BOT_API_PATH}/mod/nlu`
+const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
 
 const TrainingStatusComponent: FC<Props> = (props: Props) => {
   const { trainSession, dark } = props
