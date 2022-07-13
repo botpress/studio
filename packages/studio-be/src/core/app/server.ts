@@ -153,7 +153,7 @@ export class HTTPServer {
       SEND_USAGE_STATS: config!.sendUsageStats,
       USE_JWT_COOKIES: process.USE_JWT_COOKIES,
       EXPERIMENTAL: config.experimental,
-      SOCKET_TRANSPORTS: [getSocketTransports(config).join('","')],
+      SOCKET_TRANSPORTS: getSocketTransports(config),
       SHOW_POWERED_BY: !!config.showPoweredBy,
       UUID: this.machineId,
       BP_SERVER_URL: process.env.BP_SERVER_URL || '',

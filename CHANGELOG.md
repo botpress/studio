@@ -1,3 +1,12 @@
+## [0.0.54](https://github.com/botpress/studio/compare/v0.0.53...v0.0.54) (2022-07-12)
+
+
+### Bug Fixes
+
+* **server:** properly return socket transport array to ui ([#363](https://github.com/botpress/studio/issues/363)) ([4eb2695](https://github.com/botpress/studio/commit/4eb2695d25746ffd0b1d3b02c939998b752d93f9))
+
+
+
 ## [0.0.53](https://github.com/botpress/studio/compare/v0.0.52...v0.0.53) (2022-07-11)
 
 
