@@ -28,7 +28,7 @@ import 'expose-loader?BotpressUtils!~/components/Shared/Utils'
 import 'expose-loader?DocumentationProvider!~/components/Util/DocumentationProvider'
 import { initializeTranslations } from './translations'
 /* eslint-enable */
-import { utils, auth, telemetry } from 'botpress/shared'
+import { utils, auth } from 'botpress/shared'
 import store from './store'
 
 import '@botpress/ui-shared/dist/theme.css'
@@ -40,23 +40,24 @@ function redirectToAdmin() {
   window.location.href = `${window.ROOT_PATH}/admin`
 }
 
+const token = auth.getToken()
+if (!token) {
+  redirectToAdmin()
+}
+
+if (window.USE_JWT_COOKIES) {
+  axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
+} else {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
+
 axios
   .get(`${window.location.pathname || ''}/env`)
   .then(({ data }) => {
     for (const [key, value] of Object.entries(data)) {
       window[key] = value
     }
-
-    const token = auth.getToken()
-    if (token) {
-      if (window.USE_JWT_COOKIES) {
-        axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
-      } else {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      }
-
-      axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
-    }
+    axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
 
     if (!window.BOT_ID) {
       console.error(`This bot doesn't exist. Redirecting to admin `)
@@ -77,7 +78,6 @@ axios
       )
     }
 
-    // TODO: what ?
     // telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
   })
   .catch(redirectToAdmin)
