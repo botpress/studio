@@ -27,13 +27,13 @@ export interface UiReducer {
   setEmulatorOpen: (newState: boolean) => void
 }
 
-const bottomPanelStorageKey = `bp::${window.BOT_ID}::bottom-panel-open`
-const inspectorEnabledStorageKey = `bp::${window.BOT_ID}::enable-inspector`
-const explorerStorageKey = `bp::${window.BOT_ID}::explorer-open`
+const bottomPanelStorageKey = () => `bp::${window.BOT_ID}::bottom-panel-open`
+const inspectorEnabledStorageKey = () => `bp::${window.BOT_ID}::enable-inspector`
+const explorerStorageKey = () => `bp::${window.BOT_ID}::explorer-open`
 
-const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
-const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
-const storageExplorerOpen = utils.storage.get<boolean>(explorerStorageKey)
+const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey()) === true
+const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey()) === true
+const storageExplorerOpen = utils.storage.get<boolean>(explorerStorageKey())
 const defaultExplorerOpen = storageExplorerOpen === undefined || storageExplorerOpen === true
 
 const defaultState = {
@@ -77,7 +77,7 @@ const reducer = handleActions(
     }),
     [toggleBottomPanel]: (state, {}) => {
       const value = !state.bottomPanel
-      utils.storage.set(bottomPanelStorageKey, value)
+      utils.storage.set(bottomPanelStorageKey(), value)
       return {
         ...state,
         bottomPanel: value
@@ -85,7 +85,7 @@ const reducer = handleActions(
     },
     [toggleInspector]: (state, {}) => {
       const value = !state.inspectorEnabled
-      utils.storage.set(inspectorEnabledStorageKey, value)
+      utils.storage.set(inspectorEnabledStorageKey(), value)
       return {
         ...state,
         inspectorEnabled: value
@@ -93,7 +93,7 @@ const reducer = handleActions(
     },
     [toggleExplorer]: (state, {}) => {
       const value = !state.explorerOpen
-      utils.storage.set(explorerStorageKey, value)
+      utils.storage.set(explorerStorageKey(), value)
       return {
         ...state,
         explorerOpen: value
