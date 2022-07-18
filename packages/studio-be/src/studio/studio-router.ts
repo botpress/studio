@@ -180,17 +180,10 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/cloud', this.checkTokenHeader, this.cloudRouter.router)
     this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
-    this.setupUnauthenticatedRoutes(app)
-    this.setupStaticRoutes(app)
-  }
-
-  setupUnauthenticatedRoutes(app) {
-    /**
-     * UNAUTHENTICATED ROUTES
-     * Do not return sensitive information there. These must be accessible by unauthenticated users
-     */
     this.router.get(
       '/env',
+      this.checkTokenHeader,
+      needPermissions(this.workspaceService)('read', 'bot.*'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
@@ -229,6 +222,15 @@ export class StudioRouter extends CustomRouter {
       })
     )
 
+    this.setupUnauthenticatedRoutes(app)
+    this.setupStaticRoutes(app)
+  }
+
+  setupUnauthenticatedRoutes(app) {
+    /**
+     * UNAUTHENTICATED ROUTES
+     * Do not return sensitive information there. These must be accessible by unauthenticated users
+     */
     this.router.get(
       '/branding.js',
       this.asyncMiddleware(async (req, res) => {

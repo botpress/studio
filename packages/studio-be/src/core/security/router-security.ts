@@ -1,21 +1,15 @@
 import { checkRule, CSRF_TOKEN_HEADER_LC, JWT_COOKIE_NAME, STANDALONE_USER } from 'common/auth'
 import { RequestWithUser } from 'common/typings'
 import { ConfigProvider } from 'core/config'
-import {
-  InvalidOperationError,
-  ForbiddenError,
-  InternalServerError,
-  NotFoundError,
-  UnauthorizedError
-} from 'core/routers'
+import { InvalidOperationError, ForbiddenError, NotFoundError, UnauthorizedError } from 'core/routers'
 import { WorkspaceService } from 'core/users'
-import { NextFunction, Request, RequestHandler, Response } from 'express'
+import { NextFunction, RequestHandler, Response } from 'express'
 import { AuthService, WORKSPACE_HEADER, SERVER_USER } from './auth-service'
 
 const debugFailure = DEBUG('audit:collab:fail')
 const debugSuccess = DEBUG('audit:collab:success')
-const debugSuperSuccess = DEBUG('audit:admin:success')
-const debugSuperFailure = DEBUG('audit:admin:fail')
+
+export const ALL_BOTS = '___'
 
 export const checkTokenHeader =
   (authService: AuthService, audience?: string) => async (req: RequestWithUser, res: Response, next: NextFunction) => {
@@ -141,6 +135,11 @@ const checkPermissions =
       return new ForbiddenError(`User "${email}" doesn't have access to workspace "${req.workspace}"`)
     }
 
+    const isBotIdValid = req.params.botId && req.params.botId !== ALL_BOTS
+    if (isBotIdValid && !(await workspaceService.isBotInWorkspace(req.workspace, req.params.botId))) {
+      return new NotFoundError(`Bot "${req.params.botId}" doesn't exist in workspace "${req.workspace}"`)
+    }
+
     const role = await workspaceService.getRoleForUser(email, strategy, req.workspace)
 
     if (!role || !checkRule(role.rules, operation, resource)) {
@@ -157,7 +156,7 @@ export const checkBotVisibility =
     // '___' is a non-valid botId, but here acts as for "all bots"
     // This is used in modules when they setup routes that work on a global level (they are not tied to a specific bot)
     // Check the 'sso-login' module for an example
-    if (req.params.botId === '___' || req.originalUrl.endsWith('env.js')) {
+    if (req.params.botId === '___' || req.originalUrl.endsWith('env')) {
       return next()
     }
 
