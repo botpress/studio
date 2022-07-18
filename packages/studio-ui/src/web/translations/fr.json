@@ -687,7 +687,7 @@
     "emulator": "Émulateur",
     "readDoc": "Lire la documentation",
     "toggleEmulator": "{shortcut} Changer l'état de l'Émulateur",
-    "toggleExplorer": "{shortcut} Changer l'état de l'Explorateurmulateur",
+    "toggleExplorer": "{shortcut} Changer l'état de l'Explorateur",
     "toggleDebugger": "{shortcut} Changer l'état du Débogueur",
     "salesCallToAction": "Essayez Entreprise gratuitement",
     "salesCallToActionDescription": "Chatbots sécurisés, évolutifs et de qualité entreprise"
