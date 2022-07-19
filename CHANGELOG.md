@@ -1,3 +1,15 @@
+## [0.0.55](https://github.com/botpress/studio/compare/v0.0.54...v0.0.55) (2022-07-18)
+
+
+### Bug Fixes
+
+* **security:** validate bot access ([#365](https://github.com/botpress/studio/issues/365)) ([fd6bc0c](https://github.com/botpress/studio/commit/fd6bc0cf9594d5213086e43f3890e6b7bf5bce22))
+* **studio:** pretty and safe logs ([#368](https://github.com/botpress/studio/issues/368)) ([2bdeeed](https://github.com/botpress/studio/commit/2bdeeedb1a8746ad83948eb47c4946ea5210576c))
+* **studio-ui:** fix redirect even when authorized ([#369](https://github.com/botpress/studio/issues/369)) ([2ded358](https://github.com/botpress/studio/commit/2ded358caaa50f532124ea4cda7eccb66d86f371))
+* **ui:** redirect to admin on init error ([#366](https://github.com/botpress/studio/issues/366)) ([323c5ee](https://github.com/botpress/studio/commit/323c5eeb90b4bb77a8bce17e1ce8356f821a348d))
+
+
+
 ## [0.0.54](https://github.com/botpress/studio/compare/v0.0.53...v0.0.54) (2022-07-12)
 
 
