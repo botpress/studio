@@ -2555,6 +2555,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blueprintjs/colors@npm:^4.1.4":
+  version: 4.1.4
+  resolution: "@blueprintjs/colors@npm:4.1.4"
+  checksum: 178d002bd5c67d8bfee64874895de04c0d6ced63718b341e818a7aa4bd3d4ce398edcbc515d1747678686bafa6a660c24aa7d10cc1e55a7870ffe2919e34aeed
+  languageName: node
+  linkType: hard
+
 "@blueprintjs/core@npm:^3.23.0, @blueprintjs/core@npm:^3.23.1, @blueprintjs/core@npm:^3.45.0":
   version: 3.45.0
   resolution: "@blueprintjs/core@npm:3.45.0"
@@ -2606,6 +2613,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@blueprintjs/core@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "@blueprintjs/core@npm:4.6.0"
+  dependencies:
+    "@blueprintjs/colors": ^4.1.4
+    "@blueprintjs/icons": ^4.3.1
+    "@juggle/resize-observer": ^3.3.1
+    "@types/dom4": ^2.0.1
+    classnames: ^2.2
+    dom4: ^2.1.5
+    normalize.css: ^8.0.1
+    popper.js: ^1.16.1
+    react-popper: ^1.3.7
+    react-transition-group: ^4.4.1
+    tslib: ~2.3.1
+  peerDependencies:
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  bin:
+    upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
+    upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
+  checksum: 1a471553e8f6d34fa959c12da0f23d95cb38fae637ab45afb1198af014a896cb51fe4710b0e9c0721fdeed2c13eb7e7adb69fa2d4f5b00dcfea4564997a64503
+  languageName: node
+  linkType: hard
+
 "@blueprintjs/datetime@npm:3.15.2":
   version: 3.15.2
   resolution: "@blueprintjs/datetime@npm:3.15.2"
@@ -2638,6 +2670,35 @@ __metadata:
     classnames: ^2.2
     tslib: ~1.13.0
   checksum: 02f9e583c72869c956c5c67c93858bf5488e0c1f38790c1faf4ffc2a0f8f6d574311d62f818fbf853f234e61c3052c19378fad889c2a24cd981d88a97be34646
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/icons@npm:^4.3.1":
+  version: 4.3.1
+  resolution: "@blueprintjs/icons@npm:4.3.1"
+  dependencies:
+    change-case: ^4.1.2
+    classnames: ^2.2
+    tslib: ~2.3.1
+  checksum: 7f28f5c55529964d0584ec3f10f9960001fdb17e401c217b80d08e00c2ebddb4880a8a3cc9a5c793b8eaf6a48b2b9585c8cb50e0e89093d944c3a1cab0a27ff8
+  languageName: node
+  linkType: hard
+
+"@blueprintjs/popover2@npm:^1.4.2":
+  version: 1.4.2
+  resolution: "@blueprintjs/popover2@npm:1.4.2"
+  dependencies:
+    "@blueprintjs/core": ^4.6.0
+    "@juggle/resize-observer": ^3.3.1
+    "@popperjs/core": ^2.5.4
+    classnames: ^2.2
+    dom4: ^2.1.5
+    react-popper: ^2.2.4
+    tslib: ~2.3.1
+  peerDependencies:
+    react: ^16.8 || 17 || 18
+    react-dom: ^16.8 || 17 || 18
+  checksum: 0cbe2b04732c8913c6dad3121e60d24f5d1f15d9b0d8b173573ca5efc322f67db2d604603641142aa4aa5f66d7aa4379e4316a36c1a0e19fabd1e9c4071eb78a
   languageName: node
   linkType: hard
 
@@ -2778,6 +2839,7 @@ __metadata:
     dotenv: ^16.0.0
     errorhandler: ^1.5.1
     eventemitter2: ^5.0.1
+    exponential-backoff: ^3.1.0
     express: ^4.17.2
     express-rate-limit: ^3.5.1
     express-urlrewrite: ^1.4.0
@@ -2832,6 +2894,7 @@ __metadata:
   dependencies:
     "@analytics/segment": ^1.1.3
     "@blueprintjs/core": ^3.23.1
+    "@blueprintjs/popover2": ^1.4.2
     "@blueprintjs/select": ^3.12.0
     "@botpress/inspector-kit": "workspace:^"
     "@botpress/ui-shared": "*"
@@ -2839,9 +2902,10 @@ __metadata:
     "@types/classnames": ^2.3.1
     "@types/lodash": ^4.14.178
     "@types/node": ^12.18.1
-    "@types/react": ^16.8.6
+    "@types/react": 16.8.6
     "@types/react-dom": ^16.8.6
     "@types/react-jsonschema-form": ^1.7.8
+    "@types/react-redux": 5.0.24
     "@types/react-router-dom": ^4.3.3
     "@types/reactour": ^1.18.1
     "@types/redux-actions": ^2.2.1
@@ -4138,6 +4202,13 @@ __metadata:
   version: 7.1.3
   resolution: "@jsdevtools/ono@npm:7.1.3"
   checksum: 2297fcd472ba810bffe8519d2249171132844c7174f3a16634f9260761c8c78bc0428a4190b5b6d72d45673c13918ab9844d706c3ed4ef8f62ab11a2627a08ad
+  languageName: node
+  linkType: hard
+
+"@juggle/resize-observer@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@juggle/resize-observer@npm:3.3.1"
+  checksum: ddabc4044276a2cb57d469c4917206c7e39f2463aa8e3430e33e4eda554412afe29c22afa40e6708b49dad5d56768dc83acd68a704b1dcd49a0906bb96b991b2
   languageName: node
   linkType: hard
 
@@ -7261,6 +7332,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-redux@npm:5.0.24":
+  version: 5.0.24
+  resolution: "@types/react-redux@npm:5.0.24"
+  dependencies:
+    "@types/react": "*"
+    redux: ^3.6.0
+  checksum: b43b26f09162fd1d8264acfc344ee3a0b6750539c74193e4da3b7540d052cce55f25af7a8199c39d55fdefc930393172364880a3d3e2528a753c3e671bb81ddc
+  languageName: node
+  linkType: hard
+
 "@types/react-router-dom@npm:^4.3.3":
   version: 4.3.5
   resolution: "@types/react-router-dom@npm:4.3.5"
@@ -7320,7 +7401,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16, @types/react@npm:^16.8.19, @types/react@npm:^16.8.6":
+"@types/react@npm:16.8.6":
+  version: 16.8.6
+  resolution: "@types/react@npm:16.8.6"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^2.2.0
+  checksum: 09e04a51e3265b16b297f5e4c0ec05761c58c827fe506f9e4c735e809d6b5959b38b0e4adff286d239911c984455d3e6062e5548d83164c74d277feda2b15a72
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^16, @types/react@npm:^16.8.19":
   version: 16.14.8
   resolution: "@types/react@npm:16.14.8"
   dependencies:
@@ -10898,7 +10989,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camel-case@npm:^4.1.1":
+"camel-case@npm:^4.1.1, camel-case@npm:^4.1.2":
   version: 4.1.2
   resolution: "camel-case@npm:4.1.2"
   dependencies:
@@ -11030,6 +11121,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"capital-case@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "capital-case@npm:1.0.4"
+  dependencies:
+    no-case: ^3.0.4
+    tslib: ^2.0.3
+    upper-case-first: ^2.0.2
+  checksum: 41fa8fa87f6d24d0835a2b4a9341a3eaecb64ac29cd7c5391f35d6175a0fa98ab044e7f2602e1ec3afc886231462ed71b5b80c590b8b41af903ec2c15e5c5931
+  languageName: node
+  linkType: hard
+
 "capture-exit@npm:^2.0.0":
   version: 2.0.0
   resolution: "capture-exit@npm:2.0.0"
@@ -11136,6 +11238,26 @@ __metadata:
     ansi-styles: ^4.1.0
     supports-color: ^7.1.0
   checksum: fe75c9d5c76a7a98d45495b91b2172fa3b7a09e0cc9370e5c8feb1c567b85c4288e2b3fded7cfdd7359ac28d6b3844feb8b82b8686842e93d23c827c417e83fc
+  languageName: node
+  linkType: hard
+
+"change-case@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "change-case@npm:4.1.2"
+  dependencies:
+    camel-case: ^4.1.2
+    capital-case: ^1.0.4
+    constant-case: ^3.0.4
+    dot-case: ^3.0.4
+    header-case: ^2.0.4
+    no-case: ^3.0.4
+    param-case: ^3.0.4
+    pascal-case: ^3.1.2
+    path-case: ^3.0.4
+    sentence-case: ^3.0.4
+    snake-case: ^3.0.4
+    tslib: ^2.0.3
+  checksum: e4bc4a093a1f7cce8b33896665cf9e456e3bc3cc0def2ad7691b1994cfca99b3188d0a513b16855b01a6bd20692fcde12a7d4d87a5615c4c515bbbf0e651f116
   languageName: node
   linkType: hard
 
@@ -12006,6 +12128,17 @@ __metadata:
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
   checksum: 8755d76787f94e6cf79ce4666f0c5519906d7f5b02d4b884cf41e11dcd759ed69c57da0670afd9236d229a46e0f9cf519db0cd829c6dca820bb5a5c3def584ed
+  languageName: node
+  linkType: hard
+
+"constant-case@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "constant-case@npm:3.0.4"
+  dependencies:
+    no-case: ^3.0.4
+    tslib: ^2.0.3
+    upper-case: ^2.0.2
+  checksum: 6c3346d51afc28d9fae922e966c68eb77a19d94858dba230dd92d7b918b37d36db50f0311e9ecf6847e43e934b1c01406a0936973376ab17ec2c471fbcfb2cf3
   languageName: node
   linkType: hard
 
@@ -12955,6 +13088,13 @@ __metadata:
   dependencies:
     cssom: ~0.3.6
   checksum: 5f05e6fd2e3df0b44695c2f08b9ef38b011862b274e320665176467c0725e44a53e341bc4959a41176e83b66064ab786262e7380fd1cabeae6efee0d255bb4e3
+  languageName: node
+  linkType: hard
+
+"csstype@npm:^2.2.0":
+  version: 2.6.20
+  resolution: "csstype@npm:2.6.20"
+  checksum: cb5d5ded49c3390909e93b20b285d4a63d0ba5b10294bdfbc4cf911f80e91d6cf367ea671f99f09570762535c14ea7074a2c7fa73f02008203f01328dea8968b
   languageName: node
   linkType: hard
 
@@ -14835,6 +14975,13 @@ __metadata:
     jest-matcher-utils: ^27.5.1
     jest-message-util: ^27.5.1
   checksum: b2c66beb52de53ef1872165aace40224e722bca3c2274c54cfa74b6d617d55cf0ccdbf36783ccd64dbea501b280098ed33fd0b207d4f15bc03cd3c7a24364a6a
+  languageName: node
+  linkType: hard
+
+"exponential-backoff@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "exponential-backoff@npm:3.1.0"
+  checksum: 9367d2848044d3738b27e00f20ee2b605aecea6b3397b0c08bdf4bd48af34379ea7019c157e729101d2a7363dd6ee1ffc6d2305c4b6f80fc215da1eb73ac3f84
   languageName: node
   linkType: hard
 
@@ -16925,6 +17072,16 @@ __metadata:
   bin:
     he: bin/he
   checksum: 3d4d6babccccd79c5c5a3f929a68af33360d6445587d628087f39a965079d84f18ce9c3d3f917ee1e3978916fc833bb8b29377c3b403f919426f91bc6965e7a7
+  languageName: node
+  linkType: hard
+
+"header-case@npm:^2.0.4":
+  version: 2.0.4
+  resolution: "header-case@npm:2.0.4"
+  dependencies:
+    capital-case: ^1.0.4
+    tslib: ^2.0.3
+  checksum: 571c83eeb25e8130d172218712f807c0b96d62b020981400bccc1503a7cf14b09b8b10498a962d2739eccf231d950e3848ba7d420b58a6acd2f9283439546cd9
   languageName: node
   linkType: hard
 
@@ -23799,7 +23956,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"param-case@npm:^3.0.3":
+"param-case@npm:^3.0.3, param-case@npm:^3.0.4":
   version: 3.0.4
   resolution: "param-case@npm:3.0.4"
   dependencies:
@@ -24007,6 +24164,16 @@ __metadata:
   version: 1.0.1
   resolution: "path-browserify@npm:1.0.1"
   checksum: c6d7fa376423fe35b95b2d67990060c3ee304fc815ff0a2dc1c6c3cfaff2bd0d572ee67e18f19d0ea3bbe32e8add2a05021132ac40509416459fffee35200699
+  languageName: node
+  linkType: hard
+
+"path-case@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "path-case@npm:3.0.4"
+  dependencies:
+    dot-case: ^3.0.4
+    tslib: ^2.0.3
+  checksum: 61de0526222629f65038a66f63330dd22d5b54014ded6636283e1d15364da38b3cf29e4433aa3f9d8b0dba407ae2b059c23b0104a34ee789944b1bc1c5c7e06d
   languageName: node
   linkType: hard
 
@@ -26889,7 +27056,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^4.3.0":
+"react-transition-group@npm:^4.3.0, react-transition-group@npm:^4.4.1":
   version: 4.4.2
   resolution: "react-transition-group@npm:4.4.2"
   dependencies:
@@ -27304,7 +27471,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^3.7.2":
+"redux@npm:^3.6.0, redux@npm:^3.7.2":
   version: 3.7.2
   resolution: "redux@npm:3.7.2"
   dependencies:
@@ -28450,6 +28617,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"sentence-case@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "sentence-case@npm:3.0.4"
+  dependencies:
+    no-case: ^3.0.4
+    tslib: ^2.0.3
+    upper-case-first: ^2.0.2
+  checksum: 3cfe6c0143e649132365695706702d7f729f484fa7b25f43435876efe7af2478243eefb052bacbcce10babf9319fd6b5b6bc59b94c80a1c819bcbb40651465d5
+  languageName: node
+  linkType: hard
+
 "serialize-javascript@npm:^4.0.0":
   version: 4.0.0
   resolution: "serialize-javascript@npm:4.0.0"
@@ -28888,6 +29066,16 @@ __metadata:
   version: 4.1.0
   resolution: "smart-buffer@npm:4.1.0"
   checksum: 1db847dcf92c06b36e96aace965e00aec5caccd65c8fd60e0c284c5ad9dabe7f16ef4a60a34dd3c4ccc245a8393071e646fc94fc95f111c25e8513fd9efa6ed5
+  languageName: node
+  linkType: hard
+
+"snake-case@npm:^3.0.4":
+  version: 3.0.4
+  resolution: "snake-case@npm:3.0.4"
+  dependencies:
+    dot-case: ^3.0.4
+    tslib: ^2.0.3
+  checksum: 0a7a79900bbb36f8aaa922cf111702a3647ac6165736d5dc96d3ef367efc50465cac70c53cd172c382b022dac72ec91710608e5393de71f76d7142e6fd80e8a3
   languageName: node
   linkType: hard
 
@@ -30708,7 +30896,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.3.0, tslib@npm:^2.3.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.0.3, tslib@npm:^2.3.0, tslib@npm:^2.3.1, tslib@npm:~2.3.1":
   version: 2.3.1
   resolution: "tslib@npm:2.3.1"
   checksum: de17a98d4614481f7fcb5cd53ffc1aaf8654313be0291e1bfaee4b4bb31a20494b7d218ff2e15017883e8ea9626599b3b0e0229c18383ba9dce89da2adf15cb9
@@ -31382,10 +31570,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"upper-case-first@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "upper-case-first@npm:2.0.2"
+  dependencies:
+    tslib: ^2.0.3
+  checksum: 4487db4701effe3b54ced4b3e4aa4d9ab06c548f97244d04aafb642eedf96a76d5a03cf5f38f10f415531d5792d1ac6e1b50f2a76984dc6964ad530f12876409
+  languageName: node
+  linkType: hard
+
 "upper-case@npm:^1.1.1":
   version: 1.1.3
   resolution: "upper-case@npm:1.1.3"
   checksum: 991c845de75fa56e5ad983f15e58494dd77b77cadd79d273cc11e8da400067e9881ae1a52b312aed79b3d754496e2e0712e08d22eae799e35c7f9ba6f3d8a85d
+  languageName: node
+  linkType: hard
+
+"upper-case@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "upper-case@npm:2.0.2"
+  dependencies:
+    tslib: ^2.0.3
+  checksum: 508723a2b03ab90cf1d6b7e0397513980fab821cbe79c87341d0e96cedefadf0d85f9d71eac24ab23f526a041d585a575cfca120a9f920e44eb4f8a7cf89121c
   languageName: node
   linkType: hard
 
