@@ -53,6 +53,11 @@ export const BotEditSchema = Joi.object().keys({
     coverPictureUrl: Joi.string()
       .optional()
       .allow('')
+  },
+  cloud: {
+    botId: Joi.string(),
+    clientId: Joi.string(),
+    clientSecret: Joi.string()
   }
 })
 

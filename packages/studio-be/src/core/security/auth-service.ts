@@ -11,13 +11,13 @@ export const TOKEN_AUDIENCE = 'collaborators'
 export const WORKSPACE_HEADER = 'x-bp-workspace'
 export const SERVER_USER = 'server::modules'
 
-const getUserKey = (email, strategy) => `${email}_${strategy}`
+const getUserKey = (email: string, strategy: string) => `${email}_${strategy}`
 
 @injectable()
 export class AuthService {
   private tokenVersions: Dic<number> = {}
 
-  constructor(@inject(TYPES.StrategyUsersRepository) private users: StrategyUsersRepository) {}
+  constructor(@inject(TYPES.StrategyUsersRepository) private users: StrategyUsersRepository) { }
 
   async tokenVersionChange(email: string, strategy: string, tokenVersion: number): Promise<void> {
     this.tokenVersions[getUserKey(email, strategy)] = tokenVersion
@@ -55,6 +55,10 @@ export class AuthService {
         cb(err, undefined)
       })
     })
+  }
+
+  public async findUser({ email, strategy }: { email: TokenUser['email']; strategy: TokenUser['strategy'] }) {
+    return this.users.findUser(email, strategy)
   }
 }
 
