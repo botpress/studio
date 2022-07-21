@@ -17,8 +17,7 @@ module.exports = {
     '*.js',
     '**/out/**',
     '**/*.test.ts',
-    'packages/ui-shared-lite/**',
-    'packages/native-extensions/**'
+    'packages/ui-shared-lite/**'
   ],
   plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
   rules: {
