@@ -51,7 +51,7 @@ export class CloudRouter extends CustomStudioRouter {
           throw new InternalServerError(`unexpected error: ${e}`)
         }
 
-        res.end()
+        return res.sendStatus(204)
       })
     )
   }
