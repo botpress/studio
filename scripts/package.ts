@@ -1,4 +1,5 @@
 import fs from 'fs'
+
 import { execute } from './utils/exec'
 import logger from './utils/logger'
 import { getProjectVersion, formatVersion } from './utils/version'
@@ -10,7 +11,7 @@ const installBindings = async () => {
 
   for (const platform of platforms) {
     await execute(
-      `cross-env ./node_modules/.bin/node-pre-gyp install --directory=./node_modules/sqlite3 --target_platform=${platform} --target_arch=x64`,
+      `cross-env ./node_modules/.bin/node-pre-gyp install --directory=./packages/native-extensions/bin --target_platform=${platform} --target_arch=x64`,
       undefined,
       { silent: true }
     )

@@ -6,10 +6,11 @@
   "license": "AGPL-3.0",
   "private": true,
   "scripts": {
-    "start": "cross-env NODE_PATH=./out node ./out/index.js",
-    "build": "ts-node  --dir ../../scripts write_metadata && tsc --build",
-    "clean": "rimraf ./out",
-    "watch": "tsc --build --watch"
+    "start": "yarn run -T cross-env NODE_PATH=./out node ./out/index.js",
+    "build": "yarn run -T ts-node  --dir ../../scripts write_metadata && tsc --build",
+    "typecheck": "yarn run -T tsc --noEmit",
+    "clean": "yarn run -T rimraf ./out",
+    "watch": "yarn run -T tsc --build --watch"
   },
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
@@ -36,6 +37,7 @@
     "globrex": "^0.1.2",
     "http-proxy-middleware": "^2.0.2",
     "inversify": "^5.1.1",
+    "ioredis": "^4.14.1",
     "joi": "^13.6.0",
     "json-schema-defaults": "^0.4.0",
     "jsonlint-mod": "^1.7.6",
@@ -55,16 +57,13 @@
     "reflect-metadata": "^0.1.13",
     "replace-in-file": "^4.1.1",
     "rimraf": "^3.0.2",
+    "sqlite3": "5.0.2",
     "tar": "^6.1.11",
     "tmp": "^0.2.1",
     "verror": "^1.10.1",
     "vm2": "^3.9.6",
     "yargs": "^17.3.1",
     "yn": "^4.0.0"
-  },
-  "optionalDependencies": {
-    "ioredis": "^4.14.1",
-    "sqlite3": "4.2.0"
   },
   "devDependencies": {
     "@types/bluebird-global": "^3.5.13",
