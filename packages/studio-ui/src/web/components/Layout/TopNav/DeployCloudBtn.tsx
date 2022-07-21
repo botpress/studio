@@ -5,20 +5,22 @@ import axios from 'axios'
 import sdk, { NLU } from 'botpress/sdk'
 import { lang, toast } from 'botpress/shared'
 import classNames from 'classnames'
-import { Training } from 'common/nlu-training'
 import moment from 'moment'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
 
 import style from './style.scss'
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
+
+interface TrainSessions {
+  [lang: string]: NLU.TrainingSession
+}
+
 interface Props {
   bot: sdk.BotConfig
-  trainSessions: {
-    [lang: string]: NLU.TrainingSession
-  }
+  trainSessions: TrainSessions
   personalAccessToken?: string
 }
 
@@ -85,163 +87,177 @@ const DeployBotDisplay = (props: { status: 'pending' | 'completed' }): JSX.Eleme
   )
 }
 
-const DeployInfo = ({ lastImportDate }) => {
-  const importDateStr = useCallback(() => {
-    if (!lastImportDate) {
-      return null
-    }
+type Status = 'pending' | 'in-progress' | 'completed'
 
-    return moment(lastImportDate).fromNow()
-  }, [lastImportDate])
-
+const Step = (props: { status: Status; text: string }): JSX.Element => {
+  const { status, text } = props
+  const chars: { [s in Status]: string } = {
+    pending: '⌛',
+    'in-progress': '🔄',
+    completed: '✅'
+  }
   return (
-    <div className={style.tooltip}>
-      {lastImportDate
-        ? [lang.tr('topNav.deploy.tooltip.lastDeploy'), importDateStr()].join(' ')
-        : lang.tr('topNav.deploy.tooltip.deployBot')}
-    </div>
+    <p>
+      {chars[status]} {text}
+    </p>
   )
 }
-const Deploying = () => {
-  return <div className={style.tooltip}>{lang.tr('topNav.deploy.tooltip.deploying')}</div>
+
+type Workspace = any
+
+interface State {
+  isOpen: boolean
+  isOpened: boolean
+  isTrained: boolean
+  workspaces: Workspace[]
+  selectedWorkspace: Workspace
+  userAuthenticated: boolean
+  training: 'pending' | 'in-progress' | 'completed'
+  upload: 'pending' | 'in-progress' | 'completed'
+}
+
+const computeIsTrained = (trainSessions: TrainSessions) =>
+  Object.values(trainSessions).reduce((trained, session) => trained && session.status === 'done', true)
+
+function init(props: Props): State {
+  const { trainSessions } = props
+  const isTrained = computeIsTrained(trainSessions)
+
+  return {
+    isOpen: false,
+    isOpened: false,
+    isTrained,
+    workspaces: [],
+    selectedWorkspace: null,
+    userAuthenticated: false,
+    upload: 'pending',
+    training: 'pending'
+  }
+}
+
+type Action =
+  | { type: 'postDeployTimeout/ended' }
+  | { type: 'popup/opened' }
+  | { type: 'popup/closed' }
+  | { type: 'deployButton/clicked' }
+  | { type: 'training/started' }
+  | { type: 'training/ended' }
+  | { type: 'training/trainSessionsUpdated'; trainSessions: TrainSessions }
+  | { type: 'workspaces/fetched'; workspaces: State['workspaces'] }
+  | { type: 'userAuthentication/fetched'; authenticated: boolean }
+  | { type: 'workspace/selected'; workspace: Workspace }
+  | { type: 'upload/ended' }
+  | { type: 'upload/started' }
+  | { type: 'popup/interaction'; nextOpenState: boolean }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'popup/opened':
+      return { ...state, isOpened: true, training: 'pending', upload: 'pending' }
+    case 'popup/closed':
+      return { ...state, isOpened: false }
+    case 'popup/interaction':
+      return { ...state, isOpen: action.nextOpenState }
+    case 'deployButton/clicked':
+      return { ...state }
+    case 'workspaces/fetched':
+      return { ...state, workspaces: action.workspaces }
+    case 'userAuthentication/fetched':
+      return { ...state, userAuthenticated: action.authenticated }
+    case 'workspace/selected':
+      return { ...state, selectedWorkspace: action.workspace }
+    case 'upload/started':
+      return { ...state, upload: 'in-progress' }
+    case 'upload/ended':
+      return { ...state, upload: 'completed' }
+    case 'postDeployTimeout/ended':
+      return { ...state, isOpen: false }
+    case 'training/trainSessionsUpdated':
+      return { ...state, isTrained: computeIsTrained(action.trainSessions) }
+    case 'training/started':
+      return { ...state, training: 'in-progress' }
+    default:
+      throw new Error(`unknown action: ${JSON.stringify(action)}`)
+  }
 }
 
 const DeployCloudBtn = (props: Props) => {
   const { trainSessions, bot, personalAccessToken } = props
 
-  const isTrained = Object.values(trainSessions).reduce(
-    (trained, session) => trained && session.status === 'done',
-    true
-  )
+  const [state, dispatch] = useReducer(reducer, props, init)
 
-  const [lastImportDate, setLastImportDate] = useState(null)
-  const [deployLoading, setDeployLoading] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const [isOpened, setIsOpened] = useState(false)
-  const [userAuthenticated, setUserAuthenticated] = useState(false)
-  const [cloudWorkspaces, setCloudWorkspaces] = useState([])
-  const [deploying, setDeploying] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [training, setTraining] = useState(false)
-  console.log({ isTrained })
-  const [trainingCompleted, setTrainingCompleted] = useState(isTrained)
-  const [deployCompleted, setDeployCompleted] = useState(false)
-  const [step, setStep] = useState(0)
-  const [selectedWorkspace, setSelectedWorkspace] = useState(null)
+  const { userAuthenticated, workspaces, isOpened, isOpen, isTrained, training, upload, selectedWorkspace } = state
 
   // effects
-
   useEffect(() => {
-    const fetchData = async () => {
-      console.log('getting pat')
+    const checkUserAuthentication = async () => {
+      console.log('calling checkUserAuthentication()')
       const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/authentication/pat`, {
         headers: { Authorization: `bearer ${personalAccessToken}` }
       })
 
-      const isAuthenticated = resp.status === 200 && resp.headers['x-user-id'] !== undefined
-      setUserAuthenticated(resp.status === 200 && resp.headers['x-user-id'] !== undefined)
-      if (isAuthenticated) {
-        console.log('fetching workspaces')
-        const { data: workspaces } = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/workspaces`, {
-          headers: { Authorization: `bearer ${personalAccessToken}` }
-        })
-        setCloudWorkspaces(workspaces)
-      }
+      dispatch({
+        type: 'userAuthentication/fetched',
+        authenticated: resp.status === 200 && resp.headers['x-user-id'] !== undefined
+      })
     }
-    void fetchData()
+
+    void checkUserAuthentication()
   }, [])
 
   useEffect(() => {
-    if (isOpened) {
-      void onOpened()
+    const fetchWorkspaces = async () => {
+      console.log('fetching workspaces')
+      const { data: workspaces } = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/workspaces`, {
+        headers: { Authorization: `bearer ${personalAccessToken}` }
+      })
+      dispatch({ type: 'workspaces/fetched', workspaces })
     }
-  }, [isOpened])
+
+    if (userAuthenticated) {
+      void fetchWorkspaces()
+    }
+  }, [userAuthenticated])
 
   useEffect(() => {
-    console.log(`training effect: ${training}`)
-    if (isOpened && trainingCompleted && cloudWorkspaces.length > 0) {
+    const train = async () => {
+      console.log('train() called')
+      dispatch({ type: 'training/started' })
+      for (const [lang, trainSession] of Object.entries(trainSessions)) {
+        await axios.post(`${BASE_NLU_URL}/train/${lang}`)
+      }
+    }
+
+    if (isOpened && userAuthenticated && !isTrained) {
+      void train()
+    }
+  }, [isOpened, userAuthenticated, isTrained])
+
+  useEffect(() => {
+    if (isOpened && (isTrained || training === 'completed') && workspaces.length > 0) {
       void deployToCloud()
     }
-  }, [isOpened, trainingCompleted, cloudWorkspaces])
+  }, [isOpened, isTrained, training, workspaces])
 
-  // helper methods
-  const train = async () => {
-    console.log('train() called')
-    for (const [lang, trainSession] of Object.entries(trainSessions)) {
-      await axios.post(`${BASE_NLU_URL}/train/${lang}`)
+  useEffect(() => {
+    if (upload === 'completed') {
+      setTimeout(() => {
+        dispatch({ type: 'postDeployTimeout/ended' })
+      }, 1000)
     }
-  }
+  }, [upload])
 
-  const onOpened = async () => {
-    if (userAuthenticated) {
-      await deploy()
-    }
-  }
-
-  const deploy = async () => {
-    console.log('deploy() called')
-    setDeployCompleted(false)
-    if (!isTrained) {
-      setTrainingCompleted(false)
-      setTraining(true)
-      await train()
-    }
-  }
-
-  const onDeployClicked = async () => {
-    await deploy()
-  }
-
-  if (training && isTrained) {
-    setTraining(false)
-    setTrainingCompleted(true)
-  }
+  useEffect(() => {
+    dispatch({ type: 'training/trainSessionsUpdated', trainSessions })
+  }, [trainSessions])
 
   const deployToCloud = async () => {
     console.log('calling /deploy')
-    const w = bot.cloud ? cloudWorkspaces.find((w: any) => w.id === bot.cloud.workspaceId) : cloudWorkspaces[0]
+    const w = bot.cloud ? workspaces.find((w: any) => w.id === bot.cloud.workspaceId) : workspaces[0]
+    dispatch({ type: 'upload/started' })
     await axios.post(`${window.STUDIO_API_PATH}/cloud/deploy`, { workspaceId: w.id })
-    console.log('setting deploy completed')
-    setDeployCompleted(true)
-    setTimeout(() => {
-      setIsOpen(false)
-    }, 1000)
+    dispatch({ type: 'upload/ended' })
   }
-
-  // const deployToCloud = useCallback(() => {
-  //   // if (deployLoading || !isTrained()) {
-  //   //   return
-  //   // }
-  //   // toast.info(lang.tr('topNav.deploy.toaster.info'))
-  //   // setDeployLoading(true)
-
-  //   axios
-  //     .get(`${window.STUDIO_API_PATH}/cloud/deploy`)
-  //     .then((res) => res.data)
-  //     .then((data) => {
-  //       const { imported_on } = data
-  //       toast.success(lang.tr('topNav.deploy.toaster.success'))
-  //       setLastImportDate(imported_on)
-  //       setDeployLoading(false)
-  //     })
-  //     .catch((err) => {
-  //       setDeployLoading(false)
-  //       switch (err.response?.status) {
-  //         case 401:
-  //           return toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
-  //         case 404:
-  //           return toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
-  //         case 503:
-  //           return toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
-  //         default:
-  //           return toast.failure(err.response?.data?.message ?? lang.tr('topNav.deploy.toaster.error.default'))
-  //       }
-  //     })
-  // }, [setLastImportDate, setDeployLoading, deployLoading])
-
-  // if (isTrained) {
-  //   setTrainingCompleted(true)
-  // }
 
   return (
     <>
@@ -254,18 +270,18 @@ const DeployCloudBtn = (props: Props) => {
             {!bot.cloud && (
               <div>
                 <WorkspaceSelector
-                  cloudWorkspaces={cloudWorkspaces}
+                  cloudWorkspaces={workspaces}
                   onWorkspaceChanged={(ws) => {
-                    setSelectedWorkspace(ws)
+                    dispatch({ type: 'workspace/selected', workspace: ws })
                   }}
                 />
-                <Button text="Deploy" onClick={() => onDeployClicked()} />
+                <Button text="Deploy" onClick={() => dispatch({ type: 'deployButton/clicked' })} />
               </div>
             )}
             {bot.cloud && (
               <div>
-                <TrainSessionsDisplay status={isTrained ? 'completed' : 'pending'} />
-                <DeployBotDisplay status={deployCompleted ? 'completed' : 'pending'} />
+                <Step status={isTrained ? 'completed' : training ? 'in-progress' : 'pending'} text="Training bot" />
+                <Step status={upload} text="Uploading bot" />
               </div>
             )}
           </div>
@@ -274,18 +290,17 @@ const DeployCloudBtn = (props: Props) => {
         matchTargetWidth={false}
         isOpen={isOpen}
         onOpened={() => {
-          setIsOpened(true)
+          dispatch({ type: 'popup/opened' })
         }}
         onClosed={() => {
-          setIsOpened(false)
+          dispatch({ type: 'popup/closed' })
         }}
         onInteraction={(nextOpenState) => {
-          console.log({ nextOpenState })
-          setIsOpen(nextOpenState)
+          dispatch({ type: 'popup/interaction', nextOpenState })
         }}
       >
         <button
-          className={classNames(style.item, { [style.disabled]: deployLoading }, style.itemSpacing)}
+          className={classNames(style.item, { [style.disabled]: false }, style.itemSpacing)}
           id="statusbar_deploy"
         >
           <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>
