@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
 
 interface OwnProps {
-  onCompleted: (selectedWorkspace: any) => void
+  onCompleted: (selectedWorkspaceId: string) => void
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -13,7 +13,7 @@ type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
 const WorkspaceSelector = (props: Props): JSX.Element => {
-  const { personalAccessToken, onCompleted } = props
+  const { bot, personalAccessToken, onCompleted } = props
 
   const [workspaces, setWorkspaces] = useState([])
   const [selectedWorkspace, setSelectedWorkspace] = useState(null)
@@ -32,6 +32,11 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
     void fetchWorkspaces()
   }, [personalAccessToken])
 
+  if (bot.cloud?.workspaceId) {
+    onCompleted(bot.cloud.workspaceId)
+    return <></>
+  }
+
   return (
     <div>
       <select onChange={(e) => setSelectedWorkspace(workspaces.find((w) => w.id === e.target.value))}>
@@ -42,16 +47,17 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
         ))}
       </select>
       <Button
-        disabled={!selectedWorkspace}
+        disabled={!selectedWorkspace.id}
         text="Deploy to this workspace"
-        onClick={() => onCompleted(selectedWorkspace)}
+        onClick={() => onCompleted(selectedWorkspace.id)}
       />
     </div>
   )
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  personalAccessToken: state.user.personalAccessToken
+  personalAccessToken: state.user.personalAccessToken,
+  bot: state.bot
 })
 
 const mapDispatchToProps = {}
