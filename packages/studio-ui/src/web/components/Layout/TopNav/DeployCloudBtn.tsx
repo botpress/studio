@@ -56,7 +56,7 @@ const DeployCloudBtn = (props: Props) => {
     selectedWorkspaceId: null
   })
 
-  const { step, isOpen, selectedWorkspaceId } = state
+  const { step, isOpen, isOpened, selectedWorkspaceId } = state
 
   return (
     <>
@@ -65,21 +65,21 @@ const DeployCloudBtn = (props: Props) => {
         content={
           <div>
             <h5>Deploy to Botpress Cloud</h5>
-            {step === 1 && (
+            {isOpened && step === 1 && (
               <Step1Pat
                 onCompleted={() => {
                   dispatch({ type: 'goto/step2' })
                 }}
               />
             )}
-            {step === 2 && (
+            {isOpened && step === 2 && (
               <Step2WorkspaceSelector
                 onCompleted={(selectedWorkspaceId) => {
                   dispatch({ type: 'goto/step3', selectedWorkspaceId })
                 }}
               />
             )}
-            {step === 3 && (
+            {isOpened && step === 3 && (
               <Step3Deploy
                 workspaceId={selectedWorkspaceId}
                 onCompleted={() => {
