@@ -1,11 +1,18 @@
 import { Button } from '@blueprintjs/core'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import { connect } from 'react-redux'
+import { RootReducer } from '~/reducers'
 
-export const WorkspaceSelector = (props: {
-  onCompleted: (selectedWorkspace: any) => {}
-  personalAccessToken: string
-}): JSX.Element => {
+interface OwnProps {
+  onCompleted: (selectedWorkspace: any) => void
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+type Props = DispatchProps & StateProps & OwnProps
+
+const WorkspaceSelector = (props: Props): JSX.Element => {
   const { personalAccessToken, onCompleted } = props
 
   const [workspaces, setWorkspaces] = useState([])
@@ -42,3 +49,11 @@ export const WorkspaceSelector = (props: {
     </div>
   )
 }
+
+const mapStateToProps = (state: RootReducer) => ({
+  personalAccessToken: state.user.personalAccessToken
+})
+
+const mapDispatchToProps = {}
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(WorkspaceSelector)
