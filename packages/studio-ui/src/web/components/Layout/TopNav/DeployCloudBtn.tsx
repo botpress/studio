@@ -18,7 +18,7 @@ interface State {
   isOpen: boolean
   isOpened: boolean
   step: number
-  selectedWorkspaceId: string
+  selectedWorkspaceId: string | null
 }
 
 type Action =
@@ -79,7 +79,7 @@ const DeployCloudBtn = (props: Props) => {
                 }}
               />
             )}
-            {isOpened && step === 3 && (
+            {isOpened && step === 3 && selectedWorkspaceId !== null && (
               <Step3Deploy
                 workspaceId={selectedWorkspaceId}
                 onCompleted={() => {

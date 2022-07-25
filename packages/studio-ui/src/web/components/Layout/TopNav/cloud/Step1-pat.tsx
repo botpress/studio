@@ -3,7 +3,7 @@ import axios from 'axios'
 import { debounce } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { fetchUser } from '~/actions'
+import { updateUserPersonalAccessToken } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 const fetchPatStatus = async (pat: string): Promise<boolean> => {
@@ -33,8 +33,8 @@ const PatInput = (props: Props): JSX.Element => {
   const [saveRequestState, setSaveRequestState] = useState<'pending' | 'in-progress' | 'completed'>('pending')
 
   useEffect(() => {
-    const checkUserAuthentication = async () => {
-      const patValid = await fetchPatStatus(user.personalAccessToken)
+    const checkUserAuthentication = async (pat: string) => {
+      const patValid = await fetchPatStatus(pat)
       setInitialCheckCompleted(true)
 
       if (patValid) {
@@ -42,8 +42,8 @@ const PatInput = (props: Props): JSX.Element => {
       }
     }
 
-    if (user.personalAccessToken?.length > 0) {
-      void checkUserAuthentication()
+    if (user.personalAccessToken && user.personalAccessToken.length > 0) {
+      void checkUserAuthentication(user.personalAccessToken)
     }
   }, [user.personalAccessToken])
 
@@ -70,7 +70,7 @@ const PatInput = (props: Props): JSX.Element => {
   const onSaveClicked = async () => {
     setSaveRequestState('in-progress')
     await axios.post(`${window.API_PATH}/admin/user/profile`, { personalAccessToken: pat })
-    props.fetchUser()
+    props.updateUserPersonalAccessToken(pat)
     onCompleted()
   }
 
@@ -113,7 +113,8 @@ const mapStateToProps = (state: RootReducer) => ({
 })
 
 const mapDispatchToProps = {
-  fetchUser
+  // fetchUser,
+  updateUserPersonalAccessToken
 }
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PatInput)

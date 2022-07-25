@@ -2,6 +2,7 @@ import axios from 'axios'
 import { NLU } from 'botpress/sdk'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
+import { fetchBotInformation } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
@@ -97,6 +98,7 @@ export const Deploy = (props: Props) => {
     const uploadToCloud = async () => {
       dispatch({ type: 'upload/started' })
       await axios.post(`${window.STUDIO_API_PATH}/cloud/deploy`, { workspaceId })
+      props.fetchBotInformation()
       dispatch({ type: 'upload/ended' })
       onCompleted()
     }
@@ -124,6 +126,8 @@ const mapStateToProps = (state: RootReducer) => ({
   trainSessions: state.nlu.trainSessions
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+  fetchBotInformation
+}
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(Deploy)

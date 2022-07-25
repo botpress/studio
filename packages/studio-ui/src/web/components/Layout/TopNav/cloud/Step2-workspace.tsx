@@ -3,6 +3,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
+import { Workspace } from './types'
 
 interface OwnProps {
   onCompleted: (selectedWorkspaceId: string) => void
@@ -15,8 +16,8 @@ type Props = DispatchProps & StateProps & OwnProps
 const WorkspaceSelector = (props: Props): JSX.Element => {
   const { bot, personalAccessToken, onCompleted } = props
 
-  const [workspaces, setWorkspaces] = useState([])
-  const [selectedWorkspace, setSelectedWorkspace] = useState(null)
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null)
 
   useEffect(() => {
     const fetchWorkspaces = async () => {
@@ -37,9 +38,20 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
     return <></>
   }
 
+  if (!selectedWorkspace) {
+    return <></>
+  }
+
   return (
     <div>
-      <select onChange={(e) => setSelectedWorkspace(workspaces.find((w) => w.id === e.target.value))}>
+      <select
+        onChange={(e) => {
+          const matchingWorkspace = workspaces.find((w) => w.id === e.target.value)
+          if (matchingWorkspace) {
+            setSelectedWorkspace(matchingWorkspace)
+          }
+        }}
+      >
         {workspaces.map((w) => (
           <option key={w.id} value={w.id}>
             {w.name}
