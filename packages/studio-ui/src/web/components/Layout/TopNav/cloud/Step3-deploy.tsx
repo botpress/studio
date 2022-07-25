@@ -82,22 +82,27 @@ export const Deploy = (props: Props) => {
   const { train, upload } = state
 
   useEffect(() => {
+    const ac = new AbortController()
     const startTrain = async () => {
       dispatch({ type: 'training/started' })
       for (const lang of Object.keys(trainSessions)) {
-        await axios.post(`${BASE_NLU_URL}/train/${lang}`)
+        await axios.post(`${BASE_NLU_URL}/train/${lang}`, null, { signal: ac.signal })
       }
     }
 
     if (train === 'pending') {
       void startTrain()
     }
+
+    return () => ac.abort()
   }, [trainSessions, train])
 
   useEffect(() => {
+    const ac = new AbortController()
+
     const uploadToCloud = async () => {
       dispatch({ type: 'upload/started' })
-      await axios.post(`${window.STUDIO_API_PATH}/cloud/deploy`, { workspaceId })
+      await axios.post(`${window.STUDIO_API_PATH}/cloud/deploy`, { workspaceId }, { signal: ac.signal })
       props.fetchBotInformation()
       dispatch({ type: 'upload/ended' })
       onCompleted()
@@ -106,6 +111,8 @@ export const Deploy = (props: Props) => {
     if (train === 'completed') {
       void uploadToCloud()
     }
+
+    return () => ac.abort()
   }, [train])
 
   useEffect(() => {

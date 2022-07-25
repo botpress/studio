@@ -20,8 +20,11 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null)
 
   useEffect(() => {
+    const ac = new AbortController()
+
     const fetchWorkspaces = async () => {
       const { data: workspaces } = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/workspaces`, {
+        signal: ac.signal,
         headers: { Authorization: `bearer ${personalAccessToken}` }
       })
       setWorkspaces(workspaces)
@@ -31,6 +34,7 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
     }
 
     void fetchWorkspaces()
+    return () => ac.abort()
   }, [personalAccessToken])
 
   if (bot.cloud?.workspaceId) {
