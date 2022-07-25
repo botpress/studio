@@ -232,7 +232,7 @@ export class StudioRouter extends CustomRouter {
               window.APP_NAME = "${removeHtmlChars(branding.title)}";
               window.APP_FAVICON = "${removeHtmlChars(branding.favicon)}";
               window.APP_CUSTOM_CSS = "${removeHtmlChars(branding.customCss)}";
-              window.USE_JWT_COOKIES = "${process.USE_JWT_COOKIES}";
+              window.USE_JWT_COOKIES = ${process.USE_JWT_COOKIES};
             })(typeof window != 'undefined' ? window : {})
           `
 
