@@ -108,7 +108,7 @@ const DeployCloudBtn = (props: Props) => {
       <Popover2
         position="bottom"
         content={
-          <div>
+          <div className={style.popoverContent}>
             {!pat && (
               <Step1Pat
                 onCompleted={(pat) => {

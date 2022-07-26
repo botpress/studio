@@ -11,6 +11,7 @@ interface CssExports {
   'itemSpacing': string;
   'label': string;
   'layoutControls': string;
+  'popoverContent': string;
   'shortcut': string;
   'shortcutLabel': string;
   'tooltip': string;
