@@ -6,6 +6,7 @@ import VError from 'verror'
 import { CloudClient } from './cloud-client'
 import { CloudService } from './cloud-service'
 import { NAMES } from './errors'
+import { DeployRequestSchema } from './validation'
 
 export class CloudRouter extends CustomStudioRouter {
   private readonly cloudService: CloudService
@@ -13,33 +14,27 @@ export class CloudRouter extends CustomStudioRouter {
   constructor(services: StudioServices) {
     super('Cloud', services)
 
-    this.cloudService = new CloudService(
-      new CloudClient(services.logger),
-      services.authService,
-      services.botService,
-      services.nluService
-    )
+    this.cloudService = new CloudService(new CloudClient(services.logger), services.botService, services.nluService)
   }
 
   setupRoutes() {
     this.router.post(
       '/deploy',
       this.asyncMiddleware(async (req, res) => {
-        const { tokenUser } = req
-        const botId = req.params.botId
-        const workspaceId = req.body.workspaceId
-
-        if (!tokenUser) {
-          throw new UnauthorizedError('No authenticated user')
+        const result = DeployRequestSchema.safeParse(req)
+        if (!result.success) {
+          throw new BadRequestError(result.error.message)
         }
 
+        const {
+          params: { botId },
+          body: { workspaceId, personalAccessToken }
+        } = result.data
+
         try {
-          await this.cloudService.deployBot({ tokenUser, botId, workspaceId })
+          await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
         } catch (e) {
           if (e instanceof VError) {
-            if (e.name === NAMES.cannot_find_user || e.name === NAMES.no_personal_access_token) {
-              throw new UnauthorizedError(e.message)
-            }
             if (e.name === NAMES.too_large_message) {
               throw new BadRequestError(e.message)
             }

@@ -1,15 +1,16 @@
 import { Button, InputGroup, Icon, Spinner, IconSize } from '@blueprintjs/core'
 import axios from 'axios'
-import { debounce } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import _, { debounce } from 'lodash'
+import React, { useEffect, useMemo, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import { updateUserPersonalAccessToken } from '~/actions'
 import { RootReducer } from '~/reducers'
 
-const fetchPatStatus = async (pat: string): Promise<boolean> => {
+const fetchPatStatus = async (pat: string, ac: AbortController): Promise<boolean> => {
   const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/authentication/pat`, {
     headers: { Authorization: `bearer ${pat}` },
-    validateStatus: () => true
+    validateStatus: () => true,
+    signal: ac.signal
   })
 
   const authenticated = resp.status === 200 && resp.headers['x-user-id'] !== undefined
@@ -17,42 +18,91 @@ const fetchPatStatus = async (pat: string): Promise<boolean> => {
 }
 
 interface OwnProps {
-  onCompleted: () => void
+  onCompleted: (pat: string) => void
+}
+
+type State =
+  | {
+      initialPatValue: null
+      pat: null
+      patValid: false
+    }
+  | { initialPatValue: null; pat: string; patValid: boolean }
+  | { initialPatValue: string; pat: string; patValid: true }
+
+type Action =
+  | { type: 'savebtn/clicked' }
+  | { type: 'input/updated'; value: string }
+  | { type: 'pat/validated'; valid: boolean }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'savebtn/clicked':
+      return { ...state }
+    case 'input/updated':
+      return { ...state, pat: action.value }
+    case 'pat/validated':
+      if (_.isNull(state.initialPatValue) && _.isString(state.pat)) {
+        const { initialPatValue, pat } = state
+        return { pat, initialPatValue, patValid: action.valid }
+      }
+      throw new Error(`invalid state action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+    default:
+      throw new Error(`unknown action: ${JSON.stringify(action)}`)
+  }
+}
+
+function init(props: Props): State {
+  const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
+
+  if (initialPatValue === null) {
+    return { initialPatValue, pat: initialPatValue, patValid: false }
+  }
+  return { initialPatValue, pat: initialPatValue, patValid: true }
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
+const LOCALSTORAGE_KEY = 'bp/pat'
+
 const PatInput = (props: Props): JSX.Element => {
-  const { user, onCompleted } = props
+  const { onCompleted } = props
 
-  const [initialCheckCompleted, setInitialCheckCompleted] = useState(false)
-  const [pat, setPat] = useState('')
-  const [patValid, setPatValid] = useState<null | 'checking' | 'valid' | 'invalid'>()
-  const [saveRequestState, setSaveRequestState] = useState<'pending' | 'in-progress' | 'completed'>('pending')
+  const [state, dispatch] = useReducer(reducer, props, init)
 
-  useEffect(() => {
-    const checkUserAuthentication = async (pat: string) => {
-      const patValid = await fetchPatStatus(pat)
-      setInitialCheckCompleted(true)
+  const { initialPatValue, pat, patValid } = state
 
-      if (patValid) {
-        onCompleted()
-      }
-    }
+  // useEffect(() => {
+  //   const ac = new AbortController()
 
-    if (user.personalAccessToken && user.personalAccessToken.length > 0) {
-      void checkUserAuthentication(user.personalAccessToken)
-    }
-  }, [user.personalAccessToken])
+  //   const checkUserAuthentication = async (pat: string) => {
+  //     const patValid = await fetchPatStatus(pat, ac)
+  //     if (!initialCheckCompleted) {
+  //       setInitialCheckCompleted(true)
+  //     }
+  //     setPatValid(patValid)
+  //   }
 
-  const validatePat = async (pat: string) => {
-    setPatValid('checking')
-    const patStatus = await fetchPatStatus(pat)
-    setPatValid(patStatus ? 'valid' : 'invalid')
+  //   if (pat && pat.length > 0) {
+  //     void checkUserAuthentication(pat)
+  //   }
+
+  //   return () => ac.abort()
+  // }, [pat])
+
+  const validatePat = async (pat: string, ac: AbortController) => {
+    const valid = await fetchPatStatus(pat, ac)
+    dispatch({ type: 'pat/validated', valid })
   }
 
+  const savePat = (pat: string) => {
+    localStorage.setItem(LOCALSTORAGE_KEY, pat)
+    onCompleted(pat)
+  }
+
+  const debounceAc = new AbortController()
   const debouncedValidatePat = useMemo(() => debounce(validatePat, 300), [])
   // Stop the invocation of the debounced function
   // after unmounting
@@ -63,31 +113,18 @@ const PatInput = (props: Props): JSX.Element => {
   }, [])
 
   const changeHandler = async (event) => {
-    setPat(event.target.value)
-    void debouncedValidatePat(event.target.value)
+    dispatch({ type: 'input/updated', value: event.target.value })
+    void debouncedValidatePat(event.target.value, debounceAc)
   }
 
   const onSaveClicked = async () => {
-    setSaveRequestState('in-progress')
-    await axios.post(`${window.API_PATH}/admin/user/profile`, { personalAccessToken: pat })
-    props.updateUserPersonalAccessToken(pat)
-    onCompleted()
+    if (pat) {
+      savePat(pat)
+    }
   }
 
-  let rightElement
-  switch (patValid) {
-    case 'checking':
-      rightElement = <Spinner size={IconSize.STANDARD} />
-      break
-    case 'invalid':
-      rightElement = <Icon icon="error" />
-      break
-    case 'valid':
-      rightElement = <Icon icon="tick-circle" />
-      break
-  }
-
-  if (!initialCheckCompleted) {
+  if (initialPatValue && patValid) {
+    onCompleted(pat)
     return <></>
   }
 
@@ -95,26 +132,22 @@ const PatInput = (props: Props): JSX.Element => {
     <div>
       <InputGroup
         placeholder="Enter Personal Access Token"
-        value={pat}
+        value={pat || ''}
         onChange={changeHandler}
-        rightElement={rightElement}
+        rightElement={patValid ? <Icon icon="tick-circle" /> : <Icon icon="error" />}
       />
-      <Button
-        disabled={patValid !== 'valid' || saveRequestState === 'in-progress'}
-        text="Save"
-        onClick={onSaveClicked}
-      />
+      <Button disabled={!patValid} text="Save" onClick={onSaveClicked} />
     </div>
   )
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  user: state.user
+  // user: state.user
 })
 
 const mapDispatchToProps = {
   // fetchUser,
-  updateUserPersonalAccessToken
+  // updateUserPersonalAccessToken
 }
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PatInput)

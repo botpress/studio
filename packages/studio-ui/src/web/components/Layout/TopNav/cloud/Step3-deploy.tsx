@@ -57,6 +57,7 @@ function reducer(state: State, action: Action): State {
 }
 
 interface OwnProps {
+  pat: string
   workspaceId: string
   onCompleted: () => void
 }
@@ -75,7 +76,7 @@ function init(props: Props): State {
 }
 
 export const Deploy = (props: Props) => {
-  const { trainSessions, workspaceId, onCompleted } = props
+  const { pat, trainSessions, workspaceId, onCompleted } = props
 
   const [state, dispatch] = useReducer(reducer, props, init)
 
@@ -102,7 +103,11 @@ export const Deploy = (props: Props) => {
 
     const uploadToCloud = async () => {
       dispatch({ type: 'upload/started' })
-      await axios.post(`${window.STUDIO_API_PATH}/cloud/deploy`, { workspaceId }, { signal: ac.signal })
+      await axios.post(
+        `${window.STUDIO_API_PATH}/cloud/deploy`,
+        { personalAccessToken: pat, workspaceId },
+        { signal: ac.signal }
+      )
       props.fetchBotInformation()
       dispatch({ type: 'upload/ended' })
       onCompleted()

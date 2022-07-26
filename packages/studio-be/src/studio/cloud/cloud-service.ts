@@ -1,7 +1,5 @@
 import { CloudConfig } from 'botpress/sdk'
-import { TokenUser } from 'common/typings'
 import { BotService } from 'core/bots'
-import { AuthService } from 'core/security'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
 import _ from 'lodash'
@@ -13,27 +11,12 @@ import { NAMES } from './errors'
 export class CloudService {
   constructor(
     private cloudClient: CloudClient,
-    private authService: AuthService,
     private botService: BotService,
     private nluService: NLUService
   ) { }
 
-  public async deployBot(props: { botId: string; workspaceId: string; tokenUser: TokenUser }) {
-    const { tokenUser, workspaceId, botId } = props
-
-    const authUser = await this.authService.findUser(tokenUser)
-    if (!authUser) {
-      throw new VError({ name: NAMES.cannot_find_user }, 'Could not find user')
-    }
-
-    const personalAccessToken = authUser.attributes['personal_access_token']
-    if (_.isNil(personalAccessToken)) {
-      throw new VError({ name: NAMES.no_personal_access_token }, 'No personal access token')
-    }
-
-    if (!_.isString(personalAccessToken)) {
-      throw new VError('personalAccessToken must be a string')
-    }
+  public async deployBot(props: { botId: string; workspaceId: string; personalAccessToken: string }) {
+    const { personalAccessToken, workspaceId, botId } = props
 
     const botConfig = await this.botService.findBotById(botId)
     if (!botConfig) {
@@ -54,7 +37,7 @@ export class CloudService {
       clientId = cloudBot.apiKey.id
       clientSecret = cloudBot.apiKey.secret
       await this.botService.updateBot(botId, {
-        cloud: { botId: cloudBotId, clientId: cloudBot.apiKey.id, clientSecret: cloudBot.apiKey.secret }
+        cloud: { botId: cloudBotId, clientId: cloudBot.apiKey.id, clientSecret: cloudBot.apiKey.secret, workspaceId }
       })
     } else {
       cloudBotId = cloud.botId

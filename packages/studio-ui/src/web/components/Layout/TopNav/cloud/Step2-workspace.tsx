@@ -6,6 +6,7 @@ import { RootReducer } from '~/reducers'
 import { Workspace } from './types'
 
 interface OwnProps {
+  pat: string
   onCompleted: (selectedWorkspaceId: string) => void
 }
 
@@ -14,7 +15,7 @@ type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
 const WorkspaceSelector = (props: Props): JSX.Element => {
-  const { bot, personalAccessToken, onCompleted } = props
+  const { bot, pat, onCompleted } = props
 
   const [workspaces, setWorkspaces] = useState<Workspace[]>([])
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null)
@@ -25,7 +26,7 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
     const fetchWorkspaces = async () => {
       const { data: workspaces } = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/workspaces`, {
         signal: ac.signal,
-        headers: { Authorization: `bearer ${personalAccessToken}` }
+        headers: { Authorization: `bearer ${pat}` }
       })
       setWorkspaces(workspaces)
       if (workspaces.length > 0) {
@@ -35,7 +36,7 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
 
     void fetchWorkspaces()
     return () => ac.abort()
-  }, [personalAccessToken])
+  }, [pat])
 
   if (bot.cloud?.workspaceId) {
     onCompleted(bot.cloud.workspaceId)
@@ -72,7 +73,6 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  personalAccessToken: state.user.personalAccessToken,
   bot: state.bot
 })
 
