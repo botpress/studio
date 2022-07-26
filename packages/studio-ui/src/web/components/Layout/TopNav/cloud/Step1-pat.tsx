@@ -1,9 +1,8 @@
-import { Button, InputGroup, Icon, Spinner, IconSize } from '@blueprintjs/core'
+import { Button, InputGroup, Icon } from '@blueprintjs/core'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
-import React, { useEffect, useMemo, useReducer, useState } from 'react'
+import React, { useEffect, useMemo, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { updateUserPersonalAccessToken } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 const fetchPatStatus = async (pat: string, ac: AbortController): Promise<boolean> => {
@@ -21,32 +20,49 @@ interface OwnProps {
   onCompleted: (pat: string) => void
 }
 
+interface InitialState {
+  initialPatValue: string | null
+  initialPatValid: false
+  newPat: null
+  newPatValid: false
+}
+
 type State =
-  | {
-      initialPatValue: null
-      pat: null
-      patValid: false
-    }
-  | { initialPatValue: null; pat: string; patValid: boolean }
-  | { initialPatValue: string; pat: string; patValid: true }
+  | InitialState
+  | { initialPatValue: null; initialPatValid: false; newPat: string; newPatValid: boolean } // when no PAT found in storage and newPat is being validated
+  | { initialPatValue: string; initialPatValid: boolean; newPat: null; newPatValid: false } // when PAT is found in storage and validated
+  | { initialPatValue: string; initialPatValid: false; newPat: string; newPatValid: boolean } // when PAT is found in storage and validated
 
 type Action =
-  | { type: 'savebtn/clicked' }
   | { type: 'input/updated'; value: string }
-  | { type: 'pat/validated'; valid: boolean }
+  | { type: 'newPat/validated'; valid: boolean }
+  | { type: 'initialPat/validated'; valid: boolean }
 
 function reducer(state: State, action: Action): State {
+  const { initialPatValue, initialPatValid, newPat, newPatValid } = state
+
   switch (action.type) {
-    case 'savebtn/clicked':
-      return { ...state }
     case 'input/updated':
-      return { ...state, pat: action.value }
-    case 'pat/validated':
-      if (_.isNull(state.initialPatValue) && _.isString(state.pat)) {
-        const { initialPatValue, pat } = state
-        return { pat, initialPatValue, patValid: action.valid }
+      if (_.isNull(initialPatValue) && initialPatValid === false) {
+        return { initialPatValue, initialPatValid, newPat: action.value, newPatValid }
       }
-      throw new Error(`invalid state action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+      if (_.isString(initialPatValue) && initialPatValid === false) {
+        return { initialPatValue, initialPatValid, newPat: action.value, newPatValid }
+      }
+      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+    case 'newPat/validated':
+      if (_.isNull(initialPatValue) && initialPatValid === false && _.isString(newPat)) {
+        return { initialPatValue, initialPatValid, newPat, newPatValid: action.valid }
+      }
+      if (_.isString(initialPatValue) && initialPatValid === false && _.isString(newPat)) {
+        return { initialPatValue, initialPatValid, newPat, newPatValid: action.valid }
+      }
+      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+    case 'initialPat/validated':
+      if (_.isString(initialPatValue) && _.isNull(newPat) && newPatValid === false) {
+        return { initialPatValue, initialPatValid: action.valid, newPat, newPatValid }
+      }
+      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
     default:
       throw new Error(`unknown action: ${JSON.stringify(action)}`)
   }
@@ -56,9 +72,9 @@ function init(props: Props): State {
   const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
 
   if (initialPatValue === null) {
-    return { initialPatValue, pat: initialPatValue, patValid: false }
+    return { initialPatValue, initialPatValid: false, newPat: null, newPatValid: false }
   }
-  return { initialPatValue, pat: initialPatValue, patValid: true }
+  return { initialPatValue, initialPatValid: false, newPat: null, newPatValid: false }
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -72,34 +88,26 @@ const PatInput = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reducer, props, init)
 
-  const { initialPatValue, pat, patValid } = state
+  const { initialPatValue, initialPatValid, newPat, newPatValid } = state
 
-  // useEffect(() => {
-  //   const ac = new AbortController()
+  useEffect(() => {
+    const ac = new AbortController()
 
-  //   const checkUserAuthentication = async (pat: string) => {
-  //     const patValid = await fetchPatStatus(pat, ac)
-  //     if (!initialCheckCompleted) {
-  //       setInitialCheckCompleted(true)
-  //     }
-  //     setPatValid(patValid)
-  //   }
+    const validateInitialPat = async (pat: string) => {
+      const valid = await fetchPatStatus(pat, ac)
+      dispatch({ type: 'initialPat/validated', valid })
+    }
 
-  //   if (pat && pat.length > 0) {
-  //     void checkUserAuthentication(pat)
-  //   }
+    if (initialPatValue) {
+      void validateInitialPat(initialPatValue)
+    }
 
-  //   return () => ac.abort()
-  // }, [pat])
+    return () => ac.abort()
+  }, [initialPatValue])
 
   const validatePat = async (pat: string, ac: AbortController) => {
     const valid = await fetchPatStatus(pat, ac)
-    dispatch({ type: 'pat/validated', valid })
-  }
-
-  const savePat = (pat: string) => {
-    localStorage.setItem(LOCALSTORAGE_KEY, pat)
-    onCompleted(pat)
+    dispatch({ type: 'newPat/validated', valid })
   }
 
   const debounceAc = new AbortController()
@@ -112,19 +120,29 @@ const PatInput = (props: Props): JSX.Element => {
     }
   }, [])
 
+  useEffect(() => {
+    if (newPat) {
+      void debouncedValidatePat(newPat, debounceAc)
+    }
+  }, [newPat])
+
   const changeHandler = async (event) => {
     dispatch({ type: 'input/updated', value: event.target.value })
-    void debouncedValidatePat(event.target.value, debounceAc)
+  }
+
+  const savePat = (pat: string) => {
+    localStorage.setItem(LOCALSTORAGE_KEY, pat)
+    onCompleted(pat)
   }
 
   const onSaveClicked = async () => {
-    if (pat) {
-      savePat(pat)
+    if (newPat && newPatValid) {
+      savePat(newPat)
     }
   }
 
-  if (initialPatValue && patValid) {
-    onCompleted(pat)
+  if (initialPatValue && initialPatValid) {
+    onCompleted(initialPatValue)
     return <></>
   }
 
@@ -132,11 +150,11 @@ const PatInput = (props: Props): JSX.Element => {
     <div>
       <InputGroup
         placeholder="Enter Personal Access Token"
-        value={pat || ''}
+        value={newPat || ''}
         onChange={changeHandler}
-        rightElement={patValid ? <Icon icon="tick-circle" /> : <Icon icon="error" />}
+        rightElement={newPatValid ? <Icon icon="tick-circle" /> : <Icon icon="error" />}
       />
-      <Button disabled={!patValid} text="Save" onClick={onSaveClicked} />
+      <Button disabled={!newPatValid} text="Save" onClick={onSaveClicked} />
     </div>
   )
 }
