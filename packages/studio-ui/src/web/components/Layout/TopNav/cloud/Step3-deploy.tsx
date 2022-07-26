@@ -1,3 +1,4 @@
+import { Spinner, SpinnerSize } from '@blueprintjs/core'
 import axios from 'axios'
 import { NLU } from 'botpress/sdk'
 import React, { useEffect, useReducer } from 'react'
@@ -18,15 +19,17 @@ type Status = 'pending' | 'in-progress' | 'completed'
 
 const Step = (props: { status: Status; text: string }): JSX.Element => {
   const { status, text } = props
-  const chars: { [s in Status]: string } = {
+  const chars: { [s in Status]: string | JSX.Element } = {
     pending: '⌛',
-    'in-progress': '🔄',
+    'in-progress': <Spinner size={SpinnerSize.SMALL} />,
     completed: '✅'
   }
+
   return (
-    <p>
-      {chars[status]} {text}
-    </p>
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
+      <div>{chars[status]}</div>
+      <div>{text}</div>
+    </div>
   )
 }
 
@@ -75,7 +78,7 @@ function init(props: Props): State {
   }
 }
 
-export const Deploy = (props: Props) => {
+export const Deploy = (props: Props): JSX.Element => {
   const { pat, trainSessions, workspaceId, onCompleted } = props
 
   const [state, dispatch] = useReducer(reducer, props, init)
@@ -127,7 +130,7 @@ export const Deploy = (props: Props) => {
   }, [trainSessions])
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
       <Step status={train} text="Training bot" />
       <Step status={upload} text="Uploading bot" />
     </div>
