@@ -11,7 +11,7 @@ import { authEvents, setToken } from '~/util/Auth'
 
 const CHECK_AUTH_INTERVAL = 60 * 1000
 
-const ensureAuthenticated = WrappedComponent => {
+const ensureAuthenticated = (WrappedComponent) => {
   class AuthenticationWrapper extends React.Component {
     static contextTypes = {
       router: PropTypes.object
@@ -25,17 +25,26 @@ const ensureAuthenticated = WrappedComponent => {
       authEvents.on('logout', this.promptLogin)
       this.setupAuth()
       this.interceptUnauthorized = axios.interceptors.response.use(
-        response => {
+        (response) => {
           return response
         },
-        error => {
-          if (error.response.status !== 401) {
+        (error) => {
+          if (axios.isCancel(error)) {
+            return Promise.reject(new Error('request cancelled'))
+          }
+          if (axios.isAxiosError(error)) {
+            if (error.response.status !== 401) {
+              return Promise.reject(error)
+            }
+            if (error.response.config.url !== `${window.API_PATH}/admin/ping`) {
+              this.checkAuth() // just to make sure
+            }
+          }
+          if (error instanceof Error) {
             return Promise.reject(error)
           }
-          if (error.response.config.url !== `${window.API_PATH}/admin/ping`) {
-            this.checkAuth() // just to make sure
-          }
-          return Promise.reject(error)
+          // to avoid following warning in browser: "Warning: a promise was rejected with a non-error: ..."
+          return Promise.reject(new Error(error.toString()))
         }
       )
     }
@@ -109,7 +118,7 @@ const ensureAuthenticated = WrappedComponent => {
     }
 
     checkAuth = () => {
-      axios.get(`${window.API_PATH}/admin/ping`).catch(err => {
+      axios.get(`${window.API_PATH}/admin/ping`).catch((err) => {
         if (err.response.status === 401) {
           this.explainAndLogUserOut()
         }
