@@ -23,15 +23,22 @@ interface OwnProps {
 interface InitialState {
   initialPatValue: string | null
   initialPatValid: false
+  validatingInitialPat: true
   newPat: null
   newPatValid: false
 }
 
 type State =
   | InitialState
-  | { initialPatValue: null; initialPatValid: false; newPat: string; newPatValid: boolean } // when no PAT found in storage and newPat is being validated
-  | { initialPatValue: string; initialPatValid: boolean; newPat: null; newPatValid: false } // when PAT is found in storage and validated
-  | { initialPatValue: string; initialPatValid: false; newPat: string; newPatValid: boolean } // when PAT is found in storage and validated
+  | { initialPatValue: null; initialPatValid: false; validatingInitialPat: false; newPat: string; newPatValid: boolean }
+  | { initialPatValue: string; initialPatValid: boolean; validatingInitialPat: false; newPat: null; newPatValid: false }
+  | {
+      initialPatValue: string
+      initialPatValid: false
+      validatingInitialPat: false
+      newPat: string
+      newPatValid: boolean
+    }
 
 type Action =
   | { type: 'input/updated'; value: string }
@@ -39,28 +46,38 @@ type Action =
   | { type: 'initialPat/validated'; valid: boolean }
 
 function reducer(state: State, action: Action): State {
-  const { initialPatValue, initialPatValid, newPat, newPatValid } = state
+  const { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid } = state
 
   switch (action.type) {
     case 'input/updated':
-      if (_.isNull(initialPatValue) && initialPatValid === false) {
-        return { initialPatValue, initialPatValid, newPat: action.value, newPatValid }
+      if (_.isNull(initialPatValue) && initialPatValid === false && validatingInitialPat === false) {
+        return { initialPatValue, initialPatValid, validatingInitialPat, newPat: action.value, newPatValid }
       }
-      if (_.isString(initialPatValue) && initialPatValid === false) {
-        return { initialPatValue, initialPatValid, newPat: action.value, newPatValid }
+      if (_.isString(initialPatValue) && initialPatValid === false && validatingInitialPat === false) {
+        return { initialPatValue, initialPatValid, validatingInitialPat, newPat: action.value, newPatValid }
       }
       throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
     case 'newPat/validated':
-      if (_.isNull(initialPatValue) && initialPatValid === false && _.isString(newPat)) {
-        return { initialPatValue, initialPatValid, newPat, newPatValid: action.valid }
+      if (
+        _.isNull(initialPatValue) &&
+        initialPatValid === false &&
+        _.isString(newPat) &&
+        validatingInitialPat === false
+      ) {
+        return { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid: action.valid }
       }
-      if (_.isString(initialPatValue) && initialPatValid === false && _.isString(newPat)) {
-        return { initialPatValue, initialPatValid, newPat, newPatValid: action.valid }
+      if (
+        _.isString(initialPatValue) &&
+        initialPatValid === false &&
+        _.isString(newPat) &&
+        validatingInitialPat === false
+      ) {
+        return { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid: action.valid }
       }
       throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
     case 'initialPat/validated':
-      if (_.isString(initialPatValue) && _.isNull(newPat) && newPatValid === false) {
-        return { initialPatValue, initialPatValid: action.valid, newPat, newPatValid }
+      if (_.isString(initialPatValue) && _.isNull(newPat) && newPatValid === false && validatingInitialPat === true) {
+        return { initialPatValue, initialPatValid: action.valid, validatingInitialPat: false, newPat, newPatValid }
       }
       throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
     default:
@@ -72,9 +89,9 @@ function init(props: Props): State {
   const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
 
   if (initialPatValue === null) {
-    return { initialPatValue, initialPatValid: false, newPat: null, newPatValid: false }
+    return { initialPatValue, initialPatValid: false, validatingInitialPat: true, newPat: null, newPatValid: false }
   }
-  return { initialPatValue, initialPatValid: false, newPat: null, newPatValid: false }
+  return { initialPatValue, initialPatValid: false, validatingInitialPat: true, newPat: null, newPatValid: false }
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -88,7 +105,7 @@ const PatInput = (props: Props): JSX.Element => {
 
   const [state, dispatch] = useReducer(reducer, props, init)
 
-  const { initialPatValue, initialPatValid, newPat, newPatValid } = state
+  const { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid } = state
 
   useEffect(() => {
     const ac = new AbortController()
@@ -139,6 +156,10 @@ const PatInput = (props: Props): JSX.Element => {
     if (newPat && newPatValid) {
       savePat(newPat)
     }
+  }
+
+  if (validatingInitialPat) {
+    return <></>
   }
 
   if (initialPatValue && initialPatValid) {
