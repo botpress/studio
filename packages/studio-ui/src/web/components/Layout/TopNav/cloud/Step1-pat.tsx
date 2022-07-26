@@ -159,13 +159,8 @@ const PatInput = (props: Props): JSX.Element => {
   )
 }
 
-const mapStateToProps = (state: RootReducer) => ({
-  // user: state.user
-})
+const mapStateToProps = (state: RootReducer) => ({})
 
-const mapDispatchToProps = {
-  // fetchUser,
-  // updateUserPersonalAccessToken
-}
+const mapDispatchToProps = {}
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PatInput)
