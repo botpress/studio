@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
 
 const fetchPatStatus = async (pat: string, ac: AbortController): Promise<boolean> => {
-  const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/authentication/pat`, {
+  const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/pat/authenticate`, {
     headers: { Authorization: `bearer ${pat}` },
     validateStatus: () => true,
     signal: ac.signal
