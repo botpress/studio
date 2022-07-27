@@ -1,5 +1,5 @@
 import { Icon } from '@blueprintjs/core'
-import { Popover2, Tooltip2 } from '@blueprintjs/popover2'
+import { Popover2 } from '@blueprintjs/popover2'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { useEffect, useReducer } from 'react'
@@ -11,9 +11,7 @@ import Step3Deploy from './cloud/Step3-deploy'
 
 import style from './style.scss'
 
-interface OwnProps {
-  // personalAccessToken?: string
-}
+interface OwnProps {}
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
@@ -32,11 +30,10 @@ type Action =
   | { type: 'popup/opened' }
   | { type: 'popup/closed' }
   | { type: 'popup/interaction'; nextOpenState: boolean }
-  | { type: 'goto/step2' }
-  | { type: 'goto/step3'; selectedWorkspaceId: string }
-  | { type: 'postCompletedTimeout/ended' }
   | { type: 'pat/received'; pat: string }
+  | { type: 'workspaceId/received'; selectedWorkspaceId: string }
   | { type: 'completed' }
+  | { type: 'postCompletedTimeout/ended' }
 
 const initialState: State = {
   step: 1,
@@ -57,9 +54,7 @@ function reducer(state: State, action: Action): State {
       return { ...state, isOpen: action.nextOpenState }
     case 'postCompletedTimeout/ended':
       return { ...state, isOpen: false }
-    case 'goto/step2':
-      return { ...state, step: 2 }
-    case 'goto/step3':
+    case 'workspaceId/received':
       return { ...state, step: 3, selectedWorkspaceId: action.selectedWorkspaceId }
     case 'completed':
       return { ...state, completed: true }
@@ -71,11 +66,9 @@ function reducer(state: State, action: Action): State {
 }
 
 const DeployCloudBtn = (props: Props) => {
-  const { user } = props
-
   const [state, dispatch] = useReducer(reducer, { ...initialState })
 
-  const { step, isOpen, selectedWorkspaceId, completed, pat } = state
+  const { isOpen, selectedWorkspaceId, completed, pat } = state
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined
@@ -91,17 +84,6 @@ const DeployCloudBtn = (props: Props) => {
       }
     }
   }, [completed])
-
-  // if (!pat) {
-  //   return (
-  //     <Tooltip2 content={'Set your Personal Access Token in settings'}>
-  //       <button disabled className={classNames(style.item, { [style.disabled]: true }, style.itemSpacing)}>
-  //         <Icon color="#1a1e22" icon="cloud-upload" iconSize={16} />
-  //         <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>
-  //       </button>
-  //     </Tooltip2>
-  //   )
-  // }
 
   return (
     <>
@@ -120,7 +102,7 @@ const DeployCloudBtn = (props: Props) => {
               <Step2WorkspaceSelector
                 pat={pat}
                 onCompleted={(selectedWorkspaceId) => {
-                  dispatch({ type: 'goto/step3', selectedWorkspaceId })
+                  dispatch({ type: 'workspaceId/received', selectedWorkspaceId })
                 }}
               />
             )}
