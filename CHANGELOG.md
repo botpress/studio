@@ -1,3 +1,12 @@
+## [0.0.56](https://github.com/botpress/studio/compare/v0.0.55...v0.0.56) (2022-07-26)
+
+
+### Bug Fixes
+
+* **auth:** fix authenticating with cookie storage ([#372](https://github.com/botpress/studio/issues/372)) ([188fb5b](https://github.com/botpress/studio/commit/188fb5b554b7febc9f7b495f57eec475b40631be))
+
+
+
 ## [0.0.55](https://github.com/botpress/studio/compare/v0.0.54...v0.0.55) (2022-07-18)
 
 
