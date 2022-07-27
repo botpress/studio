@@ -88,7 +88,7 @@ class BottomPanel extends React.Component<Props, State> {
         return
       }
 
-      this.logs.push(this.makeLogEntry({ ...log, timestamp: Date.now().toString() }))
+      this.logs.push(this.makeLogEntry({ ...log, timestamp: new Date().toISOString() }))
 
       if (this.logs.length > MAX_LOGS_LIMIT) {
         this.logs.shift()
