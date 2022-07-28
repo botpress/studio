@@ -1,9 +1,12 @@
 import { Button, InputGroup, Icon } from '@blueprintjs/core'
+import { Tooltip2 } from '@blueprintjs/popover2'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
+
+import style from './style.scss'
 
 const fetchPatStatus = async (pat: string, ac: AbortController): Promise<boolean> => {
   const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/pat/authenticate`, {
@@ -168,12 +171,21 @@ const PatInput = (props: Props): JSX.Element => {
   }
 
   return (
-    <div>
+    <div className={style.patContainer}>
       <InputGroup
+        className={style.patInput}
         placeholder="Enter Personal Access Token"
         value={newPat || ''}
         onChange={changeHandler}
-        rightElement={newPatValid ? <Icon icon="tick-circle" /> : <Icon icon="error" />}
+        rightElement={
+          newPatValid ? (
+            <Button disabled={true} icon={'tick-circle'} minimal={true} />
+          ) : (
+            <Tooltip2 content={'Token invalid'}>
+              <Button disabled={true} icon={'error'} minimal={true} />
+            </Tooltip2>
+          )
+        }
       />
       <Button disabled={!newPatValid} text="Save" onClick={onSaveClicked} />
     </div>

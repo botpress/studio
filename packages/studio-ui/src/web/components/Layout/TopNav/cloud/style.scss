@@ -1,0 +1,8 @@
+.patContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.patInput {
+  width: 48ch; // PATs are 44 chars long, let's make the input box a little longer
+}
