@@ -1,3 +1,13 @@
+## [0.0.57](https://github.com/botpress/studio/compare/v0.0.56...v0.0.57) (2022-07-28)
+
+
+### Bug Fixes
+
+* **debugger:** fix display of log timestamp ([#375](https://github.com/botpress/studio/issues/375)) ([7d69cae](https://github.com/botpress/studio/commit/7d69caea20cbf09c969331f5c19f91959ddec046))
+* **security:** fix access to public envs when bot is unmounted ([#374](https://github.com/botpress/studio/issues/374)) ([7a6ff2e](https://github.com/botpress/studio/commit/7a6ff2e62294a4eeb9a34de619f6ed166b00b959))
+
+
+
 ## [0.0.56](https://github.com/botpress/studio/compare/v0.0.55...v0.0.56) (2022-07-26)
 
 
