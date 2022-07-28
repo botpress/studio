@@ -68,8 +68,6 @@ const TYPES = {
   BotService: Symbol.for('BotService'),
   AuthStrategies: Symbol.for('AuthStrategies'),
   MigrationService: Symbol.for('MigrationService'),
-  MonitoringService: Symbol.for('MonitoringService'),
-  AlertingService: Symbol.for('AlertingService'),
   BotMonitoringService: Symbol.for('BotMonitoringService'),
   EventRepository: Symbol.for('EventRepository'),
   EventCollector: Symbol.for('EventCollector'),
@@ -93,7 +91,8 @@ const TYPES = {
   ConversationService: Symbol.for('ConversationService'),
   RenderService: Symbol.for('RenderService'),
   MappingRepository: Symbol.for('MappingRepository'),
-  QnaService: Symbol.for('QnaService')
+  QnaService: Symbol.for('QnaService'),
+  TestingService: Symbol.for('TestingService')
 }
 
 export { TYPES }

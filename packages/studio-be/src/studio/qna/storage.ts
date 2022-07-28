@@ -83,9 +83,8 @@ export default class Storage {
       utterances[lang] = normalizeQuestions(qnaItem.data.questions[lang])
     }
 
-    const intent = {
+    const intent: sdk.NLU.IntentDefinition = {
       name: intentName,
-      entities: [],
       contexts: qnaItem.data.contexts,
       utterances,
       slots: []
@@ -253,12 +252,6 @@ export default class Storage {
     const qnas = list || (await this.fetchQNAs())
     const allAnswers = _.flatMapDeep(qnas, (qna) => Object.values(qna.data.answers))
     return _.uniq(_.filter(allAnswers as string[], (x) => _.isString(x) && x.startsWith('#!')))
-  }
-
-  async getCountByTopic(): Promise<{ [context: string]: number }> {
-    const qnas = await this.fetchQNAs()
-
-    return _.countBy(qnas, (x) => x.data.contexts)
   }
 
   async getContentElementUsage(): Promise<any> {

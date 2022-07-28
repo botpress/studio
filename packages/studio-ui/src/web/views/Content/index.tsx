@@ -18,7 +18,6 @@ import {
 } from '~/actions'
 import CreateOrEditModal from '~/components/Content/CreateOrEditModal'
 import { Container } from '~/components/Shared/Interface'
-import { getContentItemUsage } from '~/components/Shared/Utils'
 import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
 import DocumentationProvider from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
@@ -81,7 +80,54 @@ class ContentView extends Component<Props, State> {
 
   currentContentType() {
     this.props.contentItems.forEach((element: ContentElementUsage) => {
-      element.usage = getContentItemUsage(element.id, this.props.flows, this.props.qnaUsage)
+      element.usage = []
+      Object.values(this.props.flows.flowsByName).forEach((flow: FlowView) => {
+        // Skip skill flows
+        if (flow.skillData) {
+          return
+        }
+
+        flow.nodes.forEach((node: NodeView) => {
+          const usage: ContentUsage = {
+            type: 'Flow',
+            name: flow.name,
+            node: node.name,
+            count: 0
+          }
+
+          const addUsage = (v: string | ActionBuilderProps) => {
+            if (typeof v === 'string' && v.startsWith(`say #!${element.id}`)) {
+              if (!usage.count) {
+                element.usage.push(usage)
+              }
+              usage.count++
+            }
+          }
+
+          const addNodeUsage = (node: NodeView) => {
+            node.onEnter?.forEach(addUsage)
+            node.onReceive?.forEach(addUsage)
+          }
+
+          if (node.flow && node.type === 'skill-call') {
+            const nodeSubFlow = this.props.flows.flowsByName[node.flow]
+            nodeSubFlow?.nodes.forEach((node: NodeView) => {
+              addNodeUsage(node)
+            })
+          } else {
+            addNodeUsage(node)
+          }
+        })
+      })
+
+      const usage = this.props.qnaUsage?.[`#!${element.id}`]
+      usage &&
+        element.usage.push({
+          type: 'Q&A',
+          id: usage.qna,
+          name: usage.qna.substr(usage.qna.indexOf('_') + 1),
+          count: usage.count
+        })
     })
 
     return this.state.modifyId
@@ -271,7 +317,7 @@ interface State {
   qnaUsage: any
 }
 
-export type ContentElementUsage = {
+type ContentElementUsage = {
   usage: ContentUsage[]
 } & ContentElement
 

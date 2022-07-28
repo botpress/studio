@@ -8,7 +8,6 @@ import flows, { FlowReducer } from './flows'
 import hints from './hints'
 import language, { LanguageReducer } from './language'
 import modules from './modules'
-import ndu, { NduReducer } from './ndu'
 import skills, { SkillsReducer } from './skills'
 import ui, { UiReducer } from './ui'
 import user, { UserReducer } from './user'
@@ -24,8 +23,7 @@ const bpApp = combineReducers({
   modules,
   skills,
   language,
-  hints,
-  ndu
+  hints
 })
 export default bpApp
 
@@ -34,7 +32,6 @@ export interface RootReducer {
   user: UserReducer
   content: ContentReducer
   skills: SkillsReducer
-  ndu: NduReducer
   modules: ModuleDefinition[]
   ui: UiReducer
   bot: BotConfig

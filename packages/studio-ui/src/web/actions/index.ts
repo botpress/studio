@@ -18,17 +18,6 @@ export default function debounceAction(action: any, delay: number, options?: _.D
       debounced(dispatch, actionArgs)
 }
 
-const onTriggerEvent = async (action: 'delete' | 'create', conditions: sdk.DecisionTriggerCondition[], state) => {
-  const conditionDefs = state.ndu.conditions as sdk.Condition[]
-
-  for (const condition of conditions) {
-    const callback = conditionDefs.find((x) => x.id === condition.id)?.callback
-    if (callback) {
-      await axios.post(`${window.BOT_API_PATH}/${callback}`, { action, condition })
-    }
-  }
-}
-
 // Flows
 export const receiveFlowsModification = createAction('FLOWS/MODIFICATIONS/RECEIVE')
 
@@ -175,7 +164,7 @@ export const duplicateFlow: (flow: { flowNameToDuplicate: string; name: string }
   }
 )
 
-type AllPartialNode = (Partial<sdk.FlowNode> | Partial<sdk.TriggerNode> | Partial<sdk.ListenNode>) & Partial<FlowPoint>
+type AllPartialNode = Partial<sdk.FlowNode> & Partial<FlowPoint>
 
 export const updateFlowNode: (props: AllPartialNode | (AllPartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]) => void =
   wrapAction(requestUpdateFlowNode, updateCurrentFlow)
@@ -189,10 +178,6 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
   const deletedFlows = getDeletedFlows(state)
   if (deletedFlows.length) {
     await FlowsAPI.deleteFlow(state.flows, deletedFlows[0])
-  }
-
-  if (payload.type === 'trigger' && window.USE_ONEFLOW) {
-    await onTriggerEvent('delete', payload.conditions, state)
   }
 })
 
@@ -209,7 +194,7 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     skillData = { ...skillData, randomId }
     const { moduleName } = _.find(state.skills.installed, { id: node.skill })
     const { data } = await axios.post(
-      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
+      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}`,
       skillData
     )
     dispatch(
@@ -232,13 +217,8 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
   dispatch(requestPasteFlowNode({ ...payload, nodes: nonSkills }))
   await updateCurrentFlow(payload, state)
   dispatch(refreshFlowsLinks())
-
-  for (const node of state.flows.buffer.nodes || []) {
-    if (node.type === 'trigger' && window.USE_ONEFLOW) {
-      await onTriggerEvent('create', node.conditions, state)
-    }
-  }
 }
+
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
 // actions that do not modify flow
@@ -349,6 +329,7 @@ export const removeDocumentationHint = createAction('UI/REMOVE_DOCUMENTATION_HIN
 export const updateDocumentationModal = createAction('UI/UPDATE_DOCUMENTATION_MODAL')
 export const toggleBottomPanel = createAction('UI/TOGGLE_BOTTOM_PANEL')
 export const toggleInspector = createAction('UI/TOGGLE_INSPECTOR')
+export const toggleExplorer = createAction('UI/TOGGLE_EXPLORER')
 export const toggleBottomPanelExpand = createAction('UI/TOGGLE_BOTTOM_PANEL_EXPAND')
 export const zoomToLevel = createAction('UI/ZOOM_TO_LEVEL_DIAGRAM')
 export const setEmulatorOpen = createAction('EMULATOR_OPENED')
@@ -470,7 +451,7 @@ export const refreshActions = () => (dispatch) => {
 export const intentsReceived = createAction('INTENTS/RECEIVED')
 export const refreshIntents = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.BOT_API_PATH}/nlu/intents`).then(({ data }) => {
+  axios.get(`${window.STUDIO_API_PATH}/nlu/intents`).then(({ data }) => {
     dispatch(intentsReceived(data))
   })
 }
@@ -522,18 +503,10 @@ export const getQNAContentElementUsage = () => (dispatch) => {
   })
 }
 
-export const receiveQNACountByTopic = createAction('QNA/COUNT_BY_TOPIC')
-export const getQnaCountByTopic = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/qna/questionsByTopic`).then(({ data }) => {
-    dispatch(receiveQNACountByTopic(data))
-  })
-}
-
 export const receiveModuleTranslations = createAction('LANG/TRANSLATIONS')
 export const getModuleTranslations = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/translations`).then(({ data }) => {
+  axios.get(`${window.API_PATH}/studio/modules/translations?botId=${window.BOT_ID}`).then(({ data }) => {
     dispatch(receiveModuleTranslations(data))
   })
 }

@@ -1,4 +1,4 @@
-import { Icon } from '@blueprintjs/core'
+import { Icon, Button, Intent } from '@blueprintjs/core'
 import { lang, SupportedFileType } from 'botpress/shared'
 import _ from 'lodash'
 import React, { FC } from 'react'
@@ -6,25 +6,25 @@ import Form, { FieldProps, IChangeEvent, UiSchema, WidgetProps } from 'react-jso
 import CheckboxWidget from 'react-jsonschema-form/lib/components/widgets/CheckboxWidget'
 import SmartInput from '~/components/SmartInput'
 import { getFormData } from '~/util/NodeFormData'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
+import { isMissingCurlyBraceClosure } from '../Util/form.util'
 
 import withLanguage from '../Util/withLanguage'
 
 import ArrayFieldTemplate from './ArrayFieldTemplate'
-import ContentNotice from './ContentNotice'
 import FlowPickWidget from './FlowPickWidget'
 import ArrayMl from './i18n/Array'
 import renderWrapped from './i18n/I18nWrapper'
 import RefWidget from './RefWidget'
-import localStyle from './style.scss'
+import style from './style.scss'
 import Text from './Text'
 import { Fields, Schema, Widgets } from './typings'
 import UploadWidget from './UploadWidget'
 
 interface Props {
   contentLang: string
-  onChange: any
-  onSubmit: any
+  onChange: Function
+  onSubmit: Function
+  onCancel: Function
   formData: FormData
   customKey: string
   schema: Schema
@@ -108,7 +108,7 @@ const CustomDescriptionField = ({ description, id, formContext }: FieldProps) =>
     return (
       <div id={id} style={{ lineHeight: 'normal' }}>
         <div>
-          <span className={localStyle.warning}>
+          <span className={style.warning}>
             <Icon icon="warning-sign" />
             &nbsp;{' '}
             {lang.tr('studio.content.contentTypeWarning', {
@@ -183,22 +183,28 @@ const ContentForm: FC<Props> = (props) => {
   }
 
   return (
-    <>
-      <ContentNotice />
-      <Form<FormData>
-        {...props}
-        formData={currentFormData}
-        formContext={context}
-        safeRenderCompletion
-        widgets={widgets}
-        fields={fields}
-        ArrayFieldTemplate={ArrayFieldTemplate}
-        onChange={handleOnChange}
-        schema={translatePropsRecursive(schema)}
-      >
-        {props.children}
-      </Form>
-    </>
+    <Form<FormData>
+      {...props}
+      formData={currentFormData}
+      formContext={context}
+      safeRenderCompletion
+      widgets={widgets}
+      fields={fields}
+      ArrayFieldTemplate={ArrayFieldTemplate}
+      onChange={handleOnChange}
+      schema={translatePropsRecursive(schema)}
+    >
+      <div className={style.contentFormFooter}>
+        <Button className={style.controlButton} text={lang.tr('cancel')} onClick={() => props.onCancel()} />
+        <Button
+          className={style.controlButton}
+          intent={Intent.PRIMARY}
+          type="submit"
+          text={lang.tr('submit')}
+          disabled={isMissingCurlyBraceClosure(currentFormData?.text)}
+        />
+      </div>
+    </Form>
   )
 }
 

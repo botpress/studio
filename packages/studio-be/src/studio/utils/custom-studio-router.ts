@@ -4,7 +4,7 @@ import { BotService } from 'core/bots'
 import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService } from 'core/dialog'
+import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { AuthService, TOKEN_AUDIENCE, needPermissions, checkTokenHeader } from 'core/security'
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
@@ -13,6 +13,7 @@ import { RequestHandler, Router } from 'express'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioServices } from 'studio/studio-router'
+import { TestingService } from 'studio/testing'
 
 export abstract class CustomStudioRouter {
   protected logger: Logger
@@ -26,10 +27,12 @@ export abstract class CustomStudioRouter {
   protected actionService: ActionService
   protected actionServersService: ActionServersService
   protected hintsService: HintsService
+  protected skillService: SkillService
   protected bpfs: GhostService
   protected objectCache: MemoryObjectCache
   protected nluService: NLUService
   protected qnaService: QNAService
+  protected testingService: TestingService
 
   protected readonly needPermissions: (operation: string, resource: string) => RequestHandler
   protected readonly asyncMiddleware: AsyncMiddleware
@@ -56,8 +59,10 @@ export abstract class CustomStudioRouter {
     this.actionServersService = services.actionServersService
     this.bpfs = services.bpfs
     this.hintsService = services.hintsService
+    this.skillService = services.skillService
     this.objectCache = services.objectCache
     this.nluService = services.nluService
     this.qnaService = services.qnaService
+    this.testingService = services.testingService
   }
 }

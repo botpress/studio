@@ -1,5 +1,6 @@
 import { FlowGeneratorMetadata, Logger } from 'botpress/sdk'
 import { UnexpectedError } from 'common/http'
+import { BotService } from 'core/bots'
 import { SkillService } from 'core/dialog'
 import { ModuleLoader } from 'core/modules'
 import { CustomRouter } from 'core/routers/customRouter'
@@ -15,7 +16,8 @@ export class ModulesRouter extends CustomRouter {
     private logger: Logger,
     private authService: AuthService,
     private moduleLoader: ModuleLoader,
-    private skillService: SkillService
+    private skillService: SkillService,
+    private botService: BotService
   ) {
     super('Modules', logger, Router({ mergeParams: true }))
     this.checkTokenHeader = checkTokenHeader(this.authService, TOKEN_AUDIENCE)
@@ -46,8 +48,7 @@ export class ModulesRouter extends CustomRouter {
 
         try {
           const metadata: FlowGeneratorMetadata = {
-            botId: req.query.botId?.toString() || '',
-            isOneFlow: yn(req.query.isOneFlow) || false
+            botId: req.query.botId?.toString() || ''
           }
           res.send(this.skillService.finalizeFlow(await flowGenerator(req.body, metadata)))
         } catch (err) {
@@ -59,17 +60,11 @@ export class ModulesRouter extends CustomRouter {
     this.router.get(
       '/translations',
       this.checkTokenHeader,
-      this.asyncMiddleware(async (_req, res, _next) => {
-        res.send(await this.moduleLoader.getTranslations())
-      })
-    )
+      this.asyncMiddleware(async (req, res, _next) => {
+        const moduleTranslations = await this.moduleLoader.getTranslations()
+        const botTranslations = await this.botService.getBotTranslations(req.query.botId as string)
 
-    this.router.get(
-      '/dialogConditions',
-      this.checkTokenHeader,
-      this.asyncMiddleware(async (req, res) => {
-        const conditions = await this.moduleLoader.getDialogConditions()
-        res.send(conditions)
+        res.send(_.merge({}, moduleTranslations, botTranslations))
       })
     )
   }

@@ -16,7 +16,7 @@ declare global {
     BOT_API_PATH: string
     API_PATH: string
     SEGMENT_WRITE_KEY: string
-    IS_PRO_ENABLED: boolean
+
     ROOT_PATH: string
     BOT_NAME: string
     BOT_ID: string
@@ -34,7 +34,6 @@ declare global {
     BP_STORAGE: BPStorage
     EXPERIMENTAL: boolean
     USE_SESSION_STORAGE: boolean
-    USE_ONEFLOW: boolean
     botpress: {
       [moduleName: string]: any
     }

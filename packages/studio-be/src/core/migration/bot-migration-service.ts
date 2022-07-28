@@ -115,11 +115,9 @@ ${_.repeat(' ', 9)}========================================`)
     })
 
     if (hasFailures) {
-      return this.logger.error('Could not complete bot migration. It may behave unexpectedly.')
+      return this.logger.error(`[${botId}] Could not complete bot migration. It may behave unexpectedly.`)
     }
 
     await this.configProvider.mergeBotConfig(botId, { version: this.migService.targetVersion })
-
-    this.logger.info(`Migration${missingMigrations.length === 1 ? '' : 's'} completed successfully! `)
   }
 }

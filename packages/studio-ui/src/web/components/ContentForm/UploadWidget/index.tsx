@@ -4,11 +4,10 @@ import cn from 'classnames'
 import { isBpUrl } from 'common/url'
 import React, { FC, Fragment, useState } from 'react'
 import { AccessControl } from '~/components/Shared/Utils'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
 
 import { Schema } from '../typings'
 
-import localStyle from './style.scss'
+import style from './style.scss'
 import UrlUpload from './UrlUpload'
 interface IUploadWidgetProps {
   value: string | null
@@ -64,7 +63,7 @@ const UploadWidget: FC<IUploadWidgetProps> = (props) => {
     <AccessControl
       operation="write"
       resource="bot.media"
-      fallback={<em>{lang.tr('module.builtin.types.permissionDenied')}</em>}
+      fallback={<em>{lang.tr('contentTypes.permissionDenied')}</em>}
     >
       <Fragment>
         {!enterUrlManually && (
@@ -82,14 +81,12 @@ const UploadWidget: FC<IUploadWidgetProps> = (props) => {
         )}
 
         {!value && (
-          <div className={localStyle.fieldContainer}>
-            <a className={localStyle.toggleLink} onClick={handleToggleManually}>
-              {!enterUrlManually
-                ? lang.tr('module.builtin.types.enterUrlChoice')
-                : lang.tr('module.builtin.types.uploadFileChoice')}
+          <div className={style.fieldContainer}>
+            <a className={style.toggleLink} onClick={handleToggleManually}>
+              {!enterUrlManually ? lang.tr('contentTypes.enterUrlChoice') : lang.tr('contentTypes.uploadFileChoice')}
             </a>
 
-            {error && <p className={cn(style.fieldError, localStyle.fieldError)}>{error}</p>}
+            {error && <p className={cn(style.fieldError, style.fieldError)}>{error}</p>}
           </div>
         )}
       </Fragment>

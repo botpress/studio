@@ -30,6 +30,7 @@ declare global {
     BOT_NAME: string
     BOT_ID: string
     BP_BASE_PATH: string
+    IS_CLOUD_BOT: boolean
     SEND_USAGE_STATS: boolean
     botpress: {
       [moduleName: string]: any

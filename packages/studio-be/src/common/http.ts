@@ -84,7 +84,7 @@ export class ResponseError extends Error {
 }
 
 export class UnexpectedError extends ResponseError {
-  constructor(message: string, detailedMessage?: string) {
+  constructor(message: string, detailedMessage: string = '') {
     super(`${message}: ${detailedMessage}`, 400)
   }
 

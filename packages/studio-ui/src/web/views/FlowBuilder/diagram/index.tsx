@@ -44,7 +44,6 @@ import { BlockModel, BlockProps, BlockWidgetFactory } from './nodes/Block'
 import { DeletableLinkFactory } from './nodes/LinkWidget'
 import NodeToolbar from './NodeToolbar'
 import style from './style.scss'
-import TriggerEditor from './TriggerEditor'
 import WorkflowToolbar from './WorkflowToolbar'
 import ZoomToolbar from './ZoomToolbar'
 
@@ -52,8 +51,6 @@ interface OwnProps {
   childRef: (el: any) => void
   readOnly: boolean
   canPasteNode: boolean
-  selectedTopic: string
-  selectedWorkflow: string
   highlightFilter: string
   showSearch: boolean
   hideSearch: () => void
@@ -96,9 +93,7 @@ class Diagram extends Component<Props> {
 
   state = {
     expandedNodes: [],
-    nodeInfos: [],
-    currentTriggerNode: null,
-    isTriggerEditOpen: false
+    nodeInfos: []
   }
 
   constructor(props) {
@@ -117,10 +112,8 @@ class Diagram extends Component<Props> {
         currentLang: this.getPropsProperty('currentLang'),
         defaultLang: this.getPropsProperty('defaultLang')
       }),
-      getConditions: () => this.getPropsProperty('conditions'),
       getExpandedNodes: () => this.getStateProperty('expandedNodes'),
       setExpandedNodes: this.updateExpandedNodes.bind(this),
-      editTriggers: this.editTriggers.bind(this),
       getDebugInfo: this.getDebugInfo,
       getFlows: () => this.getPropsProperty('flows'),
       getSkills: () => this.getPropsProperty('skills'),
@@ -311,9 +304,6 @@ class Diagram extends Component<Props> {
   add = {
     flowNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'standard', next: [defaultTransition] }),
     skillNode: (point: Point, skillId: string) => this.props.buildSkill({ location: point, id: skillId }),
-    triggerNode: (point: Point) => {
-      this.props.createFlowNode({ ...point, type: 'trigger', conditions: [], next: [defaultTransition] })
-    },
     sayNode: (point: Point) => {
       this.props.createFlowNode({
         ...point,
@@ -332,12 +322,6 @@ class Diagram extends Component<Props> {
   onDiagramDoubleClick = (event?: MouseEvent) => {
     if (!event) {
       return
-    }
-
-    const target = this.diagramWidget.getMouseElement(event)
-
-    if (target?.model?.['nodeType'] === 'trigger') {
-      this.editTriggers(target.model)
     }
 
     this.props.switchFlowNode(null)
@@ -370,15 +354,8 @@ class Diagram extends Component<Props> {
           onClick={wrap(this.add.flowNode, point)}
           icon="chat"
         />
-        {(window.USE_ONEFLOW || window.EXPERIMENTAL) && (
+        {window.EXPERIMENTAL && (
           <Fragment>
-            {!originatesFromOutPort && window.USE_ONEFLOW && (
-              <MenuItem
-                text={lang.tr('studio.flow.nodeType.trigger')}
-                onClick={wrap(this.add.triggerNode, point)}
-                icon="send-to-graph"
-              />
-            )}
             <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Icons.Say />} />
             <MenuItem text={lang.tr('execute')} onClick={wrap(this.add.executeNode, point)} icon="code" />
             <MenuItem text={lang.tr('listen')} onClick={wrap(this.add.listenNode, point)} icon="hand" />
@@ -389,7 +366,7 @@ class Diagram extends Component<Props> {
 
         <MenuItem
           tagName="button"
-          text={lang.tr('skills')}
+          text={lang.tr('skills.label')}
           icon="add"
           onClick={(e) => {
             e.stopPropagation()
@@ -510,7 +487,6 @@ class Diagram extends Component<Props> {
       nodeType === 'standard' ||
       nodeType === 'skill-call' ||
       nodeType === 'execute' ||
-      nodeType === 'trigger' ||
       nodeType === 'failure' ||
       nodeType === 'listen' ||
       nodeType === 'action'
@@ -649,10 +625,6 @@ class Diagram extends Component<Props> {
     this.manager.unselectAllElements()
   }
 
-  editTriggers(node) {
-    this.setState({ currentTriggerNode: node, isTriggerEditOpen: true })
-  }
-
   onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
       this.copySelectedElementToBuffer()
@@ -694,9 +666,6 @@ class Diagram extends Component<Props> {
           break
         case 'action':
           this.add.actionNode(point)
-          break
-        case 'trigger':
-          this.add.triggerNode(point)
           break
         default:
           this.add.flowNode(point)
@@ -749,12 +718,6 @@ class Diagram extends Component<Props> {
             zoomToFit={this.manager.zoomToFit.bind(this.manager)}
           />
           {canAdd && <NodeToolbar />}
-          <TriggerEditor
-            node={this.state.currentTriggerNode}
-            isOpen={this.state.isTriggerEditOpen}
-            diagramEngine={this.diagramEngine}
-            toggle={() => this.setState({ isTriggerEditOpen: !this.state.isTriggerEditOpen })}
-          />
         </div>
       </MainLayout.Wrapper>
     )
@@ -770,7 +733,6 @@ const mapStateToProps = (state: RootReducer) => ({
   emulatorOpen: state.ui.emulatorOpen,
   debuggerEvent: state.flows.debuggerEvent,
   zoomLevel: state.ui.zoomLevel,
-  conditions: state.ndu.conditions,
   skills: state.skills.installed
 })
 

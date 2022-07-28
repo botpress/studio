@@ -2,9 +2,22 @@
 // Please do not change this file!
 interface CssExports {
   'actionsWrapper': string;
-  'contentNotice': string;
+  'addContentBtn': string;
+  'contentFormFooter': string;
+  'controlButton': string;
+  'deleteBtn': string;
+  'fieldError': string;
+  'fieldWrapper': string;
   'flexContainer': string;
+  'formHeader': string;
+  'formLabel': string;
+  'formSelect': string;
+  'innerWrapper': string;
+  'insertBtn': string;
   'missingIcon': string;
+  'multipleInputs': string;
+  'textInput': string;
+  'textarea': string;
   'warning': string;
 }
 declare var cssExports: CssExports;

@@ -11,6 +11,7 @@ const Menu: FC<MenuProps> = ({ items, className }) => {
   const renderBasicItem = ({ name, path, icon }: MenuItem) => (
     <li id={`bp-menu_${name}`} key={path}>
       <Tooltip boundary="window" position={Position.RIGHT} content={name}>
+        {/* @ts-ignore */}
         <NavLink to={path} title={name} activeClassName={style.active}>
           <Icon icon={icon} iconSize={16} />
         </NavLink>

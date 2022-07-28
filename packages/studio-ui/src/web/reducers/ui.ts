@@ -5,9 +5,10 @@ import {
   addDocumentationHint,
   removeDocumentationHint,
   setEmulatorOpen,
-  toggleBottomPanel,
   toggleBottomPanelExpand,
+  toggleBottomPanel,
   toggleInspector,
+  toggleExplorer,
   updateDocumentationModal,
   updateGlobalStyle,
   viewModeChanged,
@@ -17,6 +18,7 @@ import {
 export interface UiReducer {
   viewMode: any
   docHints: string[]
+  explorerOpen: boolean
   emulatorOpen: boolean
   zoomLevel: number
   bottomPanel: boolean
@@ -25,10 +27,14 @@ export interface UiReducer {
   setEmulatorOpen: (newState: boolean) => void
 }
 
-const bottomPanelStorageKey = `bp::${window.BOT_ID}::bottom-panel-open`
-const inspectorEnabledStorageKey = `bp::${window.BOT_ID}::enable-inspector`
-const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey) === true
-const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey) === true
+const bottomPanelStorageKey = () => `bp::${window.BOT_ID}::bottom-panel-open`
+const inspectorEnabledStorageKey = () => `bp::${window.BOT_ID}::enable-inspector`
+const explorerStorageKey = () => `bp::${window.BOT_ID}::explorer-open`
+
+const defaultBottomPanelOpen = utils.storage.get<boolean>(bottomPanelStorageKey()) === true
+const defaultInspectorEnabled = utils.storage.get<boolean>(inspectorEnabledStorageKey()) === true
+const storageExplorerOpen = utils.storage.get<boolean>(explorerStorageKey())
+const defaultExplorerOpen = storageExplorerOpen === undefined || storageExplorerOpen === true
 
 const defaultState = {
   viewMode: -1,
@@ -38,6 +44,7 @@ const defaultState = {
   bottomPanel: defaultBottomPanelOpen || false,
   bottomPanelExpanded: false,
   inspectorEnabled: defaultInspectorEnabled,
+  explorerOpen: defaultExplorerOpen,
   emulatorOpen: false,
   zoomLevel: 100
 }
@@ -70,7 +77,7 @@ const reducer = handleActions(
     }),
     [toggleBottomPanel]: (state, {}) => {
       const value = !state.bottomPanel
-      localStorage.setItem(bottomPanelStorageKey, value.toString())
+      utils.storage.set(bottomPanelStorageKey(), value)
       return {
         ...state,
         bottomPanel: value
@@ -78,10 +85,18 @@ const reducer = handleActions(
     },
     [toggleInspector]: (state, {}) => {
       const value = !state.inspectorEnabled
-      localStorage.setItem(inspectorEnabledStorageKey, value.toString())
+      utils.storage.set(inspectorEnabledStorageKey(), value)
       return {
         ...state,
         inspectorEnabled: value
+      }
+    },
+    [toggleExplorer]: (state, {}) => {
+      const value = !state.explorerOpen
+      utils.storage.set(explorerStorageKey(), value)
+      return {
+        ...state,
+        explorerOpen: value
       }
     },
     [zoomToLevel]: (state, { payload }) => {

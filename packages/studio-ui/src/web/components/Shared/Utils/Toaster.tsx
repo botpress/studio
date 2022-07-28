@@ -7,6 +7,10 @@ export enum Timeout {
   LONG = 5000
 }
 
+export interface ToastOption {
+  delayed: boolean | number
+}
+
 export const toastSuccess = (
   message: string,
   timeout: Timeout = Timeout.SHORT,
@@ -18,7 +22,7 @@ export const toastFailure = (
   timeout: Timeout = Timeout.MEDIUM,
   onDismiss?: (didTimeoutExpire: boolean) => void,
   // Must be delayed when used in a lifecycle event (eg: useEffect)
-  options?: { delayed: boolean }
+  options?: Partial<ToastOption>
 ) => toast(message, Intent.DANGER, timeout, onDismiss, options)
 
 export const toastInfo = (
@@ -27,7 +31,13 @@ export const toastInfo = (
   onDismiss?: (didTimeoutExpire: boolean) => void
 ) => toast(message, Intent.PRIMARY, timeout, onDismiss)
 
-const toast = (message, intent, timeout, onDismiss, options?) => {
+const toast = (
+  message: React.ReactNode,
+  intent: Intent,
+  timeout: number,
+  onDismiss: (didTimeoutExpire: boolean) => void,
+  options: Partial<ToastOption> = {}
+) => {
   const showToast = () => {
     Toaster.create({ className: 'recipe-toaster', position: Position.TOP_RIGHT }).show({
       message,
@@ -37,11 +47,11 @@ const toast = (message, intent, timeout, onDismiss, options?) => {
     })
   }
 
-  if (!options?.delayed) {
+  if (_.isNil(options.delayed) || options.delayed === false) {
     showToast()
-  } else {
-    setTimeout(() => {
-      showToast()
-    }, 500)
+    return
   }
+
+  const delay: number = _.isBoolean(options.delayed) ? 500 : options.delayed
+  return setTimeout(showToast, delay)
 }

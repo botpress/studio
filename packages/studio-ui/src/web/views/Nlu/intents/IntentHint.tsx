@@ -1,7 +1,6 @@
 import { Icon } from '@blueprintjs/core'
 import sdk from 'botpress/sdk'
 import { lang } from 'botpress/shared'
-import cx from 'classnames'
 import React, { FC } from 'react'
 
 const MIN_NB_UTTERANCES = 3
@@ -12,7 +11,6 @@ import style from './style.scss'
 interface Props {
   intent: sdk.NLU.IntentDefinition
   contentLang: string
-  liteEditor: boolean
 }
 
 // At some point, recommendations will be computed in the backend and this component will simply fetch and display intents recommendations
@@ -51,7 +49,7 @@ const IntentHint: FC<Props> = (props) => {
     hint = <span>{lang.tr('nlu.intents.hintResilient', { nb: remaining })}</span>
   }
   return hint ? (
-    <p className={cx(style.hint, { [style.lightEditorHint]: props.liteEditor })}>
+    <p className={style.hint}>
       {!utterances.length && <Icon icon="warning-sign" />}
       {!!utterances.length && <Icon icon="symbol-diamond" />}
       {hint}

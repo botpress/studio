@@ -1,4 +1,4 @@
-import { lang, MainContainer, utils } from 'botpress/shared'
+import { lang, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
@@ -10,17 +10,14 @@ import {
   flowEditorRedo,
   flowEditorUndo,
   refreshActions,
-  refreshConditions,
   refreshIntents,
   setDiagramAction,
   switchFlow
 } from '~/actions'
+import { Container } from '~/components/Shared/Interface'
 import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
 import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
-import DocumentationProvider from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
-
-import SidePanelOneFlow from '../FlowBuilder/sidePanelTopics'
 
 import Diagram from './diagram'
 import SidePanel, { PanelPermissions, SidePanelInspector } from './sidePanelFlows'
@@ -51,10 +48,6 @@ const FlowBuilder = (props: Props) => {
   useEffect(() => {
     props.refreshActions()
     props.refreshIntents()
-
-    if (window.USE_ONEFLOW) {
-      props.refreshConditions()
-    }
 
     if (!isOperationAllowed({ operation: 'write', resource: 'bot.flows' })) {
       setReadOnly(true)
@@ -163,24 +156,14 @@ const FlowBuilder = (props: Props) => {
   }
 
   return (
-    <MainContainer keyHandlers={keyHandlers}>
-      {window.USE_ONEFLOW ? (
-        <SidePanelOneFlow
-          onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
-          readOnly={readOnly}
-          mutexInfo={mutex}
-          permissions={actions}
-          onCreateFlow={createFlow}
-        />
-      ) : (
-        <SidePanel
-          onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
-          readOnly={readOnly}
-          mutexInfo={mutex}
-          permissions={actions}
-          onCreateFlow={createFlow}
-        />
-      )}
+    <Container keyHandlers={keyHandlers}>
+      <SidePanel
+        onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
+        readOnly={readOnly}
+        mutexInfo={mutex}
+        permissions={actions}
+        onCreateFlow={createFlow}
+      />
 
       <div className={style.container}>
         <div className={style.diagram}>
@@ -199,11 +182,11 @@ const FlowBuilder = (props: Props) => {
             }}
           />
         </div>
-        {!window.USE_ONEFLOW && <SidePanelInspector />}
+        <SidePanelInspector />
       </div>
 
       <SkillsBuilder />
-    </MainContainer>
+    </Container>
   )
 }
 
@@ -223,8 +206,7 @@ const mapDispatchToProps = {
   clearErrorSaveFlows,
   closeFlowNodeProps,
   refreshActions,
-  refreshIntents,
-  refreshConditions
+  refreshIntents
 }
 
 export default connect<StateProps, DispatchProps, OwnProps>(

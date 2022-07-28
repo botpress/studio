@@ -1,7 +1,4 @@
-import { ActionBuilderProps, ContentElement, FlowNode } from 'botpress/sdk'
-import { FlowView, NodeView } from 'common/typings'
-import { FlowReducer } from '~/reducers/flows'
-import { ContentElementUsage, ContentUsage } from '~/views/Content'
+import { FlowNode } from 'botpress/sdk'
 
 export { default as ElementPreview } from './ElementPreview'
 export { toastSuccess, toastFailure, toastInfo, Timeout } from './Toaster'
@@ -40,57 +37,4 @@ export const getFlowLabel = (name: string) => {
   } else {
     return name
   }
-}
-
-export const getContentItemUsage = (elementId: string, flows: FlowReducer, qnaUsage: ContentElementUsage[]) => {
-  const elementUsage: ContentUsage[] = []
-  Object.values(flows.flowsByName).forEach((flow: FlowView) => {
-    // Skip skill flows
-    if (flow.skillData) {
-      return
-    }
-
-    flow.nodes.forEach((node: NodeView) => {
-      const usage: ContentUsage = {
-        type: 'Flow',
-        name: flow.name,
-        node: node.name,
-        count: 0
-      }
-
-      const addUsage = (v: string | ActionBuilderProps) => {
-        if (typeof v === 'string' && v.startsWith(`say #!${elementId}`)) {
-          if (!usage.count) {
-            elementUsage.push(usage)
-          }
-          usage.count++
-        }
-      }
-
-      const addNodeUsage = (node: NodeView) => {
-        node.onEnter?.forEach(addUsage)
-        node.onReceive?.forEach(addUsage)
-      }
-
-      if (node.flow && node.type === 'skill-call') {
-        const nodeSubFlow = flows.flowsByName[node.flow]
-        nodeSubFlow?.nodes.forEach((node: NodeView) => {
-          addNodeUsage(node)
-        })
-      } else {
-        addNodeUsage(node)
-      }
-    })
-  })
-
-  const usage = qnaUsage?.[`#!${elementId}`]
-  usage &&
-    elementUsage.push({
-      type: 'Q&A',
-      id: usage.qna,
-      name: usage.qna.substr(usage.qna.indexOf('_') + 1),
-      count: usage.count
-    })
-
-  return elementUsage
 }

@@ -65,6 +65,16 @@ export class InternalRouter extends CustomStudioRouter {
     )
 
     router.post(
+      '/createBot',
+      this.asyncMiddleware(async (req, res) => {
+        const { bot, template } = req.body
+
+        await this.botService.addBot(bot, template)
+        res.sendStatus(200)
+      })
+    )
+
+    router.post(
       '/setBotMountStatus',
       this.asyncMiddleware(async (req, res) => {
         const { botId, isMounted } = req.body

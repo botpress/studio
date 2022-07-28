@@ -84,6 +84,16 @@ try {
   process.IS_PRO_AVAILABLE = fs.existsSync(path.resolve(process.PROJECT_LOCATION, 'pro')) || !!process.pkg
   process.BPFS_STORAGE = process.core_env.BPFS_STORAGE || 'disk'
 
+  const localCloud = yn(process.env.CLOUD_LOCAL)
+  process.CLOUD_CONTROLLER_ENDPOINT =
+    process.env.CLOUD_CONTROLLER_ENDPOINT ||
+    (localCloud ? 'http://localhost:3600' : 'https://controllerapi.botpress.cloud')
+  process.CLOUD_OAUTH_ENDPOINT =
+    process.env.CLOUD_OAUTH_ENDPOINT ||
+    (localCloud ? 'http://localhost:4444/oauth2/token' : 'https://oauth.botpress.cloud/oauth2/token')
+  process.CLOUD_NLU_ENDPOINT =
+    process.env.CLOUD_NLU_ENDPOINT || (localCloud ? 'http://localhost:3200' : 'https://nlu-builder.botpress.cloud')
+
   process.CLUSTER_ENABLED = yn(process.env.CLUSTER_ENABLED) || false
   process.IS_PRO_ENABLED = yn(process.env.PRO_ENABLED) || yn(process.env['BP_CONFIG_PRO_ENABLED']) || false
   process.STUDIO_VERSION = metadata.version

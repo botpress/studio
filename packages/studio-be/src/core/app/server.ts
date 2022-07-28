@@ -32,6 +32,7 @@ import portFinder from 'portfinder'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioRouter } from 'studio/studio-router'
+import { TestingService } from 'studio/testing'
 import { URL } from 'url'
 import yn from 'yn'
 
@@ -73,7 +74,8 @@ export class HTTPServer {
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.ObjectCache) private objectCache: MemoryObjectCache,
     @inject(TYPES.NLUService) nluService: NLUService,
-    @inject(TYPES.QnaService) qnaService: QNAService
+    @inject(TYPES.QnaService) qnaService: QNAService,
+    @inject(TYPES.TestingService) testingService: TestingService
   ) {
     this.app = express()
 
@@ -92,7 +94,7 @@ export class HTTPServer {
       this.app.use(compression())
     }
 
-    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService)
+    this.modulesRouter = new ModulesRouter(this.logger, this.authService, moduleLoader, skillService, botService)
 
     this.studioRouter = new StudioRouter(
       logger,
@@ -110,6 +112,8 @@ export class HTTPServer {
       objectCache,
       nluService,
       qnaService,
+      testingService,
+      skillService,
       this
     )
   }

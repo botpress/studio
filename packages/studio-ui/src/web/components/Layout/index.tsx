@@ -1,4 +1,3 @@
-import * as sdk from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import cx from 'classnames'
 import React, { FC, Fragment, useEffect, useRef, useState } from 'react'
@@ -9,23 +8,24 @@ import SplitPane from 'react-split-pane'
 import { setEmulatorOpen, toggleBottomPanel, toggleInspector, viewModeChanged } from '~/actions'
 import SelectContentManager from '~/components/Content/Select/Manager'
 import PluginInjectionSite from '~/components/PluginInjectionSite'
+import CodeEditor from '~/views/CodeEditor'
 import Config from '~/views/Config'
 import Content from '~/views/Content'
 import FlowBuilder from '~/views/FlowBuilder'
-import Libraries from '~/views/Libraries'
 import Module from '~/views/Module'
 import NLU from '~/views/Nlu'
 import QNA from '~/views/Qna'
+import Testing from '~/views/Testing'
 
 import BottomPanel from './BottomPanel'
 import BotUmountedWarning from './BotUnmountedWarning'
 import CommandPalette from './CommandPalette'
 import GuidedTour from './GuidedTour'
-import LanguageServerHealth from './LangServerHealthWarning'
 import layout from './Layout.scss'
+import LanguageServerHealth from './NLUServerHealthWarning'
 import Sidebar from './Sidebar'
 import StatusBar from './StatusBar'
-import Toolbar from './Toolbar'
+import TopNav from './TopNav'
 
 const { isInputFocused } = utils
 const WEBCHAT_PANEL_STATUS = 'bp::webchatOpened'
@@ -184,13 +184,7 @@ const Layout: FC<Props> = (props: Props) => {
       <HotKeys handlers={keyHandlers} id="mainLayout" className={layout.mainLayout}>
         <Sidebar />
         <div className={layout.container}>
-          <Toolbar
-            hasDoc={props.docHints?.length}
-            toggleDocs={toggleDocs}
-            toggleGuidedTour={toggleGuidedTour}
-            onToggleEmulator={toggleEmulator}
-            toggleBottomPanel={props.toggleBottomPanel}
-          />
+          <TopNav toggleDocs={toggleDocs} onToggleEmulator={toggleEmulator} />
           <SplitPane
             split={'horizontal'}
             defaultSize={bottomPanelDefaultSize}
@@ -213,12 +207,13 @@ const Layout: FC<Props> = (props: Props) => {
                     return window.IS_BOT_MOUNTED ? <Redirect to="/flows" /> : <Redirect to="/config" />
                   }}
                 />
-                <Route exact path="/libraries" component={Libraries} />
                 <Route exact path="/content" component={Content} />
                 <Route exact path="/flows/:flow*" component={FlowBuilder} />
                 <Route exact path="/config" component={Config} />
                 <Route exact path="/nlu" component={NLU} />
                 <Route exact path="/qna" component={QNA} />
+                <Route exact path="/testing" component={Testing} />
+                <Route exact path="/code-editor" component={CodeEditor} />
 
                 <Route exact path="/modules/:moduleName/:componentName?" render={(props) => <Module {...props} />} />
               </Switch>

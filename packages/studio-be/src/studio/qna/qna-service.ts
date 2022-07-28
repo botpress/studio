@@ -70,31 +70,6 @@ export class QNAService {
     }
   }
 
-  onTopicChanged = async ({ botId, oldName, newName }: { botId: string; oldName?: string; newName?: string }) => {
-    const isRenaming = !!(oldName && newName)
-    const isDeleting = !newName
-
-    if (!isRenaming && !isDeleting) {
-      return
-    }
-
-    const { storage } = await this.getBotStorage(botId)
-    const questions = await storage.getQuestions({ filteredContexts: [oldName] }, { limit: 150, offset: 0 })
-
-    for (const item of questions.items) {
-      const ctxIdx = item.data.contexts.indexOf(oldName!)
-      if (ctxIdx !== -1) {
-        item.data.contexts.splice(ctxIdx, 1)
-
-        if (isRenaming) {
-          item.data.contexts.push(newName!)
-        }
-
-        await storage.update(item.data, item.id)
-      }
-    }
-  }
-
   onFlowChanged = async ({ botId, flow }: { botId: string; flow: Flow }) => {
     if (!flow?.location) {
       return

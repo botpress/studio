@@ -5,7 +5,6 @@ import {
   Collapse,
   Colors,
   ControlGroup,
-  Dialog,
   Icon,
   InputGroup,
   Popover,
@@ -14,13 +13,11 @@ import {
 } from '@blueprintjs/core'
 import cx from 'classnames'
 import _ from 'lodash'
-import React, { FC, useState } from 'react'
-import { HotKeys } from 'react-hotkeys'
-import SplitPane from 'react-split-pane'
+import React, { useState } from 'react'
 
+import Container from './Container'
 import style from './style.scss'
 import {
-  ContainerProps,
   InfoTooltipProps,
   ItemListProps,
   KeyboardShortcutsProps,
@@ -33,41 +30,6 @@ import {
   ToolbarProps
 } from './typings'
 import { buildMenu, showContextMenu } from './utils'
-
-export const Container = (props: ContainerProps) => {
-  const [sidePanelVisible, setSidePanelVisible] = useState(!props.sidePanelHidden)
-  const width = props.sidePanelWidth ? props.sidePanelWidth : 300
-
-  const toggleSidePanel = () => setSidePanelVisible(!sidePanelVisible)
-  window.toggleSidePanel = toggleSidePanel
-
-  const keyHandlers = {
-    ...(props.keyHandlers || {}),
-    'toggle-sidepanel': toggleSidePanel
-  }
-
-  const children = React.Children.toArray(props.children)
-
-  return (
-    <HotKeys handlers={keyHandlers} keyMap={props.keyMap || {}} className={style.fullsize} focused>
-      <div className={cx(style.container, { [style.sidePanel_hidden]: !sidePanelVisible }, props.className)}>
-        <SplitPane
-          split={'vertical'}
-          defaultSize={width}
-          size={sidePanelVisible ? width : 0}
-          pane2Style={{
-            overflowX: 'auto'
-          }}
-        >
-          {children[0]}
-          <div className={cx(style.fullsize, { [style.yOverflowScroll]: props.yOverflowScroll })}>
-            {children.slice(1)}
-          </div>
-        </SplitPane>
-      </div>
-    </HotKeys>
-  )
-}
 
 export const SidePanelSection = (props: SidePanelSectionProps) => {
   const [isOpen, setOpen] = useState(!props.collapsed)
@@ -253,3 +215,5 @@ export const InfoTooltip = (props: InfoTooltipProps) => (
     <Icon icon={props.icon || 'info-sign'} iconSize={13} className={style.infoTooltip} />
   </Tooltip>
 )
+
+export { Container }

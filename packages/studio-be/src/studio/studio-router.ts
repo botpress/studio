@@ -8,7 +8,7 @@ import { GhostService, MemoryObjectCache } from 'core/bpfs'
 import { CMSService } from 'core/cms'
 import { BotpressConfig } from 'core/config'
 import { ConfigProvider } from 'core/config/config-loader'
-import { FlowService } from 'core/dialog'
+import { FlowService, SkillService } from 'core/dialog'
 import { MediaServiceProvider } from 'core/media'
 import { CustomRouter } from 'core/routers/customRouter'
 import { AuthService, TOKEN_AUDIENCE, checkTokenHeader, checkBotVisibility, needPermissions } from 'core/security'
@@ -19,16 +19,18 @@ import rewrite from 'express-urlrewrite'
 import _ from 'lodash'
 
 import { ActionsRouter } from './actions/actions-router'
+import { CloudRouter } from './cloud/cloud-router'
 import { CMSRouter } from './cms/cms-router'
+import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
 import { FlowsRouter } from './flows/flows-router'
 import { HintsRouter } from './hints/hints-router'
 import { InternalRouter } from './internal-router'
-import { LibrariesRouter } from './libraries/libraries-router'
+import ManageRouter from './manage/manage-router'
 import MediaRouter from './media/media-router'
 import { NLURouter, NLUService } from './nlu'
 import { QNARouter, QNAService } from './qna'
-import { TopicsRouter } from './topics/topics-router'
+import { TestingRouter, TestingService } from './testing'
 import { fixStudioMappingMw } from './utils/api-mapper'
 
 export interface StudioServices {
@@ -43,10 +45,12 @@ export interface StudioServices {
   actionService: ActionService
   actionServersService: ActionServersService
   hintsService: HintsService
+  skillService: SkillService
   bpfs: GhostService
   objectCache: MemoryObjectCache
   nluService: NLUService
   qnaService: QNAService
+  testingService: TestingService
 }
 
 export class StudioRouter extends CustomRouter {
@@ -57,13 +61,15 @@ export class StudioRouter extends CustomRouter {
   private mediaRouter: MediaRouter
   private actionsRouter: ActionsRouter
   private flowsRouter: FlowsRouter
-  private topicsRouter: TopicsRouter
   private hintsRouter: HintsRouter
   private configRouter: ConfigRouter
   private internalRouter: InternalRouter
-  private libsRouter: LibrariesRouter
   private nluRouter: NLURouter
   private qnaRouter: QNARouter
+  private testingRouter: TestingRouter
+  private manageRouter: ManageRouter
+  private codeEditorRouter: CodeEditorRouter
+  private cloudRouter: CloudRouter
 
   constructor(
     logger: Logger,
@@ -81,6 +87,8 @@ export class StudioRouter extends CustomRouter {
     objectCache: MemoryObjectCache,
     nluService: NLUService,
     qnaService: QNAService,
+    testingService: TestingService,
+    skillService: SkillService,
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -101,20 +109,24 @@ export class StudioRouter extends CustomRouter {
       hintsService,
       objectCache,
       nluService,
-      qnaService
+      qnaService,
+      testingService,
+      skillService
     }
 
     this.cmsRouter = new CMSRouter(studioServices)
     this.actionsRouter = new ActionsRouter(studioServices)
     this.flowsRouter = new FlowsRouter(studioServices)
     this.mediaRouter = new MediaRouter(studioServices)
-    this.topicsRouter = new TopicsRouter(studioServices)
     this.hintsRouter = new HintsRouter(studioServices)
     this.configRouter = new ConfigRouter(studioServices)
     this.internalRouter = new InternalRouter(studioServices)
-    this.libsRouter = new LibrariesRouter(studioServices)
     this.nluRouter = new NLURouter(studioServices)
     this.qnaRouter = new QNARouter(studioServices)
+    this.testingRouter = new TestingRouter(studioServices)
+    this.manageRouter = new ManageRouter(studioServices)
+    this.codeEditorRouter = new CodeEditorRouter(studioServices)
+    this.cloudRouter = new CloudRouter(studioServices)
   }
 
   async setupRoutes(app: express.Express) {
@@ -122,15 +134,18 @@ export class StudioRouter extends CustomRouter {
 
     this.actionsRouter.setupRoutes()
     this.flowsRouter.setupRoutes()
+    this.cloudRouter.setupRoutes()
     await this.mediaRouter.setupRoutes(this.botpressConfig)
-    this.topicsRouter.setupRoutes()
     this.hintsRouter.setupRoutes()
     this.configRouter.setupRoutes()
     this.internalRouter.setupRoutes()
-    this.libsRouter.setupRoutes()
     this.nluRouter.setupRoutes()
     this.qnaRouter.setupRoutes()
+    this.testingRouter.setupRoutes()
+    this.manageRouter.setupRoutes()
+    this.codeEditorRouter.setupRoutes()
 
+    app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
     app.use('/api/internal', this.internalRouter.router)
 
     app.use(rewrite('/studio/:botId/*public-env.js', '/api/v1/studio/:botId/public-env.js'))
@@ -158,11 +173,12 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/cms', this.checkTokenHeader, this.cmsRouter.router)
     this.router.use('/nlu', this.checkTokenHeader, this.nluRouter.router)
     this.router.use('/qna', this.checkTokenHeader, this.qnaRouter.router)
+    this.router.use('/testing', this.checkTokenHeader, this.testingRouter.router)
     this.router.use('/flows', this.checkTokenHeader, this.flowsRouter.router)
     this.router.use('/media', this.mediaRouter.router)
-    this.router.use('/topics', this.checkTokenHeader, this.topicsRouter.router)
     this.router.use('/hints', this.checkTokenHeader, this.hintsRouter.router)
-    this.router.use('/libraries', this.checkTokenHeader, this.libsRouter.router)
+    this.router.use('/cloud', this.checkTokenHeader, this.cloudRouter.router)
+    this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
     this.router.get(
       '/env',

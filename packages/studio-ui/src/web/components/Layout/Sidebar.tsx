@@ -45,11 +45,18 @@ const BASIC_MENU_ITEMS = [
     icon: 'chat'
   },
   {
-    id: 'libraries',
-    name: lang.tr('libraries.fullName'),
-    path: '/libraries',
-    rule: { res: 'module.code-editor', op: 'read' },
-    icon: 'book'
+    id: 'code-editor',
+    name: lang.tr('code-editor.fullName'),
+    path: '/code-editor',
+    rule: { res: 'bot.code-editor', op: 'read' },
+    icon: 'code'
+  },
+  {
+    id: 'testing',
+    name: lang.tr('testing.fullName'),
+    path: '/testing',
+    rule: { res: 'module.testing', op: 'write' },
+    icon: 'record'
   }
 ]
 
@@ -117,7 +124,7 @@ const Sidebar: FC<Props> = (props) => {
         {window.IS_BOT_MOUNTED ? (
           <Fragment>
             {BASIC_MENU_ITEMS.map(renderBasicItem)}
-            {props.modules.filter((m) => !m.noInterface).map(renderModuleItem)}
+            {!props.isCloudBot && props.modules.filter((m) => !m.noInterface).map(renderModuleItem)}
             {renderBasicItem(configItem)}
           </Fragment>
         ) : (
@@ -133,7 +140,8 @@ const Sidebar: FC<Props> = (props) => {
 
 const mapStateToProps = (state: RootReducer) => ({
   viewMode: state.ui.viewMode,
-  modules: state.modules
+  modules: state.modules,
+  isCloudBot: Boolean(state.bot.isCloudBot)
 })
 
 export default withRouter(connect(mapStateToProps)(Sidebar))
