@@ -1,5 +1,4 @@
-import { Button, InputGroup, Icon } from '@blueprintjs/core'
-import { Tooltip2 } from '@blueprintjs/popover2'
+import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
 import axios from 'axios'
 import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
@@ -181,9 +180,9 @@ const PatInput = (props: Props): JSX.Element => {
           newPatValid ? (
             <Button disabled={true} icon={'tick-circle'} minimal={true} />
           ) : (
-            <Tooltip2 content={'Token invalid'}>
+            <Tooltip content={'Token invalid'}>
               <Button disabled={true} icon={'error'} minimal={true} />
-            </Tooltip2>
+            </Tooltip>
           )
         }
       />

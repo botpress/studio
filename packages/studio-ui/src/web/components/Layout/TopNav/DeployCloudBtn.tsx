@@ -1,5 +1,4 @@
-import { Icon } from '@blueprintjs/core'
-import { Popover2 } from '@blueprintjs/popover2'
+import { Icon, Popover } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { useEffect, useReducer } from 'react'
@@ -87,7 +86,7 @@ const DeployCloudBtn = (props: Props) => {
 
   return (
     <>
-      <Popover2
+      <Popover
         position="bottom"
         content={
           <div className={style.popoverContent}>
@@ -118,7 +117,6 @@ const DeployCloudBtn = (props: Props) => {
           </div>
         }
         interactionKind="click"
-        matchTargetWidth={false}
         isOpen={isOpen}
         onOpened={() => {
           dispatch({ type: 'popup/opened' })
@@ -134,7 +132,7 @@ const DeployCloudBtn = (props: Props) => {
           <Icon color="#1a1e22" icon="cloud-upload" iconSize={16} />
           <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>
         </button>
-      </Popover2>
+      </Popover>
     </>
   )
 }
