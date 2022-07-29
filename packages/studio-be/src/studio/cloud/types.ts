@@ -21,7 +21,7 @@ export type PersonalAccessToken = string
 export type OAuthAccessToken = string
 
 export interface Principals {
-  cloudBotId?: string
+  botId?: string
   userId?: string
   clientId?: string
 }

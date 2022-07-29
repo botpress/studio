@@ -26,12 +26,15 @@ export class CloudService {
       return Err('no bot config')
     }
 
-    const { cloud } = botConfig
     let cloudBotId: string
     let clientId: string
     let clientSecret: string
 
-    if (!cloud) {
+    if (botConfig.cloud) {
+      cloudBotId = botConfig.cloud.botId
+      clientId = botConfig.cloud.clientId
+      clientSecret = botConfig.cloud.clientSecret
+    } else {
       let cloudBot: Bot | undefined
       const result = await this.cloudClient.createBot({
         personalAccessToken,
@@ -60,10 +63,6 @@ export class CloudService {
       await this.botService.updateBot(botId, {
         cloud: { botId: cloudBotId, clientId: cloudBot.apiKey.id, clientSecret: cloudBot.apiKey.secret, workspaceId }
       })
-    } else {
-      cloudBotId = cloud.botId
-      clientId = cloud.clientId
-      clientSecret = cloud.clientSecret
     }
 
     const botMultipart = await this.makeBotUploadPayload({ botId })
@@ -72,7 +71,7 @@ export class CloudService {
     }
 
     await this.waitUntilBotUploadable({ cloudBotId, clientId, clientSecret })
-    await this.cloudClient.uploadBot({ botMultipart, cloudBotId, personalAccessToken })
+    await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, personalAccessToken })
 
     return Ok.EMPTY
   }

@@ -40,12 +40,12 @@ export class CloudClient {
     }
   }
 
-  public async canDeployBot(props: { oauthAccessToken: OAuthAccessToken; cloudBotId: string }): Promise<boolean> {
-    const { oauthAccessToken, cloudBotId } = props
+  public async canDeployBot(props: { oauthAccessToken: OAuthAccessToken; botId: string }): Promise<boolean> {
+    const { oauthAccessToken, botId } = props
     try {
       await axios.get(
         `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/can-upload`,
-        this.getCloudAxiosConfig({ token: oauthAccessToken, principals: { cloudBotId } })
+        this.getCloudAxiosConfig({ token: oauthAccessToken, principals: { botId } })
       )
       return true
     } catch {
@@ -55,11 +55,11 @@ export class CloudClient {
 
   public async uploadBot(props: {
     personalAccessToken: PersonalAccessToken
-    cloudBotId: string
+    botId: string
     botMultipart: FormData
   }): Promise<void> {
-    const { personalAccessToken, cloudBotId, botMultipart } = props
-    const axiosConfig = _.merge(this.getCloudAxiosConfig({ token: personalAccessToken, principals: { cloudBotId } }), {
+    const { personalAccessToken, botId, botMultipart } = props
+    const axiosConfig = _.merge(this.getCloudAxiosConfig({ token: personalAccessToken, principals: { botId } }), {
       maxContentLength: MAX_BODY_CLOUD_BOT_SIZE,
       maxBodyLength: MAX_BODY_CLOUD_BOT_SIZE,
       headers: { 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}` }
@@ -115,8 +115,8 @@ export class CloudClient {
   private getCloudAxiosConfig(props: { token: PersonalAccessToken | OAuthAccessToken; principals: Principals }) {
     const { token, principals } = props
     const headers = { Authorization: `bearer ${token}` }
-    if (principals.cloudBotId) {
-      headers['x-bot-id'] = principals.cloudBotId
+    if (principals.botId) {
+      headers['x-bot-id'] = principals.botId
     }
     if (principals.userId) {
       headers['x-user-id'] = principals.userId
