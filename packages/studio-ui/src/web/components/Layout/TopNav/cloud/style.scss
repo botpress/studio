@@ -6,3 +6,9 @@
 .patInput {
   width: 48ch; // PATs are 44 chars long, let's make the input box a little longer
 }
+
+.wsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

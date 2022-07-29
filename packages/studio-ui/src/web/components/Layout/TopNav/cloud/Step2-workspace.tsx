@@ -1,8 +1,10 @@
-import { Button } from '@blueprintjs/core'
+import { Button, Intent, MenuItem } from '@blueprintjs/core'
+import { Select } from '@blueprintjs/select'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
+import style from './style.scss'
 import { Workspace } from './types'
 
 interface OwnProps {
@@ -13,6 +15,8 @@ interface OwnProps {
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
+
+const WorkspaceSelect = Select.ofType<Workspace>()
 
 const WorkspaceSelector = (props: Props): JSX.Element => {
   const { bot, pat, onCompleted } = props
@@ -48,25 +52,25 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
   }
 
   return (
-    <div>
-      <select
-        onChange={(e) => {
-          const matchingWorkspace = workspaces.find((w) => w.id === e.target.value)
-          if (matchingWorkspace) {
-            setSelectedWorkspace(matchingWorkspace)
-          }
+    <div className={style.wsContainer} onClick={(e) => e.stopPropagation()}>
+      <WorkspaceSelect
+        items={workspaces}
+        filterable={false}
+        itemRenderer={(item) => <MenuItem key={item.id} text={item.name} />}
+        popoverProps={{ minimal: true }}
+        onItemSelect={(ws) => {
+          setSelectedWorkspace(ws)
         }}
       >
-        {workspaces.map((w) => (
-          <option key={w.id} value={w.id}>
-            {w.name}
-          </option>
-        ))}
-      </select>
+        <Button rightIcon="caret-down">{selectedWorkspace ? selectedWorkspace.name : 'Select workspace'}</Button>
+      </WorkspaceSelect>
       <Button
         disabled={!selectedWorkspace.id}
-        text="Deploy to this workspace"
-        onClick={() => onCompleted(selectedWorkspace.id)}
+        text="Deploy"
+        onClick={() => {
+          onCompleted(selectedWorkspace.id)
+        }}
+        intent={Intent.PRIMARY}
       />
     </div>
   )

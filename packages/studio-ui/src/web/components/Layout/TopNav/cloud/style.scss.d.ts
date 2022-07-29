@@ -3,6 +3,7 @@
 interface CssExports {
   'patContainer': string;
   'patInput': string;
+  'wsContainer': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;
