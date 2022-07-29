@@ -90,6 +90,8 @@ function reducer(state: State, action: Action): State {
 function init(props: Props): State {
   const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
 
+  console.log({ initialPatValue })
+
   if (initialPatValue === null) {
     return { initialPatValue, initialPatValid: false, validatingInitialPat: true, newPat: null, newPatValid: false }
   }
@@ -160,7 +162,7 @@ const PatInput = (props: Props): JSX.Element => {
     }
   }
 
-  if (validatingInitialPat) {
+  if (initialPatValue && validatingInitialPat) {
     return <></>
   }
 
