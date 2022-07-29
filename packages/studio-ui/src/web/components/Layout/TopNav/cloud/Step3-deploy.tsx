@@ -4,6 +4,7 @@ import { NLU } from 'botpress/sdk'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { fetchBotInformation } from '~/actions'
+import { Timeout, toastFailure } from '~/components/Shared/Utils'
 import { RootReducer } from '~/reducers'
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
@@ -15,14 +16,15 @@ interface TrainSessions {
 const computeIsTrained = (trainSessions: TrainSessions) =>
   Object.values(trainSessions).reduce((trained, session) => trained && session.status === 'done', true)
 
-type Status = 'pending' | 'in-progress' | 'completed'
+type Status = 'pending' | 'in-progress' | 'completed' | 'failed'
 
 const Step = (props: { status: Status; text: string }): JSX.Element => {
   const { status, text } = props
   const chars: { [s in Status]: string | JSX.Element } = {
     pending: '⌛',
     'in-progress': <Spinner size={SpinnerSize.SMALL} />,
-    completed: '✅'
+    completed: '✅',
+    failed: '🚫'
   }
 
   return (
@@ -35,7 +37,7 @@ const Step = (props: { status: Status; text: string }): JSX.Element => {
 
 interface State {
   train: 'pending' | 'in-progress' | 'completed'
-  upload: 'pending' | 'in-progress' | 'completed'
+  upload: 'pending' | 'in-progress' | 'completed' | 'failed'
 }
 
 type Action =
@@ -43,6 +45,13 @@ type Action =
   | { type: 'training/trainSessionsUpdated'; trainSessions: TrainSessions }
   | { type: 'upload/ended' }
   | { type: 'upload/started' }
+  | { type: 'upload/failed' }
+
+class UnreachableCaseError extends Error {
+  constructor(val: never) {
+    super(`Unreachable case: ${val}`)
+  }
+}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -54,8 +63,10 @@ function reducer(state: State, action: Action): State {
       return { ...state, upload: 'in-progress' }
     case 'upload/ended':
       return { ...state, upload: 'completed' }
+    case 'upload/failed':
+      return { ...state, upload: 'failed' }
     default:
-      throw new Error(`unknown action: ${JSON.stringify(action)}`)
+      throw new UnreachableCaseError(action)
   }
 }
 
@@ -106,14 +117,25 @@ export const Deploy = (props: Props): JSX.Element => {
 
     const uploadToCloud = async () => {
       dispatch({ type: 'upload/started' })
-      await axios.post(
-        `${window.STUDIO_API_PATH}/cloud/deploy`,
-        { personalAccessToken: pat, workspaceId },
-        { signal: ac.signal }
-      )
-      props.fetchBotInformation()
-      dispatch({ type: 'upload/ended' })
-      onCompleted()
+
+      await axios
+        .post(
+          `${window.STUDIO_API_PATH}/cloud/deploy`,
+          { personalAccessToken: pat, workspaceId },
+          { signal: ac.signal }
+        )
+        .catch((e) => {
+          if (axios.isAxiosError(e)) {
+            toastFailure(e.message, Timeout.LONG)
+            dispatch({ type: 'upload/failed' })
+          }
+          throw e
+        })
+        .then(() => {
+          props.fetchBotInformation()
+          dispatch({ type: 'upload/ended' })
+          onCompleted()
+        })
     }
 
     if (train === 'completed') {
