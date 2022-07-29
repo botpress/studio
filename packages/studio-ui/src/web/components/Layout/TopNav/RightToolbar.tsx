@@ -8,14 +8,17 @@ import { RootReducer } from '~/reducers'
 import DeployCloudBtn from './DeployCloudBtn'
 import style from './style.scss'
 
-interface Props {
+interface OwnProps {
   docHints: any[]
   isEmulatorOpen: boolean
-  isCloudBot: boolean
 }
 
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+type Props = DispatchProps & StateProps & OwnProps
+
 const RightToolBar = (props: Props) => {
-  const { docHints, isCloudBot } = props
+  const { docHints } = props
   const toggleEmulator = () => {
     window.botpressWebChat.sendEvent({ type: 'toggle' })
   }
@@ -48,7 +51,7 @@ const RightToolBar = (props: Props) => {
           <span className={style.divider}></span>
         </>
       )}
-      {isCloudBot ? <DeployCloudBtn /> : null}
+      <DeployCloudBtn />
       {window.IS_BOT_MOUNTED && (
         <Tooltip content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}>
           <button
@@ -67,8 +70,9 @@ const RightToolBar = (props: Props) => {
 
 const mapStateToProps = (state: RootReducer) => ({
   docHints: state.ui.docHints,
-  emulatorOpen: state.ui.emulatorOpen,
-  isCloudBot: state.bot.isCloudBot
+  emulatorOpen: state.ui.emulatorOpen
 })
 
-export default connect(mapStateToProps)(RightToolBar)
+const mapDispatchToProps = {}
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps)(RightToolBar)
