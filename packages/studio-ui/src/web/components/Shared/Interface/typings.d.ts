@@ -25,6 +25,7 @@ declare global {
     botpressWebChat: any
     BOT_API_PATH: string
     STUDIO_API_PATH: string
+    CLOUD_CONTROLLER_ENDPOINT: string
     API_PATH: string
     APP_VERSION: string
     BOT_NAME: string
