@@ -1,5 +1,6 @@
 import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
 import axios from 'axios'
+import { UnreachableCaseError } from 'common/errors'
 import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
 import { connect } from 'react-redux'
@@ -83,7 +84,7 @@ function reducer(state: State, action: Action): State {
       }
       throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
     default:
-      throw new Error(`unknown action: ${JSON.stringify(action)}`)
+      throw new UnreachableCaseError(action)
   }
 }
 
