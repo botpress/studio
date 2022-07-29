@@ -42,8 +42,9 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
     return () => ac.abort()
   }, [pat])
 
-  if (bot.cloud?.workspaceId) {
-    onCompleted(bot.cloud.workspaceId)
+  if (bot.cloud?.workspaceId || workspaces.length === 1) {
+    const workspaceId = bot.cloud?.workspaceId ?? workspaces[0].id
+    onCompleted(workspaceId)
     return <></>
   }
 
