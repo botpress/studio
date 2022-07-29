@@ -110,13 +110,13 @@ const wrapAction =
     receiveAction = receiveSaveFlows,
     errorAction = errorSaveFlows
   ) =>
-  (payload?: any) =>
-  (dispatch, getState) => {
-    dispatch(requestAction(payload))
-    asyncCallback(payload, getState(), dispatch)
-      .then(() => dispatch(receiveAction()))
-      .catch((err) => dispatch(errorAction(err)))
-  }
+    (payload?: any) =>
+      (dispatch, getState) => {
+        dispatch(requestAction(payload))
+        asyncCallback(payload, getState(), dispatch)
+          .then(() => dispatch(receiveAction()))
+          .catch((err) => dispatch(errorAction(err)))
+      }
 
 const updateCurrentFlow = async (_payload, state) => {
   const flowState = state.flows
@@ -267,13 +267,13 @@ export const fetchContentItems =
   }: {
     contentType: string
   } & sdk.SearchParams) =>
-  (dispatch) => {
-    const type = contentType && contentType !== 'all' ? `${contentType}/` : ''
+    (dispatch) => {
+      const type = contentType && contentType !== 'all' ? `${contentType}/` : ''
 
-    return axios
-      .post(`${window.STUDIO_API_PATH}/cms/${type}elements`, query)
-      .then(({ data }) => dispatch(receiveContentItems(data)))
-  }
+      return axios
+        .post(`${window.STUDIO_API_PATH}/cms/${type}elements`, query)
+        .then(({ data }) => dispatch(receiveContentItems(data)))
+    }
 
 const getBatchedContentItems = (ids) =>
   axios.post(`${window.STUDIO_API_PATH}/cms/elements`, { ids }).then(({ data }) =>
@@ -293,30 +293,30 @@ export const receiveContentItemsBatched = createAction('CONTENT/ITEMS/RECEIVE_BA
 export const receiveContentItem = createAction('CONTENT/ITEMS/RECEIVE_ONE')
 export const fetchContentItem =
   (id: string, { force = false, batched = false } = {}) =>
-  (dispatch, getState) => {
-    if (!id || (!force && getState().content.itemsById[id])) {
-      return Promise.resolve()
-    }
+    (dispatch, getState) => {
+      if (!id || (!force && getState().content.itemsById[id])) {
+        return Promise.resolve()
+      }
 
-    return batched
-      ? getBatchedContentItem(id, dispatch)
-      : getSingleContentItem(id).then((data) => {
+      return batched
+        ? getBatchedContentItem(id, dispatch)
+        : getSingleContentItem(id).then((data) => {
           data && dispatch(receiveContentItem(data))
         })
-  }
+    }
 
 export const receiveContentItemsCount = createAction('CONTENT/ITEMS/RECEIVE_COUNT')
 export const fetchContentItemsCount =
   (contentType = 'all') =>
-  (dispatch) =>
-    axios
-      .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
-      .then((data) => dispatch(receiveContentItemsCount(data)))
+    (dispatch) =>
+      axios
+        .get(`${window.STUDIO_API_PATH}/cms/elements/count`, { params: { contentType } })
+        .then((data) => dispatch(receiveContentItemsCount(data)))
 
 export const upsertContentItem =
   ({ contentType, formData, modifyId }: Pick<sdk.ContentElement, 'contentType' | 'formData'> & { modifyId: string }) =>
-  () =>
-    axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
+    () =>
+      axios.post(`${window.STUDIO_API_PATH}/cms/${contentType}/element/${modifyId || ''}`, { formData })
 
 export const deleteContentItems = (data) => () => axios.post(`${window.STUDIO_API_PATH}/cms/elements/bulk_delete`, data)
 export const deleteMedia = (data: sdk.FormData) => () => axios.post(`${window.STUDIO_API_PATH}/media/delete`, data)
@@ -455,6 +455,8 @@ export const refreshIntents = () => (dispatch) => {
     dispatch(intentsReceived(data))
   })
 }
+
+export const trainSessionReceived = createAction('TRAIN_SESSION/RECEIVED')
 
 export const conditionsReceived = createAction('CONDITIONS/RECEIVED')
 export const refreshConditions = () => (dispatch) => {
