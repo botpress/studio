@@ -1,4 +1,5 @@
 import { CloudConfig } from 'botpress/sdk'
+import { UnreachableCaseError } from 'common/errors'
 import { BotService } from 'core/bots'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
@@ -7,7 +8,7 @@ import { NLUService } from 'studio/nlu'
 import { Result, Ok, Err } from 'ts-results'
 import { VError } from 'verror'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
-import { CDMConflictError, UnexpectedError, UnreachableCaseError } from './errors'
+import { CDMConflictError, UnexpectedError } from './errors'
 import { Bot } from './types'
 
 export class CloudService {

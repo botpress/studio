@@ -1,6 +1,7 @@
 import { Spinner, SpinnerSize } from '@blueprintjs/core'
 import axios from 'axios'
 import { NLU } from 'botpress/sdk'
+import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { fetchBotInformation } from '~/actions'
@@ -46,12 +47,6 @@ type Action =
   | { type: 'upload/ended' }
   | { type: 'upload/started' }
   | { type: 'upload/failed' }
-
-class UnreachableCaseError extends Error {
-  constructor(val: never) {
-    super(`Unreachable case: ${val}`)
-  }
-}
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
