@@ -57,7 +57,8 @@ export const BotEditSchema = Joi.object().keys({
   cloud: {
     botId: Joi.string(),
     clientId: Joi.string(),
-    clientSecret: Joi.string()
+    clientSecret: Joi.string(),
+    workspaceId: Joi.string()
   }
 })
 
