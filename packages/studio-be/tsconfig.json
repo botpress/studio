@@ -11,6 +11,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "useUnknownInCatchVariables": false,
+    "strictNullChecks": true,
     "baseUrl": "./src",
     "outDir": "./out",
     "typeRoots": ["./src/typings", "./node_modules/@types", "../../node_modules/@types"],

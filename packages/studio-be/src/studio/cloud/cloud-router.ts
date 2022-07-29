@@ -1,11 +1,10 @@
-import { BadRequestError, InternalServerError, UnauthorizedError } from 'core/routers'
+import { BadRequestError, ConflictError } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import VError from 'verror'
 import { CloudClient } from './cloud-client'
 import { CloudService } from './cloud-service'
-import { NAMES } from './errors'
+import { UnreachableCaseError } from './errors'
 import { DeployRequestSchema } from './validation'
 
 export class CloudRouter extends CustomStudioRouter {
@@ -21,29 +20,30 @@ export class CloudRouter extends CustomStudioRouter {
     this.router.post(
       '/deploy',
       this.asyncMiddleware(async (req, res) => {
-        const result = DeployRequestSchema.safeParse(req)
-        if (!result.success) {
-          throw new BadRequestError(result.error.message)
+        const parseResult = DeployRequestSchema.safeParse(req)
+        if (!parseResult.success) {
+          throw new BadRequestError(parseResult.error.message)
         }
 
         const {
           params: { botId },
           body: { workspaceId, personalAccessToken }
-        } = result.data
+        } = parseResult.data
 
-        try {
-          await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
-        } catch (e) {
-          if (e instanceof VError) {
-            if (e.name === NAMES.too_large_message) {
-              throw new BadRequestError(e.message)
-            }
-            throw new InternalServerError(e.message)
+        const deployResult = await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
+
+        if (deployResult.err) {
+          const { val } = deployResult
+          switch (val) {
+            case 'bot conflict':
+              throw new ConflictError(val)
+            case 'message too large':
+              throw new BadRequestError(val)
+            case 'no bot config':
+              throw new BadRequestError(val)
+            default:
+              throw new UnreachableCaseError(val)
           }
-          if (e instanceof Error) {
-            throw new InternalServerError(e.message)
-          }
-          throw new InternalServerError(`unexpected error: ${e}`)
         }
 
         return res.sendStatus(204)

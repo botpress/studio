@@ -1,10 +1,14 @@
 import axios from 'axios'
 import { Logger } from 'botpress/sdk'
-
 import FormData from 'form-data'
+import { constants } from 'http2'
+
 import _ from 'lodash'
 import qs from 'qs'
+import { Result, Ok, Err } from 'ts-results'
 import { VError } from 'verror'
+import { CDMConflictError, UnexpectedError } from './errors'
+import { isCDMError } from './guards'
 import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from './types'
 
 export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
@@ -12,14 +16,28 @@ export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
 export class CloudClient {
   constructor(private logger: Logger) { }
 
-  public async createBot(props: { personalAccessToken: string; name: string; workspaceId: string }): Promise<Bot> {
+  public async createBot(props: {
+    personalAccessToken: string
+    name: string
+    workspaceId: string
+  }): Promise<Result<Bot, CDMConflictError | UnexpectedError>> {
     const { personalAccessToken, name, workspaceId } = props
-    const { data } = await axios.post(
-      `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots`,
-      { workspaceId, name },
-      this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
-    )
-    return data as Bot
+    try {
+      const { data } = await axios.post(
+        `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots`,
+        { workspaceId, name },
+        this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
+      )
+      return Ok(data)
+    } catch (e) {
+      if (isCDMError(e)) {
+        if (e.response.status === constants.HTTP_STATUS_CONFLICT) {
+          const { message } = e.response.data
+          return Err(new CDMConflictError(message))
+        }
+      }
+      return Err(new UnexpectedError(e, 'Error while attempting to create bot'))
+    }
   }
 
   public async canDeployBot(props: { oauthAccessToken: OAuthAccessToken; cloudBotId: string }): Promise<boolean> {

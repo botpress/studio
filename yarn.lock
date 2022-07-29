@@ -2813,6 +2813,7 @@ __metadata:
     tar: ^6.1.11
     tmp: ^0.2.1
     ts-node: ^10.5.0
+    ts-results: ^3.3.0
     typescript: ^4.5.5
     unzipper: ^0.10.11
     verror: ^1.10.1
@@ -30723,6 +30724,13 @@ __metadata:
     typescript:
       optional: true
   checksum: c2a698b85d521298fe6f2435fbf2d3dc5834b423ea25abd321805ead3f399dbeedce7ca09492d7eb005b9d2c009c6b9587055bc3ab273dc6b9e40eefd7edb5b2
+  languageName: node
+  linkType: hard
+
+"ts-results@npm:^3.3.0":
+  version: 3.3.0
+  resolution: "ts-results@npm:3.3.0"
+  checksum: 426c272901d7a0cf8e9539ed90739d03f8e99245fb669beabba8c6729b92da6574698018f9dc8d5d92e8a3e833a40899f855192208ff8dd7e4a68178f7740132
   languageName: node
   linkType: hard
 
