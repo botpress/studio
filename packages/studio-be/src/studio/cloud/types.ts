@@ -1,9 +1,3 @@
-import { AxiosError } from 'axios'
-
-export interface CDMError extends AxiosError<{ message: string }> {
-  response: NonNullable<AxiosError<{ message: string }>['response']>
-}
-
 type RuntimeStatus =
   | 'ACTIVE'
   | 'DELETED'

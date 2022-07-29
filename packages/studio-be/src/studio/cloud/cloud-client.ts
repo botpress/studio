@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Logger } from 'botpress/sdk'
+import { isCDMError } from 'common/errors'
 import FormData from 'form-data'
 import { constants } from 'http2'
 
@@ -8,7 +9,6 @@ import qs from 'qs'
 import { Result, Ok, Err } from 'ts-results'
 import { VError } from 'verror'
 import { CDMConflictError, UnexpectedError } from './errors'
-import { isCDMError } from './guards'
 import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from './types'
 
 export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB

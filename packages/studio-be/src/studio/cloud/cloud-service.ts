@@ -8,7 +8,7 @@ import { NLUService } from 'studio/nlu'
 import { Result, Ok, Err } from 'ts-results'
 import { VError } from 'verror'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
-import { CDMConflictError, UnexpectedError } from './errors'
+import { CDMConflictError, CreateBotError, UnexpectedError } from './errors'
 import { Bot } from './types'
 
 export class CloudService {
@@ -18,7 +18,7 @@ export class CloudService {
     botId: string
     workspaceId: string
     personalAccessToken: string
-  }): Promise<Result<void, 'message too large' | 'no bot config' | 'bot conflict'>> {
+  }): Promise<Result<void, 'message too large' | 'no bot config' | CreateBotError>> {
     const { personalAccessToken, workspaceId, botId } = props
 
     const botConfig = await this.botService.findBotById(botId)
@@ -42,23 +42,19 @@ export class CloudService {
         const { val } = result
 
         if (val instanceof CDMConflictError) {
-          return Err('bot conflict')
+          return Err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
         }
 
         if (val instanceof UnexpectedError) {
-          return Err('bot conflict')
+          return Err(new CreateBotError({ cause: val }, 'Cloud not create bot'))
         }
 
         throw new UnreachableCaseError(val)
-      }
-
-      if (result.ok) {
+      } else {
         cloudBot = result.val
         cloudBotId = cloudBot.id
         clientId = cloudBot.apiKey.id
         clientSecret = cloudBot.apiKey.secret
-      } else {
-        return Err('bot conflict')
       }
 
       await this.botService.updateBot(botId, {

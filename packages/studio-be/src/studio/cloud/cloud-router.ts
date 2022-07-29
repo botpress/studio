@@ -5,6 +5,7 @@ import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { CloudClient } from './cloud-client'
 import { CloudService } from './cloud-service'
+import { CreateBotError } from './errors'
 import { DeployRequestSchema } from './validation'
 
 export class CloudRouter extends CustomStudioRouter {
@@ -34,16 +35,16 @@ export class CloudRouter extends CustomStudioRouter {
 
         if (deployResult.err) {
           const { val } = deployResult
-          switch (val) {
-            case 'bot conflict':
-              throw new ConflictError(val)
-            case 'message too large':
-              throw new BadRequestError(val)
-            case 'no bot config':
-              throw new BadRequestError(val)
-            default:
-              throw new UnreachableCaseError(val)
+
+          if (val === 'message too large') {
+            throw new BadRequestError(val)
+          } else if (val === 'no bot config') {
+            throw new BadRequestError(val)
+          } else if (val instanceof CreateBotError) {
+            throw new ConflictError(val.message)
           }
+
+          throw new UnreachableCaseError(val)
         }
 
         return res.sendStatus(204)

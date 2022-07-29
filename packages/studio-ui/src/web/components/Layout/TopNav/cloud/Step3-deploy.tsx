@@ -1,7 +1,7 @@
 import { Spinner, SpinnerSize } from '@blueprintjs/core'
 import axios from 'axios'
 import { NLU } from 'botpress/sdk'
-import { UnreachableCaseError } from 'common/errors'
+import { isCDMError, UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { fetchBotInformation } from '~/actions'
@@ -120,8 +120,8 @@ export const Deploy = (props: Props): JSX.Element => {
           { signal: ac.signal }
         )
         .catch((e) => {
-          if (axios.isAxiosError(e)) {
-            toastFailure(e.message, Timeout.LONG)
+          if (isCDMError(e)) {
+            toastFailure(e.response.data.message, Timeout.LONG)
             dispatch({ type: 'upload/failed' })
           }
           throw e
