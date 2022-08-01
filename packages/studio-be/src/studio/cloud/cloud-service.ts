@@ -18,7 +18,7 @@ export class CloudService {
     botId: string
     workspaceId: string
     personalAccessToken: string
-  }): Promise<Result<void, 'message too large' | 'no bot config' | CreateBotError>> {
+  }): Promise<Result<void, 'message too large' | 'no bot config' | 'invalid pat' | CreateBotError>> {
     const { personalAccessToken, workspaceId, botId } = props
 
     const botConfig = await this.botService.findBotById(botId)
@@ -30,36 +30,50 @@ export class CloudService {
     let clientId: string
     let clientSecret: string
 
-    if (botConfig.cloud) {
+    if (botConfig.cloud?.botId) {
+      // if botId is already set, we assume it's a cloud bot
       cloudBotId = botConfig.cloud.botId
       clientId = botConfig.cloud.clientId
       clientSecret = botConfig.cloud.clientSecret
     } else {
+      // otherwise, we try finding a matching bot (by name) in the cloud
       let cloudBot: Bot | undefined
-      const result = await this.cloudClient.createBot({
-        personalAccessToken,
-        name: botId,
-        workspaceId
-      })
-      if (result.err) {
-        const { val } = result
+      const cloudWorkspaceBots = await this.cloudClient.listBots({ personalAccessToken, workspaceId })
+      const matchingBot = cloudWorkspaceBots.find((b) => b.name === botId)
 
-        if (val instanceof CDMConflictError) {
-          return Err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
+      if (!matchingBot) {
+        // no matching bot found, we create a new one in the cloud
+        const result = await this.cloudClient.createBot({
+          personalAccessToken,
+          name: botId,
+          workspaceId
+        })
+        if (result.err) {
+          const { val } = result
+
+          if (val instanceof CDMConflictError) {
+            return Err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
+          }
+
+          if (val instanceof UnexpectedError) {
+            return Err(new CreateBotError({ cause: val }, 'Could not create bot'))
+          }
+
+          throw new UnreachableCaseError(val)
+        } else {
+          cloudBot = result.val
+          cloudBotId = cloudBot.id
+          clientId = cloudBot.apiKey.id
+          clientSecret = cloudBot.apiKey.secret
         }
-
-        if (val instanceof UnexpectedError) {
-          return Err(new CreateBotError({ cause: val }, 'Could not create bot'))
-        }
-
-        throw new UnreachableCaseError(val)
       } else {
-        cloudBot = result.val
+        cloudBot = matchingBot
         cloudBotId = cloudBot.id
         clientId = cloudBot.apiKey.id
         clientSecret = cloudBot.apiKey.secret
       }
 
+      // save the cloud bot info in the bot config
       await this.botService.updateBot(botId, {
         cloud: { botId: cloudBotId, clientId: cloudBot.apiKey.id, clientSecret: cloudBot.apiKey.secret, workspaceId }
       })

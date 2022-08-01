@@ -68,6 +68,15 @@ export class CloudClient {
     await axios.post(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/upload`, botMultipart, axiosConfig)
   }
 
+  public async listBots(props: { personalAccessToken: PersonalAccessToken; workspaceId: string }): Promise<Bot[]> {
+    const { personalAccessToken, workspaceId } = props
+    const { data } = await axios.get(
+      `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/workspaces/${workspaceId}`,
+      this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
+    )
+    return data
+  }
+
   public async getIntrospect(props: { oauthAccessToken: OAuthAccessToken; clientId: string }): Promise<Introspect> {
     const { oauthAccessToken, clientId } = props
     const { data: introspectData } = await axios.get(

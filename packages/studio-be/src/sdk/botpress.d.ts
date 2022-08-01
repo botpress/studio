@@ -901,8 +901,8 @@ declare module 'botpress/sdk' {
   }
 
   export interface CloudConfig {
-    botId: string
-    workspaceId: string
+    botId?: string
+    workspaceId?: string
     clientId: string
     clientSecret: string
   }

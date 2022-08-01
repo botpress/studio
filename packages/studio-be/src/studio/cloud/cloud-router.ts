@@ -1,4 +1,5 @@
 import { UnreachableCaseError } from 'common/errors'
+import { UnauthorizedError } from 'common/http'
 import { BadRequestError, ConflictError } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
@@ -40,6 +41,8 @@ export class CloudRouter extends CustomStudioRouter {
             throw new BadRequestError(val)
           } else if (val === 'no bot config') {
             throw new BadRequestError(val)
+          } else if (val === 'invalid pat') {
+            throw new UnauthorizedError(val)
           } else if (val instanceof CreateBotError) {
             throw new ConflictError(val.message)
           }
