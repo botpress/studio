@@ -1,100 +1,59 @@
 import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
-import axios from 'axios'
+
 import { UnreachableCaseError } from 'common/errors'
 import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
+import { LocalStoragePat } from './local-storage-pat'
+import { fetchPatStatus } from './pat'
 
 import style from './style.scss'
-
-const fetchPatStatus = async (pat: string, ac: AbortController): Promise<boolean> => {
-  const resp = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/pat/authenticate`, {
-    headers: { Authorization: `bearer ${pat}` },
-    validateStatus: () => true,
-    signal: ac.signal
-  })
-
-  const authenticated = resp.status === 200 && resp.headers['x-user-id'] !== undefined
-  return authenticated
-}
 
 interface OwnProps {
   onCompleted: (pat: string) => void
 }
 
-interface InitialState {
-  initialPatValue: string | null
-  initialPatValid: false
-  validatingInitialPat: true
-  newPat: null
-  newPatValid: false
-}
-
 type State =
-  | InitialState
-  | { initialPatValue: null; initialPatValid: false; validatingInitialPat: false; newPat: string; newPatValid: boolean }
-  | { initialPatValue: string; initialPatValid: boolean; validatingInitialPat: false; newPat: null; newPatValid: false }
   | {
-      initialPatValue: string
-      initialPatValid: false
-      validatingInitialPat: false
+      status: 'checking_initial_pat'
+    }
+  | {
+      status: 'initial_pat_valid'
+      initialPat: string
+    }
+  | {
+      status: 'initial_pat_invalid'
+    }
+  | {
+      status: 'checking_new_pat'
       newPat: string
-      newPatValid: boolean
+    }
+  | {
+      status: 'new_pat_status_received'
+      newPat: string
+      valid: boolean
     }
 
 type Action =
   | { type: 'input/updated'; value: string }
-  | { type: 'newPat/validated'; valid: boolean }
-  | { type: 'initialPat/validated'; valid: boolean }
+  | { type: 'newPat/validated'; value: string; valid: boolean }
+  | { type: 'initialPatCheck/valid'; value: string }
+  | { type: 'initialPatCheck/invalid' }
 
 function reducer(state: State, action: Action): State {
-  const { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid } = state
-
   switch (action.type) {
     case 'input/updated':
-      if (_.isNull(initialPatValue) && initialPatValid === false && validatingInitialPat === false) {
-        return { initialPatValue, initialPatValid, validatingInitialPat, newPat: action.value, newPatValid }
-      }
-      if (_.isString(initialPatValue) && initialPatValid === false && validatingInitialPat === false) {
-        return { initialPatValue, initialPatValid, validatingInitialPat, newPat: action.value, newPatValid }
-      }
-      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+      return { status: 'checking_new_pat', newPat: action.value }
     case 'newPat/validated':
-      if (
-        _.isNull(initialPatValue) &&
-        initialPatValid === false &&
-        _.isString(newPat) &&
-        validatingInitialPat === false
-      ) {
-        return { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid: action.valid }
-      }
-      if (
-        _.isString(initialPatValue) &&
-        initialPatValid === false &&
-        _.isString(newPat) &&
-        validatingInitialPat === false
-      ) {
-        return { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid: action.valid }
-      }
-      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
-    case 'initialPat/validated':
-      if (_.isString(initialPatValue) && _.isNull(newPat) && newPatValid === false && validatingInitialPat === true) {
-        return { initialPatValue, initialPatValid: action.valid, validatingInitialPat: false, newPat, newPatValid }
-      }
-      throw new Error(`invalid action: ${JSON.stringify(action)} for state: ${JSON.stringify(state)}`)
+      return { status: 'new_pat_status_received', newPat: action.value, valid: action.valid }
+    case 'initialPatCheck/valid':
+      return { status: 'initial_pat_valid', initialPat: action.value }
+    case 'initialPatCheck/invalid':
+      return { status: 'initial_pat_invalid' }
     default:
       throw new UnreachableCaseError(action)
   }
-}
-
-function init(props: Props): State {
-  const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
-
-  if (initialPatValue === null) {
-    return { initialPatValue, initialPatValid: false, validatingInitialPat: true, newPat: null, newPatValid: false }
-  }
-  return { initialPatValue, initialPatValid: false, validatingInitialPat: true, newPat: null, newPatValid: false }
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -106,28 +65,13 @@ const LOCALSTORAGE_KEY = 'bp/pat'
 const PatInput = (props: Props): JSX.Element => {
   const { onCompleted } = props
 
-  const [state, dispatch] = useReducer(reducer, props, init)
+  const [state, dispatch] = useReducer(reducer, { status: 'checking_initial_pat' })
 
-  const { initialPatValue, initialPatValid, validatingInitialPat, newPat, newPatValid } = state
-
-  useEffect(() => {
-    const ac = new AbortController()
-
-    const validateInitialPat = async (pat: string) => {
-      const valid = await fetchPatStatus(pat, ac)
-      dispatch({ type: 'initialPat/validated', valid })
-    }
-
-    if (initialPatValue) {
-      void validateInitialPat(initialPatValue)
-    }
-
-    return () => ac.abort()
-  }, [initialPatValue])
+  const { status } = state
 
   const validatePat = async (pat: string, ac: AbortController) => {
     const valid = await fetchPatStatus(pat, ac)
-    dispatch({ type: 'newPat/validated', valid })
+    dispatch({ type: 'newPat/validated', valid, value: pat })
   }
 
   const debounceAc = new AbortController()
@@ -141,10 +85,11 @@ const PatInput = (props: Props): JSX.Element => {
   }, [])
 
   useEffect(() => {
-    if (newPat) {
+    if (status === 'checking_new_pat') {
+      const { newPat } = state
       void debouncedValidatePat(newPat, debounceAc)
     }
-  }, [newPat])
+  }, [status])
 
   const changeHandler = async (event) => {
     dispatch({ type: 'input/updated', value: event.target.value })
@@ -156,40 +101,92 @@ const PatInput = (props: Props): JSX.Element => {
   }
 
   const onSaveClicked = async () => {
-    if (newPat && newPatValid) {
-      savePat(newPat)
+    if (status === 'new_pat_status_received' && state.valid) {
+      savePat(state.newPat)
     }
   }
 
-  if (initialPatValue && validatingInitialPat) {
+  if (status === 'checking_initial_pat') {
+    return (
+      <LocalStoragePat
+        onCompleted={(value) => {
+          if (value) {
+            dispatch({ type: 'initialPatCheck/valid', value })
+          } else {
+            dispatch({ type: 'initialPatCheck/invalid' })
+          }
+        }}
+      />
+    )
+  }
+
+  if (status === 'initial_pat_valid') {
+    onCompleted(state.initialPat)
     return <></>
   }
 
-  if (initialPatValue && initialPatValid) {
-    onCompleted(initialPatValue)
-    return <></>
-  }
-
-  return (
-    <div className={style.patContainer}>
-      <InputGroup
-        className={style.patInput}
-        placeholder="Enter Personal Access Token"
-        value={newPat || ''}
-        onChange={changeHandler}
-        rightElement={
-          newPatValid ? (
-            <Button disabled={true} icon={'tick-circle'} minimal={true} />
-          ) : (
+  if (status === 'initial_pat_invalid') {
+    return (
+      <div className={style.patContainer}>
+        <InputGroup
+          className={style.patInput}
+          placeholder="Enter Personal Access Token"
+          value={''}
+          onChange={changeHandler}
+          rightElement={
             <Tooltip content={'Token invalid'}>
               <Button disabled={true} icon={'error'} minimal={true} />
             </Tooltip>
-          )
-        }
-      />
-      <Button disabled={!newPatValid} text="Save" onClick={onSaveClicked} />
-    </div>
-  )
+          }
+        />
+        <Button disabled text="Save" onClick={onSaveClicked} />
+      </div>
+    )
+  }
+
+  if (status === 'new_pat_status_received') {
+    return (
+      <div className={style.patContainer}>
+        <InputGroup
+          className={style.patInput}
+          placeholder="Enter Personal Access Token"
+          value={state.newPat}
+          onChange={changeHandler}
+          rightElement={
+            state.valid ? (
+              <Button disabled={true} icon={'tick-circle'} minimal={true} />
+            ) : (
+              <Tooltip content={'Token invalid'}>
+                <Button disabled={true} icon={'error'} minimal={true} />
+              </Tooltip>
+            )
+          }
+        />
+        <Button disabled={!state.valid} text="Save" onClick={onSaveClicked} />
+      </div>
+    )
+  }
+
+  if (status === 'checking_new_pat') {
+    return (
+      <div className={style.patContainer}>
+        <InputGroup
+          className={style.patInput}
+          placeholder="Enter Personal Access Token"
+          value={state.newPat}
+          onChange={changeHandler}
+          rightElement={
+            <Tooltip content={'Checking token status'}>
+              <Button disabled={true} icon={'refresh'} minimal={true} />
+            </Tooltip>
+          }
+        />
+        <Button disabled text="Save" onClick={onSaveClicked} />
+      </div>
+    )
+  }
+
+  return <></>
 }
 
 const mapStateToProps = (state: RootReducer) => ({})
