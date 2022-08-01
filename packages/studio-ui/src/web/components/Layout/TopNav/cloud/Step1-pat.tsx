@@ -62,7 +62,7 @@ type Props = DispatchProps & StateProps & OwnProps
 
 const LOCALSTORAGE_KEY = 'bp/pat'
 
-const PatInput = (props: Props): JSX.Element => {
+const PatProvider = (props: Props): JSX.Element => {
   const { onCompleted } = props
 
   const [state, dispatch] = useReducer(reducer, { status: 'checking_initial_pat' })
@@ -193,4 +193,4 @@ const mapStateToProps = (state: RootReducer) => ({})
 
 const mapDispatchToProps = {}
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PatInput)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(PatProvider)
