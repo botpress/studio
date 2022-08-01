@@ -1,4 +1,4 @@
-import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
+import { Alignment, AnchorButton, Button, Icon, InputGroup, Tooltip } from '@blueprintjs/core'
 
 import React from 'react'
 
@@ -14,23 +14,37 @@ export function PatInput(props: {
   const { pat, valid, loading, onChange, onSave } = props
 
   return (
-    <div className={style.patContainer}>
-      <InputGroup
-        className={style.patInput}
-        placeholder="Enter Personal Access Token"
-        value={pat}
-        onChange={(e) => onChange(e.target.value)}
-        rightElement={
-          valid ? (
-            <Button disabled={true} icon={'tick-circle'} minimal={true} />
-          ) : (
-            <Tooltip content={loading ? 'Checking token status' : 'Token invalid'}>
-              <Button disabled={true} icon={loading ? 'refresh' : 'error'} minimal={true} />
-            </Tooltip>
-          )
-        }
-      />
-      <Button disabled={!valid} text="Save" onClick={onSave} />
+    <div>
+      <div className={style.patContainer}>
+        <InputGroup
+          className={style.patInput}
+          placeholder="Enter Personal Access Token"
+          value={pat}
+          onChange={(e) => onChange(e.target.value)}
+          rightElement={
+            valid ? (
+              <Button disabled={true} icon={'tick-circle'} minimal={true} />
+            ) : (
+              <Tooltip content={loading ? 'Checking token status' : 'Token invalid'}>
+                <Button disabled={true} icon={loading ? 'refresh' : 'error'} minimal={true} />
+              </Tooltip>
+            )
+          }
+        />
+        <Button disabled={!valid} text="Save" onClick={onSave} />
+      </div>
+      <div style={{ marginTop: '10px' }}>
+        <AnchorButton
+          style={{ fontSize: 'small', paddingLeft: 0 }}
+          text="Create a Personal Access Token"
+          small
+          target="_blank"
+          rightIcon="share"
+          minimal
+          href="http://127.0.0.1:9000/settings#pats"
+          alignText={Alignment.LEFT}
+        />
+      </div>
     </div>
   )
 }
