@@ -49,7 +49,7 @@ export class CloudService {
         }
 
         if (val instanceof UnexpectedError) {
-          return Err(new CreateBotError({ cause: val }, 'Cloud not create bot'))
+          return Err(new CreateBotError({ cause: val }, 'Could not create bot'))
         }
 
         throw new UnreachableCaseError(val)
