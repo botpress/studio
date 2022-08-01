@@ -1,5 +1,3 @@
-import { Button, InputGroup, Tooltip } from '@blueprintjs/core'
-
 import { UnreachableCaseError } from 'common/errors'
 import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
@@ -7,8 +5,7 @@ import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
 import { LocalStoragePat } from './local-storage-pat'
 import { fetchPatStatus } from './pat'
-
-import style from './style.scss'
+import { PatInput } from './pat-input'
 
 interface OwnProps {
   onCompleted: (pat: string) => void
@@ -91,8 +88,8 @@ const PatProvider = (props: Props): JSX.Element => {
     }
   }, [status])
 
-  const changeHandler = async (event) => {
-    dispatch({ type: 'input/updated', value: event.target.value })
+  const changeHandler = (pat: string) => {
+    dispatch({ type: 'input/updated', value: pat })
   }
 
   const savePat = (pat: string) => {
@@ -126,64 +123,15 @@ const PatProvider = (props: Props): JSX.Element => {
   }
 
   if (status === 'initial_pat_invalid') {
-    return (
-      <div className={style.patContainer}>
-        <InputGroup
-          className={style.patInput}
-          placeholder="Enter Personal Access Token"
-          value={''}
-          onChange={changeHandler}
-          rightElement={
-            <Tooltip content={'Token invalid'}>
-              <Button disabled={true} icon={'error'} minimal={true} />
-            </Tooltip>
-          }
-        />
-        <Button disabled text="Save" onClick={onSaveClicked} />
-      </div>
-    )
+    return <PatInput pat={''} valid={false} onChange={changeHandler} onSave={onSaveClicked} />
   }
 
   if (status === 'new_pat_status_received') {
-    return (
-      <div className={style.patContainer}>
-        <InputGroup
-          className={style.patInput}
-          placeholder="Enter Personal Access Token"
-          value={state.newPat}
-          onChange={changeHandler}
-          rightElement={
-            state.valid ? (
-              <Button disabled={true} icon={'tick-circle'} minimal={true} />
-            ) : (
-              <Tooltip content={'Token invalid'}>
-                <Button disabled={true} icon={'error'} minimal={true} />
-              </Tooltip>
-            )
-          }
-        />
-        <Button disabled={!state.valid} text="Save" onClick={onSaveClicked} />
-      </div>
-    )
+    return <PatInput pat={state.newPat} valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
   }
 
   if (status === 'checking_new_pat') {
-    return (
-      <div className={style.patContainer}>
-        <InputGroup
-          className={style.patInput}
-          placeholder="Enter Personal Access Token"
-          value={state.newPat}
-          onChange={changeHandler}
-          rightElement={
-            <Tooltip content={'Checking token status'}>
-              <Button disabled={true} icon={'refresh'} minimal={true} />
-            </Tooltip>
-          }
-        />
-        <Button disabled text="Save" onClick={onSaveClicked} />
-      </div>
-    )
+    return <PatInput pat={state.newPat} valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
   }
 
   return <></>
