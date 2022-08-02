@@ -1,11 +1,10 @@
-import { Button, Intent, MenuItem } from '@blueprintjs/core'
-import { Select } from '@blueprintjs/select'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import { UnreachableCaseError } from 'common/errors'
+import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
-import style from './style.scss'
 import { Workspace } from './types'
+import { WorkspaceSelector } from './workspace'
 
 interface OwnProps {
   pat: string
@@ -16,13 +15,44 @@ type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
-const WorkspaceSelect = Select.ofType<Workspace>()
+type State =
+  | { status: 'checking_bot_workspace' }
+  | {
+      status: 'fetching_available_workspaces'
+    }
+  | {
+      status: 'received_available_workspaces'
+      workspaces: Workspace[]
+    }
+  | {
+      status: 'saving'
+      selectedWorkspace: Workspace
+    }
 
-const WorkspaceSelector = (props: Props): JSX.Element => {
+type Action =
+  | { type: 'fetch_available_workspaces' }
+  | { type: 'availableWorkspaces/received'; value: Workspace[] }
+  | { type: 'save/clicked'; selectedWorkspace: Workspace }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'fetch_available_workspaces':
+      return { status: 'fetching_available_workspaces' }
+    case 'availableWorkspaces/received':
+      return { status: 'received_available_workspaces', workspaces: action.value }
+    case 'save/clicked':
+      return { status: 'saving', ...action }
+    default:
+      throw new UnreachableCaseError(action)
+  }
+}
+
+const WorkspaceForm = (props: Props): JSX.Element => {
   const { bot, pat, onCompleted } = props
 
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null)
+  const [state, dispatch] = useReducer(reducer, { status: 'checking_bot_workspace' })
+
+  const { status } = state
 
   useEffect(() => {
     const ac = new AbortController()
@@ -32,49 +62,43 @@ const WorkspaceSelector = (props: Props): JSX.Element => {
         signal: ac.signal,
         headers: { Authorization: `bearer ${pat}` }
       })
-      setWorkspaces(workspaces)
-      if (workspaces.length > 0) {
-        setSelectedWorkspace(workspaces[0])
-      }
+      dispatch({ type: 'availableWorkspaces/received', value: workspaces })
     }
 
-    void fetchWorkspaces()
+    if (status === 'fetching_available_workspaces') {
+      void fetchWorkspaces()
+    }
     return () => ac.abort()
-  }, [pat])
+  }, [pat, status])
 
-  if (bot.cloud?.workspaceId || workspaces.length === 1) {
-    const workspaceId = bot.cloud?.workspaceId ?? workspaces[0].id
-    onCompleted(workspaceId)
-    return <></>
+  switch (status) {
+    case 'fetching_available_workspaces':
+      return <div>Loading...</div>
+    case 'received_available_workspaces':
+      const { workspaces } = state
+      if (workspaces.length === 1) {
+        onCompleted(state.workspaces[0].id)
+        return <></>
+      }
+      return (
+        <WorkspaceSelector
+          workspaces={workspaces}
+          onSaveClicked={(selectedWorkspace) => dispatch({ type: 'save/clicked', selectedWorkspace })}
+        />
+      )
+    case 'saving':
+      onCompleted(state.selectedWorkspace.id)
+      return <></>
+    case 'checking_bot_workspace':
+      if (bot.cloud?.workspaceId) {
+        onCompleted(bot.cloud.workspaceId)
+      } else {
+        dispatch({ type: 'fetch_available_workspaces' })
+      }
+      return <></>
+    default:
+      throw new UnreachableCaseError(status)
   }
-
-  if (!selectedWorkspace) {
-    return <></>
-  }
-
-  return (
-    <div className={style.wsContainer} onClick={(e) => e.stopPropagation()}>
-      <WorkspaceSelect
-        items={workspaces}
-        filterable={false}
-        itemRenderer={(item) => <MenuItem key={item.id} text={item.name} />}
-        popoverProps={{ minimal: true }}
-        onItemSelect={(ws) => {
-          setSelectedWorkspace(ws)
-        }}
-      >
-        <Button rightIcon="caret-down">{selectedWorkspace ? selectedWorkspace.name : 'Select workspace'}</Button>
-      </WorkspaceSelect>
-      <Button
-        disabled={!selectedWorkspace.id}
-        text="Deploy"
-        onClick={() => {
-          onCompleted(selectedWorkspace.id)
-        }}
-        intent={Intent.PRIMARY}
-      />
-    </div>
-  )
 }
 
 const mapStateToProps = (state: RootReducer) => ({
@@ -83,4 +107,4 @@ const mapStateToProps = (state: RootReducer) => ({
 
 const mapDispatchToProps = {}
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(WorkspaceSelector)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(WorkspaceForm)
