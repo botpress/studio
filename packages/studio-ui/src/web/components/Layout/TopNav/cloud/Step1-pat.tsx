@@ -103,38 +103,33 @@ const PatProvider = (props: Props): JSX.Element => {
     }
   }
 
-  if (status === 'checking_initial_pat') {
-    return (
-      <LocalStoragePat
-        onCompleted={(value) => {
-          if (value) {
-            dispatch({ type: 'initialPatCheck/valid', value })
-          } else {
-            dispatch({ type: 'initialPatCheck/invalid' })
-          }
-        }}
-      />
-    )
+  switch (status) {
+    case 'checking_initial_pat':
+      return (
+        <LocalStoragePat
+          onCompleted={(value) => {
+            if (value) {
+              dispatch({ type: 'initialPatCheck/valid', value })
+            } else {
+              dispatch({ type: 'initialPatCheck/invalid' })
+            }
+          }}
+        />
+      )
+    case 'initial_pat_valid':
+      onCompleted(state.initialPat)
+      return <></>
+    case 'initial_pat_invalid':
+      return <PatInput pat={''} valid={false} onChange={changeHandler} onSave={onSaveClicked} />
+    case 'checking_new_pat':
+      return (
+        <PatInput pat={state.newPat} valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
+      )
+    case 'new_pat_status_received':
+      return <PatInput pat={state.newPat} valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
+    default:
+      throw new UnreachableCaseError(status)
   }
-
-  if (status === 'initial_pat_valid') {
-    onCompleted(state.initialPat)
-    return <></>
-  }
-
-  if (status === 'initial_pat_invalid') {
-    return <PatInput pat={''} valid={false} onChange={changeHandler} onSave={onSaveClicked} />
-  }
-
-  if (status === 'new_pat_status_received') {
-    return <PatInput pat={state.newPat} valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
-  }
-
-  if (status === 'checking_new_pat') {
-    return <PatInput pat={state.newPat} valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
-  }
-
-  return <></>
 }
 
 const mapStateToProps = (state: RootReducer) => ({})
