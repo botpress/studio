@@ -7,6 +7,6 @@ export const fetchPatStatus = async (pat: string, ac: AbortController): Promise<
     signal: ac.signal
   })
 
-  const authenticated = resp.status === 200 && resp.headers['x-user-id'] !== undefined
+  const authenticated = resp.status === 204 && resp.headers['x-user-id'] !== undefined
   return authenticated
 }
