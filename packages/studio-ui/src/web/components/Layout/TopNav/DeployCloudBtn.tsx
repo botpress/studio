@@ -3,6 +3,7 @@ import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
+import { fetchBotInformation } from '~/actions'
 import { RootReducer } from '~/reducers'
 import Step1Pat from './cloud/Step1-pat'
 import Step2WorkspaceSelector from './cloud/Step2-workspace'
@@ -84,6 +85,13 @@ const DeployCloudBtn = (props: Props) => {
     }
   }, [completed])
 
+  useEffect(() => {
+    if (completed) {
+      // force update of the bot
+      props.fetchBotInformation()
+    }
+  }, [completed])
+
   return (
     <>
       <Popover
@@ -141,6 +149,8 @@ const mapStateToProps = (state: RootReducer) => ({
   user: state.user
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+  fetchBotInformation
+}
 
 export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps)(DeployCloudBtn)
