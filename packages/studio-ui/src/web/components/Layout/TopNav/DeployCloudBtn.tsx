@@ -1,6 +1,7 @@
 import { Icon, Popover } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import classNames from 'classnames'
+import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
@@ -61,7 +62,7 @@ function reducer(state: State, action: Action): State {
     case 'pat/received':
       return { ...state, pat: action.pat }
     default:
-      throw new Error(`unknown action: ${JSON.stringify(action)}`)
+      throw new UnreachableCaseError(action)
   }
 }
 
