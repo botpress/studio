@@ -41,7 +41,7 @@ export function PatInput(props: {
           target="_blank"
           rightIcon="share"
           minimal
-          href="http://127.0.0.1:9000/settings#pats"
+          href={`${window.CLOUD_CONTROLLER_FRONTEND}/settings#pats`}
           alignText={Alignment.LEFT}
         />
       </div>

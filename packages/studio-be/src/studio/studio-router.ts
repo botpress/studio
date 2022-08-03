@@ -214,6 +214,7 @@ export class StudioRouter extends CustomRouter {
           BOT_API_PATH: `${process.ROOT_PATH}/api/v1/bots/${botId}`,
           STUDIO_API_PATH: `${process.ROOT_PATH}/api/v1/studio/${botId}`,
           CLOUD_CONTROLLER_ENDPOINT: process.CLOUD_CONTROLLER_ENDPOINT,
+          CLOUD_CONTROLLER_FRONTEND: process.CLOUD_CONTROLLER_FRONTEND,
           BOT_ID: botId,
           BOT_NAME: bot.name,
           BP_BASE_PATH: `${process.ROOT_PATH}/studio/${botId}`,

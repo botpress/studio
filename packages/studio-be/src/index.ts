@@ -88,6 +88,9 @@ try {
   process.CLOUD_CONTROLLER_ENDPOINT =
     process.env.CLOUD_CONTROLLER_ENDPOINT ||
     (localCloud ? 'http://localhost:3600' : 'https://controllerapi.botpress.cloud')
+  process.CLOUD_CONTROLLER_FRONTEND =
+    process.env.CLOUD_CONTROLLER_FRONTEND ||
+    (localCloud ? 'http://127.0.0.1:9000' : 'https://app.botpress.cloud')
   process.CLOUD_OAUTH_ENDPOINT =
     process.env.CLOUD_OAUTH_ENDPOINT ||
     (localCloud ? 'http://localhost:4444/oauth2/token' : 'https://oauth.botpress.cloud/oauth2/token')
