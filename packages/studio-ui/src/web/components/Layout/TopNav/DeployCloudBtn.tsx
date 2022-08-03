@@ -3,15 +3,17 @@ import { lang } from 'botpress/shared'
 import classNames from 'classnames'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
-import { fetchBotInformation } from '~/actions'
 import { RootReducer } from '~/reducers'
+import { Status } from './cloud/deploy'
 import Step1Pat from './cloud/Step1-pat'
 import Step2WorkspaceSelector from './cloud/Step2-workspace'
 import Step3Deploy from './cloud/Step3-deploy'
 
 import style from './style.scss'
 
-interface OwnProps {}
+interface OwnProps {
+  onCompleted: () => void
+}
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
@@ -85,13 +87,6 @@ const DeployCloudBtn = (props: Props) => {
     }
   }, [completed])
 
-  useEffect(() => {
-    if (completed) {
-      // force update of the bot
-      props.fetchBotInformation()
-    }
-  }, [completed])
-
   return (
     <>
       <Popover
@@ -113,7 +108,7 @@ const DeployCloudBtn = (props: Props) => {
                 }}
               />
             )}
-            {pat && selectedWorkspaceId !== null && (
+            {pat && selectedWorkspaceId && !completed && (
               <Step3Deploy
                 pat={pat}
                 workspaceId={selectedWorkspaceId}
@@ -122,6 +117,7 @@ const DeployCloudBtn = (props: Props) => {
                 }}
               />
             )}
+            {completed && <Status training="completed" upload="completed" />}
           </div>
         }
         interactionKind="click"
@@ -131,6 +127,7 @@ const DeployCloudBtn = (props: Props) => {
         }}
         onClosed={() => {
           dispatch({ type: 'popup/closed' })
+          props.onCompleted()
         }}
         onInteraction={(nextOpenState) => {
           dispatch({ type: 'popup/interaction', nextOpenState })
@@ -149,8 +146,6 @@ const mapStateToProps = (state: RootReducer) => ({
   user: state.user
 })
 
-const mapDispatchToProps = {
-  fetchBotInformation
-}
+const mapDispatchToProps = {}
 
-export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps)(DeployCloudBtn)
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DeployCloudBtn)
