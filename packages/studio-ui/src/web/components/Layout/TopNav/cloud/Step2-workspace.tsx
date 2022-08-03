@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { lang } from 'botpress/shared'
 import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
@@ -73,7 +74,7 @@ const WorkspaceForm = (props: Props): JSX.Element => {
 
   switch (status) {
     case 'fetching_available_workspaces':
-      return <div>Loading...</div>
+      return <div>{lang.tr('topNav.deploy.loading')}</div>
     case 'received_available_workspaces':
       const { workspaces } = state
       if (workspaces.length === 1) {

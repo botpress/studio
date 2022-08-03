@@ -110,9 +110,7 @@ export const Deploy = (props: Props): JSX.Element => {
           throw e
         })
         .then(() => {
-          // props.fetchBotInformation()
           dispatch({ type: 'upload/ended' })
-          // onCompleted()
         })
     }
 

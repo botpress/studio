@@ -1,5 +1,6 @@
 import { Button, Intent, MenuItem } from '@blueprintjs/core'
 import { Select } from '@blueprintjs/select'
+import { lang } from 'botpress/shared'
 import React, { useState } from 'react'
 import style from './style.scss'
 import { Workspace } from './types'
@@ -31,7 +32,7 @@ export function WorkspaceSelector(props: {
       </WorkspaceSelect>
       <Button
         disabled={selectedWorkspace === undefined}
-        text="Deploy"
+        text={lang.tr('topNav.deploy.deploy')}
         onClick={() => onSaveClicked(selectedWorkspace)}
         intent={Intent.PRIMARY}
       />

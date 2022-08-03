@@ -1,5 +1,5 @@
-import { Alignment, AnchorButton, Button, Icon, InputGroup, Tooltip } from '@blueprintjs/core'
-
+import { Alignment, AnchorButton, Button, InputGroup, Tooltip } from '@blueprintjs/core'
+import { lang } from 'botpress/shared'
 import React from 'react'
 
 import style from './style.scss'
@@ -18,25 +18,27 @@ export function PatInput(props: {
       <div className={style.patContainer}>
         <InputGroup
           className={style.patInput}
-          placeholder="Enter Personal Access Token"
+          placeholder={lang.tr('topNav.deploy.enterPersonalAccessToken')}
           value={pat}
           onChange={(e) => onChange(e.target.value)}
           rightElement={
             valid ? (
               <Button disabled={true} icon={'tick-circle'} minimal={true} />
             ) : (
-              <Tooltip content={loading ? 'Checking token status' : 'Token invalid'}>
+              <Tooltip
+                content={loading ? lang.tr('topNav.deploy.checkingTokenStatus') : lang.tr('topNav.deploy.tokenInvalid')}
+              >
                 <Button disabled={true} icon={loading ? 'refresh' : 'error'} minimal={true} />
               </Tooltip>
             )
           }
         />
-        <Button disabled={!valid} text="Save" onClick={onSave} />
+        <Button disabled={!valid} text={lang.tr('topNav.deploy.save')} onClick={onSave} />
       </div>
       <div style={{ marginTop: '10px' }}>
         <AnchorButton
           style={{ fontSize: 'small', paddingLeft: 0 }}
-          text="Create a Personal Access Token"
+          text={lang.tr('topNav.deploy.tokenInvalid')}
           small
           target="_blank"
           rightIcon="share"

@@ -1,4 +1,5 @@
 import { Spinner, SpinnerSize } from '@blueprintjs/core'
+import { lang } from 'botpress/shared'
 import React from 'react'
 
 type Status = 'pending' | 'in-progress' | 'completed' | 'failed'
@@ -25,8 +26,8 @@ export const Status = (props: { training: Status; upload: Status }): JSX.Element
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-      <Step status={training} text="Training bot" />
-      <Step status={upload} text="Uploading bot" />
+      <Step status={training} text={lang.tr('topNav.deploy.trainingBot')} />
+      <Step status={upload} text={lang.tr('topNav.deploy.uploadingBot')} />
     </div>
   )
 }
