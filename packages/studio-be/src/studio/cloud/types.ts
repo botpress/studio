@@ -26,10 +26,10 @@ export interface Principals {
   clientId?: string
 }
 
-export const scopes = ['messaging', 'nlu'] as const
-export type Scope = typeof scopes[number]
+const scopes = ['messaging', 'nlu'] as const
+type Scope = typeof scopes[number]
 
-export interface ApiKey {
+interface ApiKey {
   id: string
   secret: string
   scopes: readonly Scope[]
@@ -49,18 +49,18 @@ export interface Bot {
   importedOn: string | null
 }
 
-export interface BotConfiguration {
+interface BotConfiguration {
   cloud: BotCloudConfiguration
   messaging: BotMessagingConfiguration
 }
 
-export interface BotCloudConfiguration {
+interface BotCloudConfiguration {
   clientId: string
   clientSecret: string
 }
 
 // TODO: create a type for input messaging config and output. input doesnt have webhook token
-export interface BotMessagingConfiguration {
+interface BotMessagingConfiguration {
   clientId: string
   clientToken: string
   webhookToken: string | null
