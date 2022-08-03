@@ -6,6 +6,7 @@ import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Timeout, toastFailure } from '~/components/Shared/Utils'
 import { RootReducer } from '~/reducers'
+import { Status } from './deploy'
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
 
@@ -155,34 +156,14 @@ export const Deploy = (props: Props): JSX.Element => {
   switch (status) {
     case 'train_pending':
     case 'training_in_progress':
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Step status={'in-progress'} text="Training bot" />
-          <Step status={'pending'} text="Uploading bot" />
-        </div>
-      )
+      return <Status training="in-progress" upload="pending" />
     case 'upload_pending':
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Step status={'completed'} text="Training bot" />
-          <Step status={'in-progress'} text="Uploading bot" />
-        </div>
-      )
+      return <Status training="completed" upload="in-progress" />
     case 'upload_completed':
       onCompleted()
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Step status={'completed'} text="Training bot" />
-          <Step status={'completed'} text="Uploading bot" />
-        </div>
-      )
+      return <Status training="completed" upload="completed" />
     case 'upload_failed':
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <Step status={'completed'} text="Training bot" />
-          <Step status={'failed'} text="Uploading bot" />
-        </div>
-      )
+      return <Status training="completed" upload="failed" />
     default:
       throw new UnreachableCaseError(status)
   }
