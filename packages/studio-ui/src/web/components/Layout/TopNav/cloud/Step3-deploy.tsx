@@ -1,40 +1,16 @@
-import { Spinner, SpinnerSize } from '@blueprintjs/core'
 import axios from 'axios'
-import { NLU } from 'botpress/sdk'
 import { isCDMError, UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Timeout, toastFailure } from '~/components/Shared/Utils'
 import { RootReducer } from '~/reducers'
 import { Status } from './deploy'
+import { TrainSessions } from './types'
 
 const BASE_NLU_URL = `${window.STUDIO_API_PATH}/nlu`
 
-interface TrainSessions {
-  [lang: string]: NLU.TrainingSession
-}
-
 const computeIsTrained = (trainSessions: TrainSessions) =>
   Object.values(trainSessions).reduce((trained, session) => trained && session.status === 'done', true)
-
-type Status = 'pending' | 'in-progress' | 'completed' | 'failed'
-
-const Step = (props: { status: Status; text: string }): JSX.Element => {
-  const { status, text } = props
-  const chars: { [s in Status]: string | JSX.Element } = {
-    pending: '⌛',
-    'in-progress': <Spinner size={SpinnerSize.SMALL} />,
-    completed: '✅',
-    failed: '🚫'
-  }
-
-  return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', gap: '10px' }}>
-      <div>{chars[status]}</div>
-      <div>{text}</div>
-    </div>
-  )
-}
 
 type State =
   | {
