@@ -7,7 +7,7 @@ import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { CloudClient } from './cloud-client'
 import { CloudService } from './cloud-service'
 import { CreateBotError } from './errors'
-import { DeployRequestSchema } from './validation'
+import { DeployRequestSchema } from './schemas'
 
 export class CloudRouter extends CustomStudioRouter {
   private readonly cloudService: CloudService
