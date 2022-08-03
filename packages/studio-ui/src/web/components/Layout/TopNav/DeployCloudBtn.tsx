@@ -22,7 +22,6 @@ type Props = DispatchProps & StateProps & OwnProps
 interface State {
   isOpen: boolean
   opened: boolean
-  step: number
   selectedWorkspaceId: string | null
   pat: string | null
   completed: boolean
@@ -38,7 +37,6 @@ type Action =
   | { type: 'postCompletedTimeout/ended' }
 
 const initialState: State = {
-  step: 1,
   isOpen: false,
   opened: false,
   selectedWorkspaceId: null,
@@ -57,7 +55,7 @@ function reducer(state: State, action: Action): State {
     case 'postCompletedTimeout/ended':
       return { ...state, isOpen: false }
     case 'workspaceId/received':
-      return { ...state, step: 3, selectedWorkspaceId: action.selectedWorkspaceId }
+      return { ...state, selectedWorkspaceId: action.selectedWorkspaceId }
     case 'completed':
       return { ...state, completed: true }
     case 'pat/received':
