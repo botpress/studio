@@ -24,9 +24,11 @@ export function WorkspaceSelector(props: {
       <WorkspaceSelect
         items={workspaces}
         filterable={false}
-        itemRenderer={(item) => <MenuItem key={item.id} text={item.name} />}
+        itemRenderer={(item, { handleClick }) => <MenuItem key={item.id} text={item.name} onClick={handleClick} />}
         popoverProps={{ minimal: true }}
-        onItemSelect={setSelectedWorkspace}
+        onItemSelect={(ws) => {
+          setSelectedWorkspace(ws)
+        }}
       >
         <Button rightIcon="caret-down">{selectedWorkspace.name}</Button>
       </WorkspaceSelect>
