@@ -148,7 +148,7 @@ export class StudioRouter extends CustomRouter {
     app.use('/studio/manage', this.checkTokenHeader, this.manageRouter.router)
     app.use('/api/internal', this.internalRouter.router)
 
-    app.use(rewrite('/studio/:botId/*branding.js', '/api/v1/studio/:botId/branding.js'))
+    app.use(rewrite('/studio/:botId/*public-env.js', '/api/v1/studio/:botId/public-env.js'))
     app.use(rewrite('/studio/:botId/*env', '/api/v1/studio/:botId/env'))
 
     // TODO: Temporary in case we forgot to change it somewhere
@@ -180,17 +180,10 @@ export class StudioRouter extends CustomRouter {
     this.router.use('/cloud', this.checkTokenHeader, this.cloudRouter.router)
     this.router.use('/code-editor', this.checkTokenHeader, this.codeEditorRouter.router)
 
-    this.setupUnauthenticatedRoutes(app)
-    this.setupStaticRoutes(app)
-  }
-
-  setupUnauthenticatedRoutes(app) {
-    /**
-     * UNAUTHENTICATED ROUTES
-     * Do not return sensitive information there. These must be accessible by unauthenticated users
-     */
     this.router.get(
       '/env',
+      this.checkTokenHeader,
+      needPermissions(this.workspaceService)('read', 'bot.*'),
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
@@ -231,8 +224,17 @@ export class StudioRouter extends CustomRouter {
       })
     )
 
+    this.setupUnauthenticatedRoutes(app)
+    this.setupStaticRoutes(app)
+  }
+
+  setupUnauthenticatedRoutes(app) {
+    /**
+     * UNAUTHENTICATED ROUTES
+     * Do not return sensitive information there. These must be accessible by unauthenticated users
+     */
     this.router.get(
-      '/branding.js',
+      '/public-env.js',
       this.asyncMiddleware(async (req, res) => {
         const { botId } = req.params
 
@@ -248,6 +250,7 @@ export class StudioRouter extends CustomRouter {
               window.APP_NAME = "${removeHtmlChars(branding.title)}";
               window.APP_FAVICON = "${removeHtmlChars(branding.favicon)}";
               window.APP_CUSTOM_CSS = "${removeHtmlChars(branding.customCss)}";
+              window.USE_JWT_COOKIES = ${process.USE_JWT_COOKIES};
             })(typeof window != 'undefined' ? window : {})
           `
 

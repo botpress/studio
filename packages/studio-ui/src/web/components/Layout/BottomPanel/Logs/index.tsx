@@ -3,7 +3,6 @@ import anser from 'anser'
 import axios from 'axios'
 import { lang, ToolTip } from 'botpress/shared'
 import cn from 'classnames'
-import { escapeHtmlChars } from 'common/html'
 import _ from 'lodash'
 import moment from 'moment'
 import { nanoid } from 'nanoid'
@@ -39,11 +38,10 @@ interface State {
 }
 
 interface LogEntry {
-  id: string
   level: string
   message: string
   args: any
-  ts: Date
+  ts: string
 }
 
 interface APILog {
@@ -71,19 +69,26 @@ class BottomPanel extends React.Component<Props, State> {
     this.setupListener()
   }
 
+  ansiiToSafeHTML(str: string = ''): string {
+    return anser.ansiToHtml(anser.escapeForHtml(str))
+  }
+
+  makeLogEntry(log: any): LogEntry {
+    return {
+      ts: log.timestamp,
+      level: log.level,
+      message: this.ansiiToSafeHTML(log.message),
+      args: this.ansiiToSafeHTML(log.metadata || log.args || '')
+    }
+  }
+
   setupListener = () => {
-    EventBus.default.onAny((name, { level, message, args }) => {
+    EventBus.default.onAny((name, log) => {
       if (!name || typeof name !== 'string' || !(isGlobalLog(name) || isCurrentBotLog(name))) {
         return
       }
 
-      this.logs.push({
-        ts: new Date(),
-        id: nanoid(10),
-        level,
-        message: anser.ansiToHtml(message),
-        args: anser.ansiToHtml(args)
-      })
+      this.logs.push(this.makeLogEntry({ ...log, timestamp: new Date().toISOString() }))
 
       if (this.logs.length > MAX_LOGS_LIMIT) {
         this.logs.shift()
@@ -105,34 +110,17 @@ class BottomPanel extends React.Component<Props, State> {
       }
     })
 
-    this.setState({
-      initialLogs: data.map((x, idx) => ({
-        id: `initial-log-${idx}`,
-        message: x.message,
-        level: x.level || 'debug',
-        ts: new Date(x.timestamp),
-        args: x.metadata
-      }))
-    })
+    this.setState({ initialLogs: data.map(this.makeLogEntry) })
   }
 
   renderLogContent(content: string) {
-    const isHTML = (str: string) => {
-      const doc = new DOMParser().parseFromString(str, 'text/html')
-      return Array.from(doc.body.childNodes).some((node) => node.nodeType === 1)
-    }
-
-    if (isHTML(content)) {
-      return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: escapeHtmlChars(content) }} />
-    } else {
-      return <span className={logStyle.message}>{content}</span>
-    }
+    return <span className={logStyle.message} dangerouslySetInnerHTML={{ __html: content }} />
   }
 
   renderEntry(log: LogEntry): JSX.Element {
     const time = moment(new Date(log.ts)).format('YYYY-MM-DD HH:mm:ss')
     return (
-      <li className={cn(logStyle.entry, logStyle[`level-${log.level}`])} key={`log-entry-${log.id}`}>
+      <li className={cn(logStyle.entry, logStyle[`level-${log.level}`])} key={nanoid(10)}>
         <span className={logStyle.time}>{time}</span>
         <span className={logStyle.level}>{log.level}</span>
         {this.renderLogContent(log.message)}

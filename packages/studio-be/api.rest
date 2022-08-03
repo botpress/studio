@@ -2,7 +2,7 @@
 
 
 ### Send a request using Converse
-GET  http://localhost:3002/api/v1/studio/welcome-bot/env.js
+GET  http://localhost:3002/api/v1/studio/welcome-bot/public-env.js
 Content-Type: application/json
 
 {
