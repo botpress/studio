@@ -40,19 +40,6 @@ export class CloudClient {
     }
   }
 
-  public async canDeployBot(props: { oauthAccessToken: OAuthAccessToken; botId: string }): Promise<boolean> {
-    const { oauthAccessToken, botId } = props
-    try {
-      await axios.get(
-        `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/can-upload`,
-        this.getCloudAxiosConfig({ token: oauthAccessToken, principals: { botId } })
-      )
-      return true
-    } catch {
-      return false
-    }
-  }
-
   public async uploadBot(props: {
     personalAccessToken: PersonalAccessToken
     botId: string

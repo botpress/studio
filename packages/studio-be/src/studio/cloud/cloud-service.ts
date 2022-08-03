@@ -6,9 +6,8 @@ import FormData from 'form-data'
 import _ from 'lodash'
 import { NLUService } from 'studio/nlu'
 import { Result, Ok, Err } from 'ts-results'
-import { VError } from 'verror'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
-import { CDMConflictError, CreateBotError, UnexpectedError } from './errors'
+import { CDMConflictError, CreateBotError, RuntimeNotActiveError, UnexpectedError } from './errors'
 import { Bot } from './types'
 
 export class CloudService {
@@ -140,10 +139,5 @@ export class CloudService {
     // botMultipart.append('botFileName', `bot_${botId}_${Date.now()}.tgz`)
 
     return botMultipart
-  }
-}
-class RuntimeNotActiveError extends VError {
-  constructor(public cloudBotId: string, public runtimeStatus: string) {
-    super(`runtime for bot ${cloudBotId} is ${runtimeStatus}`)
   }
 }
