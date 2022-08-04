@@ -38,7 +38,7 @@ export function PatInput(props: {
       <div style={{ marginTop: '10px' }}>
         <AnchorButton
           style={{ fontSize: 'small', paddingLeft: 0 }}
-          text={lang.tr('topNav.deploy.tokenInvalid')}
+          text={lang.tr('topNav.deploy.createPersonalAccessToken')}
           small
           target="_blank"
           rightIcon="share"
