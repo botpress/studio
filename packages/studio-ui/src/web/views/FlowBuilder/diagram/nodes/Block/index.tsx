@@ -13,7 +13,6 @@ import ActionContents from '../ActionContents'
 import NodeHeader from '../Components/NodeHeader'
 import NodeWrapper from '../Components/NodeWrapper'
 import style from '../Components/style.scss'
-import ExecuteContents from '../ExecuteContents'
 import RouterContents from '../RouterContents'
 import SkillCallContents, { SkillDefinition } from '../SkillCallContents'
 import StandardContents from '../StandardContents'
@@ -39,7 +38,6 @@ export interface BlockProps {
 
 const defaultLabels = {
   action: 'studio.flow.node.chatbotExecutes',
-  execute: 'studio.flow.node.chatbotExecutes',
   failure: 'studio.flow.node.workflowFails',
   router: 'if',
   listen: 'listen',
@@ -137,15 +135,6 @@ const BlockWidget: FC<BlockProps> = ({
     switch (nodeType) {
       case 'action':
         return <ActionContents node={node} editNodeItem={editNodeItem} />
-      case 'execute':
-        return (
-          <ExecuteContents
-            node={node}
-            editNodeItem={editNodeItem}
-            updateFlowNode={updateFlowNode}
-            switchFlowNode={switchFlowNode}
-          />
-        )
       case 'router':
         return <RouterContents node={node} editNodeItem={editNodeItem} />
       case 'skill-call':

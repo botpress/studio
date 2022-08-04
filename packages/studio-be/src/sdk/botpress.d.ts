@@ -1106,16 +1106,7 @@ declare module 'botpress/sdk' {
    */
   export type SkillFlow = Partial<Flow> & Pick<Required<Flow>, 'nodes'>
 
-  export type FlowNodeType =
-    | 'standard'
-    | 'skill-call'
-    | 'listen'
-    | 'success'
-    | 'failure'
-    | 'trigger'
-    | 'execute'
-    | 'router'
-    | 'action'
+  export type FlowNodeType = 'standard' | 'skill-call' | 'listen' | 'success' | 'failure' | 'router' | 'action'
 
   export type FlowNode = {
     id?: string

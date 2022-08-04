@@ -12,7 +12,6 @@ interface CssExports {
   'debugInfo': string;
   'error': string;
   'errorIcon': string;
-  'execute': string;
   'failure': string;
   'hasError': string;
   'hasJoinLabel': string;

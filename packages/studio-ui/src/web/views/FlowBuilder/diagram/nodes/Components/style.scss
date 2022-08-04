@@ -57,7 +57,6 @@
 
     .standard,
     .skill-call,
-    .execute,
     .action,
     .failure,
     .router,
@@ -85,8 +84,6 @@
     .headerWrapper {
       &.sub-workflow,
       &:hover.sub-workflow,
-      &.execute,
-      &:hover.execute,
       &.action,
       &:hover.action,
       &.listen,
@@ -106,7 +103,6 @@
     }
   }
 
-  .execute :global(.port):before,
   .action :global(.port):before {
     background: var(--execute);
   }
@@ -193,8 +189,6 @@
       padding: 4px;
     }
 
-    &.execute,
-    &:hover.execute,
     &.action,
     &:hover.action {
       background: var(--execute);
@@ -273,8 +267,6 @@
     position: relative;
     width: 100%;
 
-    &.execute,
-    &:hover.execute,
     &.action,
     &:hover.action {
       border-color: var(--execute);
