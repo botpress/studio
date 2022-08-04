@@ -59,7 +59,6 @@
     .skill-call,
     .action,
     .failure,
-    .router,
     .success {
       :global(.port):before {
         background: var(--ocean);
@@ -87,8 +86,6 @@
       &:hover.action,
       &.failure,
       &:hover.failure,
-      &.router,
-      &:hover.router,
       &.success,
       &:hover.success,
       &.standard,
@@ -106,10 +103,6 @@
 
   .failure :global(.port):before {
     background: var(--lighthouse);
-  }
-
-  .router :global(.port):before {
-    background: var(--if-else);
   }
 
   .success :global(.port):before {
@@ -192,11 +185,6 @@
       background: var(--lighthouse);
     }
 
-    &.router,
-    &:hover.router {
-      background: var(--if-else);
-    }
-
     &.success,
     &:hover.success {
       background: var(--success);
@@ -263,11 +251,6 @@
     &.failure,
     &:hover.failure {
       border-color: var(--lighthouse);
-    }
-
-    &.router,
-    &:hover.router {
-      border-color: var(--if-else);
     }
 
     &.success,

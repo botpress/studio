@@ -28,7 +28,6 @@ interface CssExports {
   'promptPortContent': string;
   'readOnly': string;
   'results': string;
-  'router': string;
   'rtl': string;
   'secondaryText': string;
   'skill-call': string;

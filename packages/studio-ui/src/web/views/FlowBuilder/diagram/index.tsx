@@ -306,7 +306,6 @@ class Diagram extends Component<Props> {
   add = {
     flowNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'standard', next: [defaultTransition] }),
     skillNode: (point: Point, skillId: string) => this.props.buildSkill({ location: point, id: skillId }),
-    routerNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'router' }),
     actionNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'action', next: [defaultTransition] })
   }
 
@@ -462,13 +461,7 @@ class Diagram extends Component<Props> {
     }
 
     const nodeType = target.model?.nodeType
-    return (
-      nodeType === 'router' ||
-      nodeType === 'standard' ||
-      nodeType === 'skill-call' ||
-      nodeType === 'failure' ||
-      nodeType === 'action'
-    )
+    return nodeType === 'standard' || nodeType === 'skill-call' || nodeType === 'failure' || nodeType === 'action'
   }
 
   onMouseDown = (event: MouseEvent) => {
@@ -630,9 +623,6 @@ class Diagram extends Component<Props> {
       this.add.skillNode(point, data.id)
     } else if (data.type === 'node') {
       switch (data.id) {
-        case 'router':
-          this.add.routerNode(point)
-          break
         case 'action':
           this.add.actionNode(point)
           break

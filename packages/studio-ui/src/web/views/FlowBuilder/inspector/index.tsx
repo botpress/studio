@@ -119,7 +119,6 @@ class Inspector extends Component<Props> {
           updateFlow={updateFlow}
           copyFlowNodeElement={copyFlowNodeElement}
           pasteFlowNodeElement={pasteFlowNodeElement}
-          transitionOnly={nodeType === 'router'}
           buffer={buffer}
         />
       )

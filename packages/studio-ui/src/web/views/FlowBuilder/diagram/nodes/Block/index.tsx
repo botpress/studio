@@ -8,12 +8,10 @@ import { BaseNodeModel } from '~/views/FlowBuilder/diagram/nodes/BaseNodeModel'
 import { StandardPortWidget } from '~/views/FlowBuilder/diagram/nodes/Ports'
 
 import { NodeDebugInfo } from '../../debugger'
-import { defaultTransition } from '../../manager'
 import ActionContents from '../ActionContents'
 import NodeHeader from '../Components/NodeHeader'
 import NodeWrapper from '../Components/NodeWrapper'
 import style from '../Components/style.scss'
-import RouterContents from '../RouterContents'
 import SkillCallContents, { SkillDefinition } from '../SkillCallContents'
 import StandardContents from '../StandardContents'
 
@@ -39,7 +37,6 @@ export interface BlockProps {
 const defaultLabels = {
   action: 'studio.flow.node.chatbotExecutes',
   failure: 'studio.flow.node.workflowFails',
-  router: 'if',
   success: 'studio.flow.node.workflowSucceeds'
 }
 
@@ -104,27 +101,12 @@ const BlockWidget: FC<BlockProps> = ({
           onClick={() => updateFlow({ startNode: node.name })}
         />
         <MenuItem icon="minimize" text={lang.tr('studio.flow.disconnectNode')} onClick={() => disconnectNode(node)} />
-        {nodeType === 'router' ? (
-          <React.Fragment>
-            <MenuDivider />
-            <MenuItem text={lang.tr('studio.flow.chips')}>
-              <MenuItem
-                text={lang.tr('studio.flow.transition')}
-                onClick={async () => {
-                  await switchFlowNode(node.id)
-                  updateFlowNode({ next: [...node.next, defaultTransition] })
-                }}
-                icon="flow-end"
-              />
-            </MenuItem>
-          </React.Fragment>
-        ) : null}
       </Menu>
     )
   }
 
-  const outPortInHeader = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
-  const canCollapse = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
+  const outPortInHeader = !['failure', 'success', 'standard', 'skill-call'].includes(nodeType)
+  const canCollapse = !['failure', 'success', 'standard', 'skill-call'].includes(nodeType)
   const hasContextMenu = !['failure', 'success'].includes(nodeType)
 
   const debugInfo = getDebugInfo(node.name)
@@ -133,8 +115,6 @@ const BlockWidget: FC<BlockProps> = ({
     switch (nodeType) {
       case 'action':
         return <ActionContents node={node} editNodeItem={editNodeItem} />
-      case 'router':
-        return <RouterContents node={node} editNodeItem={editNodeItem} />
       case 'skill-call':
         return <SkillCallContents node={node} />
       default:
