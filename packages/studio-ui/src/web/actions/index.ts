@@ -454,14 +454,6 @@ export const refreshIntents = () => (dispatch) => {
   })
 }
 
-export const topicsReceived = createAction('TOPICS/RECEIVED')
-export const fetchTopics = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/topics`).then(({ data }) => {
-    dispatch(topicsReceived(data))
-  })
-}
-
 export const receiveLibrary = createAction('LIBRARY/RECEIVED')
 export const refreshLibrary = () => (dispatch, getState) => {
   const contentLang = getState().language.contentLang
