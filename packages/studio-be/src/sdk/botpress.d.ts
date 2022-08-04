@@ -1084,11 +1084,6 @@ declare module 'botpress/sdk' {
     label: string
   }
 
-  export interface Library {
-    elementPath: string
-    elementId: string
-  }
-
   /**
    * This interface is used to encapsulate the logic around the creation of a new skill. A skill
    * is a subflow which can have multiple nodes and custom logic, while being hidden under a single node in the main flow.

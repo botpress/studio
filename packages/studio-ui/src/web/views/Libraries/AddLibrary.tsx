@@ -5,7 +5,6 @@ import React, { useState } from 'react'
 import { isOperationAllowed } from '~/components/Shared/Utils'
 
 import Dropdown from './LibDropdown'
-import PackageLib from './PackageLib'
 import style from './style.scss'
 import UploadLibrary from './UploadLibrary'
 

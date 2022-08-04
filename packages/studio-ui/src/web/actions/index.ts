@@ -454,29 +454,6 @@ export const refreshIntents = () => (dispatch) => {
   })
 }
 
-export const receiveLibrary = createAction('LIBRARY/RECEIVED')
-export const refreshLibrary = () => (dispatch, getState) => {
-  const contentLang = getState().language.contentLang
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/cms/library/${contentLang}`).then(({ data }) => {
-    dispatch(receiveLibrary(data))
-  })
-}
-
-export const addElementToLibrary = (elementId: string) => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}`).then(() => {
-    dispatch(refreshLibrary())
-  })
-}
-
-export const removeElementFromLibrary = (elementId: string) => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}/delete`).then(() => {
-    dispatch(refreshLibrary())
-  })
-}
-
 export const receiveQNAContentElement = createAction('QNA/CONTENT_ELEMENT')
 export const getQNAContentElementUsage = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
