@@ -243,12 +243,6 @@ export interface BotpressConfig {
    */
 
   actionServers: ActionServersConfig
-  /**
-   * Whether or not to display experimental features throughout the UI. These are subject
-   * to change and can be unstable.
-   * @default false
-   */
-  experimental: boolean
 }
 
 export type AuthStrategyType = 'basic' | 'saml' | 'ldap' | 'oauth2'

@@ -52,10 +52,6 @@ const FlowBuilder = (props: Props) => {
     props.refreshActions()
     props.refreshIntents()
 
-    if (window.USE_ONEFLOW) {
-      props.refreshConditions()
-    }
-
     if (!isOperationAllowed({ operation: 'write', resource: 'bot.flows' })) {
       setReadOnly(true)
       setActions([])
@@ -164,24 +160,13 @@ const FlowBuilder = (props: Props) => {
 
   return (
     <MainContainer keyHandlers={keyHandlers}>
-      {window.USE_ONEFLOW ? (
-        <SidePanelOneFlow
-          onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
-          readOnly={readOnly}
-          mutexInfo={mutex}
-          permissions={actions}
-          onCreateFlow={createFlow}
-        />
-      ) : (
-        <SidePanel
-          onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
-          readOnly={readOnly}
-          mutexInfo={mutex}
-          permissions={actions}
-          onCreateFlow={createFlow}
-        />
-      )}
-
+      <SidePanel
+        onDeleteSelectedElements={() => diagram?.deleteSelectedElements()}
+        readOnly={readOnly}
+        mutexInfo={mutex}
+        permissions={actions}
+        onCreateFlow={createFlow}
+      />
       <div className={style.container}>
         <div className={style.diagram}>
           <Diagram
@@ -199,7 +184,7 @@ const FlowBuilder = (props: Props) => {
             }}
           />
         </div>
-        {!window.USE_ONEFLOW && <SidePanelInspector />}
+        <SidePanelInspector />
       </div>
 
       <SkillsBuilder />

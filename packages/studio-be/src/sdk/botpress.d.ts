@@ -209,8 +209,6 @@ declare module 'botpress/sdk' {
     menuText?: string
     /** Optionally specify a link to your page or github repo */
     homepage?: string
-    /** Whether or not the module is likely to change */
-    experimental?: boolean
     /** Workspace Apps are accessible on the admin panel */
     workspaceApp?: {
       /** Adds a link on the Bots page to access this app for a specific bot */
@@ -562,7 +560,6 @@ declare module 'botpress/sdk' {
       /** This variable points to the currently active workflow */
       workflow: WorkflowHistory
       /**
-       * EXPERIMENTAL
        * This includes all the flow/nodes which were traversed for the current event
        */
       __stacktrace: JumpPoint[]

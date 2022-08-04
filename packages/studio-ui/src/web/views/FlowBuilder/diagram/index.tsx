@@ -370,22 +370,6 @@ class Diagram extends Component<Props> {
           onClick={wrap(this.add.flowNode, point)}
           icon="chat"
         />
-        {(window.USE_ONEFLOW || window.EXPERIMENTAL) && (
-          <Fragment>
-            {!originatesFromOutPort && window.USE_ONEFLOW && (
-              <MenuItem
-                text={lang.tr('studio.flow.nodeType.trigger')}
-                onClick={wrap(this.add.triggerNode, point)}
-                icon="send-to-graph"
-              />
-            )}
-            <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Icons.Say />} />
-            <MenuItem text={lang.tr('execute')} onClick={wrap(this.add.executeNode, point)} icon="code" />
-            <MenuItem text={lang.tr('listen')} onClick={wrap(this.add.listenNode, point)} icon="hand" />
-            <MenuItem text={lang.tr('router')} onClick={wrap(this.add.routerNode, point)} icon="fork" />
-            <MenuItem text={lang.tr('action')} onClick={wrap(this.add.actionNode, point)} icon="offline" />
-          </Fragment>
-        )}
 
         <MenuItem
           tagName="button"

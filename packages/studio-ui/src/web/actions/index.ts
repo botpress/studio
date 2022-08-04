@@ -190,10 +190,6 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
   if (deletedFlows.length) {
     await FlowsAPI.deleteFlow(state.flows, deletedFlows[0])
   }
-
-  if (payload.type === 'trigger' && window.USE_ONEFLOW) {
-    await onTriggerEvent('delete', payload.conditions, state)
-  }
 })
 
 export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispatch, getState) => {
@@ -209,7 +205,7 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     skillData = { ...skillData, randomId }
     const { moduleName } = _.find(state.skills.installed, { id: node.skill })
     const { data } = await axios.post(
-      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
+      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}`,
       skillData
     )
     dispatch(
@@ -232,12 +228,6 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
   dispatch(requestPasteFlowNode({ ...payload, nodes: nonSkills }))
   await updateCurrentFlow(payload, state)
   dispatch(refreshFlowsLinks())
-
-  for (const node of state.flows.buffer.nodes || []) {
-    if (node.type === 'trigger' && window.USE_ONEFLOW) {
-      await onTriggerEvent('create', node.conditions, state)
-    }
-  }
 }
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
