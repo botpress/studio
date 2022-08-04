@@ -1110,7 +1110,6 @@ declare module 'botpress/sdk' {
     | 'standard'
     | 'skill-call'
     | 'listen'
-    | 'say_something'
     | 'success'
     | 'failure'
     | 'trigger'
@@ -1264,7 +1263,6 @@ declare module 'botpress/sdk' {
     onReceive?: ActionBuilderProps[] | string[]
     /** An array of possible transitions once everything is completed */
     next?: NodeTransition[]
-    /** For node of type say_something, this contains the element to render */
     content?: {
       contentType: string
       /** Every properties required by the content type, including translations */

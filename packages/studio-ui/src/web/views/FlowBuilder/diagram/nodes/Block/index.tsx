@@ -15,7 +15,6 @@ import NodeWrapper from '../Components/NodeWrapper'
 import style from '../Components/style.scss'
 import ExecuteContents from '../ExecuteContents'
 import RouterContents from '../RouterContents'
-import SaySomethingContents from '../SaySomethingContents'
 import SkillCallContents, { SkillDefinition } from '../SkillCallContents'
 import StandardContents from '../StandardContents'
 
@@ -44,7 +43,6 @@ const defaultLabels = {
   failure: 'studio.flow.node.workflowFails',
   router: 'if',
   listen: 'listen',
-  say_something: 'studio.flow.node.chatbotSays',
   success: 'studio.flow.node.workflowSucceeds'
 }
 
@@ -150,16 +148,6 @@ const BlockWidget: FC<BlockProps> = ({
         )
       case 'router':
         return <RouterContents node={node} editNodeItem={editNodeItem} />
-      case 'say_something':
-        return (
-          <SaySomethingContents
-            node={node}
-            content={node.content}
-            defaultLang={defaultLang}
-            selectedNodeItem={selectedNodeItem}
-            currentLang={currentLang}
-          />
-        )
       case 'skill-call':
         return <SkillCallContents node={node} />
       default:

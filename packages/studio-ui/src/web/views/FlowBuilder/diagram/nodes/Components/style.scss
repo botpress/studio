@@ -55,7 +55,6 @@
   &.highlighted {
     border: 1px solid var(--ocean) !important;
 
-    .say_something,
     .standard,
     .skill-call,
     .execute,
@@ -69,8 +68,7 @@
       }
     }
 
-    .outRouting:before,
-    .outRouting.say_something:before {
+    .outRouting:before {
       background-color: var(--ocean) !important;
     }
 
@@ -85,8 +83,6 @@
     }
 
     .headerWrapper {
-      &.say_something,
-      &:hover.say_something,
       &.sub-workflow,
       &:hover.sub-workflow,
       &.execute,
@@ -197,11 +193,6 @@
       padding: 4px;
     }
 
-    &.say_something,
-    &:hover.say_something {
-      background: var(--say);
-    }
-
     &.execute,
     &:hover.execute,
     &.action,
@@ -281,12 +272,6 @@
     min-height: 32px;
     position: relative;
     width: 100%;
-
-    &.say_something,
-    &:hover.say_something {
-      background: #fff;
-      border-color: var(--say);
-    }
 
     &.execute,
     &:hover.execute,
@@ -409,10 +394,6 @@
     top: 50%;
     right: calc(var(--spacing-small) * -1);
     transform: translate(55%, -50%);
-
-    &.say_something:before {
-      background-color: var(--say) !important;
-    }
   }
 }
 

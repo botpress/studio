@@ -2,7 +2,7 @@ import { H4 } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   closeFlowNodeProps,
@@ -46,15 +46,11 @@ class Inspector extends Component<Props> {
     const node = currentFlowNode
     const nodeType = currentFlowNode?.type || (currentFlowNode ? 'standard' : null)
     return (
-      <div className={cx(style.inspector, { [style.sideForm]: nodeType === 'say_something' })}>
-        {nodeType !== 'say_something' && (
-          <Fragment>
-            <i className={cx('material-icons', style.closeIcon)} onClick={close}>
-              close
-            </i>
-            <H4>{node ? lang.tr('studio.flow.node.nodeProperties') : lang.tr('studio.flow.flowProperties')}</H4>
-          </Fragment>
-        )}
+      <div className={style.inspector}>
+        <i className={cx('material-icons', style.closeIcon)} onClick={close}>
+          close
+        </i>
+        <H4>{node ? lang.tr('studio.flow.node.nodeProperties') : lang.tr('studio.flow.flowProperties')}</H4>
         {this.renderNodeProperties(nodeType)}
       </div>
     )
@@ -104,20 +100,6 @@ class Inspector extends Component<Props> {
           pasteFlowNodeElement={pasteFlowNodeElement}
           buffer={buffer}
         />
-      )
-    }
-
-    if (nodeType === 'say_something') {
-      return (
-        <></>
-        // <SaySomethingForm
-        //   onDeleteSelectedElements={onDeleteSelectedElements}
-        //   contentType={currentFlowNode.content?.contentType}
-        //   formData={currentFlowNode.content?.formData}
-        //   updateNode={updateNodeAndRefresh}
-        //   readOnly={readOnly}
-        //   subflows={subflows}
-        // />
       )
     }
 

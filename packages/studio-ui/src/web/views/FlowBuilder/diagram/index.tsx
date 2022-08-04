@@ -306,14 +306,6 @@ class Diagram extends Component<Props> {
   add = {
     flowNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'standard', next: [defaultTransition] }),
     skillNode: (point: Point, skillId: string) => this.props.buildSkill({ location: point, id: skillId }),
-    sayNode: (point: Point) => {
-      this.props.createFlowNode({
-        ...point,
-        type: 'say_something',
-        content: { contentType: 'builtin_text', formData: {} },
-        next: [defaultTransition]
-      })
-    },
     executeNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'execute', next: [defaultTransition] }),
     listenNode: (point: Point) =>
       this.props.createFlowNode({ ...point, type: 'listen', onReceive: [], next: [defaultTransition] }),
@@ -475,7 +467,6 @@ class Diagram extends Component<Props> {
     const nodeType = target.model?.nodeType
     return (
       nodeType === 'router' ||
-      nodeType === 'say_something' ||
       nodeType === 'standard' ||
       nodeType === 'skill-call' ||
       nodeType === 'execute' ||
@@ -644,9 +635,6 @@ class Diagram extends Component<Props> {
       this.add.skillNode(point, data.id)
     } else if (data.type === 'node') {
       switch (data.id) {
-        case 'say_something':
-          this.add.sayNode(point)
-          break
         case 'execute':
           this.add.executeNode(point)
           break

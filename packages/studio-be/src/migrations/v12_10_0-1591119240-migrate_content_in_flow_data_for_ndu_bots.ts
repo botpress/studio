@@ -12,6 +12,7 @@ async function migrateFlow(
   contentMap: _.Dictionary<sdk.ContentElement>
 ): Promise<FlowView | undefined> {
   const contentIds = _.chain(flow.nodes)
+    // @ts-ignore
     .filter((n) => n.type === 'say_something')
     .flatMap((n) => n.onEnter)
     .filter(
@@ -25,6 +26,7 @@ async function migrateFlow(
   }
 
   for (const n of flow.nodes) {
+    // @ts-ignore
     const isSayAndHasContent = n.type === 'say_something' && !_.isEmpty(n.onEnter) && typeof n.onEnter![0] === 'string'
     if (!isSayAndHasContent) {
       continue

@@ -32,7 +32,6 @@ interface CssExports {
   'results': string;
   'router': string;
   'rtl': string;
-  'say_something': string;
   'secondaryText': string;
   'skill-call': string;
   'small': string;
