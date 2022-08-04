@@ -1,3 +1,43 @@
+## [0.0.57](https://github.com/botpress/studio/compare/v0.0.56...v0.0.57) (2022-07-28)
+
+
+### Bug Fixes
+
+* **debugger:** fix display of log timestamp ([#375](https://github.com/botpress/studio/issues/375)) ([7d69cae](https://github.com/botpress/studio/commit/7d69caea20cbf09c969331f5c19f91959ddec046))
+* **security:** fix access to public envs when bot is unmounted ([#374](https://github.com/botpress/studio/issues/374)) ([7a6ff2e](https://github.com/botpress/studio/commit/7a6ff2e62294a4eeb9a34de619f6ed166b00b959))
+
+
+
+## [0.0.56](https://github.com/botpress/studio/compare/v0.0.55...v0.0.56) (2022-07-26)
+
+
+### Bug Fixes
+
+* **auth:** fix authenticating with cookie storage ([#372](https://github.com/botpress/studio/issues/372)) ([188fb5b](https://github.com/botpress/studio/commit/188fb5b554b7febc9f7b495f57eec475b40631be))
+
+
+
+## [0.0.55](https://github.com/botpress/studio/compare/v0.0.54...v0.0.55) (2022-07-18)
+
+
+### Bug Fixes
+
+* **security:** validate bot access ([#365](https://github.com/botpress/studio/issues/365)) ([fd6bc0c](https://github.com/botpress/studio/commit/fd6bc0cf9594d5213086e43f3890e6b7bf5bce22))
+* **studio:** pretty and safe logs ([#368](https://github.com/botpress/studio/issues/368)) ([2bdeeed](https://github.com/botpress/studio/commit/2bdeeedb1a8746ad83948eb47c4946ea5210576c))
+* **studio-ui:** fix redirect even when authorized ([#369](https://github.com/botpress/studio/issues/369)) ([2ded358](https://github.com/botpress/studio/commit/2ded358caaa50f532124ea4cda7eccb66d86f371))
+* **ui:** redirect to admin on init error ([#366](https://github.com/botpress/studio/issues/366)) ([323c5ee](https://github.com/botpress/studio/commit/323c5eeb90b4bb77a8bce17e1ce8356f821a348d))
+
+
+
+## [0.0.54](https://github.com/botpress/studio/compare/v0.0.53...v0.0.54) (2022-07-12)
+
+
+### Bug Fixes
+
+* **server:** properly return socket transport array to ui ([#363](https://github.com/botpress/studio/issues/363)) ([4eb2695](https://github.com/botpress/studio/commit/4eb2695d25746ffd0b1d3b02c939998b752d93f9))
+
+
+
 ## [0.0.53](https://github.com/botpress/studio/compare/v0.0.52...v0.0.53) (2022-07-11)
 
 

@@ -104,4 +104,13 @@ export class WorkspaceService {
     const user = await this.findUser(email, strategy, workspace)!
     return user && this.findRole(user.role!, workspace)
   }
+
+  async isBotInWorkspace(workspaceId: string, botId: string): Promise<boolean> {
+    try {
+      const workspace = await this.findWorkspace(workspaceId)
+      return workspace.bots.includes(botId)
+    } catch (err) {
+      return false
+    }
+  }
 }

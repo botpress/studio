@@ -28,7 +28,7 @@ import 'expose-loader?BotpressUtils!~/components/Shared/Utils'
 import 'expose-loader?DocumentationProvider!~/components/Util/DocumentationProvider'
 import { initializeTranslations } from './translations'
 /* eslint-enable */
-import { utils, auth, telemetry } from 'botpress/shared'
+import { utils, auth } from 'botpress/shared'
 import store from './store'
 
 import '@botpress/ui-shared/dist/theme.css'
@@ -36,41 +36,48 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'storm-react-diagrams/dist/style.min.css'
 import './theme.scss'
 
-axios.get(`${window.location.pathname || ''}/env`).then(({ data }) => {
-  for (const [key, value] of Object.entries(data)) {
-    window[key] = value
-  }
+function redirectToAdmin() {
+  window.location.href = `${window.ROOT_PATH}/admin`
+}
 
-  const token = auth.getToken()
-  if (token) {
-    if (window.USE_JWT_COOKIES) {
-      axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
+const token = auth.getToken()
+if (!token) {
+  redirectToAdmin()
+}
+
+if (window.USE_JWT_COOKIES) {
+  axios.defaults.headers.common[CSRF_TOKEN_HEADER] = token
+} else {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
+
+axios
+  .get(`${window.location.pathname || ''}/env`)
+  .then(({ data }) => {
+    for (const [key, value] of Object.entries(data)) {
+      window[key] = value
+    }
+    axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
+
+    if (!window.BOT_ID) {
+      console.error(`This bot doesn't exist. Redirecting to admin `)
+      redirectToAdmin()
     } else {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      initializeTranslations()
+
+      // Do not use "import App from ..." as hoisting will screw up styling
+      const App = require('./components/App').default
+
+      ReactDOM.render(
+        <Provider store={store}>
+          <HotKeys keyMap={utils.keyMap}>
+            <App />
+          </HotKeys>
+        </Provider>,
+        document.getElementById('app')
+      )
     }
 
-    axios.defaults.headers.common['X-BP-Workspace'] = window.WORKSPACE_ID
-  }
-
-  if (!window.BOT_ID) {
-    console.error(`This bot doesn't exist. Redirecting to admin `)
-    window.location.href = `${window.ROOT_PATH}/admin`
-  } else {
-    initializeTranslations()
-
-    // Do not use "import App from ..." as hoisting will screw up styling
-    const App = require('./components/App').default
-
-    ReactDOM.render(
-      <Provider store={store}>
-        <HotKeys keyMap={utils.keyMap}>
-          <App />
-        </HotKeys>
-      </Provider>,
-      document.getElementById('app')
-    )
-  }
-
-  // TODO: what ?
-  // telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
-})
+    // telemetry.startFallback(axios.create({ baseURL: window.API_PATH })).catch()
+  })
+  .catch(redirectToAdmin)
