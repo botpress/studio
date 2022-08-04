@@ -1,13 +1,11 @@
 import sdk from 'botpress/sdk'
 import { ContentSection, lang } from 'botpress/shared'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import style from '../style.scss'
 
-import { Actions } from './Actions'
 import Dialog from './Dialog'
 import NLU from './NLU'
-import { Triggers } from './Triggers'
 
 interface Props {
   event: sdk.IO.IncomingEvent
@@ -49,13 +47,6 @@ export default class Summary extends React.Component<Props> {
           stacktrace={this.props.event.state?.__stacktrace || []}
         />
         <NLU session={this.props.event.state?.session || {}} nluData={this.props.event.nlu} />
-
-        {this.props.event.ndu && (
-          <Fragment>
-            <Actions ndu={this.props.event.ndu} />
-            <Triggers ndu={this.props.event.ndu} />
-          </Fragment>
-        )}
       </div>
     )
   }

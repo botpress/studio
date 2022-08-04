@@ -9,7 +9,6 @@ interface CssExports {
   'debuggerIcon': string;
   'error': string;
   'expanded': string;
-  'group': string;
   'header': string;
   'hovering': string;
   'info': string;
@@ -34,8 +33,6 @@ interface CssExports {
   'summaryTable': string;
   'tabError': string;
   'time': string;
-  'triggerGroup': string;
-  'triggersContainer': string;
   'truncate': string;
   'underline': string;
 }

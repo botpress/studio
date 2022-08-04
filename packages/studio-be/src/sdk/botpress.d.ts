@@ -1133,16 +1133,11 @@ declare module 'botpress/sdk' {
     readonly lastModified?: Date
   } & NodeActions
 
-  export type TriggerNode = FlowNode & {
-    conditions: DecisionTriggerCondition[]
-    activeWorkflow?: boolean
-  }
-
   export type ListenNode = FlowNode & {
     triggers: { conditions: DecisionTriggerCondition[] }[]
   }
 
-  export type SkillFlowNode = Partial<ListenNode> & Pick<Required<ListenNode>, 'name'> & Partial<TriggerNode>
+  export type SkillFlowNode = Partial<ListenNode> & Pick<Required<ListenNode>, 'name'>
 
   /**
    * Node Transitions are all the possible outcomes when a user's interaction on a node is completed. The possible destinations

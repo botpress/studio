@@ -43,7 +43,6 @@ interface CssExports {
   'text': string;
   'textWrapper': string;
   'total': string;
-  'trigger': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;

@@ -10,17 +10,13 @@ import {
   flowEditorRedo,
   flowEditorUndo,
   refreshActions,
-  refreshConditions,
   refreshIntents,
   setDiagramAction,
   switchFlow
 } from '~/actions'
 import { Timeout, toastFailure, toastInfo } from '~/components/Shared/Utils'
 import { isOperationAllowed } from '~/components/Shared/Utils/AccessControl'
-import DocumentationProvider from '~/components/Util/DocumentationProvider'
 import { RootReducer } from '~/reducers'
-
-import SidePanelOneFlow from '../FlowBuilder/sidePanelTopics'
 
 import Diagram from './diagram'
 import SidePanel, { PanelPermissions, SidePanelInspector } from './sidePanelFlows'
@@ -208,8 +204,7 @@ const mapDispatchToProps = {
   clearErrorSaveFlows,
   closeFlowNodeProps,
   refreshActions,
-  refreshIntents,
-  refreshConditions
+  refreshIntents
 }
 
 export default connect<StateProps, DispatchProps, OwnProps>(

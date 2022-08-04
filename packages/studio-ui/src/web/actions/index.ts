@@ -18,17 +18,6 @@ export default function debounceAction(action: any, delay: number, options?: _.D
       debounced(dispatch, actionArgs)
 }
 
-const onTriggerEvent = async (action: 'delete' | 'create', conditions: sdk.DecisionTriggerCondition[], state) => {
-  const conditionDefs = state.ndu.conditions as sdk.Condition[]
-
-  for (const condition of conditions) {
-    const callback = conditionDefs.find((x) => x.id === condition.id)?.callback
-    if (callback) {
-      await axios.post(`${window.BOT_API_PATH}/${callback}`, { action, condition })
-    }
-  }
-}
-
 // Flows
 export const receiveFlowsModification = createAction('FLOWS/MODIFICATIONS/RECEIVE')
 
@@ -175,7 +164,7 @@ export const duplicateFlow: (flow: { flowNameToDuplicate: string; name: string }
   }
 )
 
-type AllPartialNode = (Partial<sdk.FlowNode> | Partial<sdk.TriggerNode> | Partial<sdk.ListenNode>) & Partial<FlowPoint>
+type AllPartialNode = (Partial<sdk.FlowNode> | Partial<sdk.ListenNode>) & Partial<FlowPoint>
 
 export const updateFlowNode: (props: AllPartialNode | (AllPartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]) => void =
   wrapAction(requestUpdateFlowNode, updateCurrentFlow)
@@ -462,14 +451,6 @@ export const refreshIntents = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.BOT_API_PATH}/nlu/intents`).then(({ data }) => {
     dispatch(intentsReceived(data))
-  })
-}
-
-export const conditionsReceived = createAction('CONDITIONS/RECEIVED')
-export const refreshConditions = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/dialogConditions`).then(({ data }) => {
-    dispatch(conditionsReceived(data))
   })
 }
 

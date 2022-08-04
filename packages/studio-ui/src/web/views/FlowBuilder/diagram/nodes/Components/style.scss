@@ -58,7 +58,6 @@
     .say_something,
     .standard,
     .skill-call,
-    .trigger,
     .execute,
     .action,
     .failure,
@@ -90,8 +89,6 @@
       &:hover.say_something,
       &.sub-workflow,
       &:hover.sub-workflow,
-      &.trigger,
-      &:hover.trigger,
       &.execute,
       &:hover.execute,
       &.action,
@@ -111,10 +108,6 @@
         border-color: var(--ocean);
       }
     }
-  }
-
-  .trigger :global(.port):before {
-    background: var(--trigger);
   }
 
   .execute :global(.port):before,
@@ -209,11 +202,6 @@
       background: var(--say);
     }
 
-    &.trigger,
-    &:hover.trigger {
-      background: var(--trigger);
-    }
-
     &.execute,
     &:hover.execute,
     &.action,
@@ -298,11 +286,6 @@
     &:hover.say_something {
       background: #fff;
       border-color: var(--say);
-    }
-
-    &.trigger,
-    &:hover.trigger {
-      border-color: var(--trigger);
     }
 
     &.execute,
