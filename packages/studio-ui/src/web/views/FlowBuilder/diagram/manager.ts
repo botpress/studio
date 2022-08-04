@@ -29,7 +29,7 @@ const passThroughNodeProps: string[] = [
 ]
 
 // Must be identified by the deleteSelectedElement logic to know it needs to delete something
-export const nodeTypes = ['standard', 'skill-call', 'listen', 'router', 'action']
+export const nodeTypes = ['standard', 'skill-call', 'router', 'action']
 
 // Default transition applied for new nodes 1.5
 export const defaultTransition = { condition: 'true', node: '' }

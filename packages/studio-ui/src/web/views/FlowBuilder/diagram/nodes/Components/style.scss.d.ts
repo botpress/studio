@@ -22,7 +22,6 @@ interface CssExports {
   'in': string;
   'joinLabel': string;
   'large': string;
-  'listen': string;
   'nodeWrapper': string;
   'out': string;
   'outRouting': string;

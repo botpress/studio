@@ -306,8 +306,6 @@ class Diagram extends Component<Props> {
   add = {
     flowNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'standard', next: [defaultTransition] }),
     skillNode: (point: Point, skillId: string) => this.props.buildSkill({ location: point, id: skillId }),
-    listenNode: (point: Point) =>
-      this.props.createFlowNode({ ...point, type: 'listen', onReceive: [], next: [defaultTransition] }),
     routerNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'router' }),
     actionNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'action', next: [defaultTransition] })
   }
@@ -469,7 +467,6 @@ class Diagram extends Component<Props> {
       nodeType === 'standard' ||
       nodeType === 'skill-call' ||
       nodeType === 'failure' ||
-      nodeType === 'listen' ||
       nodeType === 'action'
     )
   }
@@ -633,9 +630,6 @@ class Diagram extends Component<Props> {
       this.add.skillNode(point, data.id)
     } else if (data.type === 'node') {
       switch (data.id) {
-        case 'listen':
-          this.add.listenNode(point)
-          break
         case 'router':
           this.add.routerNode(point)
           break

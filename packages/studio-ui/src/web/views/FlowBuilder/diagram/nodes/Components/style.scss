@@ -60,7 +60,6 @@
     .action,
     .failure,
     .router,
-    .listen,
     .success {
       :global(.port):before {
         background: var(--ocean);
@@ -86,8 +85,6 @@
       &:hover.sub-workflow,
       &.action,
       &:hover.action,
-      &.listen,
-      &:hover.listen,
       &.failure,
       &:hover.failure,
       &.router,
@@ -105,10 +102,6 @@
 
   .action :global(.port):before {
     background: var(--execute);
-  }
-
-  .listen :global(.port):before {
-    background: var(--listen);
   }
 
   .failure :global(.port):before {
@@ -194,11 +187,6 @@
       background: var(--execute);
     }
 
-    &.listen,
-    &:hover.listen {
-      background: var(--listen);
-    }
-
     &.failure,
     &:hover.failure {
       background: var(--lighthouse);
@@ -270,11 +258,6 @@
     &.action,
     &:hover.action {
       border-color: var(--execute);
-    }
-
-    &.listen,
-    &:hover.listen {
-      border-color: var(--listen);
     }
 
     &.failure,

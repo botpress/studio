@@ -40,7 +40,6 @@ const defaultLabels = {
   action: 'studio.flow.node.chatbotExecutes',
   failure: 'studio.flow.node.workflowFails',
   router: 'if',
-  listen: 'listen',
   success: 'studio.flow.node.workflowSucceeds'
 }
 
@@ -49,7 +48,6 @@ const BlockWidget: FC<BlockProps> = ({
   editNodeItem,
   deleteSelectedElements,
   copySelectedElement,
-  selectedNodeItem,
   switchFlowNode,
   updateFlowNode,
   getCurrentFlow,
@@ -126,7 +124,7 @@ const BlockWidget: FC<BlockProps> = ({
   }
 
   const outPortInHeader = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
-  const canCollapse = !['failure', 'router', 'success', 'listen', 'standard', 'skill-call'].includes(nodeType)
+  const canCollapse = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
   const hasContextMenu = !['failure', 'success'].includes(nodeType)
 
   const debugInfo = getDebugInfo(node.name)
