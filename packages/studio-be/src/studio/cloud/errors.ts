@@ -20,3 +20,7 @@ export class RuntimeNotActiveError extends VError {
     super(`runtime for bot ${cloudBotId} is ${runtimeStatus}`)
   }
 }
+
+// export class CloudError extends VError {
+//   constructor(public )
+// }

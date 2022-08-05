@@ -34,8 +34,8 @@ export class CloudRouter extends CustomStudioRouter {
 
         const deployResult = await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
 
-        if (deployResult.err) {
-          const { val } = deployResult
+        if (deployResult.isErr()) {
+          const { error: val } = deployResult
 
           if (val === 'message too large') {
             throw new BadRequestError(val)

@@ -2801,6 +2801,7 @@ __metadata:
     multer: ^1.4.4
     nanoid: ^3.2.0
     ncp: ^2.0.0
+    neverthrow: ^5.0.0
     node-machine-id: ^1.1.12
     pg: ^7.8.0
     plur: ^4.0.0
@@ -2813,7 +2814,6 @@ __metadata:
     tar: ^6.1.11
     tmp: ^0.2.1
     ts-node: ^10.5.0
-    ts-results: ^3.3.0
     typescript: ^4.5.5
     unzipper: ^0.10.11
     verror: ^1.10.1
@@ -2978,6 +2978,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.4
     eslint-plugin-jsdoc: 37.8.0
+    eslint-plugin-neverthrow: ^1.1.4
     jest: ^27.5.0
     minimist: ^1.2.5
     pkg: ^4.3.7
@@ -6854,6 +6855,26 @@ __metadata:
   version: 2.0.1
   resolution: "@types/dom4@npm:2.0.1"
   checksum: d4b746c7b891ae1d5c7e8d4e9410c1c58fc0fe8ee71855967bb4699af6ed8b067e66aa5f53b6d9559ef3479d4ca94cb13504000f4ac0cff58b1f3eb8b489b064
+  languageName: node
+  linkType: hard
+
+"@types/eslint-utils@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@types/eslint-utils@npm:3.0.1"
+  dependencies:
+    "@types/eslint": "*"
+    "@types/estree": "*"
+  checksum: 3ba609d18153a2f22473219f8a1b9906dc4bb46c6aea3203a2cf4083a96f56f80c983d83c7868704b0df3c5d733ce29f446db327a630486abbc50dfeebb5128c
+  languageName: node
+  linkType: hard
+
+"@types/eslint@npm:*":
+  version: 8.4.5
+  resolution: "@types/eslint@npm:8.4.5"
+  dependencies:
+    "@types/estree": "*"
+    "@types/json-schema": "*"
+  checksum: 428b0c971a50adb0d08621e76f21b284580a0052a31341a0e6d553f72b54cd0142d549aa1497c7e3bc56e9f6bcc27286e66e0216e1ba76d1a5ecd2279c40bc8c
   languageName: node
   linkType: hard
 
@@ -14454,6 +14475,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-neverthrow@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "eslint-plugin-neverthrow@npm:1.1.4"
+  dependencies:
+    "@types/eslint-utils": ^3.0.0
+    eslint-utils: 3.0.0
+    tsutils: 3.21.0
+  peerDependencies:
+    "@typescript-eslint/parser": ">=4.20.0"
+    eslint: ">=5.16.0"
+  checksum: b8c3821a72e533fe32013e54b8a521f042dadf6298fc40301a249598d139388a59080c32488d9adceff97afa13291d19e614fc469546dfe1b973f88b6bd6bd3e
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:3.7.1":
   version: 3.7.1
   resolution: "eslint-scope@npm:3.7.1"
@@ -14494,7 +14529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-utils@npm:^3.0.0":
+"eslint-utils@npm:3.0.0, eslint-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "eslint-utils@npm:3.0.0"
   dependencies:
@@ -22503,6 +22538,13 @@ __metadata:
   version: 2.1.0
   resolution: "nested-error-stacks@npm:2.1.0"
   checksum: 206ee736f9eb83489cc093d43e7d3024255ec93c66a31eaee58ca14d5ad9d925d813494725dcf5dec264e70cd8430167b7f82a2d00b0dd099f83c78d9ca650fd
+  languageName: node
+  linkType: hard
+
+"neverthrow@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "neverthrow@npm:5.0.0"
+  checksum: 4a75793a01a13c0f4589156da073700fa5534ce5a797ab32fa7f6b445946bfade7c181003aa58918e7f1ed6532c21dd9b2726da42bf982b98096a319db4f8f61
   languageName: node
   linkType: hard
 
@@ -30727,13 +30769,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-results@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "ts-results@npm:3.3.0"
-  checksum: 426c272901d7a0cf8e9539ed90739d03f8e99245fb669beabba8c6729b92da6574698018f9dc8d5d92e8a3e833a40899f855192208ff8dd7e4a68178f7740132
-  languageName: node
-  linkType: hard
-
 "tsconfig-paths@npm:^3.12.0":
   version: 3.12.0
   resolution: "tsconfig-paths@npm:3.12.0"
@@ -30781,7 +30816,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsutils@npm:^3.21.0":
+"tsutils@npm:3.21.0, tsutils@npm:^3.21.0":
   version: 3.21.0
   resolution: "tsutils@npm:3.21.0"
   dependencies:

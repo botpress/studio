@@ -5,8 +5,8 @@ import FormData from 'form-data'
 import { constants } from 'http2'
 
 import _ from 'lodash'
+import { Result, ok, err, ResultAsync, okAsync } from 'neverthrow'
 import qs from 'qs'
-import { Result, Ok, Err } from 'ts-results'
 import { VError } from 'verror'
 import { CDMConflictError, UnexpectedError } from './errors'
 import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from './types'
@@ -14,7 +14,7 @@ import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } fr
 export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
 
 export class CloudClient {
-  constructor(private logger: Logger) { }
+  constructor(private logger: Logger) {}
 
   public async createBot(props: {
     personalAccessToken: string
@@ -28,15 +28,15 @@ export class CloudClient {
         { workspaceId, name },
         this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
       )
-      return Ok(data)
+      return ok(data)
     } catch (e) {
       if (isCDMError(e)) {
         if (e.response.status === constants.HTTP_STATUS_CONFLICT) {
           const { message } = e.response.data
-          return Err(new CDMConflictError(message))
+          return err(new CDMConflictError(message))
         }
       }
-      return Err(new UnexpectedError(e, 'Error while attempting to create bot'))
+      return err(new UnexpectedError(e, 'Error while attempting to create bot'))
     }
   }
 
@@ -101,8 +101,9 @@ export class CloudClient {
 
       return data.access_token
     } catch (err) {
-      const message = `Error fetching cloud access token using cloud config. clientId: ${clientId}, clientSecret: ${clientSecret === undefined ? clientSecret : clientSecret.replace(/./g, '*')
-        }}`
+      const message = `Error fetching cloud access token using cloud config. clientId: ${clientId}, clientSecret: ${
+        clientSecret === undefined ? clientSecret : clientSecret.replace(/./g, '*')
+      }}`
       this.logger.attachError(err).error(message)
       return
     }

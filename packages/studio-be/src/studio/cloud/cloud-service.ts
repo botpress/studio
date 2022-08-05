@@ -4,25 +4,25 @@ import { BotService } from 'core/bots'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
 import _ from 'lodash'
+import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
-import { Result, Ok, Err } from 'ts-results'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
 import { CDMConflictError, CreateBotError, RuntimeNotActiveError, UnexpectedError } from './errors'
 import { Bot } from './types'
 
 export class CloudService {
-  constructor(private cloudClient: CloudClient, private botService: BotService, private nluService: NLUService) { }
+  constructor(private cloudClient: CloudClient, private botService: BotService, private nluService: NLUService) {}
 
   public async deployBot(props: {
     botId: string
     workspaceId: string
     personalAccessToken: string
-  }): Promise<Result<void, 'message too large' | 'no bot config' | 'invalid pat' | CreateBotError>> {
+  }): Promise<Result<null, 'message too large' | 'no bot config' | 'invalid pat' | CreateBotError>> {
     const { personalAccessToken, workspaceId, botId } = props
 
     const botConfig = await this.botService.findBotById(botId)
     if (!botConfig) {
-      return Err('no bot config')
+      return err('no bot config')
     }
 
     let cloudBotId: string
@@ -47,20 +47,20 @@ export class CloudService {
           name: botId,
           workspaceId
         })
-        if (result.err) {
-          const { val } = result
+        if (result.isErr()) {
+          const { error: val } = result
 
           if (val instanceof CDMConflictError) {
-            return Err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
+            return err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
           }
 
           if (val instanceof UnexpectedError) {
-            return Err(new CreateBotError({ cause: val }, 'Could not create bot'))
+            return err(new CreateBotError({ cause: val }, 'Could not create bot'))
           }
 
           throw new UnreachableCaseError(val)
         } else {
-          cloudBot = result.val
+          cloudBot = result.value
           cloudBotId = cloudBot.id
           clientId = cloudBot.apiKey.id
           clientSecret = cloudBot.apiKey.secret
@@ -80,34 +80,34 @@ export class CloudService {
 
     const botMultipart = await this.makeBotUploadPayload({ botId })
     if (Buffer.byteLength(botMultipart.getBuffer()) > MAX_BODY_CLOUD_BOT_SIZE) {
-      return Err('message too large')
+      return err('message too large')
     }
 
     await this.waitUntilBotUploadable({ cloudBotId, clientId, clientSecret })
     await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, personalAccessToken })
 
-    return Ok.EMPTY
+    return ok(null)
   }
 
   private async waitUntilBotUploadable(props: {
     cloudBotId: string
     clientId: CloudConfig['clientId']
     clientSecret: CloudConfig['clientSecret']
-  }): Promise<Result<void, 'no oauthAccessToken' | 'runtime cannot start'>> {
+  }): Promise<Result<null, 'no oauthAccessToken' | 'runtime cannot start'>> {
     const { cloudBotId, clientId, clientSecret } = props
 
     const oauthAccessToken = await this.cloudClient.getAccessToken({ clientId, clientSecret })
     if (!oauthAccessToken) {
-      return Err('no oauthAccessToken')
+      return err('no oauthAccessToken')
     }
 
-    const isRuntimeReady = async (): Promise<Result<void, RuntimeNotActiveError>> => {
+    const isRuntimeReady = async (): Promise<Result<null, RuntimeNotActiveError>> => {
       const { runtimeStatus } = await this.cloudClient.getIntrospect({ oauthAccessToken, clientId })
       if (runtimeStatus !== 'ACTIVE') {
-        return Err(new RuntimeNotActiveError(cloudBotId, runtimeStatus))
+        return err(new RuntimeNotActiveError(cloudBotId, runtimeStatus))
       }
 
-      return Ok.EMPTY
+      return ok(null)
     }
 
     const backoffResult = await backOff(() => isRuntimeReady(), {
@@ -118,10 +118,10 @@ export class CloudService {
       maxDelay: 10_000
     })
 
-    if (backoffResult.ok) {
-      return Ok.EMPTY
+    if (backoffResult.isOk()) {
+      return ok(null)
     } else {
-      return Err('runtime cannot start')
+      return err('runtime cannot start')
     }
   }
 
