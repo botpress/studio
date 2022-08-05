@@ -5,13 +5,24 @@ import FormData from 'form-data'
 import { constants } from 'http2'
 
 import _ from 'lodash'
-import { Result, ok, err, ResultAsync, okAsync } from 'neverthrow'
+import { Result, ok, err } from 'neverthrow'
 import qs from 'qs'
-import { VError } from 'verror'
-import { CDMConflictError, UnexpectedError } from './errors'
+import VError from 'verror'
 import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from './types'
 
 export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
+
+type ErrorCodes = 'cdm_conflict_error' | 'unexpected_error'
+type Modify<T, R> = Omit<T, keyof R> & R
+
+class CloudClientError extends VError {
+  public name: ErrorCodes
+  constructor(options: Modify<VError.Options, { name: ErrorCodes }>, message: string, ...params: any[]) {
+    super(options, message, ...params)
+
+    this.name = options.name
+  }
+}
 
 export class CloudClient {
   constructor(private logger: Logger) {}
@@ -20,7 +31,7 @@ export class CloudClient {
     personalAccessToken: string
     name: string
     workspaceId: string
-  }): Promise<Result<Bot, CDMConflictError | UnexpectedError>> {
+  }): Promise<Result<Bot, CloudClientError>> {
     const { personalAccessToken, name, workspaceId } = props
     try {
       const { data } = await axios.post(
@@ -32,11 +43,10 @@ export class CloudClient {
     } catch (e) {
       if (isCDMError(e)) {
         if (e.response.status === constants.HTTP_STATUS_CONFLICT) {
-          const { message } = e.response.data
-          return err(new CDMConflictError(message))
+          return err(new CloudClientError({ name: 'cdm_conflict_error', cause: e }, e.response.data.message))
         }
       }
-      return err(new UnexpectedError(e, 'Error while attempting to create bot'))
+      return err(new CloudClientError({ name: 'unexpected_error', cause: e }, 'Error while creating bot'))
     }
   }
 

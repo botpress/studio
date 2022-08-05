@@ -1,14 +1,28 @@
-import { VError } from 'verror'
+import VError from 'verror'
 
-export class CreateBotError extends VError {
-  // @ts-ignore
-  private __brand: undefined
+type Brand<K, T> = K & { __brand: T }
+
+// export type CreateBotError = Brand<VError, 'bleh'>
+export type CDMConflictError = Brand<VError, 'bleh'>
+
+// type CreateBotError = Brand<typeof VError, 'CreateBotError'>
+// type VError = typeof VError
+
+// export class CreateBotError extends VError implements Brand<typeof VError, 'create_bot_error'> {
+//   // @ts-ignore
+//   // private __brand: undefined
+// }
+
+// export class CDMConflictError extends VError {
+//   // @ts-ignore
+//   private __brand: undefined
+// }
+
+interface Bleh {
+  a: number
 }
 
-export class CDMConflictError extends VError {
-  // @ts-ignore
-  private __brand: undefined
-}
+type B = Omit<Bleh, 'a'>
 
 export class UnexpectedError extends VError {
   // @ts-ignore
@@ -20,7 +34,3 @@ export class RuntimeNotActiveError extends VError {
     super(`runtime for bot ${cloudBotId} is ${runtimeStatus}`)
   }
 }
-
-// export class CloudError extends VError {
-//   constructor(public )
-// }

@@ -6,9 +6,21 @@ import FormData from 'form-data'
 import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
+import VError from 'verror'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
-import { CDMConflictError, CreateBotError, RuntimeNotActiveError, UnexpectedError } from './errors'
 import { Bot } from './types'
+
+type ErrorCodes = 'message_too_large' | 'no_bot_config' | 'invalid_pat' | 'create_bot_error'
+type Modify<T, R> = Omit<T, keyof R> & R
+
+class DeployBotError extends VError {
+  public name: ErrorCodes
+  constructor(options: Modify<VError.Options, { name: ErrorCodes }>, message: string, ...params: any[]) {
+    super(options, message, ...params)
+
+    this.name = options.name
+  }
+}
 
 export class CloudService {
   constructor(private cloudClient: CloudClient, private botService: BotService, private nluService: NLUService) {}
@@ -17,12 +29,12 @@ export class CloudService {
     botId: string
     workspaceId: string
     personalAccessToken: string
-  }): Promise<Result<null, 'message too large' | 'no bot config' | 'invalid pat' | CreateBotError>> {
+  }): Promise<Result<null, DeployBotError>> {
     const { personalAccessToken, workspaceId, botId } = props
 
     const botConfig = await this.botService.findBotById(botId)
     if (!botConfig) {
-      return err('no bot config')
+      return err(new DeployBotError({ name: 'no_bot_config' }, 'Bot not found'))
     }
 
     let cloudBotId: string
@@ -48,17 +60,17 @@ export class CloudService {
           workspaceId
         })
         if (result.isErr()) {
-          const { error: val } = result
-
-          if (val instanceof CDMConflictError) {
-            return err(new CreateBotError({ cause: val }, 'Conflict while creating bot'))
+          const { error } = result
+          switch (error.name) {
+            case 'unexpected_error':
+              return err(
+                new DeployBotError({ name: 'create_bot_error', cause: error }, 'Unexpected error while creating bot')
+              )
+            case 'cdm_conflict_error':
+              return err(new DeployBotError({ name: 'create_bot_error', cause: error }, 'Conflict while creating bot'))
+            default:
+              throw new UnreachableCaseError(error.name)
           }
-
-          if (val instanceof UnexpectedError) {
-            return err(new CreateBotError({ cause: val }, 'Could not create bot'))
-          }
-
-          throw new UnreachableCaseError(val)
         } else {
           cloudBot = result.value
           cloudBotId = cloudBot.id
@@ -80,7 +92,7 @@ export class CloudService {
 
     const botMultipart = await this.makeBotUploadPayload({ botId })
     if (Buffer.byteLength(botMultipart.getBuffer()) > MAX_BODY_CLOUD_BOT_SIZE) {
-      return err('message too large')
+      return err(new DeployBotError({ name: 'message_too_large' }, 'Message too large'))
     }
 
     await this.waitUntilBotUploadable({ cloudBotId, clientId, clientSecret })

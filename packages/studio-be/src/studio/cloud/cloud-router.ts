@@ -5,8 +5,7 @@ import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { CloudClient } from './cloud-client'
-import { CloudService } from './cloud-service'
-import { CreateBotError } from './errors'
+import { CloudService, CreateBotError } from './cloud-service'
 import { DeployRequestSchema } from './schemas'
 
 export class CloudRouter extends CustomStudioRouter {
@@ -35,19 +34,19 @@ export class CloudRouter extends CustomStudioRouter {
         const deployResult = await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
 
         if (deployResult.isErr()) {
-          const { error: val } = deployResult
+          const { error } = deployResult
 
-          if (val === 'message too large') {
-            throw new BadRequestError(val)
-          } else if (val === 'no bot config') {
-            throw new BadRequestError(val)
-          } else if (val === 'invalid pat') {
-            throw new UnauthorizedError(val)
-          } else if (val instanceof CreateBotError) {
-            throw new ConflictError(val.message)
+          if (error === 'message too large') {
+            throw new BadRequestError(error)
+          } else if (error === 'no bot config') {
+            throw new BadRequestError(error)
+          } else if (error === 'invalid pat') {
+            throw new UnauthorizedError(error)
+          } else if (error === 'create bot error') {
+            throw new ConflictError(error.message)
           }
 
-          throw new UnreachableCaseError(val)
+          throw new UnreachableCaseError(error)
         }
 
         return res.sendStatus(204)
