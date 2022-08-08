@@ -1,14 +1,14 @@
-import { CloudConfig } from 'botpress/sdk'
+import { BotConfig, CloudConfig } from 'botpress/sdk'
 import { UnreachableCaseError } from 'common/errors'
 import { BotService } from 'core/bots'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
-import _, { result } from 'lodash'
+import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
 import VError from 'verror'
 import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
-import { Bot, RuntimeStatus } from './types'
+import { RuntimeStatus } from './types'
 
 class CreateBotError extends VError {
   readonly name = 'create_bot'
@@ -90,67 +90,29 @@ export class CloudService {
   }): Promise<Result<null, DeployBotError>> {
     const { personalAccessToken, workspaceId, botId } = props
 
-    const botConfig = await this.botService.findBotById(botId)
-    if (!botConfig) {
-      return err(new NoBotConfigError())
-    }
-
-    let cloudBotId: string
-    let clientId: string
-    let clientSecret: string
-
-    if (botConfig.cloud?.botId) {
-      // if botId is already set, we assume it's a cloud bot
-      cloudBotId = botConfig.cloud.botId
-      clientId = botConfig.cloud.clientId
-      clientSecret = botConfig.cloud.clientSecret
-    } else {
-      // otherwise, we try finding a matching bot (by name) in the cloud
-      let cloudBot: Bot | undefined
-      const cloudWorkspaceBots = await this.cloudClient.listBots({ personalAccessToken, workspaceId })
-      const matchingBot = cloudWorkspaceBots.find((b) => b.name === botId)
-
-      if (!matchingBot) {
-        // no matching bot found, we create a new one in the cloud
-        const result = await this.cloudClient.createBot({
-          personalAccessToken,
-          name: botId,
-          workspaceId
-        })
-        if (result.isErr()) {
-          const { error } = result
-          switch (error.name) {
-            case 'unexpected_error':
-              return err(new CreateBotError({ cause: error }, 'Unexpected error'))
-            case 'cdm_conflict_error':
-              return err(new CreateBotError({ cause: error }, 'Conflict error'))
-            default:
-              throw new UnreachableCaseError(error.name)
-          }
-        } else {
-          cloudBot = result.value
-          cloudBotId = cloudBot.id
-          clientId = cloudBot.apiKey.id
-          clientSecret = cloudBot.apiKey.secret
-        }
-      } else {
-        cloudBot = matchingBot
-        cloudBotId = cloudBot.id
-        clientId = cloudBot.apiKey.id
-        clientSecret = cloudBot.apiKey.secret
-      }
-
-      // save the cloud bot info in the bot config
-      await this.botService.updateBot(botId, {
-        cloud: { botId: cloudBotId, clientId: cloudBot.apiKey.id, clientSecret: cloudBot.apiKey.secret, workspaceId }
-      })
-    }
-
     const botMultipart = await this.makeBotUploadPayload({ botId })
     const actualSize = Buffer.byteLength(botMultipart.getBuffer())
     if (actualSize > MAX_BODY_CLOUD_BOT_SIZE) {
       return err(new MessageTooLargeError({ actualSize, maxSize: MAX_BODY_CLOUD_BOT_SIZE }))
     }
+
+    const botConfig = await this.botService.findBotById(botId)
+    if (!botConfig) {
+      return err(new NoBotConfigError())
+    }
+
+    const getOrCreateResult = await this.getOrCreateCloudBot({ botConfig, workspaceId, personalAccessToken })
+    if (getOrCreateResult.isErr()) {
+      const { error } = getOrCreateResult
+      switch (error.name) {
+        case 'create_bot':
+          return err(error)
+        default:
+          throw new UnreachableCaseError(error.name)
+      }
+    }
+
+    const { cloudBotId, clientId, clientSecret } = getOrCreateResult.value
 
     const botWaitResult = await this.waitUntilBotUploadable({ cloudBotId, clientId, clientSecret })
     if (botWaitResult.isErr()) {
@@ -168,6 +130,63 @@ export class CloudService {
     await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, personalAccessToken })
 
     return ok(null)
+  }
+
+  private async getOrCreateCloudBot(props: {
+    botConfig: BotConfig
+    workspaceId: string
+    personalAccessToken: string
+  }): Promise<Result<{ cloudBotId: string; clientId: string; clientSecret: string }, CreateBotError>> {
+    const { botConfig, workspaceId, personalAccessToken } = props
+    const { id: botId } = botConfig
+
+    if (botConfig.cloud?.botId) {
+      // if botId is already set, we assume it's a cloud-enabled bot
+      return ok({ ...botConfig.cloud, cloudBotId: botConfig.cloud.botId })
+    }
+
+    // otherwise, we try finding a matching bot (by name) in the cloud
+    const cloudWorkspaceBots = await this.cloudClient.listBots({ personalAccessToken, workspaceId })
+    const matchingBot = cloudWorkspaceBots.find((b) => b.name === botId)
+
+    if (matchingBot) {
+      return ok({
+        cloudBotId: matchingBot.id,
+        clientId: matchingBot.apiKey.id,
+        clientSecret: matchingBot.apiKey.secret
+      })
+    }
+
+    // no matching bot found, we create a new one in the cloud
+    const result = await this.cloudClient.createBot({
+      personalAccessToken,
+      name: botId,
+      workspaceId
+    })
+
+    if (result.isOk()) {
+      const {
+        id: cloudBotId,
+        apiKey: { id: clientId, secret: clientSecret }
+      } = result.value
+
+      // save the cloud bot info in the bot config
+      await this.botService.updateBot(botId, {
+        cloud: { botId: cloudBotId, clientId, clientSecret, workspaceId }
+      })
+
+      return ok({ cloudBotId, clientId, clientSecret })
+    }
+
+    const { error } = result
+    switch (error.name) {
+      case 'cdm_conflict_error':
+        return err(new CreateBotError({ cause: error }, 'Conflict error'))
+      case 'unexpected_error':
+        return err(new CreateBotError({ cause: error }, 'Unexpected error'))
+      default:
+        throw new UnreachableCaseError(error.name)
+    }
   }
 
   private async waitUntilBotUploadable(props: {
