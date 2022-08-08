@@ -5,13 +5,12 @@ import React from 'react'
 import style from './style.scss'
 
 export function PatInput(props: {
-  pat: string
   valid: boolean
   loading?: boolean
   onChange: (pat: string) => void
   onSave: () => void
 }): JSX.Element {
-  const { pat, valid, loading, onChange, onSave } = props
+  const { valid, loading, onChange, onSave } = props
 
   return (
     <div>
@@ -19,8 +18,8 @@ export function PatInput(props: {
         <InputGroup
           className={style.patInput}
           placeholder={lang.tr('topNav.deploy.enterPersonalAccessToken')}
-          value={pat}
           onChange={(e) => onChange(e.target.value)}
+          onBlur={(e) => onChange(e.target.value)}
           rightElement={
             valid ? (
               <Button disabled icon={'tick-circle'} minimal />

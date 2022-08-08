@@ -120,13 +120,11 @@ const PatProvider = (props: Props): JSX.Element => {
       onCompleted(state.initialPat)
       return <></>
     case 'initial_pat_invalid':
-      return <PatInput pat={''} valid={false} onChange={changeHandler} onSave={onSaveClicked} />
+      return <PatInput valid={false} onChange={changeHandler} onSave={onSaveClicked} />
     case 'checking_new_pat':
-      return (
-        <PatInput pat={state.newPat} valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
-      )
+      return <PatInput valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
     case 'new_pat_status_received':
-      return <PatInput pat={state.newPat} valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
+      return <PatInput valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
     default:
       throw new UnreachableCaseError(status)
   }
