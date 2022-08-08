@@ -3,7 +3,6 @@ import _, { debounce } from 'lodash'
 import React, { useEffect, useMemo, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
-import { LocalStoragePat } from './local-storage-pat'
 import { fetchPatStatus } from './pat'
 import { PatInput } from './pat-input'
 
@@ -71,20 +70,42 @@ const PatProvider = (props: Props): JSX.Element => {
     dispatch({ type: 'newPat/validated', valid, value: pat })
   }
 
-  const debounceAc = new AbortController()
+  const ac = new AbortController()
   const debouncedValidatePat = useMemo(() => debounce(validatePat, 300), [])
-  // Stop the invocation of the debounced function
-  // after unmounting
+
   useEffect(() => {
     return () => {
+      // Stop the invocation of the debounced function after unmounting
       debouncedValidatePat.cancel()
+      // Cancel all pending requests
+      ac.abort()
     }
   }, [])
 
   useEffect(() => {
     if (status === 'checking_new_pat') {
       const { newPat } = state
-      void debouncedValidatePat(newPat, debounceAc)
+      void debouncedValidatePat(newPat, ac)
+    }
+  }, [status])
+
+  useEffect(() => {
+    if (status === 'checking_initial_pat') {
+      const initialPatValue = localStorage.getItem(LOCALSTORAGE_KEY)
+      if (!initialPatValue) {
+        dispatch({ type: 'initialPatCheck/invalid' })
+        return
+      }
+
+      fetchPatStatus(initialPatValue, ac)
+        .then((valid) => {
+          valid
+            ? dispatch({ type: 'initialPatCheck/valid', value: initialPatValue })
+            : dispatch({ type: 'initialPatCheck/invalid' })
+        })
+        .catch((err) => {
+          throw err
+        })
     }
   }, [status])
 
@@ -105,17 +126,7 @@ const PatProvider = (props: Props): JSX.Element => {
 
   switch (status) {
     case 'checking_initial_pat':
-      return (
-        <LocalStoragePat
-          onCompleted={(value) => {
-            if (value) {
-              dispatch({ type: 'initialPatCheck/valid', value })
-            } else {
-              dispatch({ type: 'initialPatCheck/invalid' })
-            }
-          }}
-        />
-      )
+      return <></>
     case 'initial_pat_valid':
       onCompleted(state.initialPat)
       return <></>
