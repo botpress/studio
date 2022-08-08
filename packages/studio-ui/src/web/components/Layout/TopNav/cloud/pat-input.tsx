@@ -34,9 +34,9 @@ export function PatInput(props: {
         />
         <Button disabled={!valid} text={lang.tr('topNav.deploy.save')} onClick={onSave} />
       </div>
-      <div style={{ marginTop: '10px' }}>
+      <div className={style.anchorContainer}>
         <AnchorButton
-          style={{ fontSize: 'small', paddingLeft: 0 }}
+          className={style.anchor}
           text={lang.tr('topNav.deploy.createPersonalAccessToken')}
           small
           target="_blank"

@@ -12,3 +12,24 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.step {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.anchorContainer {
+  margin-top: 10px;
+}
+
+.anchor {
+  font-size: small;
+  padding-left: 0;
+}
