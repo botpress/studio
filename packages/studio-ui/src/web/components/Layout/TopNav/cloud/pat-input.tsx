@@ -23,12 +23,12 @@ export function PatInput(props: {
           onChange={(e) => onChange(e.target.value)}
           rightElement={
             valid ? (
-              <Button disabled={true} icon={'tick-circle'} minimal={true} />
+              <Button disabled icon={'tick-circle'} minimal />
             ) : (
               <Tooltip
                 content={loading ? lang.tr('topNav.deploy.checkingTokenStatus') : lang.tr('topNav.deploy.tokenInvalid')}
               >
-                <Button disabled={true} icon={loading ? 'refresh' : 'error'} minimal={true} />
+                <Button disabled icon={loading ? 'refresh' : 'error'} minimal />
               </Tooltip>
             )
           }
