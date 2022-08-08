@@ -3,7 +3,7 @@ import { UnreachableCaseError } from 'common/errors'
 import { BotService } from 'core/bots'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
-import _ from 'lodash'
+import _, { result } from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
 import VError from 'verror'
@@ -44,8 +44,9 @@ class MessageTooLargeError extends VError {
 
 class RuntimeCannotStartError extends VError {
   readonly name = 'runtime_cannot_start'
-  constructor() {
-    super('Runtime cannot start')
+
+  constructor(runtimeStatus: RuntimeStatus) {
+    super(`Runtime cannot start, current status is: ${runtimeStatus}`)
   }
 }
 
@@ -201,7 +202,7 @@ export class CloudService {
     if (backoffResult.isOk()) {
       return ok(null)
     } else {
-      return err(new RuntimeCannotStartError())
+      return err(new RuntimeCannotStartError(backoffResult.error.info.runtimeStatus))
     }
   }
 
