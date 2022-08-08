@@ -1,11 +1,11 @@
 import { UnreachableCaseError } from 'common/errors'
-import { UnauthorizedError } from 'common/http'
+import { UnauthorizedError, UnexpectedError } from 'common/http'
 import { BadRequestError, ConflictError } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
 import { CloudClient } from './cloud-client'
-import { CloudService, CreateBotError } from './cloud-service'
+import { CloudService } from './cloud-service'
 import { DeployRequestSchema } from './schemas'
 
 export class CloudRouter extends CustomStudioRouter {
@@ -36,17 +36,22 @@ export class CloudRouter extends CustomStudioRouter {
         if (deployResult.isErr()) {
           const { error } = deployResult
 
-          if (error === 'message too large') {
-            throw new BadRequestError(error)
-          } else if (error === 'no bot config') {
-            throw new BadRequestError(error)
-          } else if (error === 'invalid pat') {
-            throw new UnauthorizedError(error)
-          } else if (error === 'create bot error') {
-            throw new ConflictError(error.message)
+          switch (error.name) {
+            case 'no_bot_config':
+              throw new BadRequestError(error.message)
+            case 'invalid_pat':
+              throw new UnauthorizedError(error.message)
+            case 'message_too_large':
+              throw new BadRequestError(
+                `Message too large. Max size is ${error.info.maxSize} bytes. Current size is ${error.info.actualSize} bytes`
+              )
+            case 'create_bot':
+              throw new ConflictError(error.message)
+            case 'bot_not_uploadable':
+              throw new UnexpectedError(error.message)
+            default:
+              throw new UnreachableCaseError(error)
           }
-
-          throw new UnreachableCaseError(error)
         }
 
         return res.sendStatus(204)

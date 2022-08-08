@@ -1,4 +1,4 @@
-type RuntimeStatus =
+export type RuntimeStatus =
   | 'ACTIVE'
   | 'DELETED'
   | 'BLOCKED'
