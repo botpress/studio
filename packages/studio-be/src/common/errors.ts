@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios'
 import _ from 'lodash'
 import { VError } from 'verror'
 
-export interface CDMError extends AxiosError<{ message: string }> {
+interface CDMError extends AxiosError<{ message: string }> {
   response: NonNullable<AxiosError<{ message: string }>['response']>
 }
 
