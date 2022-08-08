@@ -1,6 +1,6 @@
 import { UnreachableCaseError } from 'common/errors'
-import { UnauthorizedError, UnexpectedError } from 'common/http'
-import { BadRequestError, ConflictError } from 'core/routers'
+import { UnauthorizedError } from 'common/http'
+import { BadRequestError, ConflictError, InternalServerError } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -48,7 +48,7 @@ export class CloudRouter extends CustomStudioRouter {
             case 'create_bot':
               throw new ConflictError(error.message)
             case 'bot_not_uploadable':
-              throw new UnexpectedError(error.message)
+              throw new InternalServerError(error.message)
             default:
               throw new UnreachableCaseError(error)
           }
