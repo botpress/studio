@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 import { Logger } from 'botpress/sdk'
 import { isCDMError } from 'common/errors'
 import FormData from 'form-data'
@@ -25,7 +25,13 @@ class CloudClientError extends VError {
 }
 
 export class CloudClient {
-  constructor(private logger: Logger) {}
+  private cdmAxios: AxiosInstance
+  private oauthAxios: AxiosInstance
+
+  constructor(private logger: Logger) {
+    this.cdmAxios = axios.create({ baseURL: `${process.CLOUD_CONTROLLER_ENDPOINT}/v1` })
+    this.oauthAxios = axios.create({ baseURL: process.CLOUD_OAUTH_ENDPOINT })
+  }
 
   public async createBot(props: {
     personalAccessToken: string
@@ -34,8 +40,8 @@ export class CloudClient {
   }): Promise<Result<Bot, CloudClientError>> {
     const { personalAccessToken, name, workspaceId } = props
     try {
-      const { data } = await axios.post(
-        `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots`,
+      const { data } = await this.cdmAxios.post(
+        '/bots',
         { workspaceId, name },
         this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
       )
@@ -62,13 +68,13 @@ export class CloudClient {
       headers: { 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}` }
     })
 
-    await axios.post(`${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/upload`, botMultipart, axiosConfig)
+    await this.cdmAxios.post('/bots/upload', botMultipart, axiosConfig)
   }
 
   public async listBots(props: { personalAccessToken: PersonalAccessToken; workspaceId: string }): Promise<Bot[]> {
     const { personalAccessToken, workspaceId } = props
-    const { data } = await axios.get(
-      `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/bots/workspaces/${workspaceId}`,
+    const { data } = await this.cdmAxios.get(
+      `/bots/workspaces/${workspaceId}`,
       this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
     )
     return data
@@ -76,8 +82,8 @@ export class CloudClient {
 
   public async getIntrospect(props: { oauthAccessToken: OAuthAccessToken; clientId: string }): Promise<Introspect> {
     const { oauthAccessToken, clientId } = props
-    const { data: introspectData } = await axios.get(
-      `${process.CLOUD_CONTROLLER_ENDPOINT}/v1/introspect`,
+    const { data: introspectData } = await this.cdmAxios.get(
+      '/introspect',
       this.getCloudAxiosConfig({ token: oauthAccessToken, principals: { clientId } })
     )
     if (!introspectData.botId) {
@@ -91,8 +97,8 @@ export class CloudClient {
     const { clientId, clientSecret } = props
 
     try {
-      const { data } = await axios.post(
-        process.CLOUD_OAUTH_ENDPOINT,
+      const { data } = await this.oauthAxios.post(
+        '/',
         qs.stringify({
           client_id: clientId,
           client_secret: clientSecret,
