@@ -37,7 +37,7 @@ const ensureAuthenticated = (WrappedComponent) => {
               return Promise.reject(error)
             }
             if (error.response.config.url !== `${window.API_PATH}/admin/ping`) {
-              this.checkAuth() // just to make sure
+              this.checkAuth() // just to make sure user is still authenticated, logout otherwise
             }
           }
           if (error instanceof Error) {
