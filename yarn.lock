@@ -2820,7 +2820,6 @@ __metadata:
     vm2: ^3.9.6
     yargs: ^17.3.1
     yn: ^4.0.0
-    zod: ^3.17.10
   dependenciesMeta:
     ioredis:
       optional: true
@@ -32776,13 +32775,6 @@ __metadata:
     compress-commons: ^4.1.0
     readable-stream: ^3.6.0
   checksum: 4a73da856738b0634700b52f4ab3fe0bf0a532bea6820ad962d0bda0163d2d5525df4859f89a7238e204a378384e12551985049790c1894c3ac191866e85887f
-  languageName: node
-  linkType: hard
-
-"zod@npm:^3.17.10":
-  version: 3.17.10
-  resolution: "zod@npm:3.17.10"
-  checksum: 5de630b8eceda3de211cce0a734b629f8c4ca4bc887127b0ebd57e9c9be23204725e60adf2faf1c5ccb9b660c7588a8b04f60dfda1ed8e67a789e93c15f838f1
   languageName: node
   linkType: hard
 

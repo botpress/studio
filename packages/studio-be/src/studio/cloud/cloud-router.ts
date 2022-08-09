@@ -1,6 +1,7 @@
 import { UnreachableCaseError } from 'common/errors'
-import { UnauthorizedError, UnexpectedError } from 'common/http'
+import { UnauthorizedError } from 'common/http'
 import { BadRequestError, ConflictError, InternalServerError } from 'core/routers'
+import { validate } from 'joi'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
@@ -41,15 +42,10 @@ export class CloudRouter extends CustomStudioRouter {
     this.router.post(
       '/deploy',
       this.asyncMiddleware(async (req, res) => {
-        const parseResult = DeployRequestSchema.safeParse(req)
-        if (!parseResult.success) {
-          throw new BadRequestError(parseResult.error.message)
-        }
-
-        const {
-          params: { botId },
-          body: { workspaceId, personalAccessToken }
-        } = parseResult.data
+        const { botId } = req.params
+        const { workspaceId, personalAccessToken } = await validate(req.body, DeployRequestSchema, {
+          stripUnknown: true
+        })
 
         const deployResult = await this.cloudService.deployBot({ personalAccessToken, botId, workspaceId })
 

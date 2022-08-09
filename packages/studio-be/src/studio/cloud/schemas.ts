@@ -1,6 +1,6 @@
-import { z } from 'zod'
+import Joi from 'joi'
 
-export const DeployRequestSchema = z.object({
-  params: z.object({ botId: z.string() }),
-  body: z.object({ workspaceId: z.string(), personalAccessToken: z.string() })
+export const DeployRequestSchema = Joi.object({
+  workspaceId: Joi.string(),
+  personalAccessToken: Joi.string()
 })
