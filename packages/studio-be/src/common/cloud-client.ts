@@ -1,14 +1,11 @@
 import axios, { AxiosInstance } from 'axios'
-import { Logger } from 'botpress/sdk'
 import { isCDMError } from 'common/errors'
 import FormData from 'form-data'
-import { constants } from 'http2'
 
 import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
-import qs from 'qs'
 import VError from 'verror'
-import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from './types'
+import { Bot, Introspect, OAuthAccessToken, PersonalAccessToken, Principals } from '../studio/cloud/types'
 
 export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
 
@@ -16,6 +13,11 @@ type ErrorCodes = 'cdm_conflict_error' | 'unexpected_error'
 type Modify<T, R> = Omit<T, keyof R> & R
 
 type Token = PersonalAccessToken | OAuthAccessToken
+
+export interface CDMWorkspace {
+  id: string
+  name: string
+}
 
 class CloudClientError extends VError {
   public name: ErrorCodes
@@ -27,12 +29,26 @@ class CloudClientError extends VError {
 }
 
 export class CloudClient {
-  private cdmAxios: AxiosInstance
-  private oauthAxios: AxiosInstance
+  private axios: AxiosInstance
 
-  constructor(private logger: Logger) {
-    this.cdmAxios = axios.create({ baseURL: `${process.CLOUD_CONTROLLER_ENDPOINT}/v1` })
-    this.oauthAxios = axios.create({ baseURL: process.CLOUD_OAUTH_ENDPOINT })
+  constructor(props: { cloudControllerEndpoint: string }) {
+    const { cloudControllerEndpoint } = props
+    this.axios = axios.create({ baseURL: `${cloudControllerEndpoint}/v1` })
+  }
+
+  public async listWorkspaces(props: {
+    personalAccessToken: PersonalAccessToken
+    signal: AbortSignal
+  }): Promise<CDMWorkspace[]> {
+    const { personalAccessToken, signal } = props
+
+    const config = this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
+    const { data: workspaces } = await this.axios.get('/workspaces', {
+      ...config,
+      signal
+    })
+
+    return workspaces as CDMWorkspace[]
   }
 
   public async createBot(props: {
@@ -42,7 +58,7 @@ export class CloudClient {
   }): Promise<Result<Bot, CloudClientError>> {
     const { personalAccessToken, name, workspaceId } = props
     try {
-      const { data } = await this.cdmAxios.post(
+      const { data } = await this.axios.post(
         '/bots',
         { workspaceId, name },
         this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
@@ -50,7 +66,7 @@ export class CloudClient {
       return ok(data)
     } catch (e) {
       if (isCDMError(e)) {
-        if (e.response.status === constants.HTTP_STATUS_CONFLICT) {
+        if (e.response.status === 409) {
           return err(new CloudClientError({ name: 'cdm_conflict_error', cause: e }, e.response.data.message))
         }
       }
@@ -67,12 +83,12 @@ export class CloudClient {
       headers: { 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}` }
     })
 
-    await this.cdmAxios.post('/bots/upload', botMultipart, axiosConfig)
+    await this.axios.post('/bots/upload', botMultipart, axiosConfig)
   }
 
   public async listBots(props: { personalAccessToken: PersonalAccessToken; workspaceId: string }): Promise<Bot[]> {
     const { personalAccessToken, workspaceId } = props
-    const { data } = await this.cdmAxios.get(
+    const { data } = await this.axios.get(
       `/bots/workspaces/${workspaceId}`,
       this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
     )
@@ -81,7 +97,7 @@ export class CloudClient {
 
   public async getIntrospect(props: { oauthAccessToken: OAuthAccessToken; clientId: string }): Promise<Introspect> {
     const { oauthAccessToken, clientId } = props
-    const { data: introspectData } = await this.cdmAxios.get(
+    const { data: introspectData } = await this.axios.get(
       '/introspect',
       this.getCloudAxiosConfig({ token: oauthAccessToken, principals: { clientId } })
     )
@@ -90,38 +106,6 @@ export class CloudClient {
     }
 
     return introspectData as Introspect
-  }
-
-  public async getAccessToken(props: { clientId: string; clientSecret: string }): Promise<string | undefined> {
-    const { clientId, clientSecret } = props
-
-    try {
-      const { data } = await this.oauthAxios.post(
-        '/',
-        qs.stringify({
-          client_id: clientId,
-          client_secret: clientSecret,
-          grant_type: 'client_credentials',
-          scope: 'nlu'
-        })
-      )
-
-      if (!data) {
-        return
-      }
-
-      if (!data.access_token) {
-        return
-      }
-
-      return data.access_token
-    } catch (err) {
-      const message = `Error fetching cloud access token using cloud config. clientId: ${clientId}, clientSecret: ${
-        clientSecret === undefined ? clientSecret : clientSecret.replace(/./g, '*')
-      }}`
-      this.logger.attachError(err).error(message)
-      return
-    }
   }
 
   private getCloudAxiosConfig(props: { token: Token; principals: Principals }) {

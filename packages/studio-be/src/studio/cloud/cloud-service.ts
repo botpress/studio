@@ -9,7 +9,8 @@ import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
 import VError from 'verror'
-import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from './cloud-client'
+import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from '../../common/cloud-client'
+import { OAuthClient } from './oauth-client'
 import { RuntimeStatus } from './types'
 
 class CreateBotError extends VError {
@@ -91,13 +92,17 @@ type WaitUntilBotUploadableError = RuntimeCannotStartError | NoOauthAccessTokenE
 @injectable()
 export class CloudService {
   private cloudClient: CloudClient
+  private oauthClient: OAuthClient
 
   constructor(
     @inject(TYPES.BotService) private botService: BotService,
-    @inject(TYPES.NLUService) private nluService: NLUService,
-    @inject(TYPES.Logger) private logger: Logger
+    @inject(TYPES.NLUService) private nluService: NLUService
   ) {
-    this.cloudClient = new CloudClient(logger)
+    this.cloudClient = new CloudClient({
+      cloudControllerEndpoint: process.CLOUD_CONTROLLER_ENDPOINT
+    })
+
+    this.oauthClient = new OAuthClient({ oauthEndpoint: process.CLOUD_OAUTH_ENDPOINT })
   }
 
   public async deployBot(props: {
@@ -144,7 +149,7 @@ export class CloudService {
       }
     }
 
-    const token = await this.cloudClient.getAccessToken({ clientId, clientSecret })
+    const token = await this.oauthClient.getAccessToken({ clientId, clientSecret })
     if (!token) {
       return err(new NoOauthAccessTokenError())
     }
@@ -252,7 +257,7 @@ export class CloudService {
   }): Promise<Result<null, WaitUntilBotUploadableError>> {
     const { cloudBotId, clientId, clientSecret } = props
 
-    const oauthAccessToken = await this.cloudClient.getAccessToken({ clientId, clientSecret })
+    const oauthAccessToken = await this.oauthClient.getAccessToken({ clientId, clientSecret })
     if (!oauthAccessToken) {
       return err(new NoOauthAccessTokenError())
     }

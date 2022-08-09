@@ -1,10 +1,9 @@
-import axios from 'axios'
 import { lang } from 'botpress/shared'
+import { CDMWorkspace, CloudClient } from 'common/cloud-client'
 import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
-import { CDMWorkspace } from './types'
 import { WorkspaceSelector } from './workspace'
 
 interface OwnProps {
@@ -55,14 +54,13 @@ const WorkspaceForm = (props: Props): JSX.Element => {
 
   const { status } = state
 
+  const cloudClient = new CloudClient({ cloudControllerEndpoint: window.CLOUD_CONTROLLER_ENDPOINT })
+
   useEffect(() => {
     const ac = new AbortController()
 
     const fetchWorkspaces = async () => {
-      const { data: workspaces } = await axios.get(`${window.CLOUD_CONTROLLER_ENDPOINT}/v1/workspaces`, {
-        signal: ac.signal,
-        headers: { Authorization: `bearer ${pat}` }
-      })
+      const workspaces = await cloudClient.listWorkspaces({ personalAccessToken: pat, signal: ac.signal })
       dispatch({ type: 'availableWorkspaces/received', value: workspaces })
     }
 

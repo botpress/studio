@@ -1,9 +1,9 @@
 import { Button, Intent, MenuItem } from '@blueprintjs/core'
 import { Select } from '@blueprintjs/select'
 import { lang } from 'botpress/shared'
+import { CDMWorkspace } from 'common/cloud-client'
 import React, { useState } from 'react'
 import style from './style.scss'
-import { CDMWorkspace } from './types'
 
 const WorkspaceSelect = Select.ofType<CDMWorkspace>()
 
