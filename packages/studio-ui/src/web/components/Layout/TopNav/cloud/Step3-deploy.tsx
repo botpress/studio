@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'botpress/shared'
 import { isCDMError, UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
@@ -67,11 +68,18 @@ export const Deploy = (props: Props): JSX.Element => {
   useEffect(() => {
     const ac = new AbortController()
     const startTrain = async () => {
-      await axios.post(
-        `${window.STUDIO_API_PATH}/cloud/activate`,
-        { workspaceId, personalAccessToken: pat },
-        { signal: ac.signal }
-      )
+      try {
+        await axios.post(
+          `${window.STUDIO_API_PATH}/cloud/activate`,
+          { workspaceId, personalAccessToken: pat },
+          { signal: ac.signal }
+        )
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          toast.failure(err.response?.data?.message || 'An error occured while activating the bot')
+        }
+        throw err
+      }
 
       for (const lang of Object.keys(trainSessions)) {
         await axios.post(`${BASE_NLU_URL}/train/${lang}`, null, { signal: ac.signal })
