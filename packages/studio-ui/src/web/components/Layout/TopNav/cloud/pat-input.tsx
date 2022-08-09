@@ -1,16 +1,13 @@
-import { Alignment, AnchorButton, Button, InputGroup, Tooltip } from '@blueprintjs/core'
+import { Alignment, AnchorButton, Button, InputGroup, Intent, Tooltip } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
-import React from 'react'
+import React, { useState } from 'react'
 
 import style from './style.scss'
 
-export function PatInput(props: {
-  valid: boolean
-  loading?: boolean
-  onChange: (pat: string) => void
-  onSave: () => void
-}): JSX.Element {
-  const { valid, loading, onChange, onSave } = props
+export function PatInput(props: { error: boolean; disabled: boolean; onSave: (pat: string) => void }): JSX.Element {
+  const { error, disabled, onSave } = props
+
+  const [pat, setPat] = useState<string>('')
 
   return (
     <div>
@@ -18,21 +15,18 @@ export function PatInput(props: {
         <InputGroup
           className={style.patInput}
           placeholder={lang.tr('topNav.deploy.enterPersonalAccessToken')}
-          onChange={(e) => onChange(e.target.value)}
-          onBlur={(e) => onChange(e.target.value)}
+          value={pat}
+          onChange={(e) => setPat(e.target.value)}
+          intent={error ? Intent.DANGER : undefined}
           rightElement={
-            valid ? (
-              <Button disabled icon={'tick-circle'} minimal />
-            ) : (
-              <Tooltip
-                content={loading ? lang.tr('topNav.deploy.checkingTokenStatus') : lang.tr('topNav.deploy.tokenInvalid')}
-              >
-                <Button disabled icon={loading ? 'refresh' : 'error'} minimal />
+            error ? (
+              <Tooltip content={lang.tr('topNav.deploy.tokenInvalid')}>
+                <Button disabled icon={'error'} minimal />
               </Tooltip>
-            )
+            ) : undefined
           }
         />
-        <Button disabled={!valid} text={lang.tr('topNav.deploy.save')} onClick={onSave} />
+        <Button disabled={disabled} text={lang.tr('topNav.deploy.save')} onClick={() => onSave(pat)} />
       </div>
       <div className={style.anchorContainer}>
         <AnchorButton

@@ -1,6 +1,6 @@
 import { UnreachableCaseError } from 'common/errors'
-import _, { debounce } from 'lodash'
-import React, { useEffect, useMemo, useReducer } from 'react'
+import _ from 'lodash'
+import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
 import { fetchPatStatus } from './pat'
@@ -22,31 +22,29 @@ type State =
       status: 'initial_pat_invalid'
     }
   | {
-      status: 'checking_new_pat'
-      newPat: string
+      status: 'pat_invalid'
     }
   | {
-      status: 'new_pat_status_received'
+      status: 'saving'
       newPat: string
-      valid: boolean
     }
 
 type Action =
-  | { type: 'input/updated'; value: string }
-  | { type: 'newPat/validated'; value: string; valid: boolean }
+  | { type: 'newPat/invalid' }
   | { type: 'initialPatCheck/valid'; value: string }
   | { type: 'initialPatCheck/invalid' }
+  | { type: 'saving'; value: string }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'input/updated':
-      return { status: 'checking_new_pat', newPat: action.value }
-    case 'newPat/validated':
-      return { status: 'new_pat_status_received', newPat: action.value, valid: action.valid }
     case 'initialPatCheck/valid':
       return { status: 'initial_pat_valid', initialPat: action.value }
     case 'initialPatCheck/invalid':
       return { status: 'initial_pat_invalid' }
+    case 'newPat/invalid':
+      return { status: 'pat_invalid' }
+    case 'saving':
+      return { status: 'saving', newPat: action.value }
     default:
       throw new UnreachableCaseError(action)
   }
@@ -65,29 +63,14 @@ const PatProvider = (props: Props): JSX.Element => {
 
   const { status } = state
 
-  const validatePat = async (pat: string, ac: AbortController) => {
-    const valid = await fetchPatStatus(pat, ac)
-    dispatch({ type: 'newPat/validated', valid, value: pat })
-  }
-
   const ac = new AbortController()
-  const debouncedValidatePat = useMemo(() => debounce(validatePat, 300), [])
 
   useEffect(() => {
     return () => {
-      // Stop the invocation of the debounced function after unmounting
-      debouncedValidatePat.cancel()
       // Cancel all pending requests
       ac.abort()
     }
   }, [])
-
-  useEffect(() => {
-    if (status === 'checking_new_pat') {
-      const { newPat } = state
-      void debouncedValidatePat(newPat, ac)
-    }
-  }, [status])
 
   useEffect(() => {
     if (status === 'checking_initial_pat') {
@@ -109,19 +92,26 @@ const PatProvider = (props: Props): JSX.Element => {
     }
   }, [status])
 
-  const changeHandler = (pat: string) => {
-    dispatch({ type: 'input/updated', value: pat })
-  }
+  useEffect(() => {
+    if (status === 'saving') {
+      const save = async () => {
+        const { newPat: pat } = state
+        const valid = await fetchPatStatus(pat, ac)
 
-  const savePat = (pat: string) => {
-    localStorage.setItem(LOCALSTORAGE_KEY, pat)
-    onCompleted(pat)
-  }
+        if (valid) {
+          localStorage.setItem(LOCALSTORAGE_KEY, pat)
+          onCompleted(pat)
+        } else {
+          dispatch({ type: 'newPat/invalid' })
+        }
+      }
 
-  const onSaveClicked = async () => {
-    if (status === 'new_pat_status_received' && state.valid) {
-      savePat(state.newPat)
+      void save()
     }
+  }, [status])
+
+  const onSaveClicked = async (pat: string) => {
+    dispatch({ type: 'saving', value: pat })
   }
 
   switch (status) {
@@ -131,11 +121,11 @@ const PatProvider = (props: Props): JSX.Element => {
       onCompleted(state.initialPat)
       return <></>
     case 'initial_pat_invalid':
-      return <PatInput valid={false} onChange={changeHandler} onSave={onSaveClicked} />
-    case 'checking_new_pat':
-      return <PatInput valid={false} loading={true} onChange={changeHandler} onSave={onSaveClicked} />
-    case 'new_pat_status_received':
-      return <PatInput valid={state.valid} onChange={changeHandler} onSave={onSaveClicked} />
+      return <PatInput error={false} disabled={false} onSave={onSaveClicked} />
+    case 'pat_invalid':
+      return <PatInput error={true} disabled={false} onSave={onSaveClicked} />
+    case 'saving':
+      return <PatInput error={false} disabled={true} onSave={onSaveClicked} />
     default:
       throw new UnreachableCaseError(status)
   }
