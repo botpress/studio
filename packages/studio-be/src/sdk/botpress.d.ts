@@ -834,6 +834,7 @@ declare module 'botpress/sdk' {
     $schema?: string
     id: string
     name: string
+    env: Record<string,string>
     description?: string
     category?: string
     details: BotDetails
