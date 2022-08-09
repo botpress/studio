@@ -1,5 +1,5 @@
 import { lang } from 'botpress/shared'
-import { CDMWorkspace, CloudClient } from 'common/cloud-client'
+import { CDMWorkspace, CDMClient } from 'common/cdm-client'
 import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
@@ -54,13 +54,13 @@ const WorkspaceForm = (props: Props): JSX.Element => {
 
   const { status } = state
 
-  const cloudClient = new CloudClient({ cloudControllerEndpoint: window.CLOUD_CONTROLLER_ENDPOINT })
+  const cdmClient = new CDMClient({ cloudControllerEndpoint: window.CLOUD_CONTROLLER_ENDPOINT })
 
   useEffect(() => {
     const ac = new AbortController()
 
     const fetchWorkspaces = async () => {
-      const workspaces = await cloudClient.listWorkspaces({ personalAccessToken: pat, signal: ac.signal })
+      const workspaces = await cdmClient.listWorkspaces({ personalAccessToken: pat, signal: ac.signal })
       dispatch({ type: 'availableWorkspaces/received', value: workspaces })
     }
 

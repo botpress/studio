@@ -19,7 +19,7 @@ export interface CDMWorkspace {
   name: string
 }
 
-class CloudClientError extends VError {
+class CDMClientError extends VError {
   public name: ErrorCodes
   constructor(options: Modify<VError.Options, { name: ErrorCodes }>, message: string, ...params: any[]) {
     super(options, message, ...params)
@@ -28,7 +28,7 @@ class CloudClientError extends VError {
   }
 }
 
-export class CloudClient {
+export class CDMClient {
   private axios: AxiosInstance
 
   constructor(props: { cloudControllerEndpoint: string }) {
@@ -55,7 +55,7 @@ export class CloudClient {
     personalAccessToken: string
     name: string
     workspaceId: string
-  }): Promise<Result<Bot, CloudClientError>> {
+  }): Promise<Result<Bot, CDMClientError>> {
     const { personalAccessToken, name, workspaceId } = props
     try {
       const { data } = await this.axios.post(
@@ -67,10 +67,10 @@ export class CloudClient {
     } catch (e) {
       if (isCDMError(e)) {
         if (e.response.status === 409) {
-          return err(new CloudClientError({ name: 'cdm_conflict_error', cause: e }, e.response.data.message))
+          return err(new CDMClientError({ name: 'cdm_conflict_error', cause: e }, e.response.data.message))
         }
       }
-      return err(new CloudClientError({ name: 'unexpected_error', cause: e }, 'Error while creating bot'))
+      return err(new CDMClientError({ name: 'unexpected_error', cause: e }, 'Error while creating bot'))
     }
   }
 

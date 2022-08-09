@@ -1,4 +1,4 @@
-import { BotConfig, CloudConfig, Logger } from 'botpress/sdk'
+import { BotConfig, CloudConfig } from 'botpress/sdk'
 import { UnreachableCaseError } from 'common/errors'
 import { BotService } from 'core/bots'
 import { TYPES } from 'core/types'
@@ -9,7 +9,7 @@ import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
 import VError from 'verror'
-import { CloudClient, MAX_BODY_CLOUD_BOT_SIZE } from '../../common/cloud-client'
+import { CDMClient, MAX_BODY_CLOUD_BOT_SIZE } from '../../common/cdm-client'
 import { OAuthClient } from './oauth-client'
 import { RuntimeStatus } from './types'
 
@@ -91,14 +91,14 @@ type WaitUntilBotUploadableError = RuntimeCannotStartError | NoOauthAccessTokenE
 
 @injectable()
 export class CloudService {
-  private cloudClient: CloudClient
+  private cdmClient: CDMClient
   private oauthClient: OAuthClient
 
   constructor(
     @inject(TYPES.BotService) private botService: BotService,
     @inject(TYPES.NLUService) private nluService: NLUService
   ) {
-    this.cloudClient = new CloudClient({
+    this.cdmClient = new CDMClient({
       cloudControllerEndpoint: process.CLOUD_CONTROLLER_ENDPOINT
     })
 
@@ -154,7 +154,7 @@ export class CloudService {
       return err(new NoOauthAccessTokenError())
     }
 
-    await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, token })
+    await this.cdmClient.uploadBot({ botMultipart, botId: cloudBotId, token })
 
     return ok(null)
   }
@@ -173,7 +173,7 @@ export class CloudService {
     }
 
     // otherwise, we try finding a matching bot (by name) in the cloud
-    const cloudWorkspaceBots = await this.cloudClient.listBots({ personalAccessToken, workspaceId })
+    const cloudWorkspaceBots = await this.cdmClient.listBots({ personalAccessToken, workspaceId })
     const matchingBot = cloudWorkspaceBots.find((b) => b.name === botId)
 
     if (matchingBot) {
@@ -185,7 +185,7 @@ export class CloudService {
     }
 
     // no matching bot found, we create a new one in the cloud
-    const result = await this.cloudClient.createBot({
+    const result = await this.cdmClient.createBot({
       personalAccessToken,
       name: botId,
       workspaceId
@@ -263,7 +263,7 @@ export class CloudService {
     }
 
     const isRuntimeReady = async (): Promise<Result<null, RuntimeNotActiveError>> => {
-      const { runtimeStatus } = await this.cloudClient.getIntrospect({ oauthAccessToken, clientId })
+      const { runtimeStatus } = await this.cdmClient.getIntrospect({ oauthAccessToken, clientId })
       if (runtimeStatus !== 'ACTIVE') {
         return err(new RuntimeNotActiveError({ cloudBotId, runtimeStatus }))
       }
