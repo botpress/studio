@@ -3,13 +3,13 @@ import { Select } from '@blueprintjs/select'
 import { lang } from 'botpress/shared'
 import React, { useState } from 'react'
 import style from './style.scss'
-import { Workspace } from './types'
+import { CDMWorkspace } from './types'
 
-const WorkspaceSelect = Select.ofType<Workspace>()
+const WorkspaceSelect = Select.ofType<CDMWorkspace>()
 
 export function WorkspaceSelector(props: {
-  workspaces: Workspace[]
-  onSaveClicked: (selectedWorkspace: Workspace) => void
+  workspaces: CDMWorkspace[]
+  onSaveClicked: (selectedWorkspace: CDMWorkspace) => void
 }): JSX.Element {
   const { workspaces, onSaveClicked } = props
 
@@ -17,7 +17,7 @@ export function WorkspaceSelector(props: {
     throw new Error('No workspaces found')
   }
 
-  const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace>(workspaces[0])
+  const [selectedWorkspace, setSelectedWorkspace] = useState<CDMWorkspace>(workspaces[0])
 
   return (
     <div className={style.wsContainer} onClick={(e) => e.stopPropagation()}>

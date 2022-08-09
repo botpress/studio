@@ -4,7 +4,7 @@ import { UnreachableCaseError } from 'common/errors'
 import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
-import { Workspace } from './types'
+import { CDMWorkspace } from './types'
 import { WorkspaceSelector } from './workspace'
 
 interface OwnProps {
@@ -23,17 +23,17 @@ type State =
     }
   | {
       status: 'received_available_workspaces'
-      workspaces: Workspace[]
+      workspaces: CDMWorkspace[]
     }
   | {
       status: 'saving'
-      selectedWorkspace: Workspace
+      selectedWorkspace: CDMWorkspace
     }
 
 type Action =
   | { type: 'fetch_available_workspaces' }
-  | { type: 'availableWorkspaces/received'; value: Workspace[] }
-  | { type: 'save/clicked'; selectedWorkspace: Workspace }
+  | { type: 'availableWorkspaces/received'; value: CDMWorkspace[] }
+  | { type: 'save/clicked'; selectedWorkspace: CDMWorkspace }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {

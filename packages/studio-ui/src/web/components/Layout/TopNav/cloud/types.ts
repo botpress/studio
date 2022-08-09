@@ -1,9 +1,6 @@
 import { NLU } from 'botpress/sdk'
 
-/**
- * CDM Workspace
- */
-export interface Workspace {
+export interface CDMWorkspace {
   id: string
   name: string
 }
