@@ -43,12 +43,12 @@ export class CDMClient {
     const { personalAccessToken, signal } = props
 
     const config = this.getCloudAxiosConfig({ token: personalAccessToken, principals: {} })
-    const { data: workspaces } = await this.axios.get('/workspaces', {
+    const { data: workspaces } = await this.axios.get<CDMWorkspace[]>('/workspaces', {
       ...config,
       signal
     })
 
-    return workspaces as CDMWorkspace[]
+    return workspaces
   }
 
   public async createBot(props: {
