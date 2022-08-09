@@ -57,28 +57,22 @@ type StateProps = ReturnType<typeof mapStateToProps>
 type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
-function init(props: Props): State {
-  const { trainSessions } = props
-
-  const isTrained = computeIsTrained(trainSessions)
-
-  if (isTrained) {
-    return { status: 'upload_pending' }
-  } else {
-    return { status: 'train_pending' }
-  }
-}
-
 export const Deploy = (props: Props): JSX.Element => {
   const { pat, trainSessions, workspaceId, onCompleted } = props
 
-  const [state, dispatch] = useReducer(reducer, props, init)
+  const [state, dispatch] = useReducer(reducer, { status: 'train_pending' })
 
   const { status } = state
 
   useEffect(() => {
     const ac = new AbortController()
     const startTrain = async () => {
+      await axios.post(
+        `${window.STUDIO_API_PATH}/cloud/activate`,
+        { workspaceId, personalAccessToken: pat },
+        { signal: ac.signal }
+      )
+
       for (const lang of Object.keys(trainSessions)) {
         await axios.post(`${BASE_NLU_URL}/train/${lang}`, null, { signal: ac.signal })
       }

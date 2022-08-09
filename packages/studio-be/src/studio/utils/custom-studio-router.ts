@@ -10,6 +10,7 @@ import { AuthService, TOKEN_AUDIENCE, needPermissions, checkTokenHeader } from '
 import { ActionServersService, ActionService, HintsService } from 'core/user-code'
 import { WorkspaceService } from 'core/users'
 import { RequestHandler, Router } from 'express'
+import { CloudService } from 'studio/cloud/cloud-service'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioServices } from 'studio/studio-router'
@@ -33,6 +34,7 @@ export abstract class CustomStudioRouter {
   protected nluService: NLUService
   protected qnaService: QNAService
   protected testingService: TestingService
+  protected cloudService: CloudService
 
   protected readonly needPermissions: (operation: string, resource: string) => RequestHandler
   protected readonly asyncMiddleware: AsyncMiddleware
@@ -64,5 +66,6 @@ export abstract class CustomStudioRouter {
     this.nluService = services.nluService
     this.qnaService = services.qnaService
     this.testingService = services.testingService
+    this.cloudService = services.cloudService
   }
 }

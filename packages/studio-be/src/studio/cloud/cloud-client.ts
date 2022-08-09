@@ -15,6 +15,8 @@ export const MAX_BODY_CLOUD_BOT_SIZE = 100 * 1024 * 1024 // 100 MB
 type ErrorCodes = 'cdm_conflict_error' | 'unexpected_error'
 type Modify<T, R> = Omit<T, keyof R> & R
 
+type Token = PersonalAccessToken | OAuthAccessToken
+
 class CloudClientError extends VError {
   public name: ErrorCodes
   constructor(options: Modify<VError.Options, { name: ErrorCodes }>, message: string, ...params: any[]) {
@@ -56,13 +58,10 @@ export class CloudClient {
     }
   }
 
-  public async uploadBot(props: {
-    personalAccessToken: PersonalAccessToken
-    botId: string
-    botMultipart: FormData
-  }): Promise<void> {
-    const { personalAccessToken, botId, botMultipart } = props
-    const axiosConfig = _.merge(this.getCloudAxiosConfig({ token: personalAccessToken, principals: { botId } }), {
+  public async uploadBot(props: { token: Token; botId: string; botMultipart: FormData }): Promise<void> {
+    const { token, botId, botMultipart } = props
+
+    const axiosConfig = _.merge(this.getCloudAxiosConfig({ token, principals: { botId } }), {
       maxContentLength: MAX_BODY_CLOUD_BOT_SIZE,
       maxBodyLength: MAX_BODY_CLOUD_BOT_SIZE,
       headers: { 'Content-Type': `multipart/form-data; boundary=${botMultipart.getBoundary()}` }
@@ -125,7 +124,7 @@ export class CloudClient {
     }
   }
 
-  private getCloudAxiosConfig(props: { token: PersonalAccessToken | OAuthAccessToken; principals: Principals }) {
+  private getCloudAxiosConfig(props: { token: Token; principals: Principals }) {
     const { token, principals } = props
     const headers = { Authorization: `bearer ${token}` }
     if (principals.botId) {

@@ -1,23 +1,43 @@
 import { UnreachableCaseError } from 'common/errors'
-import { UnauthorizedError } from 'common/http'
+import { UnauthorizedError, UnexpectedError } from 'common/http'
 import { BadRequestError, ConflictError, InternalServerError } from 'core/routers'
 import _ from 'lodash'
 import { StudioServices } from 'studio/studio-router'
 import { CustomStudioRouter } from 'studio/utils/custom-studio-router'
-import { CloudClient } from './cloud-client'
-import { CloudService } from './cloud-service'
 import { DeployRequestSchema } from './schemas'
 
 export class CloudRouter extends CustomStudioRouter {
-  private readonly cloudService: CloudService
-
   constructor(services: StudioServices) {
     super('Cloud', services)
-
-    this.cloudService = new CloudService(new CloudClient(services.logger), services.botService, services.nluService)
   }
 
   setupRoutes() {
+    this.router.post(
+      '/activate',
+      this.needPermissions('write', 'bot.training'),
+      this.asyncMiddleware(async (req, res) => {
+        const { botId } = req.params
+        const { workspaceId, personalAccessToken } = req.body
+
+        const result = await this.cloudService.activateCloudForBot({ botId, workspaceId, personalAccessToken })
+
+        if (result.isErr()) {
+          const { error } = result
+
+          switch (error.name) {
+            case 'create_bot':
+              throw new InternalServerError(error.message)
+            case 'no_bot_config':
+              throw new BadRequestError(error.message)
+            default:
+              throw new UnreachableCaseError(error)
+          }
+        }
+
+        return res.sendStatus(204)
+      })
+    )
+
     this.router.post(
       '/deploy',
       this.asyncMiddleware(async (req, res) => {
@@ -48,6 +68,7 @@ export class CloudRouter extends CustomStudioRouter {
             case 'create_bot':
               throw new ConflictError(error.message)
             case 'bot_not_uploadable':
+            case 'no_oauth_access_token':
               throw new InternalServerError(error.message)
             default:
               throw new UnreachableCaseError(error)

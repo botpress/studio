@@ -1,8 +1,10 @@
-import { BotConfig, CloudConfig } from 'botpress/sdk'
+import { BotConfig, CloudConfig, Logger } from 'botpress/sdk'
 import { UnreachableCaseError } from 'common/errors'
 import { BotService } from 'core/bots'
+import { TYPES } from 'core/types'
 import { backOff } from 'exponential-backoff'
 import FormData from 'form-data'
+import { inject, injectable } from 'inversify'
 import _ from 'lodash'
 import { Result, ok, err } from 'neverthrow'
 import { NLUService } from 'studio/nlu'
@@ -76,12 +78,27 @@ class BotNotUploadableError extends VError {
   }
 }
 
-type DeployBotError = MessageTooLargeError | NoBotConfigError | InvalidPatError | CreateBotError | BotNotUploadableError
+type DeployBotError =
+  | MessageTooLargeError
+  | NoBotConfigError
+  | InvalidPatError
+  | CreateBotError
+  | BotNotUploadableError
+  | NoOauthAccessTokenError
 
 type WaitUntilBotUploadableError = RuntimeCannotStartError | NoOauthAccessTokenError
 
+@injectable()
 export class CloudService {
-  constructor(private cloudClient: CloudClient, private botService: BotService, private nluService: NLUService) {}
+  private cloudClient: CloudClient
+
+  constructor(
+    @inject(TYPES.BotService) private botService: BotService,
+    @inject(TYPES.NLUService) private nluService: NLUService,
+    @inject(TYPES.Logger) private logger: Logger
+  ) {
+    this.cloudClient = new CloudClient(logger)
+  }
 
   public async deployBot(props: {
     botId: string
@@ -127,7 +144,12 @@ export class CloudService {
       }
     }
 
-    await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, personalAccessToken })
+    const token = await this.cloudClient.getAccessToken({ clientId, clientSecret })
+    if (!token) {
+      return err(new NoOauthAccessTokenError())
+    }
+
+    await this.cloudClient.uploadBot({ botMultipart, botId: cloudBotId, token })
 
     return ok(null)
   }
@@ -187,6 +209,40 @@ export class CloudService {
       default:
         throw new UnreachableCaseError(error.name)
     }
+  }
+
+  public async activateCloudForBot(props: {
+    botId: string
+    workspaceId: string
+    personalAccessToken: string
+  }): Promise<Result<null, NoBotConfigError | CreateBotError>> {
+    const { botId, workspaceId, personalAccessToken } = props
+
+    const botConfig = await this.botService.findBotById(botId)
+    if (!botConfig) {
+      return err(new NoBotConfigError())
+    }
+
+    const getOrCreateResult = await this.getOrCreateCloudBot({
+      botConfig,
+      workspaceId,
+      personalAccessToken
+    })
+
+    if (getOrCreateResult.isErr()) {
+      const { error } = getOrCreateResult
+      switch (error.name) {
+        case 'create_bot':
+          return err(error)
+        default:
+          throw new UnreachableCaseError(error.name)
+      }
+    }
+
+    await this.nluService.unmountBot(botId) // forcing a re-mount will ensure the bot uses the Cloud NLU client
+    await this.nluService.mountBot(botId)
+
+    return ok(null)
   }
 
   private async waitUntilBotUploadable(props: {

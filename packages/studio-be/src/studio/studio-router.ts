@@ -20,6 +20,7 @@ import _ from 'lodash'
 
 import { ActionsRouter } from './actions/actions-router'
 import { CloudRouter } from './cloud/cloud-router'
+import { CloudService } from './cloud/cloud-service'
 import { CMSRouter } from './cms/cms-router'
 import { CodeEditorRouter } from './code-editor/code-editor-router'
 import { ConfigRouter } from './config/config-router'
@@ -51,6 +52,7 @@ export interface StudioServices {
   nluService: NLUService
   qnaService: QNAService
   testingService: TestingService
+  cloudService: CloudService
 }
 
 export class StudioRouter extends CustomRouter {
@@ -89,6 +91,7 @@ export class StudioRouter extends CustomRouter {
     qnaService: QNAService,
     testingService: TestingService,
     skillService: SkillService,
+    cloudService: CloudService,
     private httpServer: HTTPServer
   ) {
     super('Studio', logger, Router({ mergeParams: true }))
@@ -111,7 +114,8 @@ export class StudioRouter extends CustomRouter {
       nluService,
       qnaService,
       testingService,
-      skillService
+      skillService,
+      cloudService
     }
 
     this.cmsRouter = new CMSRouter(studioServices)

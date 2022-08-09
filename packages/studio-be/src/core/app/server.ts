@@ -29,6 +29,7 @@ import _ from 'lodash'
 import ms from 'ms'
 import path from 'path'
 import portFinder from 'portfinder'
+import { CloudService } from 'studio/cloud/cloud-service'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { StudioRouter } from 'studio/studio-router'
@@ -75,7 +76,8 @@ export class HTTPServer {
     @inject(TYPES.ObjectCache) private objectCache: MemoryObjectCache,
     @inject(TYPES.NLUService) nluService: NLUService,
     @inject(TYPES.QnaService) qnaService: QNAService,
-    @inject(TYPES.TestingService) testingService: TestingService
+    @inject(TYPES.TestingService) testingService: TestingService,
+    @inject(TYPES.CloudService) cloudService: CloudService
   ) {
     this.app = express()
 
@@ -114,6 +116,7 @@ export class HTTPServer {
       qnaService,
       testingService,
       skillService,
+      cloudService,
       this
     )
   }
