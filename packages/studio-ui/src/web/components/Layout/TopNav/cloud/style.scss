@@ -1,0 +1,35 @@
+.patContainer {
+  display: flex;
+  gap: 8px;
+}
+
+.patInput {
+  width: 48ch; // PATs are 44 chars long, let's make the input box a little longer
+}
+
+.wsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.anchorContainer {
+  margin-top: 10px;
+}
+
+.anchor {
+  font-size: small;
+  padding-left: 0;
+}

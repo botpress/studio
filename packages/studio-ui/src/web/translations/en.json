@@ -704,7 +704,16 @@
           "runtimeNotReady": "We're preparing your chatbot resource. Please try again in a few minutes.",
           "default": "Bot failed to deploy"
         }
-      }
+      },
+      "enterPersonalAccessToken": "Enter Personal Access Token",
+      "checkingTokenStatus": "Checking token status",
+      "save": "Save",
+      "createPersonalAccessToken": "Create a Personal Access Token",
+      "tokenInvalid": "Token invalid",
+      "uploadingBot": "Uploading bot",
+      "trainingBot": "Training bot",
+      "loading": "Loading...",
+      "deploy": "Deploy"
     },
     "help": "Help",
     "emulator": "Emulator",

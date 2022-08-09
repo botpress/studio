@@ -42,6 +42,15 @@ export class NotFoundError extends ResponseError {
   }
 }
 
+export class ConflictError extends ResponseError {
+  type = 'ConflictError'
+
+  constructor(message: string) {
+    super(`Conflict: ${message}`, 409, 'BP_0049')
+    this.skipLogging = true
+  }
+}
+
 export class InternalServerError extends ResponseError {
   type = 'InternalServerError'
 

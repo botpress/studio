@@ -27,7 +27,7 @@ module.exports = {
     'packages/ui-shared-lite/**',
     'packages/native-extensions/**'
   ],
-  plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint'],
+  plugins: ['eslint-plugin-import', 'eslint-plugin-jsdoc', '@typescript-eslint', 'neverthrow'],
   rules: {
     '@typescript-eslint/consistent-type-definitions': 'error',
     '@typescript-eslint/member-delimiter-style': [
@@ -80,6 +80,7 @@ module.exports = {
     ],
     'jsdoc/check-alignment': 'error',
     'linebreak-style': ['error', 'unix'],
+    'neverthrow/must-use-result': 'error',
     'no-console': [
       'warn',
       {

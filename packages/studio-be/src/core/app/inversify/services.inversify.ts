@@ -10,6 +10,7 @@ import { MigrationService } from 'core/migration'
 import { AuthService } from 'core/security'
 import { ActionService, ActionServersService, HintsService } from 'core/user-code'
 import { ContainerModule, interfaces } from 'inversify'
+import { CloudService } from 'studio/cloud/cloud-service'
 import { NLUService } from 'studio/nlu'
 import { QNAService } from 'studio/qna'
 import { TestingService } from 'studio/testing'
@@ -52,6 +53,8 @@ const ServicesContainerModule = new ContainerModule((bind: interfaces.Bind) => {
   bind<QNAService>(TYPES.QnaService).to(QNAService).inSingletonScope()
 
   bind<TestingService>(TYPES.TestingService).to(TestingService).inSingletonScope()
+
+  bind<CloudService>(TYPES.CloudService).to(CloudService).inSingletonScope()
 })
 
 export const ServicesContainerModules = [ServicesContainerModule, DialogContainerModule, GhostContainerModule]

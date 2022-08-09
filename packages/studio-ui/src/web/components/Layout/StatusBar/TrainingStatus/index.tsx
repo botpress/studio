@@ -4,15 +4,19 @@ import { lang } from 'botpress/shared'
 import { Dictionary } from 'lodash'
 import React, { FC, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
+import { trainSessionReceived } from '~/actions'
 import { RootReducer } from '~/reducers'
 import EventBus from '~/util/EventBus'
 
 import MultiLang from './MultiLang'
 import SingleLang from './SingleLang'
 
-interface Props {
+interface OwnProps {
   languages: string[]
 }
+
+type DispatchProps = typeof mapDispatchToProps
+type Props = DispatchProps & OwnProps
 
 interface TrainStatusEvent extends NLU.TrainingSession {
   botId: string
@@ -44,7 +48,9 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
 
   const onStatusBarEvent = (event: any) => {
     if (isTrainStatusEvent(event) && event.botId === window.BOT_ID) {
-      dispatch({ type: 'setTrainSession', data: { trainSession: event } })
+      const trainSession = event
+      dispatch({ type: 'setTrainSession', data: { trainSession } })
+      props.trainSessionReceived(trainSession)
     }
   }
 
@@ -73,6 +79,7 @@ const TrainingStatusComponent: FC<Props> = (props: Props) => {
         const trainSessionBatchUpdate: Dictionary<NLU.TrainingSession> = {}
         sessions.forEach((session) => {
           trainSessionBatchUpdate[session.language] = session
+          props.trainSessionReceived(session)
         })
         dispatch({ type: 'setAllTrainSessions', data: trainSessionBatchUpdate })
       })
@@ -93,4 +100,8 @@ const mapStateToProps = (state: RootReducer) => ({
   languages: state.bot.languages
 })
 
-export default connect(mapStateToProps)(TrainingStatusComponent)
+const mapDispatchToProps = {
+  trainSessionReceived
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TrainingStatusComponent)

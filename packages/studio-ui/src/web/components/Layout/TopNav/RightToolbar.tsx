@@ -1,21 +1,25 @@
 import { Icon, Tooltip } from '@blueprintjs/core'
 import { lang, ShortcutLabel, utils } from 'botpress/shared'
 import classNames from 'classnames'
-import React, { FC } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
+import { fetchBotInformation } from '~/actions'
 import { RootReducer } from '~/reducers'
 
 import DeployCloudBtn from './DeployCloudBtn'
 import style from './style.scss'
 
-interface Props {
+interface OwnProps {
   docHints: any[]
   isEmulatorOpen: boolean
-  isCloudBot: boolean
 }
 
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+type Props = DispatchProps & StateProps & OwnProps
+
 const RightToolBar = (props: Props) => {
-  const { docHints, isCloudBot } = props
+  const { docHints } = props
   const toggleEmulator = () => {
     window.botpressWebChat.sendEvent({ type: 'toggle' })
   }
@@ -48,7 +52,12 @@ const RightToolBar = (props: Props) => {
           <span className={style.divider}></span>
         </>
       )}
-      {isCloudBot ? <DeployCloudBtn /> : null}
+      <DeployCloudBtn
+        onCompleted={() => {
+          // force a fetch to update the bot information
+          props.fetchBotInformation()
+        }}
+      />
       {window.IS_BOT_MOUNTED && (
         <Tooltip content={lang.tr('topNav.toggleEmulator', { shortcut: `${utils.shortControlKey} E` })}>
           <button
@@ -67,8 +76,11 @@ const RightToolBar = (props: Props) => {
 
 const mapStateToProps = (state: RootReducer) => ({
   docHints: state.ui.docHints,
-  emulatorOpen: state.ui.emulatorOpen,
-  isCloudBot: state.bot.isCloudBot
+  emulatorOpen: state.ui.emulatorOpen
 })
 
-export default connect(mapStateToProps)(RightToolBar)
+const mapDispatchToProps = {
+  fetchBotInformation
+}
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(RightToolBar)

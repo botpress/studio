@@ -11,6 +11,7 @@ const TYPES = {
   BotRepository: Symbol.for('BotRepository'),
   ProjectLocation: Symbol.for('ProjectLocation'),
   GhostService: Symbol.for('GhostService'),
+  CloudService: Symbol.for('CloudService'),
   CMSService: Symbol.for('CMSService'),
   InMemoryDatabase: Symbol.for('InMemoryDatabase'),
   FlowService: Symbol.for('FlowService'),

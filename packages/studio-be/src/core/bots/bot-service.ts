@@ -1,4 +1,4 @@
-import { BotConfig, Logger, ListenHandle, BotTemplate } from 'botpress/sdk'
+import { BotConfig, Logger, BotTemplate } from 'botpress/sdk'
 import { BotEditSchema } from 'common/validation'
 import { coreActions } from 'core/app/core-client'
 import { TYPES } from 'core/app/types'
@@ -177,7 +177,8 @@ export class BotService {
       'private',
       'defaultLanguage',
       'languages',
-      'locked'
+      'locked',
+      'cloud'
     ]) as Partial<BotConfig>
 
     // bot needs to be mounted to perform the language changes
@@ -273,7 +274,7 @@ export class BotService {
       try {
         const details = require(path.join(builtinPath, id, 'bot.config.json'))
         return { id, name: details.name, desc: details.desc, moduleId: 'builtin', moduleName: 'Botpress Builtin' }
-      } catch (err) {}
+      } catch (err) { }
     })
 
     return detailed.filter((x) => x !== undefined) as BotTemplate[]

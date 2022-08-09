@@ -2778,6 +2778,7 @@ __metadata:
     dotenv: ^16.0.0
     errorhandler: ^1.5.1
     eventemitter2: ^5.0.1
+    exponential-backoff: ^3.1.0
     express: ^4.17.2
     express-rate-limit: ^3.5.1
     express-urlrewrite: ^1.4.0
@@ -2800,6 +2801,7 @@ __metadata:
     multer: ^1.4.4
     nanoid: ^3.2.0
     ncp: ^2.0.0
+    neverthrow: ^5.0.0
     node-machine-id: ^1.1.12
     pg: ^7.8.0
     plur: ^4.0.0
@@ -2839,9 +2841,10 @@ __metadata:
     "@types/classnames": ^2.3.1
     "@types/lodash": ^4.14.178
     "@types/node": ^12.18.1
-    "@types/react": ^16.8.6
+    "@types/react": 16.8.6
     "@types/react-dom": ^16.8.6
     "@types/react-jsonschema-form": ^1.7.8
+    "@types/react-redux": 5.0.24
     "@types/react-router-dom": ^4.3.3
     "@types/reactour": ^1.18.1
     "@types/redux-actions": ^2.2.1
@@ -2974,6 +2977,7 @@ __metadata:
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.4
     eslint-plugin-jsdoc: 37.8.0
+    eslint-plugin-neverthrow: ^1.1.4
     jest: ^27.5.0
     minimist: ^1.2.5
     pkg: ^4.3.7
@@ -6853,6 +6857,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/eslint-utils@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@types/eslint-utils@npm:3.0.1"
+  dependencies:
+    "@types/eslint": "*"
+    "@types/estree": "*"
+  checksum: 3ba609d18153a2f22473219f8a1b9906dc4bb46c6aea3203a2cf4083a96f56f80c983d83c7868704b0df3c5d733ce29f446db327a630486abbc50dfeebb5128c
+  languageName: node
+  linkType: hard
+
+"@types/eslint@npm:*":
+  version: 8.4.5
+  resolution: "@types/eslint@npm:8.4.5"
+  dependencies:
+    "@types/estree": "*"
+    "@types/json-schema": "*"
+  checksum: 428b0c971a50adb0d08621e76f21b284580a0052a31341a0e6d553f72b54cd0142d549aa1497c7e3bc56e9f6bcc27286e66e0216e1ba76d1a5ecd2279c40bc8c
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*":
   version: 0.0.50
   resolution: "@types/estree@npm:0.0.50"
@@ -7261,6 +7285,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react-redux@npm:5.0.24":
+  version: 5.0.24
+  resolution: "@types/react-redux@npm:5.0.24"
+  dependencies:
+    "@types/react": "*"
+    redux: ^3.6.0
+  checksum: b43b26f09162fd1d8264acfc344ee3a0b6750539c74193e4da3b7540d052cce55f25af7a8199c39d55fdefc930393172364880a3d3e2528a753c3e671bb81ddc
+  languageName: node
+  linkType: hard
+
 "@types/react-router-dom@npm:^4.3.3":
   version: 4.3.5
   resolution: "@types/react-router-dom@npm:4.3.5"
@@ -7320,7 +7354,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^16, @types/react@npm:^16.8.19, @types/react@npm:^16.8.6":
+"@types/react@npm:16.8.6":
+  version: 16.8.6
+  resolution: "@types/react@npm:16.8.6"
+  dependencies:
+    "@types/prop-types": "*"
+    csstype: ^2.2.0
+  checksum: 09e04a51e3265b16b297f5e4c0ec05761c58c827fe506f9e4c735e809d6b5959b38b0e4adff286d239911c984455d3e6062e5548d83164c74d277feda2b15a72
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:^16, @types/react@npm:^16.8.19":
   version: 16.14.8
   resolution: "@types/react@npm:16.14.8"
   dependencies:
@@ -12958,6 +13002,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"csstype@npm:^2.2.0":
+  version: 2.6.20
+  resolution: "csstype@npm:2.6.20"
+  checksum: cb5d5ded49c3390909e93b20b285d4a63d0ba5b10294bdfbc4cf911f80e91d6cf367ea671f99f09570762535c14ea7074a2c7fa73f02008203f01328dea8968b
+  languageName: node
+  linkType: hard
+
 "csstype@npm:^2.5.7":
   version: 2.6.19
   resolution: "csstype@npm:2.6.19"
@@ -14423,6 +14474,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-neverthrow@npm:^1.1.4":
+  version: 1.1.4
+  resolution: "eslint-plugin-neverthrow@npm:1.1.4"
+  dependencies:
+    "@types/eslint-utils": ^3.0.0
+    eslint-utils: 3.0.0
+    tsutils: 3.21.0
+  peerDependencies:
+    "@typescript-eslint/parser": ">=4.20.0"
+    eslint: ">=5.16.0"
+  checksum: b8c3821a72e533fe32013e54b8a521f042dadf6298fc40301a249598d139388a59080c32488d9adceff97afa13291d19e614fc469546dfe1b973f88b6bd6bd3e
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:3.7.1":
   version: 3.7.1
   resolution: "eslint-scope@npm:3.7.1"
@@ -14463,7 +14528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-utils@npm:^3.0.0":
+"eslint-utils@npm:3.0.0, eslint-utils@npm:^3.0.0":
   version: 3.0.0
   resolution: "eslint-utils@npm:3.0.0"
   dependencies:
@@ -14835,6 +14900,13 @@ __metadata:
     jest-matcher-utils: ^27.5.1
     jest-message-util: ^27.5.1
   checksum: b2c66beb52de53ef1872165aace40224e722bca3c2274c54cfa74b6d617d55cf0ccdbf36783ccd64dbea501b280098ed33fd0b207d4f15bc03cd3c7a24364a6a
+  languageName: node
+  linkType: hard
+
+"exponential-backoff@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "exponential-backoff@npm:3.1.0"
+  checksum: 9367d2848044d3738b27e00f20ee2b605aecea6b3397b0c08bdf4bd48af34379ea7019c157e729101d2a7363dd6ee1ffc6d2305c4b6f80fc215da1eb73ac3f84
   languageName: node
   linkType: hard
 
@@ -22468,6 +22540,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"neverthrow@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "neverthrow@npm:5.0.0"
+  checksum: 4a75793a01a13c0f4589156da073700fa5534ce5a797ab32fa7f6b445946bfade7c181003aa58918e7f1ed6532c21dd9b2726da42bf982b98096a319db4f8f61
+  languageName: node
+  linkType: hard
+
 "nice-try@npm:^1.0.4":
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
@@ -27304,7 +27383,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^3.7.2":
+"redux@npm:^3.6.0, redux@npm:^3.7.2":
   version: 3.7.2
   resolution: "redux@npm:3.7.2"
   dependencies:
@@ -30736,7 +30815,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsutils@npm:^3.21.0":
+"tsutils@npm:3.21.0, tsutils@npm:^3.21.0":
   version: 3.21.0
   resolution: "tsutils@npm:3.21.0"
   dependencies:

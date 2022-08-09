@@ -57,6 +57,7 @@ declare namespace NodeJS {
     NLU_ENDPOINT?: string
     CLOUD_OAUTH_ENDPOINT: string
     CLOUD_CONTROLLER_ENDPOINT: string
+    CLOUD_CONTROLLER_FRONTEND: string
     CLOUD_NLU_ENDPOINT: string
   }
 }

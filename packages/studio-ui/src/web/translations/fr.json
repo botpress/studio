@@ -681,7 +681,16 @@
           "runtimeNotReady": "Les ressources dont votre bot a besoin sont en préparation. Veuillez réessayer dans quelques minutes.",
           "default": "Le bot n'a pas pu être déployé"
         }
-      }
+      },
+      "enterPersonalAccessToken": "Entrer un Personal Access Token",
+      "checkingTokenStatus": "Verification du token",
+      "save": "Sauvegarder",
+      "createPersonalAccessToken": "Créer un Personal Access Token",
+      "tokenInvalid": "Token invalide",
+      "uploadingBot": "Téléversement du bot",
+      "trainingBot": "Entraînement du bot",
+      "loading": "Chargement...",
+      "deploy": "Déployer"
     },
     "help": "Aide",
     "emulator": "Émulateur",

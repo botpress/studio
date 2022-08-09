@@ -1,120 +1,150 @@
-import { Icon, Tooltip, Spinner } from '@blueprintjs/core'
-import axios from 'axios'
-import { lang, toast } from 'botpress/shared'
+import { Icon, Popover } from '@blueprintjs/core'
+import { lang } from 'botpress/shared'
 import classNames from 'classnames'
-import { Training } from 'common/nlu-training'
-import moment from 'moment'
-import React, { useCallback, useEffect, useState } from 'react'
+import { UnreachableCaseError } from 'common/errors'
+import React, { useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { RootReducer } from '~/reducers'
+import { Status } from './cloud/deploy'
+import Step1Pat from './cloud/Step1-pat'
+import Step2WorkspaceSelector from './cloud/Step2-workspace'
+import Step3Deploy from './cloud/Step3-deploy'
 
 import style from './style.scss'
 
-interface Props {
-  trainSession: {
-    [lang: string]: Training
+interface OwnProps {
+  onCompleted: () => void
+}
+
+type StateProps = ReturnType<typeof mapStateToProps>
+type DispatchProps = typeof mapDispatchToProps
+type Props = DispatchProps & StateProps & OwnProps
+
+interface State {
+  isOpen: boolean
+  opened: boolean
+  selectedWorkspaceId: string | null
+  pat: string | null
+  completed: boolean
+}
+
+type Action =
+  | { type: 'popup/opened' }
+  | { type: 'popup/closed' }
+  | { type: 'popup/interaction'; nextOpenState: boolean }
+  | { type: 'pat/received'; pat: string }
+  | { type: 'workspaceId/received'; selectedWorkspaceId: string }
+  | { type: 'completed' }
+  | { type: 'postCompletedTimeout/ended' }
+
+const initialState: State = {
+  isOpen: false,
+  opened: false,
+  selectedWorkspaceId: null,
+  pat: null,
+  completed: false
+}
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'popup/opened':
+      return { ...state, opened: true }
+    case 'popup/closed':
+      return { ...initialState }
+    case 'popup/interaction':
+      return { ...state, isOpen: action.nextOpenState }
+    case 'postCompletedTimeout/ended':
+      return { ...state, isOpen: false }
+    case 'workspaceId/received':
+      return { ...state, selectedWorkspaceId: action.selectedWorkspaceId }
+    case 'completed':
+      return { ...state, completed: true }
+    case 'pat/received':
+      return { ...state, pat: action.pat }
+    default:
+      throw new UnreachableCaseError(action)
   }
 }
 
-const NeedTraining = () => {
-  return <div className={style.tooltip}>{lang.tr('topNav.deploy.tooltip.needsTraining')}</div>
-}
-
-const DeployInfo = ({ lastImportDate }) => {
-  const importDateStr = useCallback(() => {
-    if (!lastImportDate) {
-      return null
-    }
-
-    return moment(lastImportDate).fromNow()
-  }, [lastImportDate])
-
-  return (
-    <div className={style.tooltip}>
-      {lastImportDate
-        ? [lang.tr('topNav.deploy.tooltip.lastDeploy'), importDateStr()].join(' ')
-        : lang.tr('topNav.deploy.tooltip.deployBot')}
-    </div>
-  )
-}
-const Deploying = () => {
-  return <div className={style.tooltip}>{lang.tr('topNav.deploy.tooltip.deploying')}</div>
-}
-
 const DeployCloudBtn = (props: Props) => {
-  const { trainSession } = props
-  const [lastImportDate, setLastImportDate] = useState(null)
-  const [deployLoading, setDeployLoading] = useState(false)
+  const [state, dispatch] = useReducer(reducer, { ...initialState })
+
+  const { isOpen, selectedWorkspaceId, completed, pat } = state
 
   useEffect(() => {
-    axios
-      .get(`${window.STUDIO_API_PATH}/cloud/info`)
-      .then((res) => res.data)
-      .then((data) => {
-        const { imported_on } = data
-        setLastImportDate(imported_on)
-      })
-      .catch((err) => {
-        const message = err.response?.data?.message ?? lang.tr('topNav.deploy.toaster.error.introspect')
-        toast.failure(message)
-      })
-  }, [])
-
-  const isTrained = useCallback(() => {
-    return Object.values(trainSession).reduce((trained, session) => trained && session.status === 'done', true)
-  }, [trainSession])
-
-  const deployToCloud = useCallback(() => {
-    if (deployLoading || !isTrained()) {
-      return
+    let timeout: NodeJS.Timeout | undefined
+    if (completed) {
+      timeout = setTimeout(() => {
+        dispatch({ type: 'postCompletedTimeout/ended' })
+      }, 1000)
     }
-    toast.info(lang.tr('topNav.deploy.toaster.info'))
-    setDeployLoading(true)
 
-    axios
-      .get(`${window.STUDIO_API_PATH}/cloud/deploy`)
-      .then((res) => res.data)
-      .then((data) => {
-        const { imported_on } = data
-        toast.success(lang.tr('topNav.deploy.toaster.success'))
-        setLastImportDate(imported_on)
-        setDeployLoading(false)
-      })
-      .catch((err) => {
-        setDeployLoading(false)
-        switch (err.response?.status) {
-          case 401:
-            return toast.failure(lang.tr('topNav.deploy.toaster.error.token'))
-          case 404:
-            return toast.failure(lang.tr('topNav.deploy.toaster.error.introspect'))
-          case 503:
-            return toast.failure(lang.tr('topNav.deploy.toaster.error.runtimeNotReady'))
-          default:
-            return toast.failure(err.response?.data?.message ?? lang.tr('topNav.deploy.toaster.error.default'))
-        }
-      })
-  }, [setLastImportDate, setDeployLoading, deployLoading, isTrained])
+    return () => {
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+    }
+  }, [completed])
 
   return (
-    <Tooltip
-      content={
-        !isTrained() ? <NeedTraining /> : deployLoading ? <Deploying /> : <DeployInfo lastImportDate={lastImportDate} />
-      }
-    >
-      <button
-        className={classNames(style.item, { [style.disabled]: deployLoading || !isTrained() }, style.itemSpacing)}
-        onClick={deployToCloud}
-        id="statusbar_deploy"
+    <>
+      <Popover
+        position="bottom"
+        content={
+          <div className={style.popoverContent}>
+            {!pat && (
+              <Step1Pat
+                onCompleted={(pat) => {
+                  dispatch({ type: 'pat/received', pat })
+                }}
+              />
+            )}
+            {pat && !selectedWorkspaceId && (
+              <Step2WorkspaceSelector
+                pat={pat}
+                onCompleted={(selectedWorkspaceId) => {
+                  dispatch({ type: 'workspaceId/received', selectedWorkspaceId })
+                }}
+              />
+            )}
+            {pat && selectedWorkspaceId && !completed && (
+              <Step3Deploy
+                pat={pat}
+                workspaceId={selectedWorkspaceId}
+                onCompleted={() => {
+                  dispatch({ type: 'completed' })
+                }}
+              />
+            )}
+            {completed && <Status training="completed" upload="completed" />}
+          </div>
+        }
+        interactionKind="click"
+        isOpen={isOpen}
+        onOpened={() => {
+          dispatch({ type: 'popup/opened' })
+        }}
+        onClosed={() => {
+          dispatch({ type: 'popup/closed' })
+          props.onCompleted()
+        }}
+        onInteraction={(nextOpenState) => {
+          dispatch({ type: 'popup/interaction', nextOpenState })
+        }}
       >
-        {deployLoading ? <Spinner size={16} /> : <Icon icon="cloud-upload" iconSize={16} />}
-        <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>
-      </button>
-    </Tooltip>
+        <button className={classNames(style.item, style.itemSpacing)}>
+          <Icon color="#1a1e22" icon="cloud-upload" iconSize={16} />
+          <span className={style.label}>{lang.tr('topNav.deploy.btn')}</span>
+        </button>
+      </Popover>
+    </>
   )
 }
 
 const mapStateToProps = (state: RootReducer) => ({
-  trainSession: state.nlu.trainSessions
+  user: state.user
 })
 
-export default connect(mapStateToProps)(DeployCloudBtn)
+const mapDispatchToProps = {}
+
+export default connect<StateProps, DispatchProps, OwnProps>(mapStateToProps, mapDispatchToProps)(DeployCloudBtn)
