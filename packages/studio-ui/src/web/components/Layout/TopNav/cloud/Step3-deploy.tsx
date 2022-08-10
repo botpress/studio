@@ -48,7 +48,7 @@ function reducer(state: State, action: Action): State {
     case 'upload/ended':
       return { status: 'upload_completed' }
     case 'upload/failed':
-      return { status: 'upload_completed' }
+      return { status: 'upload_failed' }
     default:
       throw new UnreachableCaseError(action)
   }
@@ -117,6 +117,7 @@ export const Deploy = (props: Props): JSX.Element => {
           if (isCDMError(e)) {
             toastFailure(e.response.data.message, Timeout.LONG)
             dispatch({ type: 'upload/failed' })
+            onFailure()
           }
           throw e
         })
