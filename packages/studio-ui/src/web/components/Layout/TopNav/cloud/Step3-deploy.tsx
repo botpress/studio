@@ -17,12 +17,16 @@ type State =
   | {
       status: 'train_pending'
     }
+  | {
+      status: 'train_failed'
+    }
   | { status: 'training_in_progress' }
   | { status: 'upload_pending' }
   | { status: 'upload_completed' }
   | { status: 'upload_failed' }
 
 type Action =
+  | { type: 'activate/failed' }
   | { type: 'training/started' }
   | { type: 'training/trainSessionsUpdated'; trainSessions: TrainSessions }
   | { type: 'upload/ended' }
@@ -30,6 +34,8 @@ type Action =
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
+    case 'activate/failed':
+      return { status: 'train_failed' }
     case 'training/started':
       return { status: 'training_in_progress' }
     case 'training/trainSessionsUpdated':
@@ -52,6 +58,7 @@ interface OwnProps {
   pat: string
   workspaceId: string
   onCompleted: () => void
+  onFailure: () => void
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
@@ -59,7 +66,7 @@ type DispatchProps = typeof mapDispatchToProps
 type Props = DispatchProps & StateProps & OwnProps
 
 export const Deploy = (props: Props): JSX.Element => {
-  const { pat, trainSessions, workspaceId, onCompleted } = props
+  const { pat, trainSessions, workspaceId, onCompleted, onFailure } = props
 
   const [state, dispatch] = useReducer(reducer, { status: 'train_pending' })
 
@@ -77,6 +84,8 @@ export const Deploy = (props: Props): JSX.Element => {
       } catch (err) {
         if (axios.isAxiosError(err)) {
           toast.failure(err.response?.data?.message || 'An error occured while activating the bot')
+          dispatch({ type: 'activate/failed' })
+          onFailure()
         }
         throw err
       }
@@ -133,6 +142,8 @@ export const Deploy = (props: Props): JSX.Element => {
     case 'train_pending':
     case 'training_in_progress':
       return <Status training="in-progress" upload="pending" />
+    case 'train_failed':
+      return <Status training="failed" upload="pending" />
     case 'upload_pending':
       return <Status training="completed" upload="in-progress" />
     case 'upload_completed':

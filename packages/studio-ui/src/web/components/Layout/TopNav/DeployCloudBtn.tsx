@@ -26,6 +26,7 @@ interface State {
   selectedWorkspaceId: string | null
   pat: string | null
   completed: boolean
+  failed: boolean
 }
 
 type Action =
@@ -35,6 +36,7 @@ type Action =
   | { type: 'pat/received'; pat: string }
   | { type: 'workspaceId/received'; selectedWorkspaceId: string }
   | { type: 'completed' }
+  | { type: 'failed' }
   | { type: 'postCompletedTimeout/ended' }
 
 const initialState: State = {
@@ -42,7 +44,8 @@ const initialState: State = {
   opened: false,
   selectedWorkspaceId: null,
   pat: null,
-  completed: false
+  completed: false,
+  failed: false
 }
 
 function reducer(state: State, action: Action): State {
@@ -59,6 +62,8 @@ function reducer(state: State, action: Action): State {
       return { ...state, selectedWorkspaceId: action.selectedWorkspaceId }
     case 'completed':
       return { ...state, completed: true }
+    case 'failed':
+      return { ...state, failed: true }
     case 'pat/received':
       return { ...state, pat: action.pat }
     default:
@@ -69,11 +74,11 @@ function reducer(state: State, action: Action): State {
 const DeployCloudBtn = (props: Props) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState })
 
-  const { isOpen, selectedWorkspaceId, completed, pat } = state
+  const { isOpen, selectedWorkspaceId, completed, failed, pat } = state
 
   useEffect(() => {
     let timeout: NodeJS.Timeout | undefined
-    if (completed) {
+    if (completed || failed) {
       timeout = setTimeout(() => {
         dispatch({ type: 'postCompletedTimeout/ended' })
       }, 1000)
@@ -84,7 +89,7 @@ const DeployCloudBtn = (props: Props) => {
         clearTimeout(timeout)
       }
     }
-  }, [completed])
+  }, [completed, failed])
 
   return (
     <>
@@ -113,6 +118,9 @@ const DeployCloudBtn = (props: Props) => {
                 workspaceId={selectedWorkspaceId}
                 onCompleted={() => {
                   dispatch({ type: 'completed' })
+                }}
+                onFailure={() => {
+                  dispatch({ type: 'failed' })
                 }}
               />
             )}
