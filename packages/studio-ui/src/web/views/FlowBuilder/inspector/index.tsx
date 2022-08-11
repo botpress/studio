@@ -2,7 +2,7 @@ import { H4 } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import cx from 'classnames'
 import _ from 'lodash'
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import {
   closeFlowNodeProps,
@@ -15,7 +15,6 @@ import {
 } from '~/actions'
 import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
 
-import SaySomethingForm from '../../FlowBuilder/sidePanelTopics/form/SaySomethingForm'
 import { nodeTypes } from '../diagram/manager'
 import FlowInformation from '../nodeProps/FlowInformation'
 import SkillCallNode from '../nodeProps/SkillCallNode'
@@ -47,15 +46,11 @@ class Inspector extends Component<Props> {
     const node = currentFlowNode
     const nodeType = currentFlowNode?.type || (currentFlowNode ? 'standard' : null)
     return (
-      <div className={cx(style.inspector, { [style.sideForm]: nodeType === 'say_something' })}>
-        {nodeType !== 'say_something' && (
-          <Fragment>
-            <i className={cx('material-icons', style.closeIcon)} onClick={close}>
-              close
-            </i>
-            <H4>{node ? lang.tr('studio.flow.node.nodeProperties') : lang.tr('studio.flow.flowProperties')}</H4>
-          </Fragment>
-        )}
+      <div className={style.inspector}>
+        <i className={cx('material-icons', style.closeIcon)} onClick={close}>
+          close
+        </i>
+        <H4>{node ? lang.tr('studio.flow.node.nodeProperties') : lang.tr('studio.flow.flowProperties')}</H4>
         {this.renderNodeProperties(nodeType)}
       </div>
     )
@@ -108,19 +103,6 @@ class Inspector extends Component<Props> {
       )
     }
 
-    if (nodeType === 'say_something') {
-      return (
-        <SaySomethingForm
-          onDeleteSelectedElements={onDeleteSelectedElements}
-          contentType={currentFlowNode.content?.contentType}
-          formData={currentFlowNode.content?.formData}
-          updateNode={updateNodeAndRefresh}
-          readOnly={readOnly}
-          subflows={subflows}
-        />
-      )
-    }
-
     if (nodeTypes.includes(nodeType)) {
       const isLastNode = currentFlow.nodes.length
         ? currentFlow.nodes[currentFlow.nodes.length - 1].id === currentFlowNode.id
@@ -137,7 +119,6 @@ class Inspector extends Component<Props> {
           updateFlow={updateFlow}
           copyFlowNodeElement={copyFlowNodeElement}
           pasteFlowNodeElement={pasteFlowNodeElement}
-          transitionOnly={nodeType === 'router'}
           buffer={buffer}
         />
       )

@@ -32,7 +32,7 @@ export const prepareEventForDiagram = (event: sdk.IO.IncomingEvent, flows: FlowV
       return existing
     }
 
-    const newEntry = { workflow, node, triggers: [] }
+    const newEntry = { workflow, node }
     nodes = [...nodes, newEntry]
     return newEntry
   }

@@ -8,8 +8,9 @@ import Select from 'react-select'
 import { getFlowLabel, reorderFlows } from '~/components/Shared/Utils'
 import SmartInput from '~/components/SmartInput'
 import { RootReducer } from '~/reducers'
-import { ROUTER_CONDITON_REGEX } from '../utils/general.util'
 import style from './style.scss'
+
+const ROUTER_CONDITON_REGEX = /(.*)\.([a-zA-Z0-9_]+)(.*)/
 
 const availableProps: Option[] = [
   { label: 'User Data', value: 'user' },

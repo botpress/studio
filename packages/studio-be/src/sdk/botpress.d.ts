@@ -151,17 +151,6 @@ declare module 'botpress/sdk' {
      * onBotUnmount is called for each bots before this one is called
      */
     onModuleUnmount?: (bp: typeof import('botpress/sdk')) => Promise<void>
-    /**
-     * Called when a topic is being changed.
-     * If oldName is not set, then the topic `newName` is being created
-     * If newName is not set, then the topic `oldName` is being deleted
-     */
-    onTopicChanged?: (
-      bp: typeof import('botpress/sdk'),
-      botId: string,
-      oldName?: string,
-      newName?: string
-    ) => Promise<void>
     onFlowChanged?: (bp: typeof import('botpress/sdk'), botId: string, flow: Flow) => Promise<void>
     onFlowRenamed?: (
       bp: typeof import('botpress/sdk'),
@@ -220,8 +209,6 @@ declare module 'botpress/sdk' {
     menuText?: string
     /** Optionally specify a link to your page or github repo */
     homepage?: string
-    /** Whether or not the module is likely to change */
-    experimental?: boolean
     /** Workspace Apps are accessible on the admin panel */
     workspaceApp?: {
       /** Adds a link on the Bots page to access this app for a specific bot */
@@ -390,58 +377,6 @@ declare module 'botpress/sdk' {
       }[]
     }
   }
-
-  export namespace NDU {
-    interface GenericTrigger {
-      conditions: DecisionTriggerCondition[]
-    }
-
-    export interface WorkflowTrigger extends GenericTrigger {
-      type: 'workflow'
-      workflowId: string
-      nodeId: string
-      /** When true, the user must be inside the specified workflow for the trigger to be active */
-      activeWorkflow?: boolean
-    }
-
-    export interface FaqTrigger extends GenericTrigger {
-      type: 'faq'
-      faqId: string
-      topicName: string
-    }
-
-    export interface NodeTrigger extends GenericTrigger {
-      type: 'node'
-      workflowId: string
-      nodeId: string
-    }
-
-    export type Trigger = NodeTrigger | FaqTrigger | WorkflowTrigger
-
-    export interface DialogUnderstanding {
-      triggers: {
-        [triggerId: string]: {
-          result: Dic<number>
-          trigger: Trigger
-        }
-      }
-      actions: Actions[]
-      predictions: { [key: string]: { triggerId: string; confidence: number } }
-    }
-
-    export interface Actions {
-      action: 'send' | 'startWorkflow' | 'redirect' | 'continue' | 'goToNode'
-      data?: SendContent | FlowRedirect
-    }
-
-    export interface FlowRedirect {
-      flow: string
-      node: string
-    }
-
-    export type SendContent = Pick<IO.Suggestion, 'confidence' | 'payloads' | 'source' | 'sourceDetails'>
-  }
-
   export namespace IO {
     export type EventDirection = 'incoming' | 'outgoing'
     export namespace WellKnownFlags {
@@ -580,7 +515,6 @@ declare module 'botpress/sdk' {
       readonly decision?: Suggestion
       /* HITL module has possibility to pause conversation */
       readonly isPause?: boolean
-      readonly ndu?: NDU.DialogUnderstanding
     }
 
     export interface OutgoingEvent extends Event {
@@ -626,7 +560,6 @@ declare module 'botpress/sdk' {
       /** This variable points to the currently active workflow */
       workflow: WorkflowHistory
       /**
-       * EXPERIMENTAL
        * This includes all the flow/nodes which were traversed for the current event
        */
       __stacktrace: JumpPoint[]
@@ -678,7 +611,6 @@ declare module 'botpress/sdk' {
     export interface CurrentSession {
       lastMessages: DialogTurnHistory[]
       nluContexts?: NluContext[]
-      nduContext?: NduContext
       workflows: {
         [name: string]: WorkflowHistory
       }
@@ -722,14 +654,6 @@ declare module 'botpress/sdk' {
       context: string
       /** Represent the number of turns before the context is removed from the session */
       ttl: number
-    }
-
-    export interface NduContext {
-      last_turn_action_name: string
-      last_turn_highest_ranking_trigger_id: string
-      last_turn_node_id: string
-      last_turn_ts: number
-      last_topic: string
     }
 
     export interface DialogTurnHistory {
@@ -1160,16 +1084,6 @@ declare module 'botpress/sdk' {
     label: string
   }
 
-  export interface Topic {
-    name: string
-    description: string
-  }
-
-  export interface Library {
-    elementPath: string
-    elementId: string
-  }
-
   /**
    * This interface is used to encapsulate the logic around the creation of a new skill. A skill
    * is a subflow which can have multiple nodes and custom logic, while being hidden under a single node in the main flow.
@@ -1192,17 +1106,7 @@ declare module 'botpress/sdk' {
    */
   export type SkillFlow = Partial<Flow> & Pick<Required<Flow>, 'nodes'>
 
-  export type FlowNodeType =
-    | 'standard'
-    | 'skill-call'
-    | 'listen'
-    | 'say_something'
-    | 'success'
-    | 'failure'
-    | 'trigger'
-    | 'execute'
-    | 'router'
-    | 'action'
+  export type FlowNodeType = 'standard' | 'skill-call' | 'listen' | 'success' | 'failure' | 'router' | 'action'
 
   export type FlowNode = {
     id?: string
@@ -1214,16 +1118,11 @@ declare module 'botpress/sdk' {
     readonly lastModified?: Date
   } & NodeActions
 
-  export type TriggerNode = FlowNode & {
-    conditions: DecisionTriggerCondition[]
-    activeWorkflow?: boolean
-  }
-
   export type ListenNode = FlowNode & {
     triggers: { conditions: DecisionTriggerCondition[] }[]
   }
 
-  export type SkillFlowNode = Partial<ListenNode> & Pick<Required<ListenNode>, 'name'> & Partial<TriggerNode>
+  export type SkillFlowNode = Partial<ListenNode> & Pick<Required<ListenNode>, 'name'>
 
   /**
    * Node Transitions are all the possible outcomes when a user's interaction on a node is completed. The possible destinations
@@ -1355,7 +1254,6 @@ declare module 'botpress/sdk' {
     onReceive?: ActionBuilderProps[] | string[]
     /** An array of possible transitions once everything is completed */
     next?: NodeTransition[]
-    /** For node of type say_something, this contains the element to render */
     content?: {
       contentType: string
       /** Every properties required by the content type, including translations */

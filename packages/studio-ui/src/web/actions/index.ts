@@ -18,17 +18,6 @@ export default function debounceAction(action: any, delay: number, options?: _.D
       debounced(dispatch, actionArgs)
 }
 
-const onTriggerEvent = async (action: 'delete' | 'create', conditions: sdk.DecisionTriggerCondition[], state) => {
-  const conditionDefs = state.ndu.conditions as sdk.Condition[]
-
-  for (const condition of conditions) {
-    const callback = conditionDefs.find((x) => x.id === condition.id)?.callback
-    if (callback) {
-      await axios.post(`${window.BOT_API_PATH}/${callback}`, { action, condition })
-    }
-  }
-}
-
 // Flows
 export const receiveFlowsModification = createAction('FLOWS/MODIFICATIONS/RECEIVE')
 
@@ -175,12 +164,12 @@ export const duplicateFlow: (flow: { flowNameToDuplicate: string; name: string }
   }
 )
 
-type AllPartialNode = (Partial<sdk.FlowNode> | Partial<sdk.TriggerNode> | Partial<sdk.ListenNode>) & Partial<FlowPoint>
+type PartialNode = Partial<sdk.FlowNode> & Partial<FlowPoint>
 
-export const updateFlowNode: (props: AllPartialNode | (AllPartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]) => void =
+export const updateFlowNode: (props: PartialNode | (PartialNode & Pick<Required<sdk.FlowNode>, 'id'>)[]) => void =
   wrapAction(requestUpdateFlowNode, updateCurrentFlow)
 
-export const createFlowNode: (props: AllPartialNode) => void = wrapAction(requestCreateFlowNode, updateCurrentFlow)
+export const createFlowNode: (props: PartialNode) => void = wrapAction(requestCreateFlowNode, updateCurrentFlow)
 
 export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFlowNode, async (payload, state) => {
   await updateCurrentFlow(payload, state)
@@ -189,10 +178,6 @@ export const removeFlowNode: (element: any) => void = wrapAction(requestRemoveFl
   const deletedFlows = getDeletedFlows(state)
   if (deletedFlows.length) {
     await FlowsAPI.deleteFlow(state.flows, deletedFlows[0])
-  }
-
-  if (payload.type === 'trigger' && window.USE_ONEFLOW) {
-    await onTriggerEvent('delete', payload.conditions, state)
   }
 })
 
@@ -209,7 +194,7 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
     skillData = { ...skillData, randomId }
     const { moduleName } = _.find(state.skills.installed, { id: node.skill })
     const { data } = await axios.post(
-      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}&isOneFlow=${window.USE_ONEFLOW}`,
+      `${window.API_PATH}/studio/modules/${moduleName}/skill/${node.skill}/generateFlow?botId=${window.BOT_ID}`,
       skillData
     )
     dispatch(
@@ -232,12 +217,6 @@ export const pasteFlowNode = (payload: { x: number; y: number }) => async (dispa
   dispatch(requestPasteFlowNode({ ...payload, nodes: nonSkills }))
   await updateCurrentFlow(payload, state)
   dispatch(refreshFlowsLinks())
-
-  for (const node of state.flows.buffer.nodes || []) {
-    if (node.type === 'trigger' && window.USE_ONEFLOW) {
-      await onTriggerEvent('create', node.conditions, state)
-    }
-  }
 }
 export const pasteFlowNodeElement = wrapAction(requestPasteFlowNodeElement, updateCurrentFlow)
 
@@ -472,45 +451,6 @@ export const refreshIntents = () => (dispatch) => {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   axios.get(`${window.BOT_API_PATH}/nlu/intents`).then(({ data }) => {
     dispatch(intentsReceived(data))
-  })
-}
-
-export const conditionsReceived = createAction('CONDITIONS/RECEIVED')
-export const refreshConditions = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.API_PATH}/studio/modules/dialogConditions`).then(({ data }) => {
-    dispatch(conditionsReceived(data))
-  })
-}
-
-export const topicsReceived = createAction('TOPICS/RECEIVED')
-export const fetchTopics = () => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/topics`).then(({ data }) => {
-    dispatch(topicsReceived(data))
-  })
-}
-
-export const receiveLibrary = createAction('LIBRARY/RECEIVED')
-export const refreshLibrary = () => (dispatch, getState) => {
-  const contentLang = getState().language.contentLang
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.get(`${window.STUDIO_API_PATH}/cms/library/${contentLang}`).then(({ data }) => {
-    dispatch(receiveLibrary(data))
-  })
-}
-
-export const addElementToLibrary = (elementId: string) => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}`).then(() => {
-    dispatch(refreshLibrary())
-  })
-}
-
-export const removeElementFromLibrary = (elementId: string) => (dispatch) => {
-  // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  axios.post(`${window.STUDIO_API_PATH}/cms/library/${elementId}/delete`).then(() => {
-    dispatch(refreshLibrary())
   })
 }
 

@@ -20,7 +20,6 @@ import SplashScreen from './status/SplashScreen'
 import Unauthorized from './status/Unauthorized'
 import style from './style.scss'
 import { Inspector } from './views/Inspector'
-import { NDU } from './views/NDU'
 import { Processing } from './views/Processing'
 import Summary from './views/Summary'
 
@@ -201,7 +200,6 @@ export class Debugger extends React.Component<Props, State> {
 
   render() {
     const hasEvent = !!this.state.event
-    const ndu = _.get(this.state, 'event.ndu')
 
     return (
       <Tabs
@@ -216,7 +214,6 @@ export class Debugger extends React.Component<Props, State> {
           className={btStyle.tab}
           panel={<Fragment>{hasEvent ? <Summary event={this.state.event} /> : this.renderWhenNoEvent()}</Fragment>}
         />
-        {ndu && <Tab id="ndu" title="NDU" className={btStyle.tab} panel={<NDU ndu={ndu} />} />}
         {hasEvent && this.renderProcessingTab()}
         {hasEvent && (
           <Tab

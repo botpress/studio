@@ -4,7 +4,7 @@ import cn from 'classnames'
 import { isBpUrl } from 'common/url'
 import React, { FC, Fragment, useState } from 'react'
 import { AccessControl } from '~/components/Shared/Utils'
-import style from '~/views/FlowBuilder/sidePanelTopics/form/style.scss'
+import style from '../style.scss'
 
 import { Schema } from '../typings'
 

@@ -44,7 +44,6 @@ import { BlockModel, BlockProps, BlockWidgetFactory } from './nodes/Block'
 import { DeletableLinkFactory } from './nodes/LinkWidget'
 import NodeToolbar from './NodeToolbar'
 import style from './style.scss'
-import TriggerEditor from './TriggerEditor'
 import WorkflowToolbar from './WorkflowToolbar'
 import ZoomToolbar from './ZoomToolbar'
 
@@ -96,9 +95,7 @@ class Diagram extends Component<Props> {
 
   state = {
     expandedNodes: [],
-    nodeInfos: [],
-    currentTriggerNode: null,
-    isTriggerEditOpen: false
+    nodeInfos: []
   }
 
   constructor(props) {
@@ -117,10 +114,8 @@ class Diagram extends Component<Props> {
         currentLang: this.getPropsProperty('currentLang'),
         defaultLang: this.getPropsProperty('defaultLang')
       }),
-      getConditions: () => this.getPropsProperty('conditions'),
       getExpandedNodes: () => this.getStateProperty('expandedNodes'),
       setExpandedNodes: this.updateExpandedNodes.bind(this),
-      editTriggers: this.editTriggers.bind(this),
       getDebugInfo: this.getDebugInfo,
       getFlows: () => this.getPropsProperty('flows'),
       getSkills: () => this.getPropsProperty('skills'),
@@ -311,21 +306,6 @@ class Diagram extends Component<Props> {
   add = {
     flowNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'standard', next: [defaultTransition] }),
     skillNode: (point: Point, skillId: string) => this.props.buildSkill({ location: point, id: skillId }),
-    triggerNode: (point: Point) => {
-      this.props.createFlowNode({ ...point, type: 'trigger', conditions: [], next: [defaultTransition] })
-    },
-    sayNode: (point: Point) => {
-      this.props.createFlowNode({
-        ...point,
-        type: 'say_something',
-        content: { contentType: 'builtin_text', formData: {} },
-        next: [defaultTransition]
-      })
-    },
-    executeNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'execute', next: [defaultTransition] }),
-    listenNode: (point: Point) =>
-      this.props.createFlowNode({ ...point, type: 'listen', onReceive: [], next: [defaultTransition] }),
-    routerNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'router' }),
     actionNode: (point: Point) => this.props.createFlowNode({ ...point, type: 'action', next: [defaultTransition] })
   }
 
@@ -334,19 +314,12 @@ class Diagram extends Component<Props> {
       return
     }
 
-    const target = this.diagramWidget.getMouseElement(event)
-
-    if (target?.model?.['nodeType'] === 'trigger') {
-      this.editTriggers(target.model)
-    }
-
     this.props.switchFlowNode(null)
     this.props.closeFlowNodeProps()
   }
 
   handleContextMenuNoElement = (event: React.MouseEvent) => {
     const point = this.manager.getRealPosition(event)
-    const originatesFromOutPort = _.get(this.dragPortSource, 'parent.sourcePort.name', '').startsWith('out')
 
     // When no element is chosen from the context menu, we reset the start port so it doesn't impact the next selected node
     let clearStartPortOnClose = true
@@ -370,22 +343,6 @@ class Diagram extends Component<Props> {
           onClick={wrap(this.add.flowNode, point)}
           icon="chat"
         />
-        {(window.USE_ONEFLOW || window.EXPERIMENTAL) && (
-          <Fragment>
-            {!originatesFromOutPort && window.USE_ONEFLOW && (
-              <MenuItem
-                text={lang.tr('studio.flow.nodeType.trigger')}
-                onClick={wrap(this.add.triggerNode, point)}
-                icon="send-to-graph"
-              />
-            )}
-            <MenuItem text={lang.tr('say')} onClick={wrap(this.add.sayNode, point)} icon={<Icons.Say />} />
-            <MenuItem text={lang.tr('execute')} onClick={wrap(this.add.executeNode, point)} icon="code" />
-            <MenuItem text={lang.tr('listen')} onClick={wrap(this.add.listenNode, point)} icon="hand" />
-            <MenuItem text={lang.tr('router')} onClick={wrap(this.add.routerNode, point)} icon="fork" />
-            <MenuItem text={lang.tr('action')} onClick={wrap(this.add.actionNode, point)} icon="offline" />
-          </Fragment>
-        )}
 
         <MenuItem
           tagName="button"
@@ -504,17 +461,7 @@ class Diagram extends Component<Props> {
     }
 
     const nodeType = target.model?.nodeType
-    return (
-      nodeType === 'router' ||
-      nodeType === 'say_something' ||
-      nodeType === 'standard' ||
-      nodeType === 'skill-call' ||
-      nodeType === 'execute' ||
-      nodeType === 'trigger' ||
-      nodeType === 'failure' ||
-      nodeType === 'listen' ||
-      nodeType === 'action'
-    )
+    return nodeType === 'standard' || nodeType === 'skill-call' || nodeType === 'failure' || nodeType === 'action'
   }
 
   onMouseDown = (event: MouseEvent) => {
@@ -649,10 +596,6 @@ class Diagram extends Component<Props> {
     this.manager.unselectAllElements()
   }
 
-  editTriggers(node) {
-    this.setState({ currentTriggerNode: node, isTriggerEditOpen: true })
-  }
-
   onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'c') {
       this.copySelectedElementToBuffer()
@@ -680,23 +623,8 @@ class Diagram extends Component<Props> {
       this.add.skillNode(point, data.id)
     } else if (data.type === 'node') {
       switch (data.id) {
-        case 'say_something':
-          this.add.sayNode(point)
-          break
-        case 'execute':
-          this.add.executeNode(point)
-          break
-        case 'listen':
-          this.add.listenNode(point)
-          break
-        case 'router':
-          this.add.routerNode(point)
-          break
         case 'action':
           this.add.actionNode(point)
-          break
-        case 'trigger':
-          this.add.triggerNode(point)
           break
         default:
           this.add.flowNode(point)
@@ -749,12 +677,6 @@ class Diagram extends Component<Props> {
             zoomToFit={this.manager.zoomToFit.bind(this.manager)}
           />
           {canAdd && <NodeToolbar />}
-          <TriggerEditor
-            node={this.state.currentTriggerNode}
-            isOpen={this.state.isTriggerEditOpen}
-            diagramEngine={this.diagramEngine}
-            toggle={() => this.setState({ isTriggerEditOpen: !this.state.isTriggerEditOpen })}
-          />
         </div>
       </MainLayout.Wrapper>
     )
@@ -770,7 +692,6 @@ const mapStateToProps = (state: RootReducer) => ({
   emulatorOpen: state.ui.emulatorOpen,
   debuggerEvent: state.flows.debuggerEvent,
   zoomLevel: state.ui.zoomLevel,
-  conditions: state.ndu.conditions,
   skills: state.skills.installed
 })
 

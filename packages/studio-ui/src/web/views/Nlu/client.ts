@@ -18,7 +18,6 @@ export const makeNLUClient = () => {
     updateIntent: (targetIntent: string, intent: Partial<NLU.IntentDefinition>): Promise<void> =>
       client.post(`/intents/${targetIntent}`, intent),
     deleteIntent: (name: string): Promise<void> => client.post(`/intents/${name}/delete`),
-    syncIntentTopics: (): Promise<void> => client.post('/sync/intents/topics'),
     fetchEntities: (): Promise<NLU.EntityDefinition[]> => client.get('/entities').then((res) => res.data),
     fetchEntity: (entityName: string): Promise<NLU.EntityDefinition> =>
       client.get(`/entities/${entityName}`).then((res) => res.data),

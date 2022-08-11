@@ -1,5 +1,5 @@
 import { Intent, Menu, MenuDivider, MenuItem } from '@blueprintjs/core'
-import { DecisionTriggerCondition, Flow, FormData } from 'botpress/sdk'
+import { Flow, FormData } from 'botpress/sdk'
 import { contextMenu, lang, sharedStyle, ShortcutLabel, toast, utils } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import React, { FC } from 'react'
@@ -8,17 +8,12 @@ import { BaseNodeModel } from '~/views/FlowBuilder/diagram/nodes/BaseNodeModel'
 import { StandardPortWidget } from '~/views/FlowBuilder/diagram/nodes/Ports'
 
 import { NodeDebugInfo } from '../../debugger'
-import { defaultTransition } from '../../manager'
 import ActionContents from '../ActionContents'
 import NodeHeader from '../Components/NodeHeader'
 import NodeWrapper from '../Components/NodeWrapper'
 import style from '../Components/style.scss'
-import ExecuteContents from '../ExecuteContents'
-import RouterContents from '../RouterContents'
-import SaySomethingContents from '../SaySomethingContents'
 import SkillCallContents, { SkillDefinition } from '../SkillCallContents'
 import StandardContents from '../StandardContents'
-import TriggerContents from '../TriggerContents'
 
 export interface BlockProps {
   node: BlockModel
@@ -26,10 +21,8 @@ export interface BlockProps {
   deleteSelectedElements: () => void
   copySelectedElement: (nodeId: string) => void
   editNodeItem: (node: BlockModel, index: number) => void
-  editTriggers: (node: BlockModel) => void
   disconnectNode: (node: BlockModel) => void
   selectedNodeItem: () => { node: BlockModel; index: number }
-  getConditions: () => DecisionTriggerCondition & { label: string; id: string }[]
   switchFlowNode: (id: string) => void
   getLanguage?: () => { currentLang: string; defaultLang: string }
   getExpandedNodes: () => string[]
@@ -43,13 +36,8 @@ export interface BlockProps {
 
 const defaultLabels = {
   action: 'studio.flow.node.chatbotExecutes',
-  execute: 'studio.flow.node.chatbotExecutes',
   failure: 'studio.flow.node.workflowFails',
-  router: 'if',
-  listen: 'listen',
-  say_something: 'studio.flow.node.chatbotSays',
-  success: 'studio.flow.node.workflowSucceeds',
-  trigger: 'studio.flow.node.triggeredBy'
+  success: 'studio.flow.node.workflowSucceeds'
 }
 
 const BlockWidget: FC<BlockProps> = ({
@@ -57,8 +45,6 @@ const BlockWidget: FC<BlockProps> = ({
   editNodeItem,
   deleteSelectedElements,
   copySelectedElement,
-  selectedNodeItem,
-  getConditions,
   switchFlowNode,
   updateFlowNode,
   getCurrentFlow,
@@ -67,7 +53,6 @@ const BlockWidget: FC<BlockProps> = ({
   getExpandedNodes,
   setExpandedNodes,
   getDebugInfo,
-  editTriggers,
   disconnectNode,
   getSkills
 }) => {
@@ -109,7 +94,6 @@ const BlockWidget: FC<BlockProps> = ({
           onClick={() => copySelectedElement(node.id)}
         />
         <MenuDivider />
-        {nodeType === 'trigger' && <MenuItem icon="edit" text={lang.tr('edit')} onClick={() => editTriggers(node)} />}
         <MenuItem
           icon="star"
           text={lang.tr('studio.flow.setAsStart')}
@@ -117,28 +101,12 @@ const BlockWidget: FC<BlockProps> = ({
           onClick={() => updateFlow({ startNode: node.name })}
         />
         <MenuItem icon="minimize" text={lang.tr('studio.flow.disconnectNode')} onClick={() => disconnectNode(node)} />
-        {nodeType === 'router' ? (
-          <React.Fragment>
-            <MenuDivider />
-            <MenuItem text={lang.tr('studio.flow.chips')}>
-              <MenuItem
-                text={lang.tr('studio.flow.transition')}
-                onClick={async () => {
-                  await switchFlowNode(node.id)
-                  updateFlowNode({ next: [...node.next, defaultTransition] })
-                }}
-                icon="flow-end"
-              />
-            </MenuItem>
-          </React.Fragment>
-        ) : null}
       </Menu>
     )
   }
 
-  const inputPortInHeader = !['trigger'].includes(nodeType)
-  const outPortInHeader = !['failure', 'router', 'success', 'standard', 'skill-call'].includes(nodeType)
-  const canCollapse = !['failure', 'router', 'success', 'listen', 'standard', 'skill-call'].includes(nodeType)
+  const outPortInHeader = !['failure', 'success', 'standard', 'skill-call'].includes(nodeType)
+  const canCollapse = !['failure', 'success', 'standard', 'skill-call'].includes(nodeType)
   const hasContextMenu = !['failure', 'success'].includes(nodeType)
 
   const debugInfo = getDebugInfo(node.name)
@@ -147,38 +115,6 @@ const BlockWidget: FC<BlockProps> = ({
     switch (nodeType) {
       case 'action':
         return <ActionContents node={node} editNodeItem={editNodeItem} />
-      case 'execute':
-        return (
-          <ExecuteContents
-            node={node}
-            editNodeItem={editNodeItem}
-            updateFlowNode={updateFlowNode}
-            switchFlowNode={switchFlowNode}
-          />
-        )
-      case 'router':
-        return <RouterContents node={node} editNodeItem={editNodeItem} />
-      case 'say_something':
-        return (
-          <SaySomethingContents
-            node={node}
-            content={node.content}
-            defaultLang={defaultLang}
-            selectedNodeItem={selectedNodeItem}
-            currentLang={currentLang}
-          />
-        )
-      case 'trigger':
-        return (
-          <TriggerContents
-            node={node}
-            defaultLang={defaultLang}
-            editNodeItem={editNodeItem}
-            selectedNodeItem={selectedNodeItem}
-            getConditions={getConditions}
-            currentLang={currentLang}
-          />
-        )
       case 'skill-call':
         return <SkillCallContents node={node} />
       default:
@@ -218,7 +154,7 @@ const BlockWidget: FC<BlockProps> = ({
         debugInfo={debugInfo}
         nodeType={nodeType}
       >
-        <StandardPortWidget hidden={!inputPortInHeader} name="in" node={node} className={style.in} />
+        <StandardPortWidget name="in" node={node} className={style.in} />
         {outPortInHeader && <StandardPortWidget name="out0" node={node} className={style.out} />}
       </NodeHeader>
       {(!canCollapse || expanded) && renderContents()}
@@ -227,7 +163,6 @@ const BlockWidget: FC<BlockProps> = ({
 }
 
 export class BlockModel extends BaseNodeModel {
-  public conditions: DecisionTriggerCondition[] = []
   public activeWorkflow: boolean
   public isNew: boolean
   public isReadOnly: boolean
@@ -247,7 +182,6 @@ export class BlockModel extends BaseNodeModel {
     content,
     onEnter = [],
     next = [],
-    conditions = [],
     activeWorkflow = false,
     isNew = false,
     isStartNode = false,
@@ -266,7 +200,6 @@ export class BlockModel extends BaseNodeModel {
       skill,
       isStartNode,
       isHighlighted,
-      conditions,
       activeWorkflow,
       isNew,
       isReadOnly
@@ -276,10 +209,9 @@ export class BlockModel extends BaseNodeModel {
     this.y = this.oldY = y
   }
 
-  setData({ conditions = [], activeWorkflow = false, isNew = false, ...data }) {
+  setData({ activeWorkflow = false, isNew = false, ...data }) {
     super.setData(data as any)
 
-    this.conditions = conditions
     this.activeWorkflow = activeWorkflow
     this.isNew = isNew
     this.nodeType = data.type || 'standard'
@@ -295,7 +227,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
   private selectedNodeItem: BlockProps['selectedNodeItem']
   private deleteSelectedElements: BlockProps['deleteSelectedElements']
   private copySelectedElement: BlockProps['copySelectedElement']
-  private getConditions: BlockProps['getConditions']
   private getCurrentFlow: BlockProps['getCurrentFlow']
   private switchFlowNode: BlockProps['switchFlowNode']
   private getLanguage: BlockProps['getLanguage']
@@ -304,7 +235,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
   private getDebugInfo: BlockProps['getDebugInfo']
   private getFlows: BlockProps['getFlows']
   private updateFlowNode: BlockProps['updateFlowNode']
-  private editTriggers: BlockProps['editTriggers']
   private disconnectNode: BlockProps['disconnectNode']
   private updateFlow: BlockProps['updateFlow']
   private getSkills: BlockProps['getSkills']
@@ -317,7 +247,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
     this.deleteSelectedElements = methods.deleteSelectedElements
     this.copySelectedElement = methods.copySelectedElement
     this.getCurrentFlow = methods.getCurrentFlow
-    this.getConditions = methods.getConditions
     this.switchFlowNode = methods.switchFlowNode
     this.getLanguage = methods.getLanguage
     this.getExpandedNodes = methods.getExpandedNodes
@@ -325,7 +254,6 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
     this.getDebugInfo = methods.getDebugInfo
     this.getFlows = methods.getFlows
     this.updateFlowNode = methods.updateFlowNode
-    this.editTriggers = methods.editTriggers
     this.disconnectNode = methods.disconnectNode
     this.updateFlow = methods.updateFlow
     this.getSkills = methods.getSkills
@@ -341,14 +269,12 @@ export class BlockWidgetFactory extends AbstractNodeFactory {
         deleteSelectedElements={this.deleteSelectedElements}
         copySelectedElement={this.copySelectedElement}
         selectedNodeItem={this.selectedNodeItem}
-        getConditions={this.getConditions}
         switchFlowNode={this.switchFlowNode}
         updateFlowNode={this.updateFlowNode}
         getExpandedNodes={this.getExpandedNodes}
         setExpandedNodes={this.setExpandedNodes}
         getDebugInfo={this.getDebugInfo}
         getFlows={this.getFlows}
-        editTriggers={this.editTriggers}
         disconnectNode={this.disconnectNode}
         updateFlow={this.updateFlow}
         getSkills={this.getSkills}

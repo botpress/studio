@@ -55,23 +55,17 @@
   &.highlighted {
     border: 1px solid var(--ocean) !important;
 
-    .say_something,
     .standard,
     .skill-call,
-    .trigger,
-    .execute,
     .action,
     .failure,
-    .router,
-    .listen,
     .success {
       :global(.port):before {
         background: var(--ocean);
       }
     }
 
-    .outRouting:before,
-    .outRouting.say_something:before {
+    .outRouting:before {
       background-color: var(--ocean) !important;
     }
 
@@ -86,22 +80,12 @@
     }
 
     .headerWrapper {
-      &.say_something,
-      &:hover.say_something,
       &.sub-workflow,
       &:hover.sub-workflow,
-      &.trigger,
-      &:hover.trigger,
-      &.execute,
-      &:hover.execute,
       &.action,
       &:hover.action,
-      &.listen,
-      &:hover.listen,
       &.failure,
       &:hover.failure,
-      &.router,
-      &:hover.router,
       &.success,
       &:hover.success,
       &.standard,
@@ -113,25 +97,12 @@
     }
   }
 
-  .trigger :global(.port):before {
-    background: var(--trigger);
-  }
-
-  .execute :global(.port):before,
   .action :global(.port):before {
     background: var(--execute);
   }
 
-  .listen :global(.port):before {
-    background: var(--listen);
-  }
-
   .failure :global(.port):before {
     background: var(--lighthouse);
-  }
-
-  .router :global(.port):before {
-    background: var(--if-else);
   }
 
   .success :global(.port):before {
@@ -204,36 +175,14 @@
       padding: 4px;
     }
 
-    &.say_something,
-    &:hover.say_something {
-      background: var(--say);
-    }
-
-    &.trigger,
-    &:hover.trigger {
-      background: var(--trigger);
-    }
-
-    &.execute,
-    &:hover.execute,
     &.action,
     &:hover.action {
       background: var(--execute);
     }
 
-    &.listen,
-    &:hover.listen {
-      background: var(--listen);
-    }
-
     &.failure,
     &:hover.failure {
       background: var(--lighthouse);
-    }
-
-    &.router,
-    &:hover.router {
-      background: var(--if-else);
     }
 
     &.success,
@@ -294,37 +243,14 @@
     position: relative;
     width: 100%;
 
-    &.say_something,
-    &:hover.say_something {
-      background: #fff;
-      border-color: var(--say);
-    }
-
-    &.trigger,
-    &:hover.trigger {
-      border-color: var(--trigger);
-    }
-
-    &.execute,
-    &:hover.execute,
     &.action,
     &:hover.action {
       border-color: var(--execute);
     }
 
-    &.listen,
-    &:hover.listen {
-      border-color: var(--listen);
-    }
-
     &.failure,
     &:hover.failure {
       border-color: var(--lighthouse);
-    }
-
-    &.router,
-    &:hover.router {
-      border-color: var(--if-else);
     }
 
     &.success,
@@ -426,10 +352,6 @@
     top: 50%;
     right: calc(var(--spacing-small) * -1);
     transform: translate(55%, -50%);
-
-    &.say_something:before {
-      background-color: var(--say) !important;
-    }
   }
 }
 

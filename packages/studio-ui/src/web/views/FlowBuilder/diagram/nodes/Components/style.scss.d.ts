@@ -12,7 +12,6 @@ interface CssExports {
   'debugInfo': string;
   'error': string;
   'errorIcon': string;
-  'execute': string;
   'failure': string;
   'hasError': string;
   'hasJoinLabel': string;
@@ -23,16 +22,13 @@ interface CssExports {
   'in': string;
   'joinLabel': string;
   'large': string;
-  'listen': string;
   'nodeWrapper': string;
   'out': string;
   'outRouting': string;
   'promptPortContent': string;
   'readOnly': string;
   'results': string;
-  'router': string;
   'rtl': string;
-  'say_something': string;
   'secondaryText': string;
   'skill-call': string;
   'small': string;
@@ -43,7 +39,6 @@ interface CssExports {
   'text': string;
   'textWrapper': string;
   'total': string;
-  'trigger': string;
 }
 declare var cssExports: CssExports;
 export = cssExports;

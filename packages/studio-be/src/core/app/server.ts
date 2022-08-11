@@ -147,7 +147,6 @@ export class HTTPServer {
 
     return {
       SEND_USAGE_STATS: config!.sendUsageStats,
-      EXPERIMENTAL: config.experimental,
       SOCKET_TRANSPORTS: getSocketTransports(config),
       SHOW_POWERED_BY: !!config.showPoweredBy,
       UUID: this.machineId,

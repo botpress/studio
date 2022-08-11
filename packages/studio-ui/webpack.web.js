@@ -215,16 +215,16 @@ const webConfig = {
   }
 }
 
-if (!isProduction) {
-  webConfig.plugins.push(
-    new HardSourceWebpackPlugin({
-      info: {
-        mode: 'test',
-        level: 'debug'
-      }
-    })
-  )
-}
+// if (!isProduction) {
+//   webConfig.plugins.push(
+//     new HardSourceWebpackPlugin({
+//       info: {
+//         mode: 'test',
+//         level: 'debug'
+//       }
+//     })
+//   )
+// }
 
 if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())
