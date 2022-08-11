@@ -13,7 +13,7 @@ import {
   updateFlow,
   updateFlowNode
 } from '~/actions'
-import { getCurrentFlow, getCurrentFlowNode } from '~/reducers'
+import { getCurrentFlow, getCurrentFlowNode, RootReducer } from '~/reducers'
 
 import { nodeTypes } from '../diagram/manager'
 import FlowInformation from '../nodeProps/FlowInformation'
@@ -61,16 +61,13 @@ class Inspector extends Component<Props> {
       buffer,
       currentFlow,
       currentFlowNode,
-      onDeleteSelectedElements,
       copyFlowNodeElement,
       pasteFlowNodeElement,
       readOnly,
       refreshFlowsLinks,
       requestEditSkill,
-      updateFlow,
       updateFlowNode,
-      flows,
-      user
+      flows
     } = this.props
 
     const subflows = _.filter(
@@ -89,16 +86,11 @@ class Inspector extends Component<Props> {
       return (
         <SkillCallNode
           readOnly={readOnly}
-          user={user}
           flow={currentFlow}
           subflows={subflows}
           node={currentFlowNode}
           updateNode={updateNodeAndRefresh}
-          updateFlow={updateFlow}
           requestEditSkill={requestEditSkill}
-          copyFlowNodeElement={copyFlowNodeElement}
-          pasteFlowNodeElement={pasteFlowNodeElement}
-          buffer={buffer}
         />
       )
     }
@@ -116,7 +108,6 @@ class Inspector extends Component<Props> {
           subflows={subflows}
           node={currentFlowNode}
           updateNode={updateNodeAndRefresh}
-          updateFlow={updateFlow}
           copyFlowNodeElement={copyFlowNodeElement}
           pasteFlowNodeElement={pasteFlowNodeElement}
           buffer={buffer}
@@ -128,7 +119,7 @@ class Inspector extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: RootReducer) => ({
   flows: _.values(state.flows.flowsByName),
   currentFlow: getCurrentFlow(state),
   currentFlowNode: getCurrentFlowNode(state) as any,

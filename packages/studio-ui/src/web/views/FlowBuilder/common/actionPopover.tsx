@@ -1,9 +1,8 @@
+import { H4, Popover, PopoverInteractionKind } from '@blueprintjs/core'
 import { lang } from 'botpress/shared'
 import classnames from 'classnames'
 import { parseActionInstruction } from 'common/action'
-import React, { FC, useState } from 'react'
-import { Overlay, Popover } from 'react-bootstrap'
-import ReactDOM from 'react-dom'
+import React, { FC } from 'react'
 
 import style from './style.scss'
 
@@ -13,14 +12,11 @@ interface Props {
 }
 
 export const ActionPopover: FC<Props> = (props) => {
-  const [show, setShow] = useState<boolean>(false)
-  const [target, setTarget] = useState<HTMLElement>(null)
-
   const actionInstruction = parseActionInstruction(props.text.trim())
-  const actionName = `${actionInstruction.actionName} (args)`
+  const actionName = `${actionInstruction.actionName}`
 
-  let callPreview: string
-  if (actionInstruction.argsStr) {
+  let callPreview: string = ''
+  if (actionInstruction.argsStr && actionInstruction.argsStr !== '{}') {
     try {
       const parameters = JSON.parse(actionInstruction.argsStr)
       callPreview = JSON.stringify(parameters, null, 2)
@@ -30,32 +26,34 @@ export const ActionPopover: FC<Props> = (props) => {
     }
   }
 
-  const hidePopover = () => {
-    setShow(false)
-  }
-
-  const showPopover = () => {
-    setShow(true)
-  }
+  const PopoverContent: JSX.Element = (
+    <div className={style.popoverContent}>
+      <H4>⚡ {actionName}</H4>
+      {!callPreview && <p>{lang.tr('studio.flow.node.actionNoArguments')}</p>}
+      {!!callPreview && (
+        <div>
+          <p>{lang.tr('studio.flow.node.actionArguments')}</p>
+          <pre>{callPreview}</pre>
+        </div>
+      )}
+    </div>
+  )
 
   return (
-    <div onMouseLeave={hidePopover}>
-      <div
-        className={classnames(props.className, style['fn'], style['action-item'])}
-        ref={setTarget}
-        onMouseEnter={showPopover}
+    <div>
+      <Popover
+        usePortal
+        boundary="viewport"
+        content={PopoverContent}
+        interactionKind={PopoverInteractionKind.HOVER}
+        minimal
+        position="left"
       >
-        <span className={style.icon}>⚡</span>
-        <span className={style.name}>{actionName}</span>
-        {props.children}
-      </div>
-
-      <Overlay target={() => ReactDOM.findDOMNode(target)} placement="top" show={show}>
-        <Popover id="popover-action" title={`⚡ ${actionName}`}>
-          {lang.tr('studio.flow.node.actionArguments')}
-          <pre>{callPreview}</pre>
-        </Popover>
-      </Overlay>
+        <div className={classnames(props.className, style.fn, style['action-item'])}>
+          <span className={style.icon}>⚡</span>
+          <span className={style.name}>{actionName}</span>
+        </div>
+      </Popover>
     </div>
   )
 }

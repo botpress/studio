@@ -2,8 +2,8 @@ import cx from 'classnames'
 import React, { FC } from 'react'
 import store from '~/store'
 import { isRTLLocale } from '~/translations'
-import ConditionItem from '~/views/FlowBuilder/common/condition'
-import ActionItem from '../../../common/action'
+import TransitionItem from '~/views/FlowBuilder/common/TransitionItem'
+import ActionItem from '../../../common/ActionItem'
 import { StandardPortWidget } from '../../nodes/Ports'
 import { BlockProps } from '../Block'
 import style from '../Components/style.scss'
@@ -52,7 +52,7 @@ const StandardContents: FC<Props> = ({ node }) => {
             })}
           >
             <div className={cx(style.content, style.readOnly)}>
-              <ConditionItem condition={item} position={i} />
+              <TransitionItem transition={item} position={i} />
               <StandardPortWidget name={outputPortName} node={node} className={style.outRouting} />
             </div>
           </div>

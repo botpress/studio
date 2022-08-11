@@ -23,7 +23,7 @@ export default class EditableInput extends Component {
     this.setState({ value: nextProps.value || nextProps.defaultValue })
   }
 
-  onChanged = event => {
+  onChanged = (event) => {
     let txt = event.target.value
     if (this.props.transform) {
       txt = this.props.transform(txt)
@@ -32,7 +32,7 @@ export default class EditableInput extends Component {
     this.setState({ value: txt })
   }
 
-  onKeyDown = event => {
+  onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && event.keyCode === KEY_A) {
       event.target.select()
     }
@@ -64,9 +64,10 @@ export default class EditableInput extends Component {
 
     return (
       <input
+        id="node-name-input"
         className={inputClass}
         type="text"
-        ref={el => (this.input = el)}
+        ref={(el) => (this.input = el)}
         style={{ width: inputWidth }}
         autoComplete="off"
         value={this.state.value}

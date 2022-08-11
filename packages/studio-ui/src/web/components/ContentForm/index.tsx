@@ -11,7 +11,6 @@ import withLanguage from '../Util/withLanguage'
 
 import ArrayFieldTemplate from './ArrayFieldTemplate'
 import ContentNotice from './ContentNotice'
-import FlowPickWidget from './FlowPickWidget'
 import ArrayMl from './i18n/Array'
 import renderWrapped from './i18n/I18nWrapper'
 import RefWidget from './RefWidget'
@@ -40,8 +39,6 @@ const CustomBaseInput = (props: WidgetProps) => {
   if (type === 'string') {
     if (subtype === 'ref') {
       return <RefWidget key={props?.formContext?.customKey} {...props} />
-    } else if (subtype === 'flow') {
-      return <FlowPickWidget key={props?.formContext?.customKey} {...props} />
     } else if (SUPPORTED_MEDIA_SUBTYPES.includes(subtype)) {
       return (
         <UploadWidget
