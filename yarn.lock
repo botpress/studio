@@ -1035,7 +1035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.9.2":
   version: 7.14.0
   resolution: "@babel/runtime@npm:7.14.0"
   dependencies:
@@ -1503,7 +1503,6 @@ __metadata:
     react-split-pane: ^0.1.89
     react-table: ^6.11.5
     reactour: ^1.18.7
-    reactstrap: ^8.4.0
     reduce-reducers: ^0.1.2
     redux: ^3.7.2
     redux-actions: ^2.2.1
@@ -17487,7 +17486,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-popper@npm:^1.3.6, react-popper@npm:^1.3.7":
+"react-popper@npm:^1.3.7":
   version: 1.3.11
   resolution: "react-popper@npm:1.3.11"
   dependencies:
@@ -17631,7 +17630,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-transition-group@npm:^2.0.0, react-transition-group@npm:^2.2.1, react-transition-group@npm:^2.3.1, react-transition-group@npm:^2.9.0":
+"react-transition-group@npm:^2.0.0, react-transition-group@npm:^2.2.1, react-transition-group@npm:^2.9.0":
   version: 2.9.0
   resolution: "react-transition-group@npm:2.9.0"
   dependencies:
@@ -17703,22 +17702,6 @@ __metadata:
     react-is: ^16.8 || ^17.0.0-0
     styled-components: ^4.0.0 || ^5.0.0
   checksum: d8f1bbd8b41b04bd7036395fbd40259d551a979a516877b610e027f6e71140f8dcf1ac057d98798084b6159391b5015c839804fbc276d966f8dc6a69aceca49d
-  languageName: node
-  linkType: hard
-
-"reactstrap@npm:^8.4.0":
-  version: 8.9.0
-  resolution: "reactstrap@npm:8.9.0"
-  dependencies:
-    "@babel/runtime": ^7.12.5
-    classnames: ^2.2.3
-    prop-types: ^15.5.8
-    react-popper: ^1.3.6
-    react-transition-group: ^2.3.1
-  peerDependencies:
-    react: ">=16.3.0"
-    react-dom: ">=16.3.0"
-  checksum: 5dfd29583c5bff0aaa5443bc73031951b3073604042599e8283302494cbbca11769149fa49f71482cde9deec1ad38068274216d7545a93c51b8c04a5d1933009
   languageName: node
   linkType: hard
 

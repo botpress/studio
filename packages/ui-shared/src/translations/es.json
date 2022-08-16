@@ -144,6 +144,8 @@
   "quickAddAlternativeTags": "Presione Enter + Shift mientras está en línea para agregar una nueva alternativa rápidamente",
   "redo": "Rehacer",
   "refresh": "Actualizar",
+  "up": "Arriba",
+  "down": "Abajo",
   "remove": "Eliminar",
   "rename": "Renombrar",
   "renameWorkflow": "Cambiar el nombre del flujo de trabajo",

@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { deleteMedia, fetchContentItem, upsertContentItem } from '~/actions'
 import store from '~/store'
 import { CONTENT_TYPES_MEDIA } from '~/util/ContentDeletion'
-import ActionItem from '~/views/FlowBuilder/common/action'
+import ActionItem from '~/views/FlowBuilder/common/ActionItem'
 
 import withLanguage from '../../Util/withLanguage'
 import CreateOrEditModal from '../CreateOrEditModal'

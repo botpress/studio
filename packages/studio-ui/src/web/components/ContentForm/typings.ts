@@ -4,7 +4,7 @@ import { JSONSchema6 } from 'json-schema'
 import { FormProps } from 'react-jsonschema-form'
 
 export type Schema = JSONSchema6 & {
-  $subtype: 'ref' | 'flow' | SupportedFileType
+  $subtype: 'ref' | SupportedFileType
   $filter: string
   $help: {
     text: string

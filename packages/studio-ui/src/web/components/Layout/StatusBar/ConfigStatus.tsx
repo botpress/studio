@@ -1,10 +1,9 @@
 import { Button, Classes, Colors, Dialog, Icon, Intent } from '@blueprintjs/core'
 import axios from 'axios'
+import { ToolTip } from 'botpress/shared'
 import React, { Fragment, useEffect, useState } from 'react'
 import { toastFailure } from '~/components/Shared/Utils'
 import EventBus from '~/util/EventBus'
-
-import ActionItem from './ActionItem'
 
 const adminUrl = `${window['API_PATH']}/admin`
 
@@ -59,14 +58,11 @@ const ConfigStatus = () => {
 
   return (
     <Fragment>
-      <ActionItem
-        id="statusbar_configstatus"
-        title="Config Status"
-        description="Pending changes"
-        onClick={() => setOpen(true)}
-      >
-        {isDifferent && <Icon icon="cog" style={{ color: Colors.RED5 }} />}
-      </ActionItem>
+      {isDifferent && (
+        <ToolTip content="Pending changes to server configuration">
+          <Icon icon="cog" style={{ color: Colors.RED5 }} />
+        </ToolTip>
+      )}
 
       <Dialog
         title="Configuration Outdated"

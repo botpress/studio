@@ -1,6 +1,6 @@
+import { ToolTip } from 'botpress/shared'
 import _ from 'lodash'
 import React from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { MdErrorOutline } from 'react-icons/md'
 
 import style from '../style.scss'
@@ -41,17 +41,12 @@ const renderWrapped = (WrappedComponent) => {
         <WrappedComponent {...props} />
         {isMissing && (
           <div className={style.missingIcon}>
-            <OverlayTrigger
-              placement="bottom"
-              overlay={
-                <Tooltip id="tooltip">
-                  Translation missing for current language ({props.formContext.activeLang}
-                  ). Click here to copy the default language text
-                </Tooltip>
-              }
+            <ToolTip
+              position="bottom"
+              content={`Translation missing for current language (${props.formContext.activeLang}). Click here to copy the default language text`}
             >
               <MdErrorOutline onClick={() => useDefaultLangText()} />
-            </OverlayTrigger>
+            </ToolTip>
           </div>
         )}
       </div>

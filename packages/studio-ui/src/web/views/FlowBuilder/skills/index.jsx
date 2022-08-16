@@ -1,8 +1,9 @@
+import { Button } from '@blueprintjs/core'
 import axios from 'axios'
+import { lang, Dialog } from 'botpress/shared'
 import find from 'lodash/find'
 import includes from 'lodash/includes'
 import React from 'react'
-import { Button } from 'react-bootstrap'
 import Loader from 'react-loaders'
 import { connect } from 'react-redux'
 import { cancelNewSkill, insertNewSkill, updateSkill } from '~/actions'
@@ -12,8 +13,6 @@ import withLanguage from '../../../components/Util/withLanguage'
 const style = require('./style.scss')
 
 const VALID_WINDOW_SIZES = ['normal', 'large', 'small']
-
-import { lang, Dialog } from 'botpress/shared'
 
 class WrappedInjectedModule extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -55,7 +54,7 @@ class SkillsBuilder extends React.Component {
     return <div>{lang.tr('studio.flow.skills.couldNotLoad')}</div>
   }
 
-  onDataChanged = data => {
+  onDataChanged = (data) => {
     this.data = data
   }
 
@@ -65,7 +64,7 @@ class SkillsBuilder extends React.Component {
       canSubmit: false
     })
 
-    return this.generateFlow().then(generated => {
+    return this.generateFlow().then((generated) => {
       if (this.props.action === 'edit') {
         this.props.updateSkill({
           skillId: this.props.skillId,
@@ -91,7 +90,7 @@ class SkillsBuilder extends React.Component {
     this.props.cancelNewSkill()
   }
 
-  onValidChanged = valid => {
+  onValidChanged = (valid) => {
     this.setState({ canSubmit: valid })
   }
 
@@ -108,7 +107,7 @@ class SkillsBuilder extends React.Component {
     )
   }
 
-  onWindowResized = size => {
+  onWindowResized = (size) => {
     if (!includes(VALID_WINDOW_SIZES, size)) {
       const sizes = VALID_WINDOW_SIZES.join(', ')
       return console.log(
@@ -124,7 +123,7 @@ class SkillsBuilder extends React.Component {
     })
   }
 
-  buildModuleProps = data => ({
+  buildModuleProps = (data) => ({
     initialData: data,
     onDataChanged: this.onDataChanged,
     onValidChanged: this.onValidChanged,
@@ -151,7 +150,7 @@ class SkillsBuilder extends React.Component {
       return
     }
 
-    return find(this.props.installedSkills, x => x.id.toLowerCase() === skillId.toLowerCase())
+    return find(this.props.installedSkills, (x) => x.id.toLowerCase() === skillId.toLowerCase())
   }
 
   render() {
@@ -182,7 +181,7 @@ class SkillsBuilder extends React.Component {
         </Dialog.Body>
         <Dialog.Footer>
           <Button onClick={this.onCancel}>{lang.tr('cancel')}</Button>
-          <Button onClick={this.onSubmit} disabled={!this.state.canSubmit} bsStyle="primary">
+          <Button intent="primary" onClick={this.onSubmit} disabled={!this.state.canSubmit}>
             {submitName}
           </Button>
         </Dialog.Footer>
@@ -191,7 +190,7 @@ class SkillsBuilder extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   installedSkills: state.skills.installed,
   ...state.skills.builder
 })

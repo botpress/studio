@@ -12,6 +12,7 @@ interface CssExports {
   'description': string;
   'endBloc': string;
   'formHeader': string;
+  'inspectorTabs': string;
   'item': string;
   'name': string;
   'node': string;

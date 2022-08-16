@@ -1,14 +1,12 @@
+import { Button, Callout, Spinner } from '@blueprintjs/core'
 import axios, { AxiosResponse } from 'axios'
-import { ContentElement, FormData, SearchParams } from 'botpress/sdk'
+import { ContentElement, FormData, ParsedContentType, SearchParams } from 'botpress/sdk'
 import { Dialog, lang } from 'botpress/shared'
 import classnames from 'classnames'
-import { ParsedContentType } from 'common/typings'
 import React, { Component } from 'react'
-import { Alert, Button } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import { deleteMedia, fetchContentCategories, fetchContentItems, upsertContentItem } from '~/actions'
-import Loading from '~/components/Util/Loading'
 import { RootReducer } from '~/reducers'
 import { CONTENT_TYPES_MEDIA } from '~/util/ContentDeletion'
 
@@ -243,9 +241,7 @@ class SelectContent extends Component<Props, State> {
       <p>
         {lang.tr('studio.content.currentlySearching')}: <strong>{lang.tr(title)}</strong>
         .&nbsp;
-        <Button className="btn btn-warning btn-sm" onClick={this.resetCurrentCategory}>
-          {lang.tr('change')}
-        </Button>
+        <Button intent="warning" small title={lang.tr('change')} onClick={this.resetCurrentCategory} />
       </p>
     )
   }
@@ -285,13 +281,18 @@ class SelectContent extends Component<Props, State> {
 
     if (!categories.length) {
       return (
-        <Alert bsStyle="warning">
-          <strong>We think you don&apos;t have any content types defined.</strong> Please&nbsp;
-          <a href="https://botpress.com/docs/main/content" target="_blank" rel="noopener noreferrer">
-            <strong>read the docs</strong>
-          </a>
-          &nbsp;to see how you can make use of this feature.
-        </Alert>
+        <Callout intent="warning" title="No content type defined">
+          <p>
+            To learn how to define content types,{' '}
+            <a
+              href="https://botpress.com/docs/building-chatbots/flow-editor/content-elements#content-types"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <strong>read the docs</strong>
+            </a>
+          </p>
+        </Callout>
       )
     }
 
@@ -360,7 +361,7 @@ class SelectContent extends Component<Props, State> {
 
   renderBody() {
     if (this.state.step === FormSteps.INITIAL) {
-      return <Loading />
+      return <Spinner size={20} />
     } else if (this.state.step === FormSteps.PICK_CATEGORY) {
       return this.renderCategoryPicker()
     }

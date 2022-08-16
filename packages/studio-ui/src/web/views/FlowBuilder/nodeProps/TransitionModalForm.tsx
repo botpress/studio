@@ -1,8 +1,8 @@
+import { Callout, RadioGroup, Radio, Label, Button, InputGroup } from '@blueprintjs/core'
 import { lang, Dialog } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
-import React, { Component } from 'react'
-import { Button, Radio, FormControl, Alert, Form } from 'react-bootstrap'
+import React, { Component, FormEvent } from 'react'
 import { connect } from 'react-redux'
 import Select from 'react-select'
 import { getFlowLabel, reorderFlows } from '~/components/Shared/Utils'
@@ -177,15 +177,6 @@ class ConditionModalForm extends Component<Props, State> {
     }
   }
 
-  changeTransitionType(type) {
-    this.setState({
-      typeOfTransition: type,
-      flowToSubflow: this.state.flowToSubflow || this.state.subflowOptions[0],
-      flowToNode: this.state.flowToNode || this.nodeOptions()[0],
-      transitionError: undefined
-    })
-  }
-
   validation() {
     if (this.state.typeOfTransition === 'subflow' && !this.state.flowToSubflow) {
       this.setState({
@@ -336,8 +327,8 @@ class ConditionModalForm extends Component<Props, State> {
     )
   }
 
-  changeConditionType = (event) => {
-    const conditionType: Condition['conditionType'] = event.target.value
+  changeConditionType = (event: FormEvent<HTMLInputElement>) => {
+    const conditionType = event.currentTarget.value as Condition['conditionType']
 
     if (conditionType === 'always') {
       this.setState({ conditionType, condition: 'true' })
@@ -346,6 +337,18 @@ class ConditionModalForm extends Component<Props, State> {
     } else {
       this.setState({ conditionType })
     }
+  }
+
+  changeTransitionType = (event: FormEvent<HTMLInputElement>) => {
+    const typeOfTransition = event.currentTarget.value as TransitionType
+    debugger
+
+    this.setState({
+      typeOfTransition,
+      flowToSubflow: this.state.flowToSubflow || this.state.subflowOptions[0],
+      flowToNode: this.state.flowToNode || this.nodeOptions()[0],
+      transitionError: undefined
+    })
   }
 
   handlePropsTypeChanged = (option: Option) => this.setState({ matchPropsType: option }, this.updatePropertyMatch)
@@ -382,19 +385,22 @@ class ConditionModalForm extends Component<Props, State> {
       .concat([{ label: 'none', value: 'none' }])
 
     return (
-      <Select
-        name="matchIntent"
-        value={this.state.matchIntent}
-        options={intents}
-        onChange={this.handleMatchIntentChanged}
-        menuPortalTarget={document.getElementById('menuOverlayPortal')}
-      />
+      <Label>
+        Intent
+        <Select
+          name="matchIntent"
+          value={this.state.matchIntent}
+          options={intents}
+          onChange={this.handleMatchIntentChanged}
+          menuPortalTarget={document.getElementById('menuOverlayPortal')}
+        />
+      </Label>
     )
   }
 
   renderMatchProperty() {
     return (
-      <Form inline>
+      <div>
         <Select
           name="matchPropsType"
           value={this.state.matchPropsType}
@@ -403,7 +409,7 @@ class ConditionModalForm extends Component<Props, State> {
           menuPortalTarget={document.getElementById('menuOverlayPortal')}
         />
 
-        <FormControl
+        <InputGroup
           type="text"
           placeholder={lang.tr('studio.flow.node.transition.fieldName')}
           value={this.state.matchPropsFieldName}
@@ -418,7 +424,7 @@ class ConditionModalForm extends Component<Props, State> {
           className={style.textFields}
           singleLine={false}
         />
-      </Form>
+      </div>
     )
   }
 
@@ -436,25 +442,20 @@ class ConditionModalForm extends Component<Props, State> {
   renderConditions() {
     return (
       <div className={style.section}>
-        {this.state.conditionError && <Alert bsStyle="danger">{this.state.conditionError}</Alert>}
-        <Radio checked={this.state.conditionType === 'always'} value="always" onChange={this.changeConditionType}>
-          {lang.tr('studio.flow.node.transition.condition.always')}
-        </Radio>
-
-        <Radio checked={this.state.conditionType === 'intent'} value="intent" onChange={this.changeConditionType}>
-          {lang.tr('studio.flow.node.transition.condition.intentIs')}
-        </Radio>
-        {this.state.conditionType === 'intent' && this.renderIntentPicker()}
-
-        <Radio checked={this.state.conditionType === 'props'} value="props" onChange={this.changeConditionType}>
-          {lang.tr('studio.flow.node.transition.condition.matchesProperty')}
-        </Radio>
-        {this.state.conditionType === 'props' && this.renderMatchProperty()}
-
-        <Radio checked={this.state.conditionType === 'raw'} value="raw" onChange={this.changeConditionType}>
-          {lang.tr('studio.flow.node.transition.condition.rawExpression')}
-        </Radio>
-        {this.state.conditionType === 'raw' && this.renderRawExpression()}
+        {this.state.conditionError && <Callout intent="danger">{this.state.conditionError}</Callout>}
+        <RadioGroup
+          label={lang.tr('studio.flow.node.transition.showCondition')}
+          onChange={this.changeConditionType}
+          selectedValue={this.state.conditionType}
+        >
+          <Radio label={lang.tr('studio.flow.node.transition.condition.always')} value="always" />
+          <Radio label={lang.tr('studio.flow.node.transition.condition.intentIs')} value="intent" />
+          {this.state.conditionType === 'intent' && this.renderIntentPicker()}
+          <Radio label={lang.tr('studio.flow.node.transition.condition.matchesProperty')} value="props" />
+          {this.state.conditionType === 'props' && this.renderMatchProperty()}
+          <Radio label={lang.tr('studio.flow.node.transition.condition.rawExpression')} value="raw" />
+          {this.state.conditionType === 'raw' && this.renderRawExpression()}
+        </RadioGroup>
       </div>
     )
   }
@@ -462,25 +463,51 @@ class ConditionModalForm extends Component<Props, State> {
   renderActions() {
     return (
       <div className={style.section}>
-        <Radio checked={this.state.typeOfTransition === 'end'} onChange={() => this.changeTransitionType('end')}>
-          {lang.tr('studio.flow.node.transition.action.endFlow')} <span className={style.endBloc} />
-        </Radio>
-        <Radio checked={this.state.typeOfTransition === 'return'} onChange={() => this.changeTransitionType('return')}>
-          {lang.tr('studio.flow.node.transition.action.returnToPreviousFlow')} <span className={style.returnBloc} />
-        </Radio>
-        {this.state.typeOfTransition === 'return' && this.renderReturnToNode()}
-        <Radio checked={this.state.typeOfTransition === 'node'} onChange={() => this.changeTransitionType('node')}>
-          {lang.tr('studio.flow.node.transition.action.transitionToNode')} <span className={style.nodeBloc} />
-        </Radio>
-        {this.state.typeOfTransition === 'node' && this.renderNodesChoice()}
-        <Radio
-          checked={this.state.typeOfTransition === 'subflow'}
-          onChange={() => this.changeTransitionType('subflow')}
+        {this.state.transitionError && <Callout intent="danger">{this.state.transitionError}</Callout>}
+
+        <RadioGroup
+          label={lang.tr('studio.flow.node.transition.whenMetDo')}
+          onChange={this.changeTransitionType}
+          selectedValue={this.state.typeOfTransition}
         >
-          {lang.tr('studio.flow.node.transition.action.transitionToSubflow')} <span className={style.subflowBloc} />
-        </Radio>
-        {this.state.transitionError && <Alert bsStyle="danger">{this.state.transitionError}</Alert>}
-        {this.state.typeOfTransition === 'subflow' && this.renderSubflowChoice()}
+          <Radio
+            label={
+              <>
+                {lang.tr('studio.flow.node.transition.action.endFlow')} <span className={style.endBloc} />
+              </>
+            }
+            value="end"
+          />
+          <Radio
+            label={
+              <>
+                {lang.tr('studio.flow.node.transition.action.returnToPreviousFlow')}{' '}
+                <span className={style.returnBloc} />
+              </>
+            }
+            value="return"
+          />
+          {this.state.typeOfTransition === 'return' && this.renderReturnToNode()}
+          <Radio
+            label={
+              <>
+                {lang.tr('studio.flow.node.transition.action.transitionToNode')} <span className={style.nodeBloc} />
+              </>
+            }
+            value="node"
+          />
+          {this.state.typeOfTransition === 'node' && this.renderNodesChoice()}
+          <Radio
+            label={
+              <>
+                {lang.tr('studio.flow.node.transition.action.transitionToSubflow')}{' '}
+                <span className={style.subflowBloc} />
+              </>
+            }
+            value="subflow"
+          />
+          {this.state.typeOfTransition === 'subflow' && this.renderSubflowChoice()}
+        </RadioGroup>
       </div>
     )
   }
@@ -495,14 +522,12 @@ class ConditionModalForm extends Component<Props, State> {
         onClose={this.props.onClose}
       >
         <Dialog.Body>
-          <h5>{lang.tr('studio.flow.node.transition.showCondition')}:</h5>
           {this.renderConditions()}
-          <h5>{lang.tr('studio.flow.node.transition.whenMetDo')}:</h5>
           {this.renderActions()}
         </Dialog.Body>
         <Dialog.Footer>
           <Button onClick={this.props.onClose}>{lang.tr('cancel')}</Button>
-          <Button onClick={this.onSubmitClick} bsStyle="primary">
+          <Button onClick={this.onSubmitClick} intent="primary">
             {this.state.isEdit ? lang.tr('update') : lang.tr('create')}
           </Button>
         </Dialog.Footer>
