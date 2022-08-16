@@ -235,6 +235,7 @@ export class BlockModel extends BaseNodeModel {
   public content?: FormData
   public flow: string
   public skill?: string
+  public previewElements?: string[]
 
   constructor({
     id,
@@ -244,6 +245,7 @@ export class BlockModel extends BaseNodeModel {
     type,
     flow,
     skill,
+    previewElements,
     content,
     onEnter = [],
     next = [],
@@ -264,6 +266,7 @@ export class BlockModel extends BaseNodeModel {
       next,
       flow,
       skill,
+      previewElements,
       isStartNode,
       isHighlighted,
       conditions,
@@ -286,6 +289,7 @@ export class BlockModel extends BaseNodeModel {
     this.content = data.content
     this.flow = data.flow
     this.skill = data.skill
+    this.previewElements = data.previewElements
     this.isReadOnly = data.isReadOnly
   }
 }

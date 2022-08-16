@@ -522,7 +522,8 @@ reducer = reduceReducers(
           flow: flowName,
           next: payload.transitions || [],
           onEnter: null,
-          onReceive: null
+          onReceive: null,
+          previewElements: payload.previewElements
         }
 
         const newFlowHash = computeHashForFlow(newFlow)
@@ -561,6 +562,7 @@ reducer = reduceReducers(
 
           return {
             ...node,
+            previewElements: payload.previewElements,
             next: payload.transitions.map((transition) => {
               const prevTransition =
                 node.next.find(({ condition }) => condition === transition.condition) ||

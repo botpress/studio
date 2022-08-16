@@ -65,7 +65,7 @@ class SkillsBuilder extends React.Component {
       canSubmit: false
     })
 
-    return this.generateFlow().then(generated => {
+    return this.generateFlow().then((generated) => {
       if (this.props.action === 'edit') {
         this.props.updateSkill({
           skillId: this.props.skillId,
@@ -73,7 +73,8 @@ class SkillsBuilder extends React.Component {
           generatedFlow: generated.flow,
           transitions: generated.transitions,
           editFlowName: this.props.editFlowName,
-          editNodeId: this.props.editNodeId
+          editNodeId: this.props.editNodeId,
+          previewElements: generated.previewElements
         })
       } else {
         this.props.insertNewSkill({
@@ -81,7 +82,8 @@ class SkillsBuilder extends React.Component {
           data: this.data,
           generatedFlow: generated.flow,
           transitions: generated.transitions,
-          location: this.props.location
+          location: this.props.location,
+          previewElements: generated.previewElements
         })
       }
     })
