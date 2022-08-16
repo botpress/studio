@@ -5,6 +5,7 @@ import _ from 'lodash'
 import React, { Component } from 'react'
 
 import { AccessControl } from '~/components/Shared/Utils'
+import { sanitizeName } from '~/util'
 import EditableInput from '../common/EditableInput'
 import style from './style.scss'
 import TransitionSection from './TransitionSection'
@@ -28,10 +29,6 @@ export default class SkillCallNodePropertiesPanel extends Component<Props> {
     }
   }
 
-  transformText(text) {
-    return text.replace(/[^a-z0-9-_\.]/gi, '_')
-  }
-
   render() {
     const { node, readOnly } = this.props
 
@@ -44,7 +41,7 @@ export default class SkillCallNodePropertiesPanel extends Component<Props> {
           value={node.name}
           className={style.name}
           onChanged={this.renameNode}
-          transform={this.transformText}
+          transform={sanitizeName}
         />
         <div style={{ padding: '5px' }}>
           <AccessControl resource="bot.skills" operation="write">
@@ -61,7 +58,7 @@ export default class SkillCallNodePropertiesPanel extends Component<Props> {
           currentNodeName={this.props.node.name}
           subflows={this.props.subflows}
           onItemsUpdated={(items) => this.props.updateNode({ next: items })}
-          //missing props
+          //missing required props but not used
           canPaste={false}
           copyItem={_.noop}
           pasteItem={_.noop}

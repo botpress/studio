@@ -11,12 +11,14 @@ interface Props {
   className: string
 }
 
+const EMPTY_OBJECT_STR = '{}'
+
 export const ActionPopover: FC<Props> = (props) => {
   const actionInstruction = parseActionInstruction(props.text.trim())
   const actionName = `${actionInstruction.actionName}`
 
   let callPreview: string = ''
-  if (actionInstruction.argsStr && actionInstruction.argsStr !== '{}') {
+  if (actionInstruction?.argsStr !== EMPTY_OBJECT_STR) {
     try {
       const parameters = JSON.parse(actionInstruction.argsStr)
       callPreview = JSON.stringify(parameters, null, 2)

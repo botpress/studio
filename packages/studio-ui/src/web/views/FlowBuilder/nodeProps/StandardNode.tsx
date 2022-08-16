@@ -32,6 +32,8 @@ interface Props {
   buffer: any
 }
 
+const nodeNameRe = /node-(\w|\n){4}$/g
+
 export default (props: Props) => {
   const [currentTab, setCurrentTab] = useState<TabId>('on-enter')
 
@@ -84,10 +86,8 @@ export default (props: Props) => {
   return (
     <div className={style.node}>
       <EditableInput
-        /* We should always sugest that the name should be changed
-             if the node has the default name and it is the last created */
         key={node.id}
-        shouldFocus={isLastNode && node.name.match(/node-(\w|\n){4}$/g)}
+        shouldFocus={isLastNode && node.name.match(nodeNameRe)}
         readOnly={readOnly}
         value={node.name}
         className={style.name}
