@@ -22,6 +22,7 @@ const passThroughNodeProps: string[] = [
   'onReceive',
   'next',
   'skill',
+  'previewElements',
   'conditions',
   'type',
   'content',
@@ -583,7 +584,7 @@ export class DiagramManager {
     const model = this.activeModel.serializeDiagram()
     const nodes = model.nodes.map((node: any) => {
       return {
-        ..._.pick(node, 'id', 'name', 'onEnter', 'onReceive'),
+        ..._.pick(node, 'id', 'name', 'onEnter', 'onReceive', 'previewElements'),
         next: node.next.map((next, index) => {
           const port = _.find(node.ports, { name: `out${index}` })
 
