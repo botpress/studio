@@ -54,8 +54,12 @@ export const parseBotId = () => {
   return (matches && matches[2]) || ''
 }
 
-export const sanitizeName = (text) =>
+export const sanitizeName = (text: string) =>
   text
     .replace(/\s/g, '-')
     .replace(/[^a-zA-Z0-9\/_-]/g, '')
     .replace(/\/\//, '/')
+
+export const stripDots = (str: string) => str.replace(/\./g, '--dot--')
+
+export const restoreDots = (str: string) => str.replace(/--dot--/g, '.')

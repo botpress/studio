@@ -340,6 +340,7 @@
         "actionToRun": "Acción para ejecutar",
         "actionInstructionParsingError": "Error al analizar las instrucciones: {msg}",
         "actionArguments": "Llamado con estos argumentos:",
+        "actionNoArguments": "Llamado sin argumentos:",
         "add": "Añadir",
         "addAction": "Añadir nueva acción",
         "nameAlreadyExists": "No puedo cambiar el nodo (Nombre ya existe)",

@@ -9,8 +9,9 @@ import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import { isRTLLocale } from '~/translations'
+import { restoreDots, stripDots } from '~/util'
 import withLanguage from '../../../components/Util/withLanguage'
-import { ActionPopover } from './actionPopover'
+import { ActionPopover } from './ActionPopover'
 
 import style from './style.scss'
 
@@ -101,9 +102,6 @@ class ActionItem extends Component<Props> {
       item && this.props.layoutv2 ? preview : item ? `${lang.tr(item.schema?.title)} | ${preview}` : ''
     )
     const vars = {}
-
-    const stripDots = (str) => str.replace(/\./g, '--dot--')
-    const restoreDots = (str) => str.replace(/--dot--/g, '.')
 
     const htmlTpl = textContent.replace(/{{([a-z$@0-9. _-]*?)}}/gi, (x) => {
       const name = stripDots(x.replace(/{|}/g, ''))

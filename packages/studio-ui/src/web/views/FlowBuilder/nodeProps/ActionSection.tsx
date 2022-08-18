@@ -1,22 +1,39 @@
-import { Popover, PopoverInteractionKind, PopoverPosition } from '@blueprintjs/core'
+import { Popover, PopoverInteractionKind, PopoverPosition, Button, Checkbox, Icon } from '@blueprintjs/core'
+import { ActionBuilderProps } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
-import classnames from 'classnames'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 
-import { Button } from 'react-bootstrap'
-
-import ActionItem from '../common/action'
+import ActionItem from '../common/ActionItem'
 import ActionModalForm from './ActionModalForm'
 
-const style = require('./style.scss')
+import style from './style.scss'
 
-export default class ActionSection extends Component {
+type ActionItems = ActionBuilderProps[] | string[]
+type ActionItem = ActionBuilderProps | string
+
+interface Props {
+  items?: ActionItems
+  waitable?: boolean
+  readOnly: boolean
+  canPaste: boolean
+  onItemsUpdated: (items: ActionItems) => void
+  copyItem: (item: ActionItem) => void
+  pasteItem: () => void
+}
+
+interface State {
+  itemToEditIndex: number | null
+  showActionModalForm: boolean
+}
+
+export default class ActionSection extends Component<Props, State> {
   state = {
-    showActionModalForm: false
+    showActionModalForm: false,
+    itemToEditIndex: null
   }
 
-  onMoveAction(prevIndex, direction) {
+  onMoveAction(prevIndex: number, direction: number) {
     const clone = [...this.props.items]
     const a = clone[prevIndex]
     const b = clone[prevIndex + direction]
@@ -24,7 +41,7 @@ export default class ActionSection extends Component {
     clone[prevIndex + direction] = a
     clone[prevIndex] = b
 
-    this.props.onItemsUpdated(clone)
+    this.props.onItemsUpdated(clone as ActionItems)
   }
 
   optionsToItem(options) {
@@ -53,103 +70,90 @@ export default class ActionSection extends Component {
     }
   }
 
-  onSubmitAction = options => {
+  onSubmitAction = (options) => {
     const item = this.optionsToItem(options)
     const editIndex = this.state.itemToEditIndex
-    const { items } = this.props
+    const items = this.props.items ?? []
+
     const updateByIndex = (originalItem, i) => (i === editIndex ? item : originalItem)
 
     this.setState({ showActionModalForm: false, itemToEditIndex: null })
     this.props.onItemsUpdated(Number.isInteger(editIndex) ? items.map(updateByIndex) : [...(items || []), item])
   }
 
-  onRemoveAction(index) {
+  onRemoveAction(index: number) {
     const clone = [...this.props.items]
     _.pullAt(clone, [index])
-    this.props.onItemsUpdated(clone)
+    this.props.onItemsUpdated(clone as ActionItems)
   }
 
-  onCopyAction(index) {
+  onCopyAction(index: number) {
     this.props.copyItem(this.props.items[index])
   }
 
-  onEdit(itemToEditIndex) {
+  onEdit(itemToEditIndex: number) {
     this.setState({ itemToEditIndex, showActionModalForm: true })
   }
 
   renderWait() {
-    const { items, readOnly } = this.props
+    const { items, waitable } = this.props
 
-    if (!this.props.waitable || (items && items.length > 0)) {
+    if (!waitable || (items?.length ?? 0) > 0) {
       return null
     }
 
     const checked = _.isArray(items)
 
-    const changeChecked = () => this.props.onItemsUpdated && this.props.onItemsUpdated(checked ? null : [])
+    const changeChecked = () => this.props.onItemsUpdated?.(checked ? null : [])
 
     return (
-      <label>
-        <input name="isGoing" type="checkbox" checked={checked} disabled={readOnly} onChange={changeChecked} />
-        {lang.tr('studio.flow.node.waitForUserMessage')}
-      </label>
+      <Checkbox checked={checked} onChange={changeChecked} label={lang.tr('studio.flow.node.waitForUserMessage')} />
     )
   }
 
   render() {
-    let { items, readOnly } = this.props
-
-    if (!items) {
-      items = []
-    }
-
-    const renderMoveUp = i => (i > 0 ? <a onClick={() => this.onMoveAction(i, -1)}>Up</a> : null)
-
-    const renderMoveDown = i => (i < items.length - 1 ? <a onClick={() => this.onMoveAction(i, 1)}>Down</a> : null)
-
+    const { items = [], readOnly } = this.props
     const handleAddAction = () => this.setState({ showActionModalForm: true })
 
     return (
       <Fragment>
         <div className={style.actionList}>
           {this.renderWait()}
-          {items.map((item, i) => (
+          {(items || []).map((item, i) => (
             <Popover
               interactionKind={PopoverInteractionKind.HOVER}
               position={PopoverPosition.BOTTOM}
               key={`${i}.${item}`}
             >
-              <ActionItem className={style.item} text={item}></ActionItem>
+              <ActionItem className={style.item} text={item} />
               {!readOnly && (
                 <div className={style.actions}>
-                  <a className="btn-edit" onClick={() => this.onEdit(i)}>
-                    {lang.tr('edit')}
-                  </a>
-                  <a className="btn-remove" onClick={() => this.onRemoveAction(i)}>
-                    {lang.tr('remove')}
-                  </a>
-                  <a className="btn-copy" onClick={() => this.onCopyAction(i)}>
-                    {lang.tr('copy')}
-                  </a>
-                  {renderMoveUp(i)}
-                  {renderMoveDown(i)}
+                  <a onClick={() => this.onEdit(i)}>{lang.tr('edit')}</a>
+                  <a onClick={() => this.onRemoveAction(i)}>{lang.tr('remove')}</a>
+                  <a onClick={() => this.onCopyAction(i)}>{lang.tr('copy')}</a>
+                  {i > 0 && <a onClick={() => this.onMoveAction(i, -1)}>{lang.tr('up')}</a>}
+                  {i < items.length - 1 && <a onClick={() => this.onMoveAction(i, 1)}>{lang.tr('down')}</a>}
                 </div>
               )}
             </Popover>
           ))}
           {!readOnly && (
             <div className={style.actions}>
-              <Button id="btn-add-element" onClick={handleAddAction} bsSize="xsmall">
-                <i className={classnames('material-icons', style.actionIcons)}>add</i>
-              </Button>
+              <Button
+                id="btn-add-element"
+                minimal
+                large
+                onClick={handleAddAction}
+                icon={<Icon iconSize={16} icon="add" />}
+              />
               <Button
                 id="btn-paste-element"
+                minimal
+                large
                 onClick={this.props.pasteItem}
-                bsSize="xsmall"
                 disabled={!this.props.canPaste}
-              >
-                <i className={classnames('material-icons', style.actionIcons)}>content_paste</i>
-              </Button>
+                icon={<Icon iconSize={16} icon="clipboard" />}
+              />
             </div>
           )}
         </div>

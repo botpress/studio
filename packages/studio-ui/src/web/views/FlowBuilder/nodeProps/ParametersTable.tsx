@@ -1,9 +1,9 @@
-import { lang } from 'botpress/shared'
+import { HTMLTable } from '@blueprintjs/core'
+import { lang, ToolTip } from 'botpress/shared'
 import classnames from 'classnames'
 import { ActionParameterDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Table } from 'react-bootstrap'
 
 import SmartInput from '~/components/SmartInput'
 
@@ -123,16 +123,16 @@ export default class ParametersTable extends Component<Props, State> {
         fake: true
       }) as ActionParameterDefinition & { fake: boolean }
 
-      const tooltip = (
-        <Tooltip id={`param-${paramName}`}>
-          <strong>({definition.type}) </strong> {definition.description}
-        </Tooltip>
-      )
-
       const help = definition.fake ? null : (
-        <OverlayTrigger placement="bottom" overlay={tooltip}>
+        <ToolTip
+          content={
+            <span>
+              <strong>({definition.type})</strong>&nbsp;{definition.description}
+            </span>
+          }
+        >
           <i className={'material-icons ' + style.keyTip}>help_outline</i>
-        </OverlayTrigger>
+        </ToolTip>
       )
 
       const keyClass = classnames(style.key, { [style.invalid]: !isKeyValid, [style.mandatory]: definition.required })
@@ -151,7 +151,7 @@ export default class ParametersTable extends Component<Props, State> {
     }
 
     return (
-      <Table className={classnames(style.table, this.props.className)}>
+      <HTMLTable className={classnames(style.table, this.props.className)}>
         <thead>
           <tr>
             <th>Name</th>
@@ -159,7 +159,7 @@ export default class ParametersTable extends Component<Props, State> {
           </tr>
         </thead>
         <tbody>{_.orderBy(_.keys(this.state.arguments), (x) => x).map(renderRow)}</tbody>
-      </Table>
+      </HTMLTable>
     )
   }
 }

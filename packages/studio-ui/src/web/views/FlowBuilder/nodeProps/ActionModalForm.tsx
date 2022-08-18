@@ -1,9 +1,9 @@
+import { Button, Radio, RadioGroup } from '@blueprintjs/core'
 import { ContentElement } from 'botpress/sdk'
 import { confirmDialog, Dialog, lang } from 'botpress/shared'
 import { ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Button, OverlayTrigger, Radio, Tooltip } from 'react-bootstrap'
 import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import ContentPickerWidget from '~/components/Content/Select/Widget'
@@ -19,7 +19,7 @@ interface Action {
   value: string
   metadata: LocalActionDefinition
 }
-interface Item {
+export interface Item {
   type: ActionType
   functionName?: string
   message?: string
@@ -109,6 +109,10 @@ class ActionModalForm extends Component<Props, State> {
     })
   }
 
+  handleTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ actionType: event.target.value as ActionType })
+  }
+
   onChangeType = (type: ActionType) => () => {
     this.setState({ actionType: type })
   }
@@ -156,7 +160,6 @@ class ActionModalForm extends Component<Props, State> {
                 actionMetadata: fn.metadata || undefined
               })
 
-              // TODO Detect if default or custom arguments
               if (
                 Object.keys(this.state.functionParams || {}).length > 0 &&
                 !confirmDialog(lang.tr('studio.flow.node.confirmOverwriteParameters'), {
@@ -257,14 +260,12 @@ class ActionModalForm extends Component<Props, State> {
           <Dialog.Body>
             {!this.props.layoutv2 ? (
               <div>
-                <h5>{lang.tr('studio.flow.node.theBotWill')}:</h5>
                 <div className={style.section}>
-                  <Radio checked={this.state.actionType === 'message'} onChange={this.onChangeType('message')}>
-                    {lang.tr('studio.flow.node.saySomething')}
-                  </Radio>
-                  <Radio checked={this.state.actionType === 'code'} onChange={this.onChangeType('code')}>
-                    {lang.tr('studio.flow.node.executeCode')} <LinkDocumentationProvider file="main/code" />
-                  </Radio>
+                  <h5>{lang.tr('studio.flow.node.theBotWill')}</h5>
+                  <RadioGroup onChange={this.handleTypeChange} selectedValue={this.state.actionType}>
+                    <Radio label={lang.tr('studio.flow.node.saySomething')} value="message" />
+                    <Radio label={lang.tr('studio.flow.node.executeCode')} value="code" />
+                  </RadioGroup>
                 </div>
                 {this.state.actionType === 'message' ? this.renderSectionMessage() : this.renderSectionAction()}
               </div>
@@ -273,15 +274,19 @@ class ActionModalForm extends Component<Props, State> {
             )}
           </Dialog.Body>
           <Dialog.Footer>
-            <Button id="btn-cancel-action" onClick={this.onClose} form={formId}>
-              {lang.tr('cancel')}
-            </Button>
-            <Button id="btn-submit-action" type="submit" bsStyle="primary" form={formId} disabled={!this.isValid()}>
-              {this.state.isEdit
-                ? lang.tr('studio.flow.node.finishUpdateAction')
-                : lang.tr('studio.flow.node.finishAddAction')}{' '}
-              (Alt+Enter)
-            </Button>
+            <Button title={lang.tr('cancel')} onClick={this.onClose} form={formId} text={lang.tr('cancel')} />
+            <Button
+              intent="primary"
+              id="btn-submit-action"
+              type="submit"
+              form={formId}
+              disabled={!this.isValid()}
+              text={
+                this.state.isEdit
+                  ? lang.tr('studio.flow.node.finishUpdateAction')
+                  : lang.tr('studio.flow.node.finishAddAction')
+              }
+            />
           </Dialog.Footer>
         </Dialog.Wrapper>
       </div>

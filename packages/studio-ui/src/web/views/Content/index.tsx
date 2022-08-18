@@ -1,10 +1,10 @@
-import { ActionBuilderProps, ContentElement } from 'botpress/sdk'
+import { Callout } from '@blueprintjs/core'
+import { ContentElement } from 'botpress/sdk'
 import { lang, utils } from 'botpress/shared'
 import classnames from 'classnames'
-import { Categories, FlowView, NodeView } from 'common/typings'
+import { Categories } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
-import { Alert } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { RouteComponentProps } from 'react-router'
 import {
@@ -170,8 +170,7 @@ class ContentView extends Component<Props, State> {
     if (!hasContentTypes) {
       return (
         <div className={classNames}>
-          <Alert bsStyle="warning">
-            <strong>{lang.tr('studio.content.noContentDefined')}</strong>{' '}
+          <Callout title={lang.tr('studio.content.noContentDefined')} intent="warning">
             {lang.tr('studio.content.pleaseReadDoc', {
               readTheDocs: (
                 <a href="https://botpress.com/docs/main/content/" target="_blank" rel="noopener noreferrer">
@@ -179,7 +178,7 @@ class ContentView extends Component<Props, State> {
                 </a>
               )
             })}
-          </Alert>
+          </Callout>
         </div>
       )
     }

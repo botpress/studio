@@ -1,6 +1,8 @@
 @import '../../../palette.scss';
 
 .action-item {
+  display: flex;
+  align-items: center;
   &.fn {
     color: blue;
   }
@@ -21,7 +23,7 @@
     margin-right: 8px;
   }
 
-  &.rtl{
+  &.rtl {
     .icon {
       margin-right: unset;
       margin-left: 8px;
@@ -30,6 +32,7 @@
 
   .name {
     line-height: 1.25;
+    margin-right: 10px;
 
     span {
       padding: 2px 4px;
@@ -46,6 +49,10 @@
       color: #ff7c40;
     }
   }
+}
+
+.popoverContent {
+  padding: 10px;
 }
 
 .extraItems {

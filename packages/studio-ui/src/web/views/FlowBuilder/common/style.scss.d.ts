@@ -12,6 +12,7 @@ interface CssExports {
   'missingTranslation': string;
   'msg': string;
   'name': string;
+  'popoverContent': string;
   'rtl': string;
 }
 declare var cssExports: CssExports;
