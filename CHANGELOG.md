@@ -1,3 +1,17 @@
+## [0.0.58](https://github.com/botpress/studio/compare/v0.0.57...v0.0.58) (2022-08-18)
+
+
+### Bug Fixes
+
+* click on cog to restart server ([#383](https://github.com/botpress/studio/issues/383)) ([22bca64](https://github.com/botpress/studio/commit/22bca64c7ad492421512f70061d3ce7bd21474d3))
+
+
+### Features
+
+* **studio:** preview content elements from skills ([#382](https://github.com/botpress/studio/issues/382)) ([88121c3](https://github.com/botpress/studio/commit/88121c37f21e0b22ff1f545261c45ab064b3cd30))
+
+
+
 ## [0.0.57](https://github.com/botpress/studio/compare/v0.0.56...v0.0.57) (2022-07-28)
 
 
