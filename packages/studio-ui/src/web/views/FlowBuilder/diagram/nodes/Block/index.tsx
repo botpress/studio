@@ -235,7 +235,7 @@ export class BlockModel extends BaseNodeModel {
   public content?: FormData
   public flow: string
   public skill?: string
-  public previewElements?: string[]
+  public previewElements?: string[] | null
 
   constructor({
     id,

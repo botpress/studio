@@ -1185,7 +1185,7 @@ declare module 'botpress/sdk' {
     /** An array of possible transitions for the parent node */
     transitions: NodeTransition[]
     /** Elements to be previewed in the skill node */
-    previewElements?: string[]
+    previewElements?: string[] | null
   }
 
   /**
