@@ -60,7 +60,7 @@ const ConfigStatus = () => {
     <Fragment>
       {isDifferent && (
         <ToolTip content="Pending changes to server configuration">
-          <Icon icon="cog" style={{ color: Colors.RED5 }} />
+          <Icon icon="cog" style={{ color: Colors.RED5 }} onClick={() => setOpen(true)} />
         </ToolTip>
       )}
 
