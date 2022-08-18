@@ -65,7 +65,7 @@ class ActionItem extends Component<Props> {
       [style.missingTranslation]: preview?.startsWith('(missing translation) ')
     })
 
-    if (preview && item?.schema?.title === 'Image') {
+    if (preview && item?.schema?.title === 'image') {
       const markdownRender = (
         <Markdown
           source={preview}
