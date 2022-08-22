@@ -1,3 +1,21 @@
+## [0.0.60](https://github.com/botpress/studio/compare/v0.0.59...v0.0.60) (2022-08-22)
+
+
+### Bug Fixes
+
+* **module:** fix loading code-editor ([#387](https://github.com/botpress/studio/issues/387)) ([b833324](https://github.com/botpress/studio/commit/b83332402865076941cacbef6fb2db0e99a0bd14))
+
+
+
+## [0.0.59](https://github.com/botpress/studio/compare/v0.0.58...v0.0.59) (2022-08-18)
+
+
+### Bug Fixes
+
+* **studio:** fix img renderer for node preview ([#385](https://github.com/botpress/studio/issues/385)) ([3f928c3](https://github.com/botpress/studio/commit/3f928c30e59881f941b42a0332aee30d58cd2bf7))
+
+
+
 ## [0.0.58](https://github.com/botpress/studio/compare/v0.0.57...v0.0.58) (2022-08-18)
 
 

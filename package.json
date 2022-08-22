@@ -1,12 +1,12 @@
 {
   "name": "@botpress/studio",
-  "version": "0.0.58",
+  "version": "0.0.60",
   "description": "Create your virtual assistants",
   "repository": "https://github.com/botpress/studio.git",
   "author": "Botpress, Inc.",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "yarn workspaces foreach -ptiv run build",
+    "build": "yarn clean && yarn workspaces foreach -ptiv run build",
     "watch": "yarn workspaces foreach -piv run watch",
     "clean": "yarn workspaces foreach -pi run clean",
     "start": "ts-node -T --dir scripts start_studio",
