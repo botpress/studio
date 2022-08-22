@@ -1,3 +1,12 @@
+## [0.0.60](https://github.com/botpress/studio/compare/v0.0.59...v0.0.60) (2022-08-22)
+
+
+### Bug Fixes
+
+* **module:** fix loading code-editor ([#387](https://github.com/botpress/studio/issues/387)) ([b833324](https://github.com/botpress/studio/commit/b83332402865076941cacbef6fb2db0e99a0bd14))
+
+
+
 ## [0.0.59](https://github.com/botpress/studio/compare/v0.0.58...v0.0.59) (2022-08-18)
 
 
