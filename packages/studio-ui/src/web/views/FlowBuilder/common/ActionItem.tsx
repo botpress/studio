@@ -9,7 +9,7 @@ import { fetchContentItem, refreshFlowsLinks } from '~/actions'
 
 import { isMissingCurlyBraceClosure } from '~/components/Util/form.util'
 import { isRTLLocale } from '~/translations'
-import { restoreDots, stripDots } from '~/util'
+import { restoreDots, stripDots, recursiveSearch } from '~/util'
 import withLanguage from '../../../components/Util/withLanguage'
 import { ActionPopover } from './ActionPopover'
 
@@ -65,7 +65,9 @@ class ActionItem extends Component<Props> {
       [style.missingTranslation]: preview?.startsWith('(missing translation) ')
     })
 
-    if (preview && item?.schema?.title === 'Image') {
+    const hasImageSubtype = recursiveSearch(item?.schema?.json, '$subtype')?.indexOf('image') !== -1
+
+    if (preview && hasImageSubtype) {
       const markdownRender = (
         <Markdown
           source={preview}
