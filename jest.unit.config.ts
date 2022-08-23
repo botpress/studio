@@ -13,6 +13,16 @@ const config: Config.InitialOptions = {
         ...tsjPreset.transform
       },
       clearMocks: true
+    },
+    {
+      rootDir: 'packages/studio-ui/src/web',
+      testMatch: ['<rootDir>/**/*.test.ts'],
+      displayName: { name: 'ui', color: 'red' },
+      testEnvironment: 'node',
+      transform: {
+        ...tsjPreset.transform
+      },
+      clearMocks: true
     }
   ]
 }
