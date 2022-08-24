@@ -63,3 +63,19 @@ export const sanitizeName = (text: string) =>
 export const stripDots = (str: string) => str.replace(/\./g, '--dot--')
 
 export const restoreDots = (str: string) => str.replace(/--dot--/g, '.')
+
+export const recursiveSearch = (obj: any, searchKey: string, results: string[] = []) => {
+  if (!obj || typeof obj !== 'object') {
+    return results
+  }
+
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key]
+    if (key === searchKey && typeof value !== 'object') {
+      results.push(value)
+    } else if (typeof value === 'object') {
+      recursiveSearch(value, searchKey, results)
+    }
+  })
+  return results
+}
