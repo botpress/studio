@@ -17,8 +17,8 @@ const config: Config.InitialOptions = {
     {
       rootDir: 'packages/studio-ui/src/web',
       testMatch: ['<rootDir>/**/*.test.ts'],
-      displayName: { name: 'ui', color: 'red' },
-      testEnvironment: 'node',
+      displayName: { name: 'ui', color: 'blue' },
+      testEnvironment: 'jsdom',
       transform: {
         ...tsjPreset.transform
       },

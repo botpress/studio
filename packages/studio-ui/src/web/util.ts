@@ -64,19 +64,18 @@ export const stripDots = (str: string) => str.replace(/\./g, '--dot--')
 
 export const restoreDots = (str: string) => str.replace(/--dot--/g, '.')
 
-export const recursiveSearch = (obj, searchKey, results = []) => {
-  const r = results
-  if (typeof obj !== 'object') {
-    return r
+export const recursiveSearch = (obj: any, searchKey: string, results: string[] = []) => {
+  if (!obj || typeof obj !== 'object') {
+    return results
   }
 
   Object.keys(obj).forEach((key) => {
     const value = obj[key]
     if (key === searchKey && typeof value !== 'object') {
-      r.push(value)
+      results.push(value)
     } else if (typeof value === 'object') {
-      recursiveSearch(value, searchKey, r)
+      recursiveSearch(value, searchKey, results)
     }
   })
-  return r
+  return results
 }
