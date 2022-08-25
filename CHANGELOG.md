@@ -1,3 +1,12 @@
+## [0.0.61](https://github.com/botpress/studio/compare/v0.0.60...v0.0.61) (2022-08-25)
+
+
+### Features
+
+* **studio:** allow third party content types to preview images ([#390](https://github.com/botpress/studio/issues/390)) ([d119641](https://github.com/botpress/studio/commit/d119641b42863813eb8850e4369f5779b24de868))
+
+
+
 ## [0.0.60](https://github.com/botpress/studio/compare/v0.0.59...v0.0.60) (2022-08-22)
 
 
