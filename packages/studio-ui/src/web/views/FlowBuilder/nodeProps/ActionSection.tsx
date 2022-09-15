@@ -13,7 +13,7 @@ import style from './style.scss'
 type ActionItem = ActionBuilderProps | string
 
 interface Props {
-  items: ActionItem[] | null // TODO: this is the real typing, try to fix it so we can remove the null check everywhere
+  items: ActionItem[] | null // this is the real typing, we should fix this and remove the null checks everywhere
   waitable?: boolean
   readOnly: boolean
   canPaste: boolean
@@ -77,8 +77,7 @@ export default class ActionSection extends Component<Props, State> {
   }
 
   renderWait() {
-    const { waitable } = this.props
-    const items = this.props.items ?? []
+    const { items, waitable } = this.props
 
     if (!waitable || (items?.length ?? 0) > 0) {
       return null
