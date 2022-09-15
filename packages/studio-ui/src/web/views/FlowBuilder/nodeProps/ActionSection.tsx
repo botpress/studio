@@ -1,23 +1,23 @@
-import { Popover, PopoverInteractionKind, PopoverPosition, Button, Checkbox, Icon } from '@blueprintjs/core'
+import { Button, Checkbox, Icon } from '@blueprintjs/core'
 import { ActionBuilderProps } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 
 import ActionItem from '../common/ActionItem'
+import DraggableNodeItems from '../common/DraggableNodeItems'
 import ActionModalForm from './ActionModalForm'
 
 import style from './style.scss'
 
-type ActionItems = ActionBuilderProps[] | string[]
 type ActionItem = ActionBuilderProps | string
 
 interface Props {
-  items?: ActionItems
+  items: ActionItem[] | null // TODO: this is the real typing, try to fix it so we can remove the null check everywhere
   waitable?: boolean
   readOnly: boolean
   canPaste: boolean
-  onItemsUpdated: (items: ActionItems) => void
+  onItemsUpdated: (items: ActionItem[]) => void
   copyItem: (item: ActionItem) => void
   pasteItem: () => void
 }
@@ -28,23 +28,12 @@ interface State {
 }
 
 export default class ActionSection extends Component<Props, State> {
-  state = {
+  state: State = {
     showActionModalForm: false,
     itemToEditIndex: null
   }
 
-  onMoveAction(prevIndex: number, direction: number) {
-    const clone = [...this.props.items]
-    const a = clone[prevIndex]
-    const b = clone[prevIndex + direction]
-
-    clone[prevIndex + direction] = a
-    clone[prevIndex] = b
-
-    this.props.onItemsUpdated(clone as ActionItems)
-  }
-
-  optionsToItem(options) {
+  optionsToItem(options): string {
     if (options.type === 'message') {
       return options.message
     }
@@ -71,32 +60,25 @@ export default class ActionSection extends Component<Props, State> {
   }
 
   onSubmitAction = (options) => {
+    const { itemToEditIndex } = this.state
     const item = this.optionsToItem(options)
-    const editIndex = this.state.itemToEditIndex
     const items = this.props.items ?? []
 
-    const updateByIndex = (originalItem, i) => (i === editIndex ? item : originalItem)
+    const updateByIndex = (originalItem: ActionItem, i: number) =>
+      (i === itemToEditIndex ? item : originalItem) as ActionItem
 
     this.setState({ showActionModalForm: false, itemToEditIndex: null })
-    this.props.onItemsUpdated(Number.isInteger(editIndex) ? items.map(updateByIndex) : [...(items || []), item])
+    const newItems = _.isNumber(itemToEditIndex) ? items.map(updateByIndex) : [...items, item]
+    this.props.onItemsUpdated(newItems)
   }
 
-  onRemoveAction(index: number) {
-    const clone = [...this.props.items]
-    _.pullAt(clone, [index])
-    this.props.onItemsUpdated(clone as ActionItems)
-  }
-
-  onCopyAction(index: number) {
-    this.props.copyItem(this.props.items[index])
-  }
-
-  onEdit(itemToEditIndex: number) {
+  onEdit = (_, itemToEditIndex: number) => {
     this.setState({ itemToEditIndex, showActionModalForm: true })
   }
 
   renderWait() {
-    const { items, waitable } = this.props
+    const { waitable } = this.props
+    const items = this.props.items ?? []
 
     if (!waitable || (items?.length ?? 0) > 0) {
       return null
@@ -112,49 +94,42 @@ export default class ActionSection extends Component<Props, State> {
   }
 
   render() {
-    const { items = [], readOnly } = this.props
+    const { readOnly } = this.props
     const handleAddAction = () => this.setState({ showActionModalForm: true })
+    const items = this.props.items ?? []
 
     return (
       <Fragment>
         <div className={style.actionList}>
           {this.renderWait()}
-          {(items || []).map((item, i) => (
-            <Popover
-              interactionKind={PopoverInteractionKind.HOVER}
-              position={PopoverPosition.BOTTOM}
-              key={`${i}.${item}`}
-            >
-              <ActionItem className={style.item} text={item} />
-              {!readOnly && (
-                <div className={style.actions}>
-                  <a onClick={() => this.onEdit(i)}>{lang.tr('edit')}</a>
-                  <a onClick={() => this.onRemoveAction(i)}>{lang.tr('remove')}</a>
-                  <a onClick={() => this.onCopyAction(i)}>{lang.tr('copy')}</a>
-                  {i > 0 && <a onClick={() => this.onMoveAction(i, -1)}>{lang.tr('up')}</a>}
-                  {i < items.length - 1 && <a onClick={() => this.onMoveAction(i, 1)}>{lang.tr('down')}</a>}
-                </div>
-              )}
-            </Popover>
-          ))}
+          {readOnly && items.map((item) => <ActionItem className={style.item} text={item} />)}
           {!readOnly && (
-            <div className={style.actions}>
-              <Button
-                id="btn-add-element"
-                minimal
-                large
-                onClick={handleAddAction}
-                icon={<Icon iconSize={16} icon="add" />}
+            <>
+              <DraggableNodeItems
+                items={items}
+                itemRenderer={(item) => <ActionItem className={style.item} text={item} />}
+                onItemsChanged={this.props.onItemsUpdated}
+                onItemCopy={this.props.copyItem}
+                onItemEditClick={this.onEdit}
               />
-              <Button
-                id="btn-paste-element"
-                minimal
-                large
-                onClick={this.props.pasteItem}
-                disabled={!this.props.canPaste}
-                icon={<Icon iconSize={16} icon="clipboard" />}
-              />
-            </div>
+              <div className={style.actions}>
+                <Button
+                  id="btn-add-element"
+                  minimal
+                  large
+                  onClick={handleAddAction}
+                  icon={<Icon iconSize={16} icon="add" />}
+                />
+                <Button
+                  id="btn-paste-element"
+                  minimal
+                  large
+                  onClick={this.props.pasteItem}
+                  disabled={!this.props.canPaste}
+                  icon={<Icon iconSize={16} icon="clipboard" />}
+                />
+              </div>
+            </>
           )}
         </div>
         {!readOnly && (

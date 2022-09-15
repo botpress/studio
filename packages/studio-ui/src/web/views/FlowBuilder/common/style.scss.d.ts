@@ -3,16 +3,23 @@
 interface CssExports {
   'action-item': string;
   'condition': string;
+  'content': string;
   'defaultValue': string;
+  'draggableItem': string;
+  'dragging': string;
   'editableInput': string;
   'extraItems': string;
   'fn': string;
+  'handle': string;
   'icon': string;
   'imagePreview': string;
+  'menu': string;
   'missingTranslation': string;
+  'more': string;
   'msg': string;
   'name': string;
   'popoverContent': string;
+  'popoverPortal': string;
   'rtl': string;
 }
 declare var cssExports: CssExports;

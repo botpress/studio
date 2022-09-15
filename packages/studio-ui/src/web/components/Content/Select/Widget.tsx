@@ -54,6 +54,7 @@ class ContentPickerWidget extends Component<Props, State> {
 
   async componentDidMount() {
     await this.props.fetchContentItem(this.props.itemId)
+    debugger
   }
 
   componentDidUpdate(prevProps: Props) {

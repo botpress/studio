@@ -1,9 +1,9 @@
-import { Button, Icon, Popover, PopoverInteractionKind, PopoverPosition } from '@blueprintjs/core'
+import { Button, Icon } from '@blueprintjs/core'
 import { NodeTransition } from 'botpress/sdk'
-import { lang } from 'botpress/shared'
 import { FlowView } from 'common/typings'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
+import DraggableNodeItems from '../common/DraggableNodeItems'
 
 import TransitionItem from '../common/TransitionItem'
 
@@ -62,7 +62,7 @@ export default class TransitionSection extends Component<Props, State> {
     this.props.copyItem(this.props.items[index])
   }
 
-  onEdit(itemToEditIndex: number) {
+  onEdit = (_, itemToEditIndex: number) => {
     this.setState({ itemToEditIndex, showConditionalModalForm: true })
   }
 
@@ -73,58 +73,39 @@ export default class TransitionSection extends Component<Props, State> {
     return (
       <Fragment>
         <div id="transition-section">
-          {items.map((item, i) => (
-            <Popover
-              wrapperTagName="div"
-              targetProps={{ id: `transition-item-${i}` }}
-              interactionKind={PopoverInteractionKind.HOVER}
-              position={PopoverPosition.BOTTOM}
-              key={`${i}.${item}`}
-            >
+          {readOnly &&
+            items.map((item, i) => (
               <TransitionItem className={style.item} transition={item} position={i} displayType />
-              {!readOnly && (
-                <div className={style.actions}>
-                  <a id="transition-edit" onClick={() => this.onEdit(i)}>
-                    {lang.tr('edit')}
-                  </a>
-                  <a id="transition-remove" onClick={() => this.onRemove(i)}>
-                    {lang.tr('remove')}
-                  </a>
-                  <a id="transition-copy" onClick={() => this.onCopyAction(i)}>
-                    {lang.tr('copy')}
-                  </a>
-                  {i > 0 && (
-                    <a id="transition-up" onClick={() => this.onMove(i, -1)}>
-                      {lang.tr('up')}
-                    </a>
-                  )}
-                  {i < items.length - 1 && (
-                    <a id="transition-down" onClick={() => this.onMove(i, 1)}>
-                      {lang.tr('down')}
-                    </a>
-                  )}
-                </div>
-              )}
-            </Popover>
-          ))}
+            ))}
           {!readOnly && (
-            <div className={style.actions}>
-              <Button
-                id="btn-add-element"
-                minimal
-                large
-                onClick={handleAddAction}
-                icon={<Icon iconSize={16} icon="add" />}
+            <>
+              <DraggableNodeItems<NodeTransition>
+                items={items}
+                itemRenderer={(item, idx) => (
+                  <TransitionItem className={style.item} transition={item} position={idx} displayType />
+                )}
+                onItemsChanged={this.props.onItemsUpdated}
+                onItemCopy={this.props.copyItem}
+                onItemEditClick={this.onEdit}
               />
-              <Button
-                id="btn-paste-element"
-                minimal
-                large
-                onClick={this.props.pasteItem}
-                disabled={!this.props.canPaste}
-                icon={<Icon iconSize={16} icon="clipboard" />}
-              />
-            </div>
+              <div className={style.actions}>
+                <Button
+                  id="btn-add-element"
+                  minimal
+                  large
+                  onClick={handleAddAction}
+                  icon={<Icon iconSize={16} icon="add" />}
+                />
+                <Button
+                  id="btn-paste-element"
+                  minimal
+                  large
+                  onClick={this.props.pasteItem}
+                  disabled={!this.props.canPaste}
+                  icon={<Icon iconSize={16} icon="clipboard" />}
+                />
+              </div>
+            </>
           )}
         </div>
         {!readOnly && (

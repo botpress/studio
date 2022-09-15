@@ -1,5 +1,36 @@
 @import '../../../palette.scss';
 
+.draggableItem {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  padding: var(--spacing-small) 0;
+  &.dragging {
+    background-color: #fff;
+    box-shadow: 0 0 0 1px var(--seashell), 0 1px 1px var(--seashell), 0 2px 6px var(--seashell);
+  }
+
+  .handle {
+    width: var(--spacing-large);
+    color: var(--reef);
+  }
+
+  .content {
+    flex-grow: 1;
+    margin-right: var(--spacing-medium);
+  }
+
+  .more {
+    width: var(--spacing-x-large);
+    margin-left: auto;
+    margin-right: var(--spacing-small);
+    height: 100%;
+    .menu {
+      min-width: 130px;
+    }
+  }
+}
+
 .action-item {
   display: flex;
   align-items: center;
@@ -32,7 +63,8 @@
 
   .name {
     line-height: 1.25;
-    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
 
     span {
       padding: 2px 4px;
@@ -51,8 +83,17 @@
   }
 }
 
+.popoverPortal {
+  :global(.bp3-popover-appear-done),
+  :global(.bp3-transition-container) {
+    left: -15px !important; // hack to not show portal on top of draggable handle
+  }
+}
+
 .popoverContent {
-  padding: 10px;
+  padding: var(--spacing-medium);
+  max-width: 300px;
+  word-break: break-all;
 }
 
 .extraItems {
@@ -94,7 +135,7 @@
 }
 
 .imagePreview {
-  height: 40px;
+  height: 1rem;
 }
 
 .rtl {

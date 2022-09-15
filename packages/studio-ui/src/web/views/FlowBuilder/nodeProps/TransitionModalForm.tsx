@@ -341,8 +341,6 @@ class ConditionModalForm extends Component<Props, State> {
 
   changeTransitionType = (event: FormEvent<HTMLInputElement>) => {
     const typeOfTransition = event.currentTarget.value as TransitionType
-    debugger
-
     this.setState({
       typeOfTransition,
       flowToSubflow: this.state.flowToSubflow || this.state.subflowOptions[0],

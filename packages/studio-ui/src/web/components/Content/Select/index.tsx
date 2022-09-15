@@ -8,6 +8,7 @@ import Markdown from 'react-markdown'
 import { connect } from 'react-redux'
 import { deleteMedia, fetchContentCategories, fetchContentItems, upsertContentItem } from '~/actions'
 import { RootReducer } from '~/reducers'
+import { recursiveSearch } from '~/util'
 import { CONTENT_TYPES_MEDIA } from '~/util/ContentDeletion'
 
 import withLanguage from '../../Util/withLanguage'
@@ -58,7 +59,7 @@ class SelectContent extends Component<Props, State> {
       show: true,
       contentType,
       activeItemIndex: 0,
-      step: contentType ? FormSteps.MAIN : FormSteps.INITIAL,
+      step: FormSteps.INITIAL,
       newItemCategory: null,
       searchTerm: '',
       newItemData: null
@@ -80,9 +81,11 @@ class SelectContent extends Component<Props, State> {
 
   UNSAFE_componentWillReceiveProps(newProps: Props) {
     const { categories } = newProps
-    if (!categories || this.state.step !== FormSteps.INITIAL || this.state.contentType) {
+    if (!categories || !categories.length || this.state.step !== FormSteps.INITIAL || this.state.contentType) {
       return
     }
+
+    debugger
 
     this.setState({
       step: categories.length > 1 ? FormSteps.PICK_CATEGORY : FormSteps.MAIN
@@ -241,7 +244,12 @@ class SelectContent extends Component<Props, State> {
       <p>
         {lang.tr('studio.content.currentlySearching')}: <strong>{lang.tr(title)}</strong>
         .&nbsp;
-        <Button intent="warning" small title={lang.tr('change')} onClick={this.resetCurrentCategory} />
+        <Button
+          small
+          text={lang.tr('studio.content.changeCategory')}
+          title={lang.tr('change')}
+          onClick={this.resetCurrentCategory}
+        />
       </p>
     )
   }
@@ -298,7 +306,8 @@ class SelectContent extends Component<Props, State> {
 
     const renderContentItem = (contentItem) => {
       const preview = contentItem.previews[this.props.contentLang]
-      if (preview && contentItem?.schema?.title === 'Image') {
+      const hasImageSubtype = recursiveSearch(contentItem?.schema?.json, '$subtype')?.indexOf('image') !== -1
+      if (preview && hasImageSubtype) {
         return (
           <Markdown
             source={`\\[${contentItem.contentType}\\] ${preview}`}

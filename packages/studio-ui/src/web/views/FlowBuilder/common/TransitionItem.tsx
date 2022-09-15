@@ -9,6 +9,8 @@ import { restoreDots, stripDots } from '~/util'
 
 import style from './style.scss'
 
+const INTENT_CONDITION_PREFIX = 'event.nlu.intent.name === '
+
 interface Props {
   transition: NodeTransition
   position: number
@@ -78,6 +80,9 @@ export default class TransitionItem extends Component<Props> {
     } else {
       if ((condition && condition.length <= 0) || /^(yes|true)$/i.test(condition.toLowerCase())) {
         raw = position === 0 ? 'always' : 'otherwise'
+      } else if (condition.includes(INTENT_CONDITION_PREFIX)) {
+        const intentName = condition.slice(INTENT_CONDITION_PREFIX.length)
+        raw = lang.tr('studio.flow.node.transition.condition.intentIs', { intentName })
       } else {
         raw = condition
       }
@@ -87,7 +92,7 @@ export default class TransitionItem extends Component<Props> {
       <div className={style.popoverContent}>
         <H4>
           <Icon icon="fork" />
-          &nbsp;Conditional transition
+          &nbsp;{lang.tr('studio.flow.node.transition.condition.conditionalTransition')}
         </H4>
         <pre>{condition}</pre>
       </div>
@@ -105,11 +110,15 @@ export default class TransitionItem extends Component<Props> {
     if (!!caption) {
       return (
         <Popover
-          target={Target}
+          usePortal
+          boundary="viewport"
           interactionKind={PopoverInteractionKind.HOVER}
-          content={PopoverContent}
           minimal
           position="left"
+          hoverOpenDelay={250}
+          portalClassName={style.popoverPortal}
+          target={Target}
+          content={PopoverContent}
         />
       )
     } else {

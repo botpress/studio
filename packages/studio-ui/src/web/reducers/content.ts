@@ -1,5 +1,6 @@
+import { ContentElement } from 'botpress/sdk'
 import { Categories } from 'common/typings'
-import _ from 'lodash'
+import _, { Dictionary } from 'lodash'
 import { handleActions } from 'redux-actions'
 import {
   receiveContentCategories,
@@ -9,8 +10,17 @@ import {
   receiveContentItemsCount,
   receiveQNAContentElement
 } from '~/actions'
-const defaultState = {
-  categories: { enabled: [], disabled: [] },
+
+export interface ContentReducer {
+  categories: Categories
+  currentItems: ContentElement[]
+  itemsById: Dictionary<ContentElement>
+  itemsCount: number
+  qnaUsage: any
+}
+
+const defaultState: ContentReducer = {
+  categories: { registered: [], unregistered: [] },
   currentItems: [],
   itemsById: {},
   itemsCount: 0
@@ -56,9 +66,3 @@ export default handleActions(
   },
   defaultState
 )
-
-export interface ContentReducer {
-  categories: Categories
-  currentItems: any
-  qnaUsage: any
-}

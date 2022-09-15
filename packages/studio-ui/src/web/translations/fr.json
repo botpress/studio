@@ -291,8 +291,9 @@
       "pleaseReadDoc": "Veuillez {readTheDocs} pour voir comment vous pouvez utiliser cette fonctionnalité",
       "readTheDocs": "lire la documentation",
       "searchContent": "Rechercher du contenu",
-      "searchIn": "Rechercher dans",
+      "searchIn": "Selectionner une catégorie",
       "selectContent": "Sélectionner un élément",
+      "changeCategory": "Changer de catégorie",
       "sideBar": {
         "createNew": "Créer nouveau {name}",
         "createNewContent": "Créer nouveau contenu",
@@ -406,8 +407,9 @@
             "transitionToSubflow": "Transition vers subflow"
           },
           "condition": {
+            "conditionalTransition": "Transition Contitionelle",
             "always": "Toujours",
-            "intentIs": "L'intention est",
+            "intentIs": "L'intention est {intentName}",
             "matchesProperty": "Correspond à la propriété",
             "rawExpression": "Expression brute (avancé)"
           },
