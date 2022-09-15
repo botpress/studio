@@ -59,10 +59,11 @@ const DraggableNodeItem = <T,>(props: PropsWithChildren<Props<T>>) => {
           onMouseLeave={() => setDisplayActionElements(false)}
         >
           <div className={style.handle}>{displayActionElements && <Icon icon="drag-handle-vertical" />}</div>
-          <div className={style.content}>{itemRenderer(item)}</div>
-          <div className={style.more}>
+          <div className={style.content}>{itemRenderer(item, index)}</div>
+          <div className={style.moreOptions}>
             {displayActionElements && (
               <MoreOptions
+                element={<Icon className={style.moreOptionsButton} icon="more" onClick={() => setIsMoreOpen(true)} />}
                 className={style.menu}
                 show={isMoreOpen}
                 onToggle={() => setIsMoreOpen(!isMoreOpen)}

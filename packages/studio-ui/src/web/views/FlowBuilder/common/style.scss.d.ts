@@ -2,21 +2,19 @@
 // Please do not change this file!
 interface CssExports {
   'action-item': string;
-  'condition': string;
   'content': string;
   'defaultValue': string;
   'draggableItem': string;
   'dragging': string;
+  'dropZone': string;
   'editableInput': string;
   'extraItems': string;
-  'fn': string;
   'handle': string;
   'icon': string;
   'imagePreview': string;
   'menu': string;
-  'missingTranslation': string;
-  'more': string;
-  'msg': string;
+  'moreOptions': string;
+  'moreOptionsButton': string;
   'name': string;
   'popoverContent': string;
   'popoverPortal': string;

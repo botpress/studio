@@ -1,7 +1,10 @@
+import cx from 'classnames'
 import _ from 'lodash'
 import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { Droppable, DragDropContext, DroppableProvided, DropResult } from 'react-beautiful-dnd'
 import DraggableNodeItem, { ItemActionHandler, ItemRenderer } from './DraggableNodeItem'
+
+import style from './style.scss'
 
 interface Props<T> {
   items: T[]
@@ -46,7 +49,11 @@ const DraggableNodeItems = <T,>(props: PropsWithChildren<Props<T>>) => {
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="node-item-droppable">
         {(provided: DroppableProvided) => (
-          <div ref={provided.innerRef} {...provided.droppableProps}>
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            className={cx({ [style.dropZone]: items.length > 0 })}
+          >
             {items.map((item: T, idx: number) => (
               <DraggableNodeItem
                 draggableId={draggableIndides[idx]}

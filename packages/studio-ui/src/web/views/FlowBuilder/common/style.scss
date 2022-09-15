@@ -1,5 +1,12 @@
 @import '../../../palette.scss';
 
+.dropZone {
+  background-color: var(--bg);
+  border-radius: var(--spacing-small);
+  box-shadow: inset -1px 2px 0px var(--seashell), inset 1px 2px 0px var(--seashell), inset 0px 2px 0px var(--seashell);
+  padding: var(--spacing-small) 0;
+}
+
 .draggableItem {
   display: flex;
   width: 100%;
@@ -8,6 +15,9 @@
   &.dragging {
     background-color: #fff;
     box-shadow: 0 0 0 1px var(--seashell), 0 1px 1px var(--seashell), 0 2px 6px var(--seashell);
+    .content {
+      border: transparent;
+    }
   }
 
   .handle {
@@ -17,14 +27,30 @@
 
   .content {
     flex-grow: 1;
-    margin-right: var(--spacing-medium);
+    margin-right: var(--spacing-small);
+    background-color: #fff;
+    border: solid 1px var(--seashell);
+    border-radius: var(--spacing-medium);
   }
 
-  .more {
+  .moreOptions {
     width: var(--spacing-x-large);
     margin-left: auto;
     margin-right: var(--spacing-small);
     height: 100%;
+    > div {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .moreOptionsButton {
+      cursor: pointer;
+      &:hover {
+        svg {
+          fill: var(--ocean);
+        }
+      }
+    }
     .menu {
       min-width: 130px;
     }
@@ -34,23 +60,10 @@
 .action-item {
   display: flex;
   align-items: center;
-  &.fn {
-    color: blue;
-  }
-
-  &.msg {
-    color: #1cbd57;
-
-    .missingTranslation {
-      color: red;
-    }
-  }
-
-  &.condition {
-    color: black;
-  }
+  color: var(--shark);
 
   .icon {
+    padding: var(--spacing-x-small);
     margin-right: 8px;
   }
 
