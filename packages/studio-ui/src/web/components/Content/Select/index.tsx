@@ -85,8 +85,6 @@ class SelectContent extends Component<Props, State> {
       return
     }
 
-    debugger
-
     this.setState({
       step: categories.length > 1 ? FormSteps.PICK_CATEGORY : FormSteps.MAIN
     })
