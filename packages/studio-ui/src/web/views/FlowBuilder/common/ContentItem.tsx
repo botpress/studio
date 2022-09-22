@@ -84,7 +84,7 @@ const ContentItem = (props: Props) => {
           renderers={{
             image: (props) => <img {...props} className={style.imagePreview} />,
             link: (props) => (
-              <a href={props.href} target="_blank">
+              <a href={props.href} target="_blank" rel="noopener noreferrer nofollow" >
                 {props.children}
               </a>
             )
