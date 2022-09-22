@@ -42,6 +42,7 @@ const ContentItem = (props: Props) => {
     if (loading && contentItem) {
       setIsLoading(false)
     } else {
+      // @ts-ignore
       props.fetchContentItem(itemID, { batched: true }).then((data: ContentElement) => {
         props.refreshFlowsLinks(data) // taken from previous implementation
         setIsLoading(false)
@@ -109,7 +110,7 @@ const ContentItem = (props: Props) => {
       body={loading ? null : legacyBodyRendering()}
     >
       <div
-        className={cx(props.className, style['action-item'], style.msg, {
+        className={cx(props.className, style['action-item'], {
           [style.rtl]: isRTLLocale(props.contentLang)
         })}
       >

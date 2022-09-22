@@ -13,6 +13,7 @@ interface CssExports {
   'icon': string;
   'imagePreview': string;
   'menu': string;
+  'missingTranslation': string;
   'moreOptions': string;
   'moreOptionsButton': string;
   'name': string;
