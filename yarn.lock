@@ -1513,7 +1513,6 @@ __metadata:
     script-loader: ^0.7.0
     slate: 0.47.4
     slate-react: 0.22.4
-    slate-react-placeholder: 0.2.4
     snarkdown: ^1.2.2
     socket.io-client: ^4.4.1
     storm-react-diagrams: ^5.2.1
@@ -19108,17 +19107,6 @@ __metadata:
     immutable: ">=3.8.1"
     slate: ">=0.32.0 <0.50.0"
   checksum: 6ef3632255383ef3a8a13e0f52c191a7b1d23064bf5f14f8f316555f2d63ac32dc9e8d429fa742ce7219caa32e69a9163d24f36d5c6789d1c9b14a4158eea339
-  languageName: node
-  linkType: hard
-
-"slate-react-placeholder@npm:0.2.4":
-  version: 0.2.4
-  resolution: "slate-react-placeholder@npm:0.2.4"
-  peerDependencies:
-    react: ">=16.0.0"
-    slate: ">=0.47.0"
-    slate-react: ">=0.22.0"
-  checksum: bda4e7a48c5bc1a1a87a53d903670cf7c4b95afc5d6cfe569eba4ffec95645445c459d13a6899e7ea304d30a7f35990e573a4f7f5db8a19722bc03f1762dc696
   languageName: node
   linkType: hard
 

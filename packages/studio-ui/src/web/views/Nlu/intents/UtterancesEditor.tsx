@@ -22,23 +22,10 @@ import {
   ValueJSON
 } from 'slate'
 import { Editor, EditorProps, RenderBlockProps, RenderMarkProps } from 'slate-react'
-import PlaceholderPlugin from 'slate-react-placeholder'
 
 import { TagSlotPopover } from './slots/SlotPopover'
 import style from './style.scss'
 import { makeSlotMark, utterancesToValue, valueToUtterances } from './utterances-state-utils'
-
-const plugins = [
-  PlaceholderPlugin({
-    placeholder: lang.tr('nlu.intents.utterancePlaceholder'),
-    when: (_, node) => node.text.trim() === '',
-    style: {
-      display: 'inline-block',
-      transform: 'translateX(var(--hanging-indent))',
-      verticalAlign: 'inherit'
-    }
-  })
-]
 
 interface Props {
   intentName: string
@@ -148,7 +135,6 @@ export class UtterancesEditor extends React.Component<Props, State> {
       // @ts-ignore
       <Editor
         value={this.state.value}
-        plugins={plugins}
         renderMark={this.renderMark}
         renderEditor={this.renderEditor}
         renderBlock={this.renderBlock}
@@ -378,6 +364,7 @@ export class UtterancesEditor extends React.Component<Props, State> {
               {utteranceIdx + 1}
             </span>
             {children}
+            {isEmpty && <span className={style.placeholder}>{lang.tr('nlu.intents.utterancePlaceholder')}</span>}
           </p>
         )
         return utterance

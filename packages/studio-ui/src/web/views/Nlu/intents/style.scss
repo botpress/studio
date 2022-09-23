@@ -31,8 +31,21 @@
   }
 }
 
+.utterances > div > p {
+  position: relative;
+}
+
 .utterances p {
   margin-bottom: 0;
+}
+
+.placeholder {
+  color: silver;
+  position: absolute;
+  left: 50px;
+  top: 0px;
+  z-index: 0;
+  user-select: none;
 }
 
 .entities-list {
