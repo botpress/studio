@@ -268,8 +268,9 @@
       "pleaseReadDoc": "Por favor {readTheDocs} para ver cómo puede hacer uso de esta función",
       "readTheDocs": "lea la documentación",
       "searchContent": "Buscar Contenido",
-      "searchIn": "Buscar en",
+      "searchIn": "Seleccionar una categoría",
       "selectContent": "Elegir contenido",
+      "changeCategory": "Cambiar categoría",
       "sideBar": {
         "all": "Todo",
         "createNew": "Crear nuevo {name}",
@@ -383,8 +384,9 @@
             "transitionToSubflow": "Transición al subflujo"
           },
           "condition": {
+            "conditionalTransition": "Transicíon condicional",
             "always": "Siempre",
-            "intentIs": "El intent es",
+            "intentIs": "El intent es {intentName}",
             "matchesProperty": "Cumple la propiedad",
             "rawExpression": "Expresión sin procesar (avanzada)"
           },

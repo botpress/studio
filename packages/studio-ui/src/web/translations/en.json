@@ -294,8 +294,9 @@
       "pleaseReadDoc": "Please {readTheDocs} to see how you can make use of this feature",
       "readTheDocs": "read the docs",
       "searchContent": "Search content",
-      "searchIn": "Search In",
+      "searchIn": "Select a category",
       "selectContent": "Pick Content",
+      "changeCategory": "Change Category",
       "sideBar": {
         "all": "All",
         "createNew": "Create new {name}",
@@ -412,8 +413,9 @@
             "transitionToSubflow": "Transition to subflow"
           },
           "condition": {
+            "conditionalTransition": "Conditional transition",
             "always": "Always",
-            "intentIs": "Intent Is",
+            "intentIs": "Intent Is {intentName}",
             "matchesProperty": "Matches Property",
             "rawExpression": "Raw Expression (advanced)"
           },

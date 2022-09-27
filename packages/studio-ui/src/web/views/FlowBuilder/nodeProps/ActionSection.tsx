@@ -1,15 +1,16 @@
-import { Popover, PopoverInteractionKind, PopoverPosition, Button, Checkbox, Icon } from '@blueprintjs/core'
+import { Button, Checkbox, Icon } from '@blueprintjs/core'
 import { ActionBuilderProps } from 'botpress/sdk'
 import { lang } from 'botpress/shared'
 import _ from 'lodash'
 import React, { Component, Fragment } from 'react'
 
 import ActionItem from '../common/ActionItem'
-import ActionModalForm from './ActionModalForm'
+import DraggableNodeItems from '../common/DraggableNodeItems'
+import ActionModalForm, { ActionType, Item } from './ActionModalForm'
 
 import style from './style.scss'
 
-type ActionItems = ActionBuilderProps[] | string[]
+type ActionItems = ActionBuilderProps[] | string[] | null
 type ActionItem = ActionBuilderProps | string
 
 interface Props {
@@ -17,7 +18,7 @@ interface Props {
   waitable?: boolean
   readOnly: boolean
   canPaste: boolean
-  onItemsUpdated: (items: ActionItems) => void
+  onItemsUpdated: (items: ActionItem[] | null) => void
   copyItem: (item: ActionItem) => void
   pasteItem: () => void
 }
@@ -28,70 +29,54 @@ interface State {
 }
 
 export default class ActionSection extends Component<Props, State> {
-  state = {
+  state: State = {
     showActionModalForm: false,
     itemToEditIndex: null
   }
 
-  onMoveAction(prevIndex: number, direction: number) {
-    const clone = [...this.props.items]
-    const a = clone[prevIndex]
-    const b = clone[prevIndex + direction]
-
-    clone[prevIndex + direction] = a
-    clone[prevIndex] = b
-
-    this.props.onItemsUpdated(clone as ActionItems)
-  }
-
-  optionsToItem(options) {
+  optionsToItem(options): string {
     if (options.type === 'message') {
       return options.message
     }
     return options.functionName + ' ' + JSON.stringify(options.parameters || {})
   }
 
-  itemToOptions(item) {
-    if (item && item.startsWith('say ')) {
+  itemToOptions(item): Item<ActionType> | undefined {
+    if (!item) {
+      return
+    }
+    if (item.startsWith('say ')) {
       const chunks = item.split(' ')
       let text = item
       if (chunks.length > 2) {
         text = _.slice(chunks, 2).join(' ')
       }
 
-      return { type: 'message', message: text }
-    } else if (item) {
+      return { type: 'message', message: text } as Item<'message'>
+    } else {
       const params = item.includes(' ') ? JSON.parse(item.substring(item.indexOf(' ') + 1)) : {}
       return {
         type: 'code',
         functionName: item.split(' ')[0],
         parameters: params
-      }
+      } as Item<'code'>
     }
   }
 
   onSubmitAction = (options) => {
+    const { itemToEditIndex } = this.state
     const item = this.optionsToItem(options)
-    const editIndex = this.state.itemToEditIndex
     const items = this.props.items ?? []
 
-    const updateByIndex = (originalItem, i) => (i === editIndex ? item : originalItem)
+    const updateByIndex = (originalItem: ActionItem, i: number) =>
+      (i === itemToEditIndex ? item : originalItem) as ActionItem
 
     this.setState({ showActionModalForm: false, itemToEditIndex: null })
-    this.props.onItemsUpdated(Number.isInteger(editIndex) ? items.map(updateByIndex) : [...(items || []), item])
+    const newItems = _.isNumber(itemToEditIndex) ? items.map(updateByIndex) : [...items, item]
+    this.props.onItemsUpdated(newItems)
   }
 
-  onRemoveAction(index: number) {
-    const clone = [...this.props.items]
-    _.pullAt(clone, [index])
-    this.props.onItemsUpdated(clone as ActionItems)
-  }
-
-  onCopyAction(index: number) {
-    this.props.copyItem(this.props.items[index])
-  }
-
-  onEdit(itemToEditIndex: number) {
+  onEdit = (_, itemToEditIndex: number) => {
     this.setState({ itemToEditIndex, showActionModalForm: true })
   }
 
@@ -103,8 +88,7 @@ export default class ActionSection extends Component<Props, State> {
     }
 
     const checked = _.isArray(items)
-
-    const changeChecked = () => this.props.onItemsUpdated?.(checked ? null : [])
+    const changeChecked = () => this.props.onItemsUpdated(checked ? null : [])
 
     return (
       <Checkbox checked={checked} onChange={changeChecked} label={lang.tr('studio.flow.node.waitForUserMessage')} />
@@ -112,49 +96,42 @@ export default class ActionSection extends Component<Props, State> {
   }
 
   render() {
-    const { items = [], readOnly } = this.props
+    const { readOnly } = this.props
     const handleAddAction = () => this.setState({ showActionModalForm: true })
+    const items = this.props.items ?? []
 
     return (
       <Fragment>
         <div className={style.actionList}>
           {this.renderWait()}
-          {(items || []).map((item, i) => (
-            <Popover
-              interactionKind={PopoverInteractionKind.HOVER}
-              position={PopoverPosition.BOTTOM}
-              key={`${i}.${item}`}
-            >
-              <ActionItem className={style.item} text={item} />
-              {!readOnly && (
-                <div className={style.actions}>
-                  <a onClick={() => this.onEdit(i)}>{lang.tr('edit')}</a>
-                  <a onClick={() => this.onRemoveAction(i)}>{lang.tr('remove')}</a>
-                  <a onClick={() => this.onCopyAction(i)}>{lang.tr('copy')}</a>
-                  {i > 0 && <a onClick={() => this.onMoveAction(i, -1)}>{lang.tr('up')}</a>}
-                  {i < items.length - 1 && <a onClick={() => this.onMoveAction(i, 1)}>{lang.tr('down')}</a>}
-                </div>
-              )}
-            </Popover>
-          ))}
+          {readOnly && items.map((item) => <ActionItem text={item} />)}
           {!readOnly && (
-            <div className={style.actions}>
-              <Button
-                id="btn-add-element"
-                minimal
-                large
-                onClick={handleAddAction}
-                icon={<Icon iconSize={16} icon="add" />}
+            <>
+              <DraggableNodeItems
+                items={items}
+                itemRenderer={(item) => <ActionItem text={item} />}
+                onItemsChanged={this.props.onItemsUpdated}
+                onItemCopy={this.props.copyItem}
+                onItemEditClick={this.onEdit}
               />
-              <Button
-                id="btn-paste-element"
-                minimal
-                large
-                onClick={this.props.pasteItem}
-                disabled={!this.props.canPaste}
-                icon={<Icon iconSize={16} icon="clipboard" />}
-              />
-            </div>
+              <div className={style.actions}>
+                <Button
+                  id="btn-add-element"
+                  minimal
+                  large
+                  onClick={handleAddAction}
+                  icon={<Icon iconSize={16} icon="add" />}
+                />
+                <Button
+                  id="btn-paste-element"
+                  minimal
+                  large
+                  onClick={this.props.pasteItem}
+                  disabled={!this.props.canPaste}
+                  icon={<Icon iconSize={16} icon="clipboard" />}
+                />
+              </div>
+            </>
           )}
         </div>
         {!readOnly && (
@@ -162,7 +139,9 @@ export default class ActionSection extends Component<Props, State> {
             show={this.state.showActionModalForm}
             onClose={() => this.setState({ showActionModalForm: false, itemToEditIndex: null })}
             onSubmit={this.onSubmitAction}
-            item={this.itemToOptions(items && items[this.state.itemToEditIndex])}
+            item={
+              this.state.itemToEditIndex !== null ? this.itemToOptions(items[this.state.itemToEditIndex]) : undefined
+            }
           />
         )}
       </Fragment>

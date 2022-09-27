@@ -1,25 +1,73 @@
 @import '../../../palette.scss';
 
-.action-item {
+.dropZone {
+  background-color: var(--bg);
+  border-radius: var(--spacing-small);
+  box-shadow: inset -1px 2px 0px var(--seashell), inset 1px 2px 0px var(--seashell), inset 0px 2px 0px var(--seashell);
+  padding: var(--spacing-small) 0;
+}
+
+.draggableItem {
   display: flex;
+  width: 100%;
   align-items: center;
-  &.fn {
-    color: blue;
-  }
-
-  &.msg {
-    color: #1cbd57;
-
-    .missingTranslation {
-      color: red;
+  padding: var(--spacing-small) 0;
+  &.dragging {
+    background-color: #fff;
+    box-shadow: 0 0 0 1px var(--seashell), 0 1px 1px var(--seashell), 0 2px 6px var(--seashell);
+    .content {
+      border: transparent;
     }
   }
 
-  &.condition {
-    color: black;
+  .handle {
+    width: var(--spacing-large);
+    color: var(--reef);
   }
 
+  .content {
+    flex-grow: 1;
+    margin-right: var(--spacing-small);
+    background-color: #fff;
+    border: solid 1px var(--seashell);
+    border-radius: var(--spacing-medium);
+  }
+
+  .moreOptions {
+    width: var(--spacing-x-large);
+    margin-left: auto;
+    margin-right: var(--spacing-small);
+    height: 100%;
+    > div {
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+    .moreOptionsButton {
+      cursor: pointer;
+      &:hover {
+        svg {
+          fill: var(--ocean);
+        }
+      }
+    }
+    .menu {
+      min-width: 130px;
+    }
+  }
+}
+
+.missingTranslation {
+  color: var(--lighthouse);
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  color: var(--shark);
+
   .icon {
+    padding: var(--spacing-x-small);
     margin-right: 8px;
   }
 
@@ -32,7 +80,8 @@
 
   .name {
     line-height: 1.25;
-    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
 
     span {
       padding: 2px 4px;
@@ -51,8 +100,17 @@
   }
 }
 
+.popoverPortal {
+  :global(.bp3-popover-appear-done),
+  :global(.bp3-transition-container) {
+    left: -15px !important; // hack to not show portal on top of draggable handle
+  }
+}
+
 .popoverContent {
-  padding: 10px;
+  padding: var(--spacing-medium);
+  max-width: 300px;
+  word-break: break-all;
 }
 
 .extraItems {
@@ -94,7 +152,7 @@
 }
 
 .imagePreview {
-  height: 40px;
+  height: 1rem;
 }
 
 .rtl {
