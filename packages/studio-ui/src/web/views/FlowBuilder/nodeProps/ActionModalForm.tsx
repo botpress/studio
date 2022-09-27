@@ -1,7 +1,7 @@
 import { Button, Radio, RadioGroup } from '@blueprintjs/core'
 import { ContentElement } from 'botpress/sdk'
 import { confirmDialog, Dialog, lang } from 'botpress/shared'
-import { ActionParameterDefinition, LocalActionDefinition } from 'common/typings'
+import { LocalActionDefinition } from 'common/typings'
 import _ from 'lodash'
 import React, { Component } from 'react'
 import Markdown from 'react-markdown'
@@ -14,51 +14,54 @@ import ParametersTable, { Parameter } from './ParametersTable'
 import SelectActionDropdown from './SelectActionDropdown'
 import style from './style.scss'
 
-interface Action {
+export type ActionType = 'code' | 'message'
+export type Item<T extends ActionType> = T extends 'code' ? CodeItem : T extends 'message' ? MessageItem : never
+
+interface ActionOption {
   label: string
   value: string
   metadata: LocalActionDefinition
 }
-export interface Item {
-  type: ActionType
-  functionName?: string
-  message?: string
+
+interface MessageItem {
+  type: 'message'
+  message: string
+}
+
+interface CodeItem {
+  type: 'code'
+  functionName: string
   parameters: Parameter
 }
 
 interface OwnProps {
   show: boolean
-  layoutv2?: boolean
-  onSubmit: (item: Item) => void
+  onSubmit: (item: Item<ActionType>) => void
   onClose: () => void
-  item?: Item
+  item?: Item<ActionType>
 }
 
 type StateProps = ReturnType<typeof mapStateToProps>
 type Props = StateProps & OwnProps
 
-type ActionType = 'code' | 'message'
-
 interface State {
   actionType: ActionType
-  avActions: Action[]
-  actionMetadata?: LocalActionDefinition
-  functionInputValue?: Action
+  selectedActionOption?: ActionOption
   isEdit: boolean
   messageValue: string
   functionParams: Parameter
-  paramsDef: ActionParameterDefinition[]
+}
+
+const DEFAULT_STATE: State = {
+  actionType: 'message',
+  selectedActionOption: undefined,
+  isEdit: false,
+  messageValue: '',
+  functionParams: {}
 }
 
 class ActionModalForm extends Component<Props, State> {
-  state: State = {
-    actionType: 'message',
-    avActions: [],
-    messageValue: '',
-    functionParams: {},
-    isEdit: false,
-    paramsDef: []
-  }
+  state: State = { ...DEFAULT_STATE }
 
   textToItemId = (text: string) => _.get(text.match(/^say #!(.*)$/), '[1]')
 
@@ -69,45 +72,31 @@ class ActionModalForm extends Component<Props, State> {
       return
     }
 
-    if (item) {
-      this.setState({
-        actionType: nextProps.item.type,
-        functionInputValue:
-          this.state.avActions && this.state.avActions.find((x) => x.value === nextProps.item.functionName),
-        messageValue: nextProps.item.message,
-        functionParams: nextProps.item.parameters
-      })
-    } else {
+    if (!item) {
       this.resetForm()
-    }
-    this.setState({ isEdit: Boolean(item) })
-  }
-
-  componentDidMount() {
-    if (this.props.layoutv2) {
-      this.setState({ actionType: 'code' })
+      return
     }
 
-    this.prepareActions()
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.actions !== this.props.actions) {
-      this.prepareActions()
+    let nextState
+    if (item.type === 'message') {
+      nextState = { actionType: 'message', messageValue: item.message }
+    } else {
+      const action = this.props.actions.find((action) => action.name === item.functionName)
+      nextState = {
+        actionType: 'code',
+        selectedActionOption: action ? this.actionToOption(action) : undefined,
+        functionParams: item.parameters
+      }
     }
+
+    this.setState({ ...nextState, isEdit: Boolean(item) })
   }
 
-  prepareActions() {
-    this.setState({
-      avActions: (this.props.actions || []).map((x) => {
-        return {
-          label: x.name,
-          value: x.name,
-          metadata: { ...x }
-        }
-      })
-    })
-  }
+  actionToOption = (action: LocalActionDefinition): ActionOption => ({
+    label: action.name,
+    value: action.name,
+    metadata: action
+  })
 
   handleTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.setState({ actionType: event.target.value as ActionType })
@@ -118,22 +107,13 @@ class ActionModalForm extends Component<Props, State> {
   }
 
   resetForm() {
-    this.setState({
-      actionType: 'message',
-      functionInputValue: undefined,
-      messageValue: '',
-      functionParams: {},
-      paramsDef: [],
-      actionMetadata: undefined
-    })
+    this.setState({ ...DEFAULT_STATE, isEdit: this.state.isEdit })
   }
 
   renderSectionAction() {
-    const { avActions } = this.state
-
     const paramsHelp = <LinkDocumentationProvider file="main/memory" />
 
-    const onArgsChange = (args: any) => {
+    const onParamsChange = (args: any) => {
       args = _.values(args).reduce((sum, n) => {
         if (n.key === '') {
           return sum
@@ -143,22 +123,19 @@ class ActionModalForm extends Component<Props, State> {
       this.setState({ functionParams: args })
     }
 
+    const actionsOptions = (this.props.actions || []).map(this.actionToOption)
+    const selectedActionOption = this.state.selectedActionOption
+
     return (
       <div>
         <h5>{lang.tr('studio.flow.node.actionToRun')}</h5>
         <div className={style.section}>
           <SelectActionDropdown
             id="select-action"
-            value={this.state.functionInputValue || ''}
-            options={avActions}
-            onChange={(val) => {
-              const fn = avActions.find((fn) => fn.value === (val && val.value))
-              const paramsDefinition = (_.get(fn, 'metadata.params') || []) as ActionParameterDefinition[]
-              this.setState({
-                functionInputValue: val,
-                paramsDef: paramsDefinition,
-                actionMetadata: fn.metadata || undefined
-              })
+            value={this.state.selectedActionOption || ''}
+            options={actionsOptions}
+            onChange={(newOption: ActionOption) => {
+              this.setState({ selectedActionOption: newOption })
 
               if (
                 Object.keys(this.state.functionParams || {}).length > 0 &&
@@ -170,23 +147,31 @@ class ActionModalForm extends Component<Props, State> {
               }
 
               this.setState({
-                functionParams: _.fromPairs(paramsDefinition.map((param) => [param.name, param.default || '']))
+                functionParams: _.fromPairs(newOption.metadata.params.map((param) => [param.name, param.default || '']))
               })
             }}
           />
-          {this.state.actionMetadata?.title && <h4>{this.state.actionMetadata.title}</h4>}
-          {this.state.actionMetadata?.description && <Markdown source={this.state.actionMetadata.description} />}
+          {selectedActionOption && (
+            <>
+              <h4>{selectedActionOption.metadata.title}</h4>
+              <Markdown source={selectedActionOption.metadata.description} />
+            </>
+          )}
         </div>
-        <h5>
-          {lang.tr('studio.flow.node.actionParameters')} {paramsHelp}
-        </h5>
-        <div className={style.section}>
-          <ParametersTable
-            onChange={onArgsChange}
-            value={this.state.functionParams}
-            definitions={this.state.paramsDef}
-          />
-        </div>
+        {selectedActionOption && (
+          <>
+            <h5>
+              {lang.tr('studio.flow.node.actionParameters')} {paramsHelp}
+            </h5>
+            <div className={style.section}>
+              <ParametersTable
+                onChange={onParamsChange}
+                value={this.state.functionParams}
+                definitions={selectedActionOption.metadata.params}
+              />
+            </div>
+          </>
+        )}
       </div>
     )
   }
@@ -213,13 +198,16 @@ class ActionModalForm extends Component<Props, State> {
   }
 
   onSubmit = () => {
+    if (this.state.actionType === 'message') {
+      this.props.onSubmit({ type: this.state.actionType, message: this.state.messageValue })
+    } else {
+      this.props.onSubmit?.({
+        type: this.state.actionType,
+        functionName: this.state.selectedActionOption?.value,
+        parameters: this.state.functionParams
+      } as CodeItem)
+    }
     this.resetForm()
-    this.props.onSubmit?.({
-      type: this.state.actionType,
-      functionName: this.state.functionInputValue?.value,
-      message: this.state.messageValue,
-      parameters: this.state.functionParams
-    })
   }
 
   onClose = () => {
@@ -230,7 +218,7 @@ class ActionModalForm extends Component<Props, State> {
   isValid = () => {
     switch (this.state.actionType) {
       case 'code':
-        return this.state.functionInputValue?.value.length
+        return this.state.selectedActionOption?.value.length
       case 'message':
         return this.state.messageValue.length
       default:
@@ -258,20 +246,16 @@ class ActionModalForm extends Component<Props, State> {
           id={formId}
         >
           <Dialog.Body>
-            {!this.props.layoutv2 ? (
-              <div>
-                <div className={style.section}>
-                  <h5>{lang.tr('studio.flow.node.theBotWill')}</h5>
-                  <RadioGroup onChange={this.handleTypeChange} selectedValue={this.state.actionType}>
-                    <Radio label={lang.tr('studio.flow.node.saySomething')} value="message" />
-                    <Radio label={lang.tr('studio.flow.node.executeCode')} value="code" />
-                  </RadioGroup>
-                </div>
-                {this.state.actionType === 'message' ? this.renderSectionMessage() : this.renderSectionAction()}
+            <>
+              <div className={style.section}>
+                <h5>{lang.tr('studio.flow.node.theBotWill')}</h5>
+                <RadioGroup onChange={this.handleTypeChange} selectedValue={this.state.actionType}>
+                  <Radio label={lang.tr('studio.flow.node.saySomething')} value="message" />
+                  <Radio label={lang.tr('studio.flow.node.executeCode')} value="code" />
+                </RadioGroup>
               </div>
-            ) : (
-              this.renderSectionAction()
-            )}
+              {this.state.actionType === 'message' ? this.renderSectionMessage() : this.renderSectionAction()}
+            </>
           </Dialog.Body>
           <Dialog.Footer>
             <Button title={lang.tr('cancel')} onClick={this.onClose} form={formId} text={lang.tr('cancel')} />
@@ -298,4 +282,4 @@ const mapStateToProps = (state: RootReducer) => ({
   actions: state.skills.actions?.filter((a) => a.legacy)
 })
 
-export default connect(mapStateToProps, undefined)(ActionModalForm)
+export default connect(mapStateToProps)(ActionModalForm)
