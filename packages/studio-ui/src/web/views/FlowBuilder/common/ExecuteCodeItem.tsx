@@ -1,5 +1,5 @@
 import { lang } from 'botpress/shared'
-import classnames from 'classnames'
+import cx from 'classnames'
 import { parseActionInstruction } from 'common/action'
 import React from 'react'
 import InspectorPopover from './InspectorPopover'
@@ -8,7 +8,7 @@ import style from './style.scss'
 
 interface Props {
   text: string
-  className: string
+  className?: string
 }
 
 const EMPTY_OBJECT_STR = '{}'
@@ -40,7 +40,7 @@ const ExecuteCodeItem = (props: Props) => {
 
   return (
     <InspectorPopover icon={<span>⚡</span>} body={body} title={actionName}>
-      <div className={classnames(props.className, style.fn, style['action-item'])}>
+      <div className={cx(props.className, style['action-item'])}>
         <span className={style.icon}>⚡</span>
         <span className={style.name}>{actionName}</span>
       </div>

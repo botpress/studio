@@ -4,7 +4,7 @@ import ExecuteCodeItem from './ExecuteCodeItem'
 
 interface Props {
   text: string
-  className: string
+  className?: string
 }
 
 const ActionItem = (props: Props) => {
