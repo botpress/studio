@@ -6,18 +6,19 @@ import React, { Component, Fragment } from 'react'
 
 import ActionItem from '../common/ActionItem'
 import DraggableNodeItems from '../common/DraggableNodeItems'
-import ActionModalForm from './ActionModalForm'
+import ActionModalForm, { ActionType, Item } from './ActionModalForm'
 
 import style from './style.scss'
 
+type ActionItems = ActionBuilderProps[] | string[] | null
 type ActionItem = ActionBuilderProps | string
 
 interface Props {
-  items: ActionItem[] | null // this is the real typing, we should fix this and remove the null checks everywhere
+  items?: ActionItems
   waitable?: boolean
   readOnly: boolean
   canPaste: boolean
-  onItemsUpdated: (items: ActionItem[]) => void
+  onItemsUpdated: (items: ActionItem[] | null) => void
   copyItem: (item: ActionItem) => void
   pasteItem: () => void
 }
@@ -40,22 +41,25 @@ export default class ActionSection extends Component<Props, State> {
     return options.functionName + ' ' + JSON.stringify(options.parameters || {})
   }
 
-  itemToOptions(item) {
-    if (item && item.startsWith('say ')) {
+  itemToOptions(item): Item<ActionType> | undefined {
+    if (!item) {
+      return
+    }
+    if (item.startsWith('say ')) {
       const chunks = item.split(' ')
       let text = item
       if (chunks.length > 2) {
         text = _.slice(chunks, 2).join(' ')
       }
 
-      return { type: 'message', message: text }
-    } else if (item) {
+      return { type: 'message', message: text } as Item<'message'>
+    } else {
       const params = item.includes(' ') ? JSON.parse(item.substring(item.indexOf(' ') + 1)) : {}
       return {
         type: 'code',
         functionName: item.split(' ')[0],
         parameters: params
-      }
+      } as Item<'code'>
     }
   }
 
@@ -84,8 +88,7 @@ export default class ActionSection extends Component<Props, State> {
     }
 
     const checked = _.isArray(items)
-
-    const changeChecked = () => this.props.onItemsUpdated?.(checked ? null : [])
+    const changeChecked = () => this.props.onItemsUpdated(checked ? null : [])
 
     return (
       <Checkbox checked={checked} onChange={changeChecked} label={lang.tr('studio.flow.node.waitForUserMessage')} />
@@ -101,12 +104,12 @@ export default class ActionSection extends Component<Props, State> {
       <Fragment>
         <div className={style.actionList}>
           {this.renderWait()}
-          {readOnly && items.map((item) => <ActionItem className={style.item} text={item} />)}
+          {readOnly && items.map((item) => <ActionItem text={item} />)}
           {!readOnly && (
             <>
               <DraggableNodeItems
                 items={items}
-                itemRenderer={(item) => <ActionItem className={style.item} text={item} />}
+                itemRenderer={(item) => <ActionItem text={item} />}
                 onItemsChanged={this.props.onItemsUpdated}
                 onItemCopy={this.props.copyItem}
                 onItemEditClick={this.onEdit}
@@ -136,7 +139,9 @@ export default class ActionSection extends Component<Props, State> {
             show={this.state.showActionModalForm}
             onClose={() => this.setState({ showActionModalForm: false, itemToEditIndex: null })}
             onSubmit={this.onSubmitAction}
-            item={this.itemToOptions(items && items[this.state.itemToEditIndex])}
+            item={
+              this.state.itemToEditIndex !== null ? this.itemToOptions(items[this.state.itemToEditIndex]) : undefined
+            }
           />
         )}
       </Fragment>
