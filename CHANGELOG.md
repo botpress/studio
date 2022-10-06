@@ -1,3 +1,17 @@
+## [0.0.62](https://github.com/botpress/studio/compare/v0.0.61...v0.0.62) (2022-10-05)
+
+
+### Bug Fixes
+
+* **studio:** fix NLU utterances placholder on chrome ([#393](https://github.com/botpress/studio/issues/393)) ([51e003c](https://github.com/botpress/studio/commit/51e003c4e96abe0d2ce8184a45c24cb1a835da3a))
+
+
+### Features
+
+* **flow-editor:** Drag n Drop to reorder node element items ([#392](https://github.com/botpress/studio/issues/392)) ([d4f9cf0](https://github.com/botpress/studio/commit/d4f9cf0d06828aaa7585a8ad8562c2be2cc33964))
+
+
+
 ## [0.0.61](https://github.com/botpress/studio/compare/v0.0.60...v0.0.61) (2022-08-25)
 
 
