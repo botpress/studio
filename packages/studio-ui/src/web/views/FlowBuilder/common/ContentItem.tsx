@@ -53,7 +53,7 @@ const ContentItem = (props: Props) => {
   // This is taken as is from previous implementation
   // TODO replace this by typed components
   const legacyHTMLRenderer = () => {
-    const preview = contentItem.previews[props.contentLang] ?? ''
+    const preview = contentItem?.previews[props.contentLang] ?? ''
     const textContent = escapeHtmlChars(`${lang.tr(contentItem.schema?.title)} | ${preview}`)
     const vars = {}
 
@@ -80,7 +80,7 @@ const ContentItem = (props: Props) => {
     if (hasImageSubtype) {
       return (
         <Markdown
-          source={contentItem.previews[props.contentLang]}
+          source={contentItem?.previews[props.contentLang]}
           renderers={{
             image: (props) => <img {...props} className={style.imagePreview} />,
             link: (props) => (
@@ -93,7 +93,7 @@ const ContentItem = (props: Props) => {
       )
     } else {
       const html = { __html: legacyHTMLRenderer() }
-      const isMissingTranslation = contentItem.previews[props.contentLang]?.startsWith(missingTranslationPrefix)
+      const isMissingTranslation = contentItem?.previews[props.contentLang]?.startsWith(missingTranslationPrefix)
       return (
         <span
           className={cx(style.name, { [style.missingTranslation]: isMissingTranslation })}
