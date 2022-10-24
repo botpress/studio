@@ -293,7 +293,7 @@ export const receiveContentItem = createAction('CONTENT/ITEMS/RECEIVE_ONE')
 export const fetchContentItem =
   (id: string, { force = false, batched = false } = {}) =>
   (dispatch, getState): Promise<sdk.ContentElement> => {
-    if (!force && getState().content.itemsById[id]) {
+    if (!id || (!force && getState().content.itemsById[id])) {
       return Promise.resolve(getState().content.itemsById[id])
     }
 
