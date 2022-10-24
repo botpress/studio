@@ -57,6 +57,7 @@ const DraggableNodeItem = <T,>(props: PropsWithChildren<Props<T>>) => {
           {...provided.dragHandleProps}
           onMouseEnter={() => setDisplayActionElements(true)}
           onMouseLeave={() => setDisplayActionElements(false)}
+          onDoubleClick={() => onEdit(item, index)}
         >
           <div className={style.handle}>{displayActionElements && <Icon icon="drag-handle-vertical" />}</div>
           <div className={style.content}>{itemRenderer(item, index)}</div>
