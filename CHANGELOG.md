@@ -1,3 +1,22 @@
+## [0.0.63](https://github.com/botpress/studio/compare/v0.0.61...v0.0.63) (2022-10-24)
+
+
+### Bug Fixes
+
+* **studio:** studio crash on undefined content item ([#399](https://github.com/botpress/studio/issues/399)) ([1f29187](https://github.com/botpress/studio/commit/1f29187d9d4c044e1c83d4573dfb0d39323bc1ff))
+* **ui:** prevent long content type to overflow ([#400](https://github.com/botpress/studio/issues/400)) ([e484773](https://github.com/botpress/studio/commit/e484773d2eea0c28c73cc514c593da5b85539f72))
+* properly set content type form step ([#401](https://github.com/botpress/studio/issues/401)) ([f713de1](https://github.com/botpress/studio/commit/f713de1e0e504d73f671a84fd06fee62195f252a))
+* **studio:** click on placeholder will focus on input field ([#398](https://github.com/botpress/studio/issues/398)) ([d10d7e5](https://github.com/botpress/studio/commit/d10d7e542568a1652fc5c138c1c7fc95caec50a7))
+* **studio:** fix NLU utterances placholder on chrome ([#393](https://github.com/botpress/studio/issues/393)) ([51e003c](https://github.com/botpress/studio/commit/51e003c4e96abe0d2ce8184a45c24cb1a835da3a))
+* **studio:** studio crash on undefined content item ([#397](https://github.com/botpress/studio/issues/397)) ([d39bae8](https://github.com/botpress/studio/commit/d39bae8b72043f134d7fe8ded97982111af4ea8d))
+
+
+### Features
+
+* **flow-editor:** Drag n Drop to reorder node element items ([#392](https://github.com/botpress/studio/issues/392)) ([d4f9cf0](https://github.com/botpress/studio/commit/d4f9cf0d06828aaa7585a8ad8562c2be2cc33964))
+
+
+
 ## [0.0.62](https://github.com/botpress/studio/compare/v0.0.61...v0.0.62) (2022-10-05)
 
 
