@@ -59,7 +59,7 @@ class SelectContent extends Component<Props, State> {
       show: true,
       contentType,
       activeItemIndex: 0,
-      step: FormSteps.INITIAL,
+      step: contentType ? FormSteps.MAIN : FormSteps.INITIAL,
       newItemCategory: null,
       searchTerm: '',
       newItemData: null
