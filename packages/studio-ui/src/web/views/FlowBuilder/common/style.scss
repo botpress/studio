@@ -65,6 +65,7 @@
   display: flex;
   align-items: center;
   color: var(--shark);
+  overflow: hidden;
   max-width: 300px;
 
   .icon {
