@@ -54,7 +54,7 @@ const ContentItem = (props: Props) => {
   // TODO replace this by typed components
   const legacyHTMLRenderer = () => {
     const preview = contentItem?.previews[props.contentLang] ?? ''
-    const textContent = escapeHtmlChars(`${lang.tr(contentItem.schema?.title)} | ${preview}`)
+    const textContent = escapeHtmlChars(`${lang.tr(contentItem?.schema?.title)} | ${preview}`)
     const vars = {}
 
     const htmlTpl = textContent.replace(/{{([a-z$@0-9. _-]*?)}}/gi, (x) => {
