@@ -16,9 +16,9 @@ export interface SkillDefinition {
   moduleName: string
 }
 
-type Props = Pick<BlockProps, 'node'>
+type Props = Pick<BlockProps, 'node' | 'getLanguage'>
 
-const SkillCallContents: FC<Props> = ({ node }) => {
+const SkillCallContents: FC<Props> = ({ node, getLanguage }) => {
   return (
     <div className={cx(style.contentsWrapper, style['skill-call'])}>
       {node.previewElements?.map((item, i) => {
@@ -45,7 +45,7 @@ const SkillCallContents: FC<Props> = ({ node }) => {
         return (
           <div key={`${i}.${item}`} className={cx(style.contentWrapper, style.small)}>
             <div className={cx(style.content, style.readOnly)}>
-              <TransitionItem transition={item} position={i} />
+              <TransitionItem transition={item} position={i} getLanguage={getLanguage} />
               <StandardPortWidget name={outputPortName} node={node} className={style.outRouting} />
             </div>
           </div>

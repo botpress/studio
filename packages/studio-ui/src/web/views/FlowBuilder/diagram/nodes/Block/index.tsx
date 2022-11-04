@@ -116,7 +116,7 @@ const BlockWidget: FC<BlockProps> = ({
       case 'action':
         return <ActionContents node={node} editNodeItem={editNodeItem} />
       case 'skill-call':
-        return <SkillCallContents node={node} />
+        return <SkillCallContents node={node} getLanguage={getLanguage} />
       default:
         return <StandardContents node={node} />
     }

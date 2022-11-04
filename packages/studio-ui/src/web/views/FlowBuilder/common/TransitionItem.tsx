@@ -16,6 +16,7 @@ interface Props {
   position: number
   className?: string
   displayType?: boolean
+  getLanguage?: () => { currentLang: string; defaultLang: string }
 }
 
 export default class TransitionItem extends Component<Props> {
@@ -65,10 +66,13 @@ export default class TransitionItem extends Component<Props> {
 
   render() {
     let raw
-    const { position } = this.props
-    const { condition, caption } = this.props.transition
+    const { position, getLanguage, transition } = this.props
+    const { currentLang, defaultLang } = getLanguage?.() || {}
+    const { condition } = transition
 
-    if (caption) {
+    const caption = transition[`caption$${currentLang}`] || transition[`caption$${defaultLang}`] || transition.caption
+
+    if (caption && typeof caption === 'string') {
       const vars = {}
       const htmlTpl = caption.replace(/\[(.+)]/gi, (x) => {
         const name = stripDots(x.replace(/[\[\]]/g, ''))
