@@ -5,6 +5,8 @@ import classnames from 'classnames'
 import _ from 'lodash'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { RootReducer } from '~/reducers'
 import { restoreDots, stripDots } from '~/util'
 
 import style from './style.scss'
@@ -16,10 +18,11 @@ interface Props {
   position: number
   className?: string
   displayType?: boolean
-  getLanguage?: () => { currentLang: string; defaultLang: string }
+  currentLang: string
+  defaultLang: string
 }
 
-export default class TransitionItem extends Component<Props> {
+class TransitionItem extends Component<Props> {
   renderType = (): JSX.Element => {
     if (!this.props.displayType) {
       return null
@@ -66,15 +69,14 @@ export default class TransitionItem extends Component<Props> {
 
   render() {
     let raw
-    const { position, getLanguage, transition } = this.props
-    const { currentLang, defaultLang } = getLanguage?.() || {}
+    const { position, transition, currentLang, defaultLang } = this.props
     const { condition } = transition
 
     const caption = transition[`caption$${currentLang}`] || transition[`caption$${defaultLang}`] || transition.caption
 
     if (caption && typeof caption === 'string') {
       const vars = {}
-      const htmlTpl = caption.replace(/\[(.+)]/gi, (x) => {
+      const htmlTpl = lang.tr(caption).replace(/\[(.+)]/gi, (x) => {
         const name = stripDots(x.replace(/[\[\]]/g, ''))
         vars[name] = `<span class="val">${_.escape(name)}</span>`
         return '{{{' + name + '}}}'
@@ -130,3 +132,12 @@ export default class TransitionItem extends Component<Props> {
     }
   }
 }
+
+const mapStateToProps = (state: RootReducer) => ({
+  defaultLang: state.bot.defaultLanguage,
+  currentLang: state.language.contentLang
+})
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TransitionItem)
