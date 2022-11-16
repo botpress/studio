@@ -5,8 +5,7 @@ import classnames from 'classnames'
 import _ from 'lodash'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { RootReducer } from '~/reducers'
+import withLanguage from '~/components/Util/withLanguage'
 import { restoreDots, stripDots } from '~/util'
 
 import style from './style.scss'
@@ -18,8 +17,8 @@ interface Props {
   position: number
   className?: string
   displayType?: boolean
-  currentLang: string
-  defaultLang: string
+  contentLang: string
+  defaultLanguage: string
 }
 
 class TransitionItem extends Component<Props> {
@@ -69,10 +68,11 @@ class TransitionItem extends Component<Props> {
 
   render() {
     let raw
-    const { position, transition, currentLang, defaultLang } = this.props
+    const { position, transition, contentLang, defaultLanguage } = this.props
     const { condition } = transition
 
-    const caption = transition[`caption$${currentLang}`] || transition[`caption$${defaultLang}`] || transition.caption
+    const caption =
+      transition[`caption$${contentLang}`] || transition[`caption$${defaultLanguage}`] || transition.caption
 
     if (caption && typeof caption === 'string') {
       const vars = {}
@@ -133,11 +133,4 @@ class TransitionItem extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: RootReducer) => ({
-  defaultLang: state.bot.defaultLanguage,
-  currentLang: state.language.contentLang
-})
-
-const mapDispatchToProps = {}
-
-export default connect(mapStateToProps, mapDispatchToProps)(TransitionItem)
+export default withLanguage(TransitionItem)
