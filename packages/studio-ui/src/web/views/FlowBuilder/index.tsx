@@ -178,6 +178,8 @@ const FlowBuilder = (props: Props) => {
                 diagram = el.getWrappedInstance()
               }
             }}
+            defaultLang={props.defaultLanguage}
+            currentLang={props.currentLanguage}
           />
         </div>
         <SidePanelInspector />
@@ -193,7 +195,9 @@ const mapStateToProps = (state: RootReducer) => ({
   flowsByName: state.flows.flowsByName,
   showFlowNodeProps: state.flows.showFlowNodeProps,
   user: state.user,
-  errorSavingFlows: state.flows.errorSavingFlows
+  errorSavingFlows: state.flows.errorSavingFlows,
+  defaultLanguage: state.bot.defaultLanguage,
+  currentLanguage: state.language.contentLang
 })
 
 const mapDispatchToProps = {

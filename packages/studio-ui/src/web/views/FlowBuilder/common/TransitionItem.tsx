@@ -5,6 +5,7 @@ import classnames from 'classnames'
 import _ from 'lodash'
 import Mustache from 'mustache'
 import React, { Component } from 'react'
+import withLanguage from '~/components/Util/withLanguage'
 import { restoreDots, stripDots } from '~/util'
 
 import style from './style.scss'
@@ -16,9 +17,11 @@ interface Props {
   position: number
   className?: string
   displayType?: boolean
+  contentLang: string
+  defaultLanguage: string
 }
 
-export default class TransitionItem extends Component<Props> {
+class TransitionItem extends Component<Props> {
   renderType = (): JSX.Element => {
     if (!this.props.displayType) {
       return null
@@ -65,12 +68,15 @@ export default class TransitionItem extends Component<Props> {
 
   render() {
     let raw
-    const { position } = this.props
-    const { condition, caption } = this.props.transition
+    const { position, transition, contentLang, defaultLanguage } = this.props
+    const { condition } = transition
 
-    if (caption) {
+    const caption =
+      transition[`caption$${contentLang}`] || transition[`caption$${defaultLanguage}`] || transition.caption
+
+    if (caption && typeof caption === 'string') {
       const vars = {}
-      const htmlTpl = caption.replace(/\[(.+)]/gi, (x) => {
+      const htmlTpl = lang.tr(caption).replace(/\[(.+)]/gi, (x) => {
         const name = stripDots(x.replace(/[\[\]]/g, ''))
         vars[name] = `<span class="val">${_.escape(name)}</span>`
         return '{{{' + name + '}}}'
@@ -126,3 +132,5 @@ export default class TransitionItem extends Component<Props> {
     }
   }
 }
+
+export default withLanguage(TransitionItem)
