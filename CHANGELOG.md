@@ -1,3 +1,12 @@
+## [0.0.64](https://github.com/botpress/studio/compare/v0.0.63...v0.0.64) (2022-11-24)
+
+
+### Features
+
+* **studio:** multilingual captions for skill transitions ([#405](https://github.com/botpress/studio/issues/405)) ([3b50dc2](https://github.com/botpress/studio/commit/3b50dc283a800c70748738581081104796856c7e))
+
+
+
 ## [0.0.63](https://github.com/botpress/studio/compare/v0.0.61...v0.0.63) (2022-10-24)
 
 
