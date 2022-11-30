@@ -1,3 +1,12 @@
+## [0.0.65](https://github.com/botpress/studio/compare/v0.0.64...v0.0.65) (2022-11-30)
+
+
+### Bug Fixes
+
+* **studio:** skillbar hidden on non default lang ([#407](https://github.com/botpress/studio/issues/407)) ([6431901](https://github.com/botpress/studio/commit/6431901bc2ca3735521ba17c37489d0fbcac137f))
+
+
+
 ## [0.0.64](https://github.com/botpress/studio/compare/v0.0.63...v0.0.64) (2022-11-24)
 
 
