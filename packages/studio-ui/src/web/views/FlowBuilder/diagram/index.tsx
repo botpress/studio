@@ -634,8 +634,6 @@ class Diagram extends Component<Props> {
   }
 
   render() {
-    const canAdd = !this.props.defaultLang || this.props.defaultLang === this.props.currentLang
-
     return (
       <MainLayout.Wrapper>
         <WorkflowToolbar
@@ -676,7 +674,7 @@ class Diagram extends Component<Props> {
             zoomToLevel={this.manager.zoomToLevel.bind(this.manager)}
             zoomToFit={this.manager.zoomToFit.bind(this.manager)}
           />
-          {canAdd && <NodeToolbar />}
+          <NodeToolbar />
         </div>
       </MainLayout.Wrapper>
     )
