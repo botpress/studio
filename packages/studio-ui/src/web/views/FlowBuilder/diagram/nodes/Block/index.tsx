@@ -63,8 +63,6 @@ const BlockWidget: FC<BlockProps> = ({
     e.stopPropagation()
     e.preventDefault()
 
-    alert('aaaa')
-
     const canMakeStartNode = () => {
       const current = getCurrentFlow().startNode
       return current && node.name && current !== node.name
