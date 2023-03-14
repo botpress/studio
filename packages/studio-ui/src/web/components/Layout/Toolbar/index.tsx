@@ -22,6 +22,7 @@ type StateProps = ReturnType<typeof mapStateToProps>
 
 type Props = StateProps & OwnProps
 const FORUM_LINK = 'https://github.com/botpress/botpress/discussions'
+const DOCS_LINK = 'https://v12.botpress.com/'
 
 const Toolbar: FC<Props> = (props) => {
   const [isHelpPopoverOpen, setHelpPopoverOpen] = useState(false)
@@ -57,7 +58,8 @@ const Toolbar: FC<Props> = (props) => {
                   content={
                     <Menu>
                       <MenuItem icon="learning" text={lang.tr('toolbar.tutorial')} onClick={toggleGuidedTour} />
-                      <MenuItem icon="chat" text={lang.tr('toolbar.forum')} onClick={() => window.open(FORUM_LINK)} />
+                      <MenuItem icon="people" text={lang.tr('toolbar.forum')} onClick={() => window.open(FORUM_LINK)} />
+                      <MenuItem icon="book" text={lang.tr('toolbar.docs')} onClick={() => window.open(DOCS_LINK)} />
                     </Menu>
                   }
                   minimal
