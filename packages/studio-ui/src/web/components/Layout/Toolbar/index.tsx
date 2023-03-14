@@ -1,7 +1,7 @@
-import { Icon, Tooltip } from '@blueprintjs/core'
+import { Icon, Tooltip, Popover, Position, Menu, MenuItem } from '@blueprintjs/core'
 import { lang, ShortcutLabel } from 'botpress/shared'
 import classNames from 'classnames'
-import React, { FC, Fragment } from 'react'
+import React, { FC, Fragment, useState } from 'react'
 import { connect } from 'react-redux'
 import { AccessControl } from '~/components/Shared/Utils'
 
@@ -21,8 +21,10 @@ interface OwnProps {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type Props = StateProps & OwnProps
+const FORUM_LINK = 'https://github.com/botpress/botpress/discussions'
 
 const Toolbar: FC<Props> = (props) => {
+  const [isHelpPopoverOpen, setHelpPopoverOpen] = useState(false)
   const { toggleDocs, toggleGuidedTour, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props
 
   return (
@@ -51,10 +53,32 @@ const Toolbar: FC<Props> = (props) => {
           ) : (
             <Fragment>
               <Tooltip content={<div>{lang.tr('toolbar.help')}</div>}>
-                <button id="statusbar_tutorial" className={style.item} onClick={toggleGuidedTour}>
-                  <Icon color="#1a1e22" icon="help" iconSize={16} />
-                  <span className={style.label}>{lang.tr('toolbar.tutorial')}</span>
-                </button>
+                <Popover
+                  content={
+                    <Menu>
+                      <MenuItem icon="learning" text={lang.tr('toolbar.tutorial')} onClick={toggleGuidedTour} />
+                      <MenuItem icon="chat" text={lang.tr('toolbar.forum')} onClick={() => window.open(FORUM_LINK)} />
+                    </Menu>
+                  }
+                  minimal
+                  isOpen={isHelpPopoverOpen}
+                  position={Position.TOP_RIGHT}
+                  canEscapeKeyClose
+                  onClose={() => setHelpPopoverOpen(false)}
+                  fill
+                  modifiers={{
+                    preventOverflow: { enabled: true, boundariesElement: 'window' }
+                  }}
+                >
+                  <button
+                    id="statusbar_tutorial"
+                    className={style.item}
+                    onClick={() => setHelpPopoverOpen(!isHelpPopoverOpen)}
+                  >
+                    <Icon color="#1a1e22" icon="help" iconSize={16} />
+                    <span className={style.label}>{lang.tr('toolbar.help')}</span>
+                  </button>
+                </Popover>
               </Tooltip>
             </Fragment>
           )}
