@@ -566,7 +566,9 @@
     "toggleBottomPanel": "Toggle Bottom Panel",
     "toggleEmulator": "Toggle Emulator",
     "toggleSidePanel": "Toggle Side Panel",
-    "tutorial": "Tutorial"
+    "tutorial": "Tutorial",
+    "docs": "Documentation",
+    "forum": "Forum"
   },
   "bottomPanel": {
     "inspector": {
