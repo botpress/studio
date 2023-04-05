@@ -25,7 +25,6 @@ const FORUM_LINK = 'https://github.com/botpress/botpress/discussions'
 const DOCS_LINK = 'https://v12.botpress.com/'
 
 const Toolbar: FC<Props> = (props) => {
-  const [isHelpPopoverOpen, setHelpPopoverOpen] = useState(false)
   const { toggleDocs, toggleGuidedTour, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props
 
   return (
@@ -58,29 +57,32 @@ const Toolbar: FC<Props> = (props) => {
                   content={
                     <Menu>
                       <MenuItem icon="learning" text={lang.tr('toolbar.tutorial')} onClick={toggleGuidedTour} />
-                      <MenuItem icon="people" text={lang.tr('toolbar.forum')} onClick={() => window.open(FORUM_LINK)} />
-                      <MenuItem icon="book" text={lang.tr('toolbar.docs')} onClick={() => window.open(DOCS_LINK)} />
+                      <MenuItem
+                        icon="people"
+                        text={lang.tr('toolbar.forum')}
+                        onClick={() => window.open(FORUM_LINK, '_blank')}
+                      />
+                      <MenuItem
+                        icon="book"
+                        text={lang.tr('toolbar.docs')}
+                        onClick={() => window.open(DOCS_LINK, '_blank')}
+                      />
                     </Menu>
                   }
+                  target={
+                    <button id="statusbar_tutorial" className={style.item}>
+                      <Icon color="#1a1e22" icon="help" iconSize={16} />
+                      <span className={style.label}>{lang.tr('toolbar.help')}</span>
+                    </button>
+                  }
                   minimal
-                  isOpen={isHelpPopoverOpen}
                   position={Position.TOP_RIGHT}
                   canEscapeKeyClose
-                  onClose={() => setHelpPopoverOpen(false)}
                   fill
                   modifiers={{
                     preventOverflow: { enabled: true, boundariesElement: 'window' }
                   }}
-                >
-                  <button
-                    id="statusbar_tutorial"
-                    className={style.item}
-                    onClick={() => setHelpPopoverOpen(!isHelpPopoverOpen)}
-                  >
-                    <Icon color="#1a1e22" icon="help" iconSize={16} />
-                    <span className={style.label}>{lang.tr('toolbar.help')}</span>
-                  </button>
-                </Popover>
+                />
               </Tooltip>
             </Fragment>
           )}
