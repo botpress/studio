@@ -63,11 +63,6 @@ const BlockWidget: FC<BlockProps> = ({
     e.stopPropagation()
     e.preventDefault()
 
-    if (defaultLang && defaultLang !== currentLang) {
-      toast.info('studio.flow.cannotAddContent')
-      return
-    }
-
     const canMakeStartNode = () => {
       const current = getCurrentFlow().startNode
       return current && node.name && current !== node.name
