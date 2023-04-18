@@ -1,3 +1,17 @@
+## [0.0.66](https://github.com/botpress/studio/compare/v0.0.65...v0.0.66) (2023-04-05)
+
+
+### Bug Fixes
+
+* **studio:** allow context menu on non default language ([#410](https://github.com/botpress/studio/issues/410)) ([651c1af](https://github.com/botpress/studio/commit/651c1af625df932b0989ff1442e85f07974a5582))
+
+
+### Features
+
+* **studio:** add help button ([#411](https://github.com/botpress/studio/issues/411)) ([8ee6391](https://github.com/botpress/studio/commit/8ee6391a92a6eef157b5dd3f4c6e6d74c0267714))
+
+
+
 ## [0.0.65](https://github.com/botpress/studio/compare/v0.0.64...v0.0.65) (2022-11-30)
 
 
