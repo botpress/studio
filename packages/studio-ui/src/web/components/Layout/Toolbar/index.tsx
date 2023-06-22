@@ -21,7 +21,7 @@ interface OwnProps {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type Props = StateProps & OwnProps
-const FORUM_LINK = 'https://github.com/botpress/botpress/discussions'
+const FORUM_LINK = 'https://github.com/botpress/v12/discussions'
 const DOCS_LINK = 'https://v12.botpress.com/'
 
 const Toolbar: FC<Props> = (props) => {
