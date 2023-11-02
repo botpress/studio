@@ -573,7 +573,9 @@
       "endOfLogs": "Fin des journaux",
       "debug": {
         "confUpdated": "La configuration de débogage a été mise à jour avec succès!"
-      }
+      },
+      "filter": "filtre",
+      "botLevelOBS": "OBS : Un log est considéré comme provenant d'un bot si bp.logger.forBot(...) est utilisé"
     },
     "debugger": {
       "fetchingEvent": "Récupération de l'événement...",
