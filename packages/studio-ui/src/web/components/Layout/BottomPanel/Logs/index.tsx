@@ -16,6 +16,7 @@ import EventBus from '~/util/EventBus'
 import style from '../style.scss'
 
 import Debug from './Debug'
+import Filter, { LOG_FILTER_DEFAULT_VALUE } from './Filter'
 import logStyle from './style.scss'
 
 const INITIAL_LOGS_LIMIT = 200
@@ -35,12 +36,14 @@ interface State {
   followLogs: boolean
   selectedPanel: string
   initialLogs: LogEntry[]
+  logFilter: string[]
 }
 
 interface LogEntry {
   level: string
   message: string
   args: any
+  botId: string
   ts: string
 }
 
@@ -56,6 +59,14 @@ class BottomPanel extends React.Component<Props, State> {
   private debounceRefreshLogs: typeof this.forceUpdate
   private logs: LogEntry[]
   private debugRef = React.createRef<any>()
+  private filterRef = React.createRef<any>()
+
+  state = {
+    followLogs: true,
+    selectedPanel: 'logs',
+    initialLogs: [],
+    logFilter: LOG_FILTER_DEFAULT_VALUE
+  }
 
   constructor(props: Props) {
     super(props)
@@ -77,6 +88,7 @@ class BottomPanel extends React.Component<Props, State> {
     return {
       ts: log.timestamp,
       level: log.level,
+      botId: log.type?.replace?.('logs::', ''),
       message: this.ansiiToSafeHTML(log.message),
       args: this.ansiiToSafeHTML(log.metadata || log.args || '')
     }
@@ -95,12 +107,6 @@ class BottomPanel extends React.Component<Props, State> {
       }
       this.debounceRefreshLogs()
     })
-  }
-
-  state = {
-    followLogs: true,
-    selectedPanel: 'logs',
-    initialLogs: []
   }
 
   queryLogs = async () => {
@@ -182,13 +188,22 @@ class BottomPanel extends React.Component<Props, State> {
       return null
     }
     const allLogs = [...this.state.initialLogs, ...this.logs]
+    const logFilter = this.state.logFilter
     const LogsPanel = (
       <ul
         className={cn(logStyle.logs, style.tabContainer)}
         ref={this.messageListRef}
         onScroll={this.handleLogsScrolled}
       >
-        {allLogs.map((e) => this.renderEntry(e))}
+        {allLogs
+          .filter((log) => logFilter.includes(log.level))
+          .filter(
+            (log) =>
+              !log.botId ||
+              (logFilter.includes('global') && log.botId === '*') ||
+              (logFilter.includes('currentBot') && log.botId !== '*')
+          )
+          .map((e) => this.renderEntry(e))}
         <li className={logStyle.end}>{lang.tr('bottomPanel.logs.endOfLogs')}</li>
       </ul>
     )
@@ -197,6 +212,12 @@ class BottomPanel extends React.Component<Props, State> {
       <Tabs className={style.tabs} onChange={this.handleTabChange} selectedTabId={this.state.selectedPanel}>
         <Tab id="logs" className={style.tab} title={lang.tr('logs')} panel={LogsPanel} />
         <Tab id="debug" className={style.tab} title={lang.tr('debug')} panel={<Debug ref={this.debugRef} />} />
+        <Tab
+          id="filter"
+          className={style.tab}
+          title={lang.tr('bottomPanel.logs.filter')}
+          panel={<Filter setLogFilter={(logFilter) => this.setState({ logFilter })} ref={this.filterRef} />}
+        />
 
         {this.state.selectedPanel === 'logs' && (
           <Fragment>
@@ -237,6 +258,25 @@ class BottomPanel extends React.Component<Props, State> {
                   icon="refresh"
                   small
                   onClick={this.debugRef.current?.loadConfiguration}
+                />
+              </ToolTip>
+
+              {this.props.commonButtons}
+            </ButtonGroup>
+          </Fragment>
+        )}
+
+        {this.state.selectedPanel === 'filter' && (
+          <Fragment>
+            <Tabs.Expander />
+            <div></div>
+            <ButtonGroup minimal>
+              <ToolTip content={lang.tr('refresh')}>
+                <Button
+                  id="btn-filter-refresh"
+                  icon="refresh"
+                  small
+                  onClick={this.filterRef.current?.loadConfiguration}
                 />
               </ToolTip>
 

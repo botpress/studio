@@ -582,7 +582,9 @@
       "endOfLogs": "End of logs",
       "debug": {
         "confUpdated": "Debug configuration updated successfully!"
-      }
+      },
+      "filter": "filter",
+      "botLevelOBS": "OBS: A log is considered to be from bot if bp.logger.forBot(...) is used"
     },
     "debugger": {
       "fetchingEvent": "Fetching event...",

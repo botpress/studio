@@ -550,7 +550,9 @@
       "endOfLogs": "Fin de registros",
       "debug": {
         "confUpdated": "¡Configuración de depuración actualizada correctamente!"
-      }
+      },
+      "filter": "filtrar",
+      "botLevelOBS": "OBS: Se considera que un log proviene de un bot si se usa bp.logger.forBot(...)"
     },
     "depurador": {
       "fetchingEvent": "Obteniendo evento ...",
