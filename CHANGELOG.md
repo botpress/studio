@@ -1,3 +1,12 @@
+## [0.0.68](https://github.com/botpress/studio/compare/v0.0.66...v0.0.68) (2023-11-03)
+
+
+### Features
+
+* **studio:** add logs filter ([#415](https://github.com/botpress/studio/issues/415)) ([e89fb36](https://github.com/botpress/studio/commit/e89fb3688d91e23fc765745b5429b90f9c2ab844))
+
+
+
 ## [0.0.67](https://github.com/botpress/studio/compare/v0.0.66...v0.0.67) (2023-06-22)
 
 
