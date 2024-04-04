@@ -94,10 +94,9 @@ export default class InjectedModuleView extends React.Component<Props, State> {
         error: new Error(`
 Component "${componentName}" doesn't exist for module "${moduleName}"
 
-There was a breaking change in how module views are handled in Botpress 11.6
+There was a breaking change in how module views are handled in TheGurúCompany Studio 11.6
 Web bundles and liteViews were replaced by a more standardized method.
-
-Please check our migration guide here: https://botpress.com/docs/developers/migrate/`),
+`),
         moduleComponent: null
       })
     } else {

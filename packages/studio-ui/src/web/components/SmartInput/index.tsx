@@ -180,5 +180,5 @@ const mapDispatchToProps = { refreshHints }
 const mapStateToProps = ({ hints: { inputs }, language: { contentLang } }) => ({ hints: inputs, contentLang })
 const ConnectedSmartInput = connect(mapStateToProps, mapDispatchToProps)(SmartInput)
 
-// Passing store explicitly since this component may be imported from another botpress-module
+// Passing store explicitly since this component may be imported from another TheGurúCompany Studio-module
 export default (props: ExposedProps) => <ConnectedSmartInput {...props} store={store} />

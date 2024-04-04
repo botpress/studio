@@ -382,7 +382,7 @@ class ConfigView extends Component<Props, State> {
                   <InputGroup
                     id="website"
                     leftIcon="globe"
-                    placeholder="https://botpress.com"
+                    placeholder="https://studio.getchato.ai/"
                     name="website"
                     value={this.state.website}
                     onChange={this.handleInputChanged}
@@ -402,7 +402,7 @@ class ConfigView extends Component<Props, State> {
                   <InputGroup
                     id="email-address"
                     leftIcon="envelope"
-                    placeholder="email@botpress.com"
+                    placeholder="email@ChatoStudio.com"
                     name="emailAddress"
                     value={this.state.emailAddress}
                     onChange={this.handleInputChanged}
@@ -412,7 +412,7 @@ class ConfigView extends Component<Props, State> {
                   <InputGroup
                     id="terms-conditions"
                     name="termsConditions"
-                    placeholder="https://botpress.com/terms"
+                    placeholder="https://studio.getchato.ai/"
                     value={this.state.termsConditions}
                     onChange={this.handleInputChanged}
                   />
@@ -420,7 +420,7 @@ class ConfigView extends Component<Props, State> {
                 <FormGroup label={lang.tr('config.linkToPolicy')} labelFor="privacy-policy">
                   <InputGroup
                     id="privacy-policy"
-                    placeholder="https://botpress.com/privacy-policy"
+                    placeholder="https://studio.getchato.ai/"
                     name="privacyPolicy"
                     value={this.state.privacyPolicy}
                     onChange={this.handleInputChanged}

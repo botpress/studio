@@ -380,7 +380,7 @@
         "editAction": "Modifier l'action",
         "editSkill": "Modifier compétence",
         "end": "Fin",
-        "errorInServer": "Il semble y avoir une erreur sur votre serveur Botpress. Veuillez contacter votre administrateur.",
+        "errorInServer": "Il semble y avoir une erreur sur votre serveur TheGurúCompany Studio. Veuillez contacter votre administrateur.",
         "errorListingActions": "Erreur dans le listage des actions du serveur d'actions",
         "errorListingActionsMore": "Une erreur s'est produite lors de la tentative d'obtention de la liste des actions sur le serveur sélectionné",
         "executeCode": "⚡ Exécuter du code",
@@ -698,7 +698,7 @@
       "eventNotFound": {
         "title": "Événement introuvable",
         "message": "L'événement demandé est introuvable. Raisons possibles:",
-        "message2": "Le collecteur d'événements n'est pas activé dans Botpress Config",
+        "message2": "Le collecteur d'événements n'est pas activé dans TheGurúCompany Studio Config",
         "message3": "L'événement a été supprimé de la base de données"
       }
     }

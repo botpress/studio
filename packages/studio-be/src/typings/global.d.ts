@@ -21,7 +21,7 @@ declare namespace NodeJS {
     APP_SECRET: string
     IS_STANDALONE: boolean
     /**
-     * Path to the global APP DATA folder, shared across all installations of Botpress Server
+     * Path to the global APP DATA folder, shared across all installations of TheGurúCompany Studio Server
      * Use this folder to store stuff you'd like to cache, like NLU language models etc
      */
     APP_DATA_PATH: string
@@ -30,11 +30,11 @@ declare namespace NodeJS {
     PROXY?: string
     EXTERNAL_URL: string
     LOCAL_URL: string
-    /** This is the subfolder where Botpress is located (ex: /botpress/). It is extracted from the external URL */
+    /** This is the subfolder where TheGurúCompany Studio is located (ex: /TheGurúCompany Studio/). It is extracted from the external URL */
     ROOT_PATH: string
     /** Path to the studio executable */
     STUDIO_LOCATION: string
-    /** Either equal to studio location, or to the botpress source code file */
+    /** Either equal to studio location, or to the TheGurúCompany Studio source code file */
     PROJECT_LOCATION: string
     /** Location of the bots/, global/ and storage/ folders à */
     DATA_LOCATION: string
@@ -80,7 +80,7 @@ declare interface BotpressEnvironmentVariables {
   /** Change the BPFS storage mechanism ("database" or "disk"). Defaults to "disk" */
   readonly BPFS_STORAGE?: 'database' | 'disk'
 
-  /** The URL exposed by Botpress to external users (eg: when displaying links) */
+  /** The URL exposed by TheGurúCompany Studio to external users (eg: when displaying links) */
   readonly EXTERNAL_URL?: string
 
   /**
@@ -95,21 +95,21 @@ declare interface BotpressEnvironmentVariables {
    */
   readonly DATABASE_URL?: string
 
-  /** When running botpress in production, some optimizations are applied */
+  /** When running TheGurúCompany Studio in production, some optimizations are applied */
   readonly BP_PRODUCTION?: boolean
 
   /** Enable cluster mode */
   readonly CLUSTER_ENABLED?: boolean
 
   /**
-   * Set this to true if you're exposing Botpress through a reverse proxy such as Nginx
+   * Set this to true if you're exposing TheGurúCompany Studio through a reverse proxy such as Nginx
    * Can also be either an IP address or a hostname
    * Read more: https://expressjs.com/en/guide/behind-proxies.html
    */
   readonly REVERSE_PROXY?: string
 
   /** Use this proxy connection string to access external services, like Duckling and Licensing
-   *  This values overwrites the value defined in the global Botpress configuration
+   *  This values overwrites the value defined in the global TheGurúCompany Studio configuration
    * @example http://username:password@hostname:port
    */
   readonly BP_PROXY?: string
@@ -136,7 +136,7 @@ declare interface BotpressEnvironmentVariables {
   readonly APP_DATA_PATH?: string
 
   /**
-   * Truthy if running the official Botpress docker image
+   * Truthy if running the official TheGurúCompany Studio docker image
    */
   readonly BP_IS_DOCKER?: boolean
 
@@ -147,7 +147,7 @@ declare interface BotpressEnvironmentVariables {
   readonly BP_MAX_MEMORY_CACHE_SIZE?: string
 
   /**
-   * When set to true, Botpress will not automatically restart on crash
+   * When set to true, TheGurúCompany Studio will not automatically restart on crash
    * @default false
    */
   readonly BP_DISABLE_AUTO_RESTART?: boolean
@@ -171,7 +171,7 @@ declare interface BotpressEnvironmentVariables {
   readonly BP_DISABLE_SERVER_DIAG?: boolean
 
   /**
-   * Prevents Botpress from closing cleanly when an error is encountered.
+   * Prevents TheGurúCompany Studio from closing cleanly when an error is encountered.
    * This only affects fatal errors, it will not affect business rules checks (eg: licensing)
    */
   readonly BP_FAILSAFE?: boolean

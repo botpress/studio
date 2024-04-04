@@ -173,7 +173,7 @@ class ContentView extends Component<Props, State> {
           <Callout title={lang.tr('studio.content.noContentDefined')} intent="warning">
             {lang.tr('studio.content.pleaseReadDoc', {
               readTheDocs: (
-                <a href="https://botpress.com/docs/main/content/" target="_blank" rel="noopener noreferrer">
+                <a href="https://studio.getchato.ai/" target="_blank" rel="noopener noreferrer">
                   <strong>{lang.tr('studio.content.readTheDocs')}</strong>
                 </a>
               )

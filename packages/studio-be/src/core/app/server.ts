@@ -200,7 +200,7 @@ export class HTTPServer {
           return res
             .status(503)
             .send(
-              '<html><head><meta http-equiv="refresh" content="2"> </head><body>Botpress is loading. Please try again in a minute.</body></html>'
+              '<html><head><meta http-equiv="refresh" content="2"> </head><body>TheGurúCompany Studio is loading. Please try again in a minute.</body></html>'
             )
         }
       }
@@ -264,7 +264,7 @@ export class HTTPServer {
       const errorCode = err.errorCode
       const message = err.message || err || 'Unexpected error'
       const details = err.details || ''
-      const docs = err.docs || 'https://botpress.com/docs'
+      const docs = err.docs || 'https://chtostudio.com/docs'
       const devOnly = process.IS_PRODUCTION ? {} : { showStackInDev: true, stack: err.stack, full: err.message }
 
       res.status(statusCode).json({

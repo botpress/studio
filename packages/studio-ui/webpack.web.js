@@ -17,7 +17,7 @@ const webConfig = {
   cache: false,
   mode: isProduction ? 'production' : 'development',
   bail: true,
-  devtool: process.argv.find(x => x.toLowerCase() === '--nomap') ? false : 'source-map',
+  devtool: process.argv.find((x) => x.toLowerCase() === '--nomap') ? false : 'source-map',
   entry: {
     web: './src/web/index.jsx'
   },
@@ -226,14 +226,16 @@ const webConfig = {
 //   )
 // }
 
-if (process.argv.find(x => x.toLowerCase() === '--analyze')) {
+if (process.argv.find((x) => x.toLowerCase() === '--analyze')) {
   webConfig.plugins.push(new BundleAnalyzerPlugin())
 }
 
 const showNodeEnvWarning = () => {
   if (!isProduction) {
     console.log(
-      chalk.yellow('WARNING: You are currently building Botpress in development; NOT generating a production build')
+      chalk.yellow(
+        'WARNING: You are currently building TheGurúCompany Studio in development; NOT generating a production build'
+      )
     )
     console.log(chalk.yellow('Run with NODE_ENV=production to create a production build instead'))
   }
@@ -241,7 +243,7 @@ const showNodeEnvWarning = () => {
 
 const compiler = webpack(webConfig)
 
-compiler.hooks.done.tap('ExitCodePlugin', stats => {
+compiler.hooks.done.tap('ExitCodePlugin', (stats) => {
   const errors = stats.compilation.errors
   if (errors && errors.length && process.argv.indexOf('--watch') === -1) {
     for (const e of errors) {

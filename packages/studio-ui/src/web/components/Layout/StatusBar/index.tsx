@@ -19,7 +19,6 @@ const StatusBar: FC<Props> = (props) => {
   return (
     <footer className={style.statusBar}>
       <div className={style.item}>
-        <span>{window.APP_VERSION}</span>
         <span className={style.botName}>{window.BOT_NAME}</span>
         <LangSwitcher toggleLangSwitcher={props.toggleLangSwitcher} langSwitcherOpen={props.langSwitcherOpen} />
       </div>

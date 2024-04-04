@@ -163,5 +163,5 @@ const ConnectedContentPicker = connect<DispatchProps, StateProps, OwnProps>(
   mapDispatchToProps
 )(withLanguage(ContentPickerWidget))
 
-// Passing store explicitly since this component may be imported from another botpress-module
+// Passing store explicitly since this component may be imported from another TheGurúCompany Studio-module
 export default (props: OwnProps) => <ConnectedContentPicker {...props} store={store} />

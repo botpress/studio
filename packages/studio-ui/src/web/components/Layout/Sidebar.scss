@@ -1,3 +1,9 @@
+$primary: #8c00ff;
+$secondary: #0aa0fa;
+$complementary: #100146;
+$gray: #f1f3fa;
+$light-gray: #ffffff;
+
 .link {
   cursor: pointer;
 }
@@ -31,8 +37,8 @@
 }
 
 .sidebar {
-  background-color: var(--shark);
-  color: var(--seashell);
+  background-color: $light-gray;
+  color: $complementary;
   height: 100%;
   position: relative;
   width: 40px;
@@ -48,6 +54,10 @@
     img {
       margin-left: 1px;
     }
+  }
+
+  svg {
+    color: $complementary;
   }
 
   ul {
@@ -93,10 +103,16 @@
           &:not(.active) {
             border-color: var(--gray);
           }
+          svg {
+            color: $primary;
+          }
         }
 
         &.active {
-          border-color: var(--ocean);
+          border-color: $primary;
+          svg {
+            color: $primary;
+          }
         }
       }
     }

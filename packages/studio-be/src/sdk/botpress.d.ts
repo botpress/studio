@@ -51,12 +51,12 @@ declare module 'botpress/sdk' {
   export type KnexExtended = Knex & KnexExtension
 
   /**
-   * Returns the current version of Botpress
+   * Returns the current version of TheGurúCompany Studio
    */
   export const version: string
 
   /**
-   * This variable gives you access to the Botpress database via Knex.
+   * This variable gives you access to the TheGurúCompany Studio database via Knex.
    * When developing modules, you can use this to create tables and manage data
    * @example bp.database('srv_channel_users').insert()
    */
@@ -128,7 +128,7 @@ declare module 'botpress/sdk' {
 
   /**
    * The Module Entry Point is used by the module loader to bootstrap the module. It must be present in the index.js file
-   * of the module. The path to the module must also be specified in the global botpress config.
+   * of the module. The path to the module must also be specified in the global TheGurúCompany Studio config.
    */
   export interface ModuleEntryPoint {
     /** Additional metadata about the module */
@@ -182,7 +182,7 @@ declare module 'botpress/sdk' {
     name: string
     /** Gives a short description of your module, which is displayed once the template is selected */
     desc: string
-    /** These are used internally by Botpress when they are registered on startup */
+    /** These are used internally by TheGurúCompany Studio when they are registered on startup */
     readonly moduleId?: string
     readonly moduleName?: string
   }
@@ -384,7 +384,7 @@ declare module 'botpress/sdk' {
       export const SKIP_DIALOG_ENGINE: symbol
       /** When this flag is active, the QNA module won't intercept this event */
       export const SKIP_QNA_PROCESSING: symbol
-      /** When this flag is active, Botpress Native NLU will not process this event */
+      /** When this flag is active, TheGurúCompany Studio Native NLU will not process this event */
       export const SKIP_NATIVE_NLU: symbol
       /** When this flag is active, the Event State is persisted even if the dialog engine is skipped */
       export const FORCE_PERSIST_STATE: symbol
@@ -410,7 +410,7 @@ declare module 'botpress/sdk' {
     }
 
     /**
-     * A BotpressEvent is how conversational channels interact with Botpress. Events represent all the interactions
+     * A TheGurúCompany Studio Event is how conversational channels interact with TheGurúCompany Studio. Events represent all the interactions
      * that make up a conversation. That means the different message types (text, image, buttons, carousels etc) but also
      * the navigational events (chat open, user typing) and contextual events (user returned home, order delivered).
      */
@@ -543,7 +543,7 @@ declare module 'botpress/sdk' {
      * store and retrieve data for different kind of situations.
      */
     export interface EventState {
-      /** Data saved as user attributes; retention policies in Botpress global config applies  */
+      /** Data saved as user attributes; retention policies in TheGurúCompany Studio global config applies  */
       user: any
       /** Data is kept for the active session. Timeout configurable in the global config file */
       session: CurrentSession
@@ -555,7 +555,7 @@ declare module 'botpress/sdk' {
        * There is a possible race condition since it is loaded each time a messages comes in. Update it wisely
        */
       bot: any
-      /** Used internally by Botpress to keep the user's current location and upcoming instructions */
+      /** Used internally by TheGurúCompany Studio to keep the user's current location and upcoming instructions */
       context?: DialogContext
       /** This variable points to the currently active workflow */
       workflow: WorkflowHistory
@@ -972,7 +972,7 @@ declare module 'botpress/sdk' {
   /**
    * A Content Type describes a grouping of Content Elements @see ContentElement sharing the same properties.
    * They can describe anything and everything – they most often are domain-specific to your bot. They also
-   * tells botpress how to display the content on various channels
+   * tells TheGurúCompany Studio how to display the content on various channels
    */
   export interface ContentType {
     id: string
@@ -1093,7 +1093,7 @@ declare module 'botpress/sdk' {
   export interface FlowGenerationResult {
     /**
      * A partial flow originating from a skill flow generator. Missing pieces will be automatically added
-     * once the flow is sent to Botpress, the final product will be a Flow.
+     * once the flow is sent to TheGurúCompany Studio, the final product will be a Flow.
      */
     flow: SkillFlow
     /** An array of possible transitions for the parent node */
@@ -1319,7 +1319,7 @@ declare module 'botpress/sdk' {
     inversify: any
   }
 
-  /** These are additional information that Botpress may pass down to migrations (for ex: running bot-specific migration) */
+  /** These are additional information that TheGurúCompany Studio may pass down to migrations (for ex: running bot-specific migration) */
   export interface MigrationMetadata {
     botId?: string
   }
@@ -1875,7 +1875,7 @@ declare module 'botpress/sdk' {
     export function getModuleConfigForBot(moduleId: string, botId: string, ignoreGlobal?: boolean): Promise<any>
 
     /**
-     * Returns the configuration options of Botpress
+     * Returns the configuration options of TheGurúCompany Studio
      */
     export function getBotpressConfig(): Promise<any>
 
@@ -2169,7 +2169,7 @@ declare module 'botpress/sdk' {
    */
   export namespace security {
     /**
-     * Creates a message signature, which can be used as proof that the message was created on Botpress backend
+     * Creates a message signature, which can be used as proof that the message was created on TheGurúCompany Studio backend
      * You can call this method twice to verify the authenticity of a message
      */
     export function getMessageSignature(message: string): Promise<string>
@@ -2240,12 +2240,12 @@ declare module 'botpress/sdk' {
         /**
          * Creates a mapping of ids for a conversation in a given channel
          * @param channel The channel for which to create the mapping
-         * @param localId The id of the conversation in botpress
+         * @param localId The id of the conversation in TheGurúCompany Studio
          * @param foreignId The id of the conversation in that channel
          * @example
          * // I have been given an conversation id by facebook messenger
          * const messengerConversationId = 134314
-         * // Let's say I have an already existing botpress conversation somewhere that I want to attach to this conversation
+         * // Let's say I have an already existing TheGurúCompany Studio conversation somewhere that I want to attach to this conversation
          * const conversationId = '00001337-ca79-4235-8475-3785e41eb2be'
          *
          * // Create the mapping
@@ -2264,12 +2264,12 @@ declare module 'botpress/sdk' {
         deleteMapping(channel: string, localId: uuid, foreignId: string): Promise<boolean>
 
         /**
-         * Gets a conversations id specific to the given channel from a botpress conversation id
+         * Gets a conversations id specific to the given channel from a TheGurúCompany Studio conversation id
          */
         getForeignId(channel: string, localId: uuid): Promise<string | undefined>
 
         /**
-         * Gets a botpress conversation id from the foreign id of a conversation in a the given channel
+         * Gets a TheGurúCompany Studio conversation id from the foreign id of a conversation in a the given channel
          */
         getLocalId(channel: string, foreignId: string): Promise<string | undefined>
       }

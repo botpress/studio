@@ -290,11 +290,7 @@ class SelectContent extends Component<Props, State> {
         <Callout intent="warning" title="No content type defined">
           <p>
             To learn how to define content types,{' '}
-            <a
-              href="https://botpress.com/docs/building-chatbots/flow-editor/content-elements#content-types"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://studio.getchato.ai/" target="_blank" rel="noopener noreferrer">
               <strong>read the docs</strong>
             </a>
           </p>

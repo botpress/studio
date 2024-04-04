@@ -74,7 +74,7 @@ const ConfigStatus = () => {
         <div className={Classes.DIALOG_BODY}>
           {!isRestarting ? (
             <div>
-              Changes were made to the main Botpress configuration file. <br />
+              Changes were made to the main TheGurúCompany Studio configuration file. <br />
               It is recommended to restart the server so they can take effect.
             </div>
           ) : (

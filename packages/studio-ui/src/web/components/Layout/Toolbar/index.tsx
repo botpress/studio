@@ -21,8 +21,8 @@ interface OwnProps {
 type StateProps = ReturnType<typeof mapStateToProps>
 
 type Props = StateProps & OwnProps
-const FORUM_LINK = 'https://discord.gg/botpress'
-const DOCS_LINK = 'https://v12.botpress.com/'
+const FORUM_LINK = 'https://studio.getchato.ai/'
+const DOCS_LINK = 'https://studio.getchato.ai/'
 
 const Toolbar: FC<Props> = (props) => {
   const { toggleDocs, toggleGuidedTour, hasDoc, onToggleEmulator, isEmulatorOpen, toggleBottomPanel } = props

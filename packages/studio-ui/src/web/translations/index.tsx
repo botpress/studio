@@ -11,7 +11,6 @@ const initializeTranslations = () => {
   lang.init()
 }
 
-// Copied from https://github.com/botpress/v12/blob/master/modules/channel-web/src/views/lite/utils.tsx
 const rtlLocales = [
   'ae' /* Avestan */,
   'ar' /* 'العربية', Arabic */,

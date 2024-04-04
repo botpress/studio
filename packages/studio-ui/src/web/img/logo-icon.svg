@@ -1,1 +1,17 @@
-<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 183.34 183.34"><path d="M91.67,0a91.67,91.67,0,1,0,91.67,91.67A91.67,91.67,0,0,0,91.67,0Zm42.2,131.72a5.16,5.16,0,0,1-2.62,4.57l-6.89,4-6.89,4a5.14,5.14,0,0,1-5.27,0l-6.88-4-6.89-4a5.14,5.14,0,0,1-2.63-4.57v-15L63.63,98.13l6.28,9.37L62,112.06a5.14,5.14,0,0,1-5.27,0l-6.88-4-6.89-4a5.14,5.14,0,0,1-2.63-4.51V83.65A5.14,5.14,0,0,1,43,79.08l6.89-4,6.88-4a5.18,5.18,0,0,1,5.27,0l6.89,4L75,78.58l20.82-12V51.62a5.18,5.18,0,0,1,2.64-4.57l6.89-4,6.88-4a5.14,5.14,0,0,1,5.27,0l6.88,4,6.89,4a5.15,5.15,0,0,1,2.63,4.57v15.9a5.14,5.14,0,0,1-2.63,4.56l-6.89,4-6.88,4a5.18,5.18,0,0,1-5.27,0l-6.88-4-.42-.24,7.29-10.74L99.26,72.55l-20.82,12v14.1l20.82,12,6.06-3.5,6.88-4a5.14,5.14,0,0,1,5.27.07l6.89,4,6.89,4a5.15,5.15,0,0,1,2.62,4.57Z" fill="#fff"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50.823" height="34.557" viewBox="0 0 50.823 34.557">
+  <defs>
+    <linearGradient id="linear-gradient" x1="11.077" y1="0.5" x2="0.104" y2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#0aa0fa"/>
+      <stop offset="0.438" stop-color="#4753fc"/>
+      <stop offset="0.819" stop-color="#7817fe"/>
+      <stop offset="0.999" stop-color="#8c00ff"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="9.894" y1="0.5" x2="-0.898" y2="0.5" xlink:href="#linear-gradient"/>
+    <linearGradient id="linear-gradient-3" x1="8.925" y1="0.5" x2="-2.021" y2="0.5" xlink:href="#linear-gradient"/>
+  </defs>
+  <g id="Grupo_10" data-name="Grupo 10" transform="translate(-100.538 -2035.089)">
+    <path id="Trazado_24" data-name="Trazado 24" d="M109.9,2061.89l-9.362-9.62,9.362-9.62h7.56l-9.363,9.62,9.363,9.62Z" transform="translate(0 -0.798)" fill="url(#linear-gradient)"/>
+    <path id="Trazado_25" data-name="Trazado 25" d="M129.994,2035.089h5.994l-11.211,34.557h-5.994Z" transform="translate(-1.924)" fill="url(#linear-gradient-2)"/>
+    <path id="Trazado_26" data-name="Trazado 26" d="M138.389,2042.65h7.6l9.363,9.62-9.363,9.62h-7.6l9.406-9.62Z" transform="translate(-3.992 -0.798)" fill="url(#linear-gradient-3)"/>
+  </g>
+</svg>

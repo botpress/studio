@@ -357,7 +357,7 @@
         "triggeredBy": "Se activa el flujo de trabajo",
         "workflowFails": "El flujo de trabajo falla",
         "workflowSucceeds": "El flujo de trabajo tiene éxito",
-        "errorInServer": "Parece haber un error en el servidor de Botpress. Póngase en contacto con su administrador.",
+        "errorInServer": "Parece haber un error en el servidor de TheGurúCompany Studio. Póngase en contacto con su administrador.",
         "errorListingActions": "Error al enumerar las acciones del servidor de acciones",
         "errorListingActionsMore": "Se ha producido un error al intentar obtener la lista de acciones en el servidor seleccionado",
         "executeCode": "⚡ Ejecutar código",
@@ -674,7 +674,7 @@
       "eventNotFound": {
         "title": "Evento no encontrado",
         "message": "No se encontró el evento solicitado. Posibles motivos:",
-        "message2": "El recopilador de eventos no está habilitado en Botpress Config",
+        "message2": "El recopilador de eventos no está habilitado en Chat Studio Config",
         "message3": "El evento se eliminó de la base de datos"
       }
     }
